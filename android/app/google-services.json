@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "915082934520",
+    "project_id": "fir-app-189fc",
+    "storage_bucket": "fir-app-189fc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:915082934520:android:bccf0d6bd896e03ee4e30d",
+        "android_client_info": {
+          "package_name": "com.example.curnectgate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABm2ocYRphXiD_st-XiqsI6goZeYfWsbw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:915082934520:android:4d07e64102cffc5ce4e30d",
+        "android_client_info": {
+          "package_name": "com.example.show_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABm2ocYRphXiD_st-XiqsI6goZeYfWsbw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
