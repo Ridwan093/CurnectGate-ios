@@ -18,4 +18,8 @@ subprojects {
 
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 93dd6314bedae2fd6adca1557bdc03353596613f

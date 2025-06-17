@@ -1,3 +1,4 @@
+
 import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -43,5 +44,4 @@ void main() async {
         home: id != null ? EstateOnboardingScreen() : CommunityScreen(),
       ),
     ),
-  );
-}
+  );}
