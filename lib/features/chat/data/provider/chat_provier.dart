@@ -2,9 +2,9 @@
 import 'dart:developer';
 
 import 'package:curnectgate/features/chat/data/chat_model/chat_state.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:file_picker/file_picker.dart';
 
 final chatProvider = StateNotifierProvider<ChatNotifier, ChatState>((ref) {
   return ChatNotifier();
@@ -14,17 +14,28 @@ class ChatNotifier extends StateNotifier<ChatState> {
   ChatNotifier() : super(ChatState(messages: [], selectedImage: null));
 
   void sendMessage(String text) {
-    if (text.isEmpty && state.selectedImage == null) return;
-
+    if (text.isEmpty &&
+        state.selectedImage == null &&
+        state.selectedFilePath == null) {
+      return;
+    }
+   
     final newMessage = ChatMessage(
       text: text,
       image: state.selectedImage,
+      file: state.selectedFilePath,
+      selectedFileName: state.selectedFileName,
+
+      selectedFileSize: state.selectedFileSize,
+
       time: DateTime.now(),
-      isMe: true,
+      isMe: false,
     );
+    log("hell${newMessage.selectedFileSize}");
     state = state.copyWith(
       messages: [...state.messages, newMessage],
       selectedImage: null,
+      selectedFilePath: null,
     );
   }
 
@@ -44,29 +55,30 @@ class ChatNotifier extends StateNotifier<ChatState> {
     }
   }
 
+  Future<void> pickFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'doc', 'docx', 'txt'],
+    );
 
-Future<void> pickFile() async {
-  
-final result = await FilePicker.platform.pickFiles(
-  type: FileType.custom,
-  allowedExtensions: ['pdf', 'doc', 'docx', 'txt'],
-);
-
-if (result != null && result.files.single.path != null) {
-  final file = result.files.single;
-  state = state.copyWith(
-    selectedFilePath: file.path,
-    selectedFileName: file.name,
-    selectedFileSize: file.size, // in bytes
-  );
-}
-
-}
-
+    if (result != null && result.files.single.path != null) {
+      final file = result.files.single;
+      state = state.copyWith(
+        selectedFilePath: file.path,
+        selectedFileName: file.name,
+        selectedFileSize: file.size, // in bytes
+      );
+    }
+  }
 
   void clearImage() {
     log("Clearing image...");
-    state = state.copyWith(removeImage: true);
+    state = state.copyWith(
+      removeImage: true,
+      removeFile: true,
+      removefileZise: true,
+      removefilename: true,
+    );
     log("State after clearing: ${state.selectedImage}");
   }
 }

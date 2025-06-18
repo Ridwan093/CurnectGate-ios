@@ -1,10 +1,10 @@
-import 'dart:io';
-
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/chat/data/chat_model/chat_state.dart';
 import 'package:curnectgate/features/chat/data/provider/chat_provier.dart';
+import 'package:curnectgate/features/chat/presentation/chat_widget/displayFileCard.dart';
+import 'package:curnectgate/features/chat/presentation/chat_widget/displayimage.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/messagesBubbles.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/member_management/widget/app_bottom_sheet.dart';
@@ -61,6 +61,7 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
     final chatState = ref.watch(chatProvider);
     final chatNotifier = ref.watch(chatProvider.notifier);
     final image = ref.read(chatProvider).selectedImage;
+    final file = chatState.selectedFileName;
     return Scaffold(
       appBar: _buildAppBar(context),
       body: SizedBox(
@@ -75,10 +76,9 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
               ],
             ),
 
-            if (image != null) ...[
+            if (image != null || file != null) ...[
               _buildImagePreview(chatState),
               _buildimageClearbutton(chatNotifier),
-              _buildFilePreview(chatState)
             ],
           ],
         ),
@@ -199,22 +199,18 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
 
   Widget _buildImagePreview(ChatState chatState) {
     final image = chatState.selectedImage;
-    return Positioned(
-      right: 10,
-      bottom: 51,
-      child: Container(
-        height: 60,
-        width: 90,
-        decoration: BoxDecoration(
-          color: Colors.black,
-          image: DecorationImage(
-            image: FileImage(File(image!)),
-            fit: BoxFit.cover,
-          ),
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
-    );
+    final fileName = chatState.selectedFileName;
+
+    if (image != null) {
+      // Show image preview
+      return DisplayImage(chatState: chatState);
+    } else if (fileName != null) {
+      // Show file info
+      return DisplayFilecard(chatState: chatState);
+    } else {
+      // No file or image selected
+      return SizedBox.shrink();
+    }
   }
 
   Widget _buildimageClearbutton(ChatNotifier chatNotifier) {
@@ -338,13 +334,11 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
               icon: Icon(Icons.send, color: AppColors.instance.black600),
               onPressed: () {
                 if (_textController.text.trim().isNotEmpty ||
-                    ref.read(chatProvider).selectedImage != null) {
+                    ref.read(chatProvider).selectedImage != null||  ref.read(chatProvider).selectedFilePath != null) {
                   chatNotifier.sendMessage(_textController.text);
                   _textController.clear();
                   chatNotifier.clearImage();
                 }
-
-                
               },
             ),
           ],
@@ -352,73 +346,45 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
       ),
     );
   }
+
   Widget _buildFilePreview(ChatState chatState) {
-  final filePath = chatState.selectedFilePath;
-  final fileName = chatState.selectedFileName;
-  final fileSize = chatState.selectedFileSize;
+    final filePath = chatState.selectedFilePath;
+    final fileName = chatState.selectedFileName;
+    final fileSize = chatState.selectedFileSize;
 
-  if (filePath == null) return const SizedBox.shrink();
+    if (filePath == null) return const SizedBox.shrink();
 
-  return GestureDetector(
-    onTap: () => OpenFilex.open(filePath),
-    child: Container(
-      padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(10),
+    return GestureDetector(
+      onTap: () => OpenFilex.open(filePath),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Icon(_getFileIcon(fileName), color: Colors.blueAccent, size: 32),
+            const SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  fileName ?? "Unknown file",
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "    _formatFileSize(fileSize),",
+                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            _getFileIcon(fileName),
-            color: Colors.blueAccent,
-            size: 32,
-          ),
-          const SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                fileName ?? "Unknown file",
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                _formatFileSize(fileSize),
-                style: TextStyle(color: Colors.grey[600], fontSize: 12),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-
-  String _formatFileSize(int? sizeInBytes) {
-  if (sizeInBytes == null) return '';
-  if (sizeInBytes < 1024) return '$sizeInBytes B';
-  if (sizeInBytes < 1024 * 1024) return '${(sizeInBytes / 1024).toStringAsFixed(1)} KB';
-  return '${(sizeInBytes / (1024 * 1024)).toStringAsFixed(1)} MB';
-}
-
-IconData _getFileIcon(String? fileName) {
-  if (fileName == null) return Icons.insert_drive_file;
-  final ext = fileName.split('.').last.toLowerCase();
-  switch (ext) {
-    case 'pdf':
-      return Icons.picture_as_pdf;
-    case 'doc':
-    case 'docx':
-      return Icons.description;
-    case 'txt':
-      return Icons.notes;
-    default:
-      return Icons.insert_drive_file;
+    );
   }
-}
-
 }

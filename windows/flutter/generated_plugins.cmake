@@ -3,7 +3,6 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-<<<<<<< HEAD
   cloud_firestore
   connectivity_plus
   file_selector_windows
@@ -16,11 +15,6 @@ list(APPEND FLUTTER_PLUGIN_LIST
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
   flutter_local_notifications_windows
-=======
-)
-
-list(APPEND FLUTTER_FFI_PLUGIN_LIST
->>>>>>> 93dd6314bedae2fd6adca1557bdc03353596613f
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)

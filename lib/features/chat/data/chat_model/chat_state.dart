@@ -10,7 +10,7 @@ class ChatState {
     this.selectedImage,
     this.selectedFilePath,
     this.selectedFileName,
-    this.selectedFileSize
+    this.selectedFileSize,
   });
   ChatState copyWith({
     List<ChatMessage>? messages,
@@ -29,8 +29,10 @@ class ChatState {
       selectedImage: removeImage ? null : (selectedImage ?? this.selectedImage),
       selectedFilePath:
           removeFile ? null : (selectedFilePath ?? this.selectedFilePath),
-          selectedFileName: removefilename ?null :(selectedFileName?? this.selectedFileName),
-          selectedFileSize: removefileZise? null :(selectedFileSize?? this.selectedFileSize)
+      selectedFileName:
+          removefilename ? null : (selectedFileName ?? this.selectedFileName),
+      selectedFileSize:
+          removefileZise ? null : (selectedFileSize ?? this.selectedFileSize),
     );
   }
 }
@@ -38,12 +40,19 @@ class ChatState {
 class ChatMessage {
   final String text;
   final String? image;
+  final String? file;
   final DateTime time;
+  final String? selectedFileName;
+  final int? selectedFileSize;
+
   final bool isMe;
 
   ChatMessage({
     required this.text,
     this.image,
+    this.file,
+    this.selectedFileName,
+    this.selectedFileSize,
     required this.time,
     required this.isMe,
   });

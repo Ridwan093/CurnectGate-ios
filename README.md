@@ -1,21 +1,10 @@
-<<<<<<< HEAD
+
 # curnectgate
 
 A new Flutter project.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-=======
 # CurnectGate+  (Andriod and IOS)
 
 ## Team Direction Guide
@@ -87,4 +76,4 @@ Clone the project to your local machine
 For help getting started with Flutter, view our online
 [documentation](https://flutter.io/).
 
->>>>>>> 93dd6314bedae2fd6adca1557bdc03353596613f
+

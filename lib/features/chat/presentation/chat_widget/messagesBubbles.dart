@@ -1,10 +1,11 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/chat/data/chat_model/chat_state.dart';
+import 'package:curnectgate/features/chat/presentation/chat_widget/showFile.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ChatBubble extends StatelessWidget {
   final ChatMessage message;
@@ -14,7 +15,8 @@ class ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMe = message.isMe;
-    final bubbleColor = isMe ? AppColors.instance.teal200 : AppColors.instance.grey200;
+    final bubbleColor =
+        isMe ? AppColors.instance.teal200 : AppColors.instance.grey200;
     final textColor = AppColors.instance.black600;
 
     return Padding(
@@ -24,9 +26,12 @@ class ChatBubble extends StatelessWidget {
         child: ConstrainedBox(
           constraints: BoxConstraints(
             // Short messages get smaller bubbles
-            maxWidth: message.text.length <= 10 && message.image == null
-                ? 100
-                : MediaQuery.of(context).size.width * 0.75,
+            maxWidth:
+                message.text.length <= 10 &&
+                        message.image == null &&
+                        message.file == null
+                    ? 100
+                    : MediaQuery.of(context).size.width * 0.75,
           ),
           child: Container(
             padding: const EdgeInsets.all(10),
@@ -43,6 +48,7 @@ class ChatBubble extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisSize: MainAxisSize.min,
               children: [
+                if (message.file != null) ShowFile(message),
                 if (message.image != null)
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
@@ -77,11 +83,11 @@ class ChatBubble extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 5),
-                    Icon(
+                  isMe?  Icon(
                       Icons.done_all,
                       color: AppColors.instance.teal400,
                       size: 16,
-                    ),
+                    ):SizedBox.shrink()
                   ],
                 ),
               ],
