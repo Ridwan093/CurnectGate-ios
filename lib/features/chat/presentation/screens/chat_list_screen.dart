@@ -31,15 +31,18 @@ class ChatListScreen extends ConsumerWidget {
     final searchState = ref.watch(searchProvider);
     final chatState = ref.watch(chatProvider);
     final conversations = ref.watch(chatListProvider);
-    final filteredConversations =
-        searchState.query.isEmpty
-            ? conversations
-            : ref.read(chatListProvider.notifier).search(searchState.query);
+    // final filteredConversations =
+    //     searchState.query.isEmpty
+    //         ? conversations
+    //         : ref.read(chatListProvider.notifier).search(searchState.query);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      floatingActionButton: _buildAction(ref, context),
-      appBar: _buildAppBar(),
+      floatingActionButton:
+          searchState.isSearching
+              ? const SizedBox.shrink()
+              : _buildAction(ref, context),
+      appBar: searchState.isSearching ? null : _buildAppBar(),
 
       // appBar: AppBar(
 
@@ -52,6 +55,7 @@ class ChatListScreen extends ConsumerWidget {
       //     ),
       //   ],
       body:
+          // ignore: unnecessary_null_comparison
           conversations.length != null
               ? Stack(
                 children: [
@@ -101,14 +105,14 @@ class ChatListScreen extends ConsumerWidget {
         child: Align(
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding: const EdgeInsets.only(left: 16, bottom: 12,top: 20),
+            padding: const EdgeInsets.only(left: 16, bottom: 12, top: 20),
             child: Text(
               "All messages",
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
                 fontFamily: FontFamilies.interDisplay,
-                color: Colors.black,
+                color: AppColors.instance.blue500,
               ),
             ),
           ),
@@ -116,90 +120,113 @@ class ChatListScreen extends ConsumerWidget {
       ),
     );
   }
-Widget _buildSearchOverlay(BuildContext context, WidgetRef ref) {
-  final searchState = ref.watch(searchProvider);
-  final filteredConversations = ref
-      .read(chatListProvider.notifier)
-      .search(searchState.query);
 
-  return Positioned.fill(
-    child: Container(
-      color: Colors.black.withOpacity(0.9),
-      child: Column(
-        children: [
-          AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => ref.read(searchProvider.notifier).clearSearch(),
-            ),
-            title: TextField(
-              autofocus: true,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: 'Search messages...',
-                hintStyle: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
-                  fontFamily: FontFamilies.interDisplay,
+  Widget _buildSearchOverlay(BuildContext context, WidgetRef ref) {
+    final searchState = ref.watch(searchProvider);
+    final filteredConversations = ref
+        .read(chatListProvider.notifier)
+        .search(searchState.query);
+
+    return Positioned.fill(
+      child: Container(
+        color: AppColors.instance.black600.withOpacity(1),
+        child: Column(
+          children: [
+            AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  color: AppColors.instance.black300,
                 ),
-                border: InputBorder.none,
+                onPressed:
+                    () => ref.read(searchProvider.notifier).clearSearch(),
               ),
-              onChanged: (value) => ref.read(searchProvider.notifier).setQuery(value),
-            ),
-          ),
-          Expanded(
-            child: filteredConversations.isEmpty
-                ? Center(
-                    child: Text(
-                      'No messages found',
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
-                        fontFamily: FontFamilies.interDisplay,
-                        fontSize: 16,
-                      ),
-                    ),
-                  )
-                : ListView.builder(
-                    itemCount: filteredConversations.length,
-                    itemBuilder: (context, index) {
-                      final conversation = filteredConversations[index];
-                      return Container(
-                        color: Colors.transparent,
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundImage: NetworkImage(
-                              conversation.user.avatarUrl,
-                            ),
-                          ),
-                          title: Text(
-                            conversation.user.name,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          subtitle: conversation.lastMessage != null
-                              ? Text(
-                                  conversation.lastMessage!.text,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color: Colors.white.withOpacity(0.7),
-                                  ),
-                                )
-                              : null,
-                          onTap: () {
-                            ref.read(searchProvider.notifier).clearSearch();
-                            _navigateToChat(conversation, ref.read(chatProvider));
-                          },
-                        ),
-                      );
-                    },
+              title: TextField(
+                autofocus: true,
+
+                style: TextStyle(color: AppColors.instance.grey200),
+                decoration: InputDecoration(
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: AppColors.instance.black300,
+                    ), // Default border color
                   ),
-          ),
-        ],
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: AppColors.instance.black300,
+                    ), // Default border color
+                  ),
+                  hintText: 'Search messages...',
+                  hintStyle: TextStyle(
+                    color: Colors.white.withOpacity(.5),
+                    fontFamily: FontFamilies.interDisplay,
+                  ),
+                ),
+                onChanged:
+                    (value) =>
+                        ref.read(searchProvider.notifier).setQuery(value),
+              ),
+            ),
+            Expanded(
+              child:
+                  filteredConversations.isEmpty
+                      ? Center(
+                        child: Text(
+                          'No messages found',
+                          style: TextStyle(
+                            color: AppColors.instance.black300,
+                            fontFamily: FontFamilies.interDisplay,
+                            fontSize: 18,
+                            fontWeight: FontFamilies.bold,
+                          ),
+                        ),
+                      )
+                      : ListView.builder(
+                        itemCount: filteredConversations.length,
+                        itemBuilder: (context, index) {
+                          final conversation = filteredConversations[index];
+                          return Container(
+                            color: Colors.transparent,
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                  conversation.user.avatarUrl,
+                                ),
+                              ),
+                              title: Text(
+                                conversation.user.name,
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                              subtitle:
+                                  conversation.lastMessage != null
+                                      ? Text(
+                                        conversation.lastMessage!.text,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: Colors.white.withOpacity(0.7),
+                                        ),
+                                      )
+                                      : null,
+                              onTap: () {
+                                ref.read(searchProvider.notifier).clearSearch();
+                                _navigateToChat(
+                                  conversation,
+                                  ref.read(chatProvider),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   void _navigateToChat(Conversation conversation, ChatState chatState) {
     // Navigator.push(

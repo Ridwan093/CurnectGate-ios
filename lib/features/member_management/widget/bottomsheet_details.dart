@@ -137,6 +137,7 @@ class BottomsheetDetails extends ConsumerWidget {
         break;
       case BottomSheetView.startConversation:
         onTap = () {
+          Navigator.of(context).pop();
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => MessageScreens()),
@@ -233,8 +234,11 @@ class BottomsheetDetails extends ConsumerWidget {
         break;
       case BottomSheetView.startConversation:
         onTap = () {
-          ref.read(bottomSheetStateProvider.notifier).state =
-              BottomSheetView.deleteConfirmation;
+          Navigator.of(context).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MessageScreens()),
+          );
         };
         leading = CircleAvatar(
           backgroundColor: AppColors.instance.error300,
