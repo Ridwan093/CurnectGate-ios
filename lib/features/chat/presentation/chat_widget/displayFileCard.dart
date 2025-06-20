@@ -1,4 +1,4 @@
-import 'package:curnectgate/features/chat/data/chat_model/chat_state.dart';
+import 'package:curnectgate/features/chat/data/chat_model/message_state.dart';
 import 'package:flutter/material.dart';
 
 class DisplayFilecard extends StatelessWidget {

@@ -1,7 +1,8 @@
 // Riverpod provider for chat state
 import 'dart:developer';
 
-import 'package:curnectgate/features/chat/data/chat_model/chat_state.dart';
+import 'package:curnectgate/features/chat/data/provider/%20chat_list_provider.dart';
+import 'package:curnectgate/features/chat/data/chat_model/message_state.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,7 +14,7 @@ final chatProvider = StateNotifierProvider<ChatNotifier, ChatState>((ref) {
 class ChatNotifier extends StateNotifier<ChatState> {
   ChatNotifier() : super(ChatState(messages: [], selectedImage: null));
 
-  void sendMessage(String text) {
+  void sendMessage(String text, WidgetRef ref ) {
     if (text.isEmpty &&
         state.selectedImage == null &&
         state.selectedFilePath == null) {
@@ -37,7 +38,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
       selectedImage: null,
       selectedFilePath: null,
     );
+     ref.read(chatListProvider.notifier).updateFromChatState(state);
   }
+  
 
   Future<void> pickImage() async {
     final picker = ImagePicker();

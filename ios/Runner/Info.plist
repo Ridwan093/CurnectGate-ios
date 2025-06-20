@@ -2,7 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-<<<<<<< HEAD
+
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
@@ -37,7 +37,11 @@
         <string>remote-notification</string>
         
     </array>
-    
+    <key>LSApplicationQueriesSchemes</key>
+<array>
+  <string>sms</string>
+  <string>tel</string>
+</array>
     <!-- Added: Modern iOS notification permissions (iOS 10+) -->
     <key>UNUserNotificationCenter</key>
     <dict>
@@ -49,11 +53,7 @@
         </array>
     </dict>
     
-    <!-- Removed: Deprecated (macOS-only key) -->
-    <!-- <key>NSUserNotificationAlertStyle</key> -->
-    <!-- <string>alert</string> -->
-    
-    <!-- Orientation settings (unchanged) -->
+  
     <key>UISupportedInterfaceOrientations</key>
     <array>
         <string>UIInterfaceOrientationPortrait</string>
@@ -74,7 +74,6 @@
     <true/>
 </dict>
 </plist>
-=======
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -120,4 +119,4 @@
 	<true/>
 </dict>
 </plist>
->>>>>>> 93dd6314bedae2fd6adca1557bdc03353596613f
+

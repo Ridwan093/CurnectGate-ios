@@ -80,6 +80,7 @@ class AssetPaths {
 
   // Emergency Icons
   static const String emergency = '${_emergency}emergency.png';
+    static const String chatemergency = '${_emergency}chatEmergency.png';
   static const String dashboardemergency =
       '${_emergency}dashborad-emergency.png';
 

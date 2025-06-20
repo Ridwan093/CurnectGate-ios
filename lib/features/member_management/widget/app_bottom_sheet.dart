@@ -1,8 +1,6 @@
-
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/venodrLod_model.dart';
-
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/member_management/widget/bottomsheet_details.dart';
 import 'package:flutter/material.dart';
@@ -64,8 +62,7 @@ Widget _buildCurrentView(
   switch (view) {
     case BottomSheetView.userDetails:
       return BottomsheetDetails(
-      
-      vendor: vendor,
+        vendor: vendor,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
@@ -75,48 +72,38 @@ Widget _buildCurrentView(
     case BottomSheetView.deleteConfirmation:
       return _buildDeleteConfirmationView(context, ref, userName);
     case BottomSheetView.vendorLog:
-      return _buildDeleteConfirmationView(context, ref, userName,);
+      return _buildDeleteConfirmationView(context, ref, userName);
     case BottomSheetView.revokevendorconfirm:
       return _buildVendorDeleteConfirmationView(context, ref);
-      // start conversation buttom sheet
-      case BottomSheetView.startConversation:
-      return  BottomsheetDetails(
-   
-   
+    // start conversation buttom sheet
+    case BottomSheetView.startConversation:
+      return BottomsheetDetails(
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
-      // message file uploded bottom sheet
-      case BottomSheetView.messageuplodefile:
-      return  BottomsheetDetails(
-      
-   
+    // message file uploded bottom sheet
+    case BottomSheetView.messageuplodefile:
+      return BottomsheetDetails(
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
-      //messageEmagency bottom sheet
-       case BottomSheetView.messageEmergency:
-      return  BottomsheetDetails(
-      
-   
+    //messageEmagency bottom sheet
+    case BottomSheetView.messageEmergency:
+      return BottomsheetDetails(
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
-      ///chatsettin buttomshett
-         case BottomSheetView.chatSettings:
-      return  BottomsheetDetails(
-      
-   
-        headertitle: userName,
-        headersubtitle: userRole,
-        bottom: bottom,
-      );
+
+    ///chatsettin buttomshett
+   case  BottomSheetView.chatSettings:
+  return bottom == BottomSheetView.chatSettings
+      ? Text("")
+      : SizedBox.shrink();
   }
 }
-
 
 Widget _buildPermissionsView(BuildContext context, WidgetRef ref) {
   final permissionData = [

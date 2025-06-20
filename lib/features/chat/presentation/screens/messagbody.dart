@@ -1,7 +1,7 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/chat/data/chat_model/chat_state.dart';
+import 'package:curnectgate/features/chat/data/chat_model/message_state.dart';
 import 'package:curnectgate/features/chat/data/provider/chat_provier.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/displayFileCard.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/displayimage.dart';
@@ -30,8 +30,8 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
     super.initState();
     // Add initial messages for testing
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(chatProvider.notifier).sendMessage("Hello!");
-      ref.read(chatProvider.notifier).sendMessage("How are you?");
+      ref.read(chatProvider.notifier).sendMessage("Hello!",ref);
+      ref.read(chatProvider.notifier).sendMessage("How are you?",ref);
     });
   }
 
@@ -98,11 +98,27 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
           const Spacer(),
           IconButton(
             icon: Icon(Icons.call, color: AppColors.instance.black600),
-            onPressed: () {},
+            onPressed: () {
+              showUserBottomSheet(
+                context: context,
+                headertitle: "Have an emergency?",
+                headersubtitle: "Call this emergency contact",
+                ref: ref,
+                bottom: BottomSheetView.messageEmergency,
+              );
+            },
           ),
           IconButton(
             icon: Icon(Icons.settings, color: AppColors.instance.black600),
-            onPressed: () {},
+            onPressed: () {
+              showUserBottomSheet(
+                context: context,
+                headertitle: "",
+                headersubtitle: "",
+                ref: ref,
+                bottom: BottomSheetView.chatSettings,
+              );
+            },
           ),
         ],
       ),
@@ -334,8 +350,9 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
               icon: Icon(Icons.send, color: AppColors.instance.black600),
               onPressed: () {
                 if (_textController.text.trim().isNotEmpty ||
-                    ref.read(chatProvider).selectedImage != null||  ref.read(chatProvider).selectedFilePath != null) {
-                  chatNotifier.sendMessage(_textController.text);
+                    ref.read(chatProvider).selectedImage != null ||
+                    ref.read(chatProvider).selectedFilePath != null) {
+                  chatNotifier.sendMessage(_textController.text,ref);
                   _textController.clear();
                   chatNotifier.clearImage();
                 }
