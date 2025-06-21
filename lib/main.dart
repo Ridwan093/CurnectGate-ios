@@ -2,11 +2,13 @@
 import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:curnectgate/features/%20operations/violation/screens/reportViolation.dart';
 import 'package:curnectgate/features/chat/data/chat_model/message_model.dart';
 import 'package:curnectgate/features/chat/data/chat_model/messages_Enum/M_enum.dart';
 import 'package:curnectgate/features/chat/data/hive_migration.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/screen/estateOnbarding.dart';
-import 'package:curnectgate/features/member_management/screen/tab_screen/CommunityScreen.dart';
+import 'package:curnectgate/features/member_management/screen/main_navigation_screen.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,7 +43,7 @@ void main() async {
       // Wrap your app with ProviderScope
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: id != null ? EstateOnboardingScreen() : CommunityScreen(),
+        home: id != null ? EstateOnboardingScreen() : MainNavigationScreen(mainPage: ReportViolation(),),
       ),
     ),
   );}

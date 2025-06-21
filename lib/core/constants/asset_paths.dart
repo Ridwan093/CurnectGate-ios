@@ -37,6 +37,7 @@ class AssetPaths {
   static const String chooseFile = '${_actions}choosfile.png';
   static const String choosfromgallery = '${_actions}fromGallery.png';
   static const String takephoto = '${_actions}take_photo.png';
+    static const String anonymous = '${_actions}anonymous.png';
 
   // Auth Icons
   static const String checkId = '${_auth}check_id.png';

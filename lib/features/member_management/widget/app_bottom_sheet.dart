@@ -1,5 +1,6 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/%20operations/violation/widget/report_file_uplode.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/venodrLod_model.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/member_management/widget/bottomsheet_details.dart';
@@ -19,32 +20,34 @@ void showUserBottomSheet({
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
+    enableDrag: true,
+    isDismissible: true,
+    useRootNavigator: true,
     backgroundColor: Colors.transparent,
-    builder: (context) {
-      return Consumer(
-        builder: (context, ref, _) {
-          final currentView = ref.watch(bottomSheetStateProvider);
+    builder: (BuildContext context) {
+      final currentView = ref.watch(bottomSheetStateProvider);
 
-          return Container(
-            padding: EdgeInsets.all(20),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: _buildCurrentView(
-                currentView,
-                context,
-                ref,
-                headertitle,
-                headersubtitle,
-                bottom,
-                vendor,
-              ),
-            ),
-          );
-        },
+      return Container(
+        padding: EdgeInsets.all(20),
+        margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: _buildCurrentView(
+            currentView,
+            context,
+            ref,
+            headertitle,
+            headersubtitle,
+            bottom,
+            vendor,
+          ),
+        ),
       );
     },
   );
@@ -98,10 +101,25 @@ Widget _buildCurrentView(
       );
 
     ///chatsettin buttomshett
-   case  BottomSheetView.chatSettings:
-  return bottom == BottomSheetView.chatSettings
-      ? Text("")
-      : SizedBox.shrink();
+    case BottomSheetView.chatSettings:
+      return bottom == BottomSheetView.chatSettings
+          ? Text("")
+          : SizedBox.shrink();
+    case BottomSheetView.reportviolation:
+      return BottomsheetDetails(
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.reportfileuplode:
+      return ReportFileUplode(
+        title: "Upload file",
+        subtitle: "Attache image from your gallery",
+      );
+    case BottomSheetView.resolutionTime:
+      return bottom == BottomSheetView.resolutionTime
+          ? Text("")
+          : SizedBox.shrink();
   }
 }
 

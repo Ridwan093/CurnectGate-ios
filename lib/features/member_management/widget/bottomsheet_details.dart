@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/%20operations/violation/widget/violation_form_bottom_sheet.dart';
 import 'package:curnectgate/features/chat/data/provider/chat_provier.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/chat_setting_widget.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/emergency_widget.dart';
@@ -34,6 +35,12 @@ class BottomsheetDetails extends ConsumerWidget {
         return ChatSettingsBottomSheet();
       case BottomSheetView.messageEmergency:
         return EmergencyWidget();
+
+      case BottomSheetView.reportviolation:
+        return ViolationFormBottomSheet(
+          title: headertitle,
+          subtitle: headersubtitle,
+        );
       default:
         return Column(
           key: const ValueKey('userDetails'),

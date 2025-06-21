@@ -6,10 +6,15 @@ class CustomStatusDropdown extends StatefulWidget {
   final Function(String) onStatusChanged;
   final String initialStatus;
 
+  final List<String> statusOptions;
+
+
+
   const CustomStatusDropdown({
     super.key,
     required this.onStatusChanged,
-    this.initialStatus = 'All',
+    required this.statusOptions,
+   required  this.initialStatus,
   });
 
   @override
@@ -18,15 +23,6 @@ class CustomStatusDropdown extends StatefulWidget {
 
 class _CustomStatusDropdownState extends State<CustomStatusDropdown> {
   late String _selectedStatus;
-
-  final List<String> _statusOptions = [
-    'All',
-    'Pending',
-    'Active',
-    'In Progress',
-    'Completed',
-    'Cancelled',
-  ];
 
   final GlobalKey _buttonKey = GlobalKey();
 
@@ -54,7 +50,7 @@ class _CustomStatusDropdownState extends State<CustomStatusDropdown> {
       color:
           Colors.white, // <-- Set background color of the whole menu to white
       items:
-          _statusOptions.map((status) {
+          widget.statusOptions.map((status) {
             return PopupMenuItem<String>(
               value: status,
               height: 32, // compact height

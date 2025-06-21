@@ -26,6 +26,7 @@ class MainNavigationScreen extends ConsumerWidget {
     ];
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: screens[currentIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(

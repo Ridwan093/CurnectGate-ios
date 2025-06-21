@@ -16,7 +16,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 class VendorLog extends ConsumerWidget {
-  const VendorLog({super.key});
+   VendorLog({super.key});
+
+
+
+  final List<String> _statusOptions = [
+    'All',
+    'Pending',
+    'Active',
+    'In Progress',
+    'Completed',
+    'Cancelled',
+  ];
+
   String _formatDate(DateTime date) {
     return DateFormat('M/d').format(date);
   }
@@ -99,6 +111,8 @@ class VendorLog extends ConsumerWidget {
                 ),
               ),
               CustomStatusDropdown(
+
+                statusOptions: _statusOptions,
                 initialStatus: 'Pending',
                 onStatusChanged: (newStatus) {
                   log('Selected status: $newStatus');

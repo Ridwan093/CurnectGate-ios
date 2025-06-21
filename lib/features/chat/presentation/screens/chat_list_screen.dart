@@ -112,7 +112,7 @@ class ChatListScreen extends ConsumerWidget {
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 fontFamily: FontFamilies.interDisplay,
-                color: AppColors.instance.blue500,
+                color: AppColors.instance.black500,
               ),
             ),
           ),

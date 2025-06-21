@@ -9,7 +9,7 @@ enum PermissionType {
 
 }
 
-enum BottomSheetView { userDetails, permissions, deleteConfirmation, vendorLog ,revokevendorconfirm, startConversation,messageuplodefile,chatSettings,messageEmergency}
+enum BottomSheetView { userDetails, permissions, deleteConfirmation, vendorLog ,revokevendorconfirm, startConversation,messageuplodefile,chatSettings,messageEmergency, reportviolation,reportfileuplode, resolutionTime}
 
 // State notifier for permissions
 class PermissionsNotifier extends StateNotifier<Set<PermissionType>> {
