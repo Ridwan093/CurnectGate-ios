@@ -84,12 +84,14 @@ class ReportForm extends ConsumerWidget {
                     ref,
                     index: 0,
                     imagePaths: report.imagePaths,
+                    files: report.files,
                   ),
                   const SizedBox(width: 20),
                   _buildImagePicker(
                     ref,
                     index: 1,
                     imagePaths: report.imagePaths,
+                    files: report.files,
                   ),
                 ],
               ),
@@ -211,6 +213,9 @@ Widget _buildCategoryDropdown(WidgetRef ref, String currentValue) {
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: AppColors.instance.black500),
         ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.instance.black500),
+        ),
         labelStyle: TextStyle(
           fontFamily: FontFamilies.interDisplay,
           color: AppColors.instance.black500,
@@ -238,16 +243,15 @@ Widget _buildCategoryDropdown(WidgetRef ref, String currentValue) {
 Widget _buildImagePicker(
   WidgetRef ref, {
   required int index,
-  required List<String> imagePaths,
+  required Map<int, String> imagePaths,
+  required Map<int, ReportFile> files,
 }) {
-  final hasImage = imagePaths.length > index;
+  final hasImage = imagePaths.containsKey(index);
+  final hasFile = files.containsKey(index);
 
   return GestureDetector(
-    onTap: () async {
-      // final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      // if (image != null) {
-      //   ref.read(reportProvider.notifier).addImage(image.path);
-      // }
+    onTap: () {
+      ref.read(currentEditingIndexProvider.notifier).state = index;
       ref.read(bottomSheetStateProvider.notifier).state =
           BottomSheetView.reportfileuplode;
     },
@@ -260,7 +264,7 @@ Widget _buildImagePicker(
         image:
             hasImage
                 ? DecorationImage(
-                  image: FileImage(File(imagePaths[index])),
+                  image: FileImage(File(imagePaths[index]!)),
                   fit: BoxFit.cover,
                 )
                 : null,
@@ -268,6 +272,8 @@ Widget _buildImagePicker(
       child:
           hasImage
               ? null
+              : hasFile
+              ? _buildFilePreview(files[index]!)
               : Icon(
                 Icons.add_circle,
                 size: 30,
@@ -275,6 +281,48 @@ Widget _buildImagePicker(
               ),
     ),
   );
+}
+
+Widget _buildFilePreview(ReportFile file) {
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          _getFileIcon(file.type),
+          size: 40,
+          color: AppColors.instance.black500,
+        ),
+        const SizedBox(height: 5),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Text(
+            file.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              fontSize: 12,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+IconData _getFileIcon(String type) {
+  switch (type) {
+    case 'pdf':
+      return Icons.picture_as_pdf;
+    case 'doc':
+    case 'docx':
+      return Icons.description;
+    case 'txt':
+      return Icons.text_snippet;
+    default:
+      return Icons.insert_drive_file;
+  }
 }
 
 Future<void> _submitReport(WidgetRef ref, BuildContext context) async {

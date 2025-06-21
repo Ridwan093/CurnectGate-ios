@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/%20operations/violation/model/report_model.dart';
 import 'package:curnectgate/features/%20operations/violation/widget/report_card.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/venodrLod_model.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/vendor_fileter.dart';
@@ -88,8 +87,8 @@ class ReportViolation extends ConsumerWidget {
   Widget _buildContent(Size size, BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.start,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,7 +113,7 @@ class ReportViolation extends ConsumerWidget {
             ],
           ),
 
-          const SizedBox(height: 23),
+          const SizedBox(height: 25),
 
           ReportCard(),
           // Expanded(
@@ -131,7 +130,7 @@ class ReportViolation extends ConsumerWidget {
   Widget _buildMemberList(WidgetRef ref, Size size) {
     return ListView.builder(
       physics: const BouncingScrollPhysics(),
-      itemCount: report.length,
+      itemCount: 3,
       itemBuilder: (BuildContext context, int index) {
         final report = vendorList[index];
         return _buildListContent(report, context, ref, size);

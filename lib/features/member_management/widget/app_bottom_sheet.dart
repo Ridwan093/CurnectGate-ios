@@ -25,29 +25,32 @@ void showUserBottomSheet({
     useRootNavigator: true,
     backgroundColor: Colors.transparent,
     builder: (BuildContext context) {
-      final currentView = ref.watch(bottomSheetStateProvider);
-
-      return Container(
-        padding: EdgeInsets.all(20),
-        margin: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          child: _buildCurrentView(
-            currentView,
-            context,
-            ref,
-            headertitle,
-            headersubtitle,
-            bottom,
-            vendor,
-          ),
-        ),
+      return Consumer(
+        builder: (context, ref, wid) {
+          final currentView = ref.watch(bottomSheetStateProvider);
+          return Container(
+            padding: EdgeInsets.all(20),
+            margin: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: _buildCurrentView(
+                currentView,
+                context,
+                ref,
+                headertitle,
+                headersubtitle,
+                bottom,
+                vendor,
+              ),
+            ),
+          );
+        },
       );
     },
   );
@@ -113,13 +116,15 @@ Widget _buildCurrentView(
       );
     case BottomSheetView.reportfileuplode:
       return ReportFileUplode(
-        title: "Upload file",
+        title: "Uplode file",
         subtitle: "Attache image from your gallery",
       );
     case BottomSheetView.resolutionTime:
-      return bottom == BottomSheetView.resolutionTime
-          ? Text("")
-          : SizedBox.shrink();
+      return BottomsheetDetails(
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
   }
 }
 

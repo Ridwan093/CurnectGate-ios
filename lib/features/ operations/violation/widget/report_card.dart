@@ -1,55 +1,69 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/member_management/widget/app_bottom_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ReportCard extends StatelessWidget {
+class ReportCard extends ConsumerWidget {
   const ReportCard({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
-    return Container(
-      width: size.width,
-      decoration: BoxDecoration(
-        color: AppColors.instance.grey300,
+    return InkWell(
+      onTap: (){
+         showUserBottomSheet(
+          context: context,
+          headertitle: "Report violation",
+          headersubtitle: "Report issues like noise, parking, or misconduct",
+          ref: ref,
+          bottom: BottomSheetView.resolutionTime,
+        );
+      },
+      child: Material(
         borderRadius: BorderRadius.circular(5),
-      ),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeaderRow(),
-            _buildReportdiscription("Car parked across my..."),
-            _buildAnonymouswidget(),
-            SizedBox(height: 15),
-            _buildCarReportImage(size),
-            SizedBox(height: 10),
-            _resolvedMark(size),
-          ],
+        elevation: 1,
+        child: Container(
+          width: size.width,
+          decoration: BoxDecoration(
+            color: AppColors.instance.grey300,
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeaderRow(),
+                _buildReportdiscription("Car parked across my..."),
+                _buildAnonymouswidget(),
+                SizedBox(height: 15),
+                _buildCarReportImage(size),
+                SizedBox(height: 10),
+                _resolvedMark(size),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 
   Widget _buildCarReportImage(Size size) {
-    return Material(
-      borderRadius: BorderRadius.circular(12),
-      elevation: 5,
-      child: Container(
-        height: 100,
-        width: size.width,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage(
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd9_hrYPsmUzcN3xn7jFzU-MQJX_5k5Uqj-JmmEcnQXYcZHx6umVCyAf68yIfQ_2fF2Xs&usqp=CAU",
-            ),
-            fit: BoxFit.cover,
+    return Container(
+      height: 100,
+      width: size.width,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: NetworkImage(
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd9_hrYPsmUzcN3xn7jFzU-MQJX_5k5Uqj-JmmEcnQXYcZHx6umVCyAf68yIfQ_2fF2Xs&usqp=CAU",
           ),
-          borderRadius: BorderRadius.circular(12),
+          fit: BoxFit.cover,
         ),
+        borderRadius: BorderRadius.circular(12),
       ),
     );
   }

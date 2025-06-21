@@ -1,8 +1,11 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/%20operations/violation/report_provider/report_provider.dart';
+import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ReportFileUplode extends ConsumerWidget {
   final String title;
@@ -53,7 +56,19 @@ class ReportFileUplode extends ConsumerWidget {
         const SizedBox(height: 50),
         _buildthirdaryOptionTile(
           context: context,
-          onTap: () {},
+          onTap: () async {
+            final index = ref.read(currentEditingIndexProvider);
+            if (index != null) {
+              final image = await ImagePicker().pickImage(
+                source: ImageSource.camera,
+              );
+              if (image != null) {
+                ref.read(reportProvider.notifier).addImage(image.path, index);
+                ref.read(bottomSheetStateProvider.notifier).state =
+                    BottomSheetView.userDetails;
+              }
+            }
+          },
           title: "Take Photo",
           leadingicon: AssetPaths.takephoto,
         ),
@@ -61,7 +76,19 @@ class ReportFileUplode extends ConsumerWidget {
         const SizedBox(height: 5),
         _buildthirdaryOptionTile(
           context: context,
-          onTap: () {},
+          onTap: () async {
+            final index = ref.read(currentEditingIndexProvider);
+            if (index != null) {
+              final image = await ImagePicker().pickImage(
+                source: ImageSource.gallery,
+              );
+              if (image != null) {
+                ref.read(reportProvider.notifier).addImage(image.path, index);
+                ref.read(bottomSheetStateProvider.notifier).state =
+                    BottomSheetView.userDetails;
+              }
+            }
+          },
           title: "Choose from Gallery",
           leadingicon: AssetPaths.choosfromgallery,
         ),
@@ -69,7 +96,14 @@ class ReportFileUplode extends ConsumerWidget {
         const SizedBox(height: 5),
         _buildthirdaryOptionTile(
           context: context,
-          onTap: () {},
+          onTap: () async {
+            final index = ref.read(currentEditingIndexProvider);
+            if (index != null) {
+              await ref.read(reportProvider.notifier).addFile(index);
+              ref.read(bottomSheetStateProvider.notifier).state =
+                  BottomSheetView.userDetails;
+            }
+          },
           title: "Choose file",
           leadingicon: AssetPaths.chooseFile,
         ),
@@ -83,27 +117,7 @@ class ReportFileUplode extends ConsumerWidget {
     required String title,
     required String leadingicon,
   }) {
-    // switch (bottom) {
-    //   case BottomSheetView.messageuplodefile:
-    //   default:
-    //     onTap = () async {
-    //       Navigator.of(context).pop();
-    //       await chatNotifier.pickFile();
-    //     };
-    //     leading = Container(
-    //       height: 50,
-    //       width: 50,
-    //       decoration: BoxDecoration(
-    //         shape: BoxShape.circle,
-    //         color: AppColors.instance.grey400,
-    //       ),
-    //       child: Center(
-    //         child: Image.asset(AssetPaths.chooseFile, width: 25, height: 25),
-    //       ),
-    //     );
-    //     title = "Choose file";
-    //     break;
-    // }
+  
 
     return Container(
       height: 100,
