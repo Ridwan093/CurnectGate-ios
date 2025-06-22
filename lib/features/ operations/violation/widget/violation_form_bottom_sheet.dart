@@ -1,16 +1,18 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/%20operations/violation/widget/report_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ViolationFormBottomSheet extends ConsumerWidget {
   final String title;
   final String subtitle;
+
+  final Widget widget;
   const ViolationFormBottomSheet({
     super.key,
     required this.title,
     required this.subtitle,
+    required this.widget,
   });
 
   @override
@@ -20,7 +22,6 @@ class ViolationFormBottomSheet extends ConsumerWidget {
       height: size.height,
       width: size.width,
       child: SingleChildScrollView(
-        
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -63,7 +64,7 @@ class ViolationFormBottomSheet extends ConsumerWidget {
               ],
             ),
 
-            ReportForm(),
+            widget,
           ],
         ),
       ),

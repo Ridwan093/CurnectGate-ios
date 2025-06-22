@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/%20operations/violation/widget/report_form.dart';
 import 'package:curnectgate/features/%20operations/violation/widget/resulationTime.dart';
 import 'package:curnectgate/features/%20operations/violation/widget/violation_form_bottom_sheet.dart';
 import 'package:curnectgate/features/chat/data/provider/chat_provier.dart';
@@ -39,6 +40,7 @@ class BottomsheetDetails extends ConsumerWidget {
 
       case BottomSheetView.reportviolation:
         return ViolationFormBottomSheet(
+          widget: ReportForm(),
           title: headertitle,
           subtitle: headersubtitle,
         );
@@ -82,19 +84,19 @@ class BottomsheetDetails extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 50),
-          
+
               // Primary option tile
               _buildPrimaryOptionTile(bottom, ref, context),
               const SizedBox(height: 5),
-          
+
               // Secondary option tile
               _buildSecondaryOptionTile(bottom, ref, context),
-          
+
               if (bottom == BottomSheetView.messageuplodefile) ...[
                 const SizedBox(height: 5),
                 _buildthirdaryOptionTile(bottom, ref, context),
               ],
-          
+
               const SizedBox(height: 5),
             ],
           ),
@@ -162,7 +164,28 @@ class BottomsheetDetails extends ConsumerWidget {
         );
         title = "Reach out to an estate Comittee";
         break;
-
+      case BottomSheetView.manageOTPforvisitor:
+        onTap = () async {
+          ref.read(bottomSheetStateProvider.notifier).state =
+              BottomSheetView.generateOtpwithperiod;
+        };
+        leading = Container(
+          height: 50,
+          width: 50,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.instance.grey400,
+          ),
+          child: Center(
+            child: Image.asset(
+              AssetPaths.generateOtpwithperiod,
+              width: 25,
+              height: 25,
+            ),
+          ),
+        );
+        title = "Generate OTP with Validity";
+        break;
       case BottomSheetView.messageuplodefile:
       default:
         onTap = () async {
@@ -280,6 +303,24 @@ class BottomsheetDetails extends ConsumerWidget {
           ),
         );
         title = "Choose from Gallery";
+        break;
+      case BottomSheetView.manageOTPforvisitor:
+        onTap = () async {
+          Navigator.of(context).pop();
+          await chatNotifier.pickImage();
+        };
+        leading = Container(
+          height: 50,
+          width: 50,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.instance.grey400,
+          ),
+          child: Center(
+            child: Image.asset(AssetPaths.scheduleOtp, width: 25, height: 25),
+          ),
+        );
+        title = "Schedule OTPs in Advance";
         break;
       case BottomSheetView.messageEmergency:
       default:

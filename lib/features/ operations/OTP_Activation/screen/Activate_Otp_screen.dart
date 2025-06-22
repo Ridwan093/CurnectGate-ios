@@ -5,7 +5,6 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/enum/status_num.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/venodrLod_model.dart';
-import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_screen/work_requst_screen.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/status_progress_widget.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/vendor_fileter.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
@@ -46,19 +45,22 @@ class Otpactivation extends ConsumerWidget {
   Widget _buildBody(Size size, WidgetRef ref, BuildContext context) {
     return Column(
       children: [
-        _buildAddMemberButton(size, context),
+        _buildAddMemberButton(size, context, ref),
         const SizedBox(height: 30),
         Expanded(child: _buildContent(size, context, ref)),
       ],
     );
   }
 
-  Widget _buildAddMemberButton(Size size, BuildContext context) {
+  Widget _buildAddMemberButton(Size size, BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => SubmitWorkOrderPage()),
+        showUserBottomSheet(
+          context: context,
+          headertitle: "Select option",
+          headersubtitle: "Manage OTPs for Visitor Access",
+          ref: ref,
+          bottom: BottomSheetView.manageOTPforvisitor,
         );
       },
       child: Container(
@@ -96,7 +98,7 @@ class Otpactivation extends ConsumerWidget {
                 "Active OTPs",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
-                  fontSize: 20,
+                  fontSize: 25,
                   fontWeight: FontFamilies.bold,
                   color: AppColors.instance.black600,
                 ),
@@ -353,21 +355,23 @@ class Otpactivation extends ConsumerWidget {
 
   Widget _buildEmtyBody() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(AssetPaths.dashboardWorkOrder, height: 100, width: 100),
-          SizedBox(height: 10),
-          Text(
-            "Your work detailes appears here",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.black300,
-              fontSize: 12,
-              fontWeight: FontFamilies.medium,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(AssetPaths.dashboardWorkOrder, height: 100, width: 100),
+            SizedBox(height: 10),
+            Text(
+              "Your work detailes appears here",
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                color: AppColors.instance.black300,
+                fontSize: 12,
+                fontWeight: FontFamilies.medium,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

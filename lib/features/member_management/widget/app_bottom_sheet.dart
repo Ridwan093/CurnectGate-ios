@@ -1,6 +1,8 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/%20operations/OTP_Activation/widget/generateOTP_with_validity.dart';
 import 'package:curnectgate/features/%20operations/violation/widget/report_file_uplode.dart';
+import 'package:curnectgate/features/%20operations/violation/widget/violation_form_bottom_sheet.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/venodrLod_model.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/member_management/widget/bottomsheet_details.dart';
@@ -120,6 +122,24 @@ Widget _buildCurrentView(
         subtitle: "Attache image from your gallery",
       );
     case BottomSheetView.resolutionTime:
+      return BottomsheetDetails(
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.manageOTPforvisitor:
+      return BottomsheetDetails(
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.generateOtpwithperiod:
+      return ViolationFormBottomSheet(
+        widget: GenerateOTPWithValidity(),
+        title: "Generate OTP with validity period",
+        subtitle: "select a date and time for the OTP to be generate ",
+      );
+    case BottomSheetView.scheduleOtp:
       return BottomsheetDetails(
         headertitle: userName,
         headersubtitle: userRole,

@@ -37,7 +37,10 @@ class AssetPaths {
   static const String chooseFile = '${_actions}choosfile.png';
   static const String choosfromgallery = '${_actions}fromGallery.png';
   static const String takephoto = '${_actions}take_photo.png';
-    static const String anonymous = '${_actions}anonymous.png';
+  static const String anonymous = '${_actions}anonymous.png';
+
+  static const String generateOtpwithperiod = '${_actions}pin-code.png';
+
 
   // Auth Icons
   static const String checkId = '${_auth}check_id.png';
@@ -81,7 +84,7 @@ class AssetPaths {
 
   // Emergency Icons
   static const String emergency = '${_emergency}emergency.png';
-    static const String chatemergency = '${_emergency}chatEmergency.png';
+  static const String chatemergency = '${_emergency}chatEmergency.png';
   static const String dashboardemergency =
       '${_emergency}dashborad-emergency.png';
 

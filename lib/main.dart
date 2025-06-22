@@ -2,6 +2,7 @@
 import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:curnectgate/features/%20operations/OTP_Activation/screen/Activate_Otp_screen.dart';
 import 'package:curnectgate/features/%20operations/violation/screens/reportViolation.dart';
 import 'package:curnectgate/features/chat/data/chat_model/message_model.dart';
 import 'package:curnectgate/features/chat/data/chat_model/messages_Enum/M_enum.dart';
@@ -43,7 +44,7 @@ void main() async {
       // Wrap your app with ProviderScope
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: id != null ? EstateOnboardingScreen() : MainNavigationScreen(mainPage: ReportViolation(),),
+        home: id != null ? EstateOnboardingScreen() : MainNavigationScreen(mainPage: Otpactivation(),),
       ),
     ),
   );}
