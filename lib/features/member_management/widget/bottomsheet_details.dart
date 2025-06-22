@@ -46,56 +46,58 @@ class BottomsheetDetails extends ConsumerWidget {
       case BottomSheetView.resolutionTime:
         return ResolutionTimeline();
       default:
-        return Column(
-          key: const ValueKey('userDetails'),
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Header section
-            Column(
-              children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.close),
+        return SingleChildScrollView(
+          child: Column(
+            key: const ValueKey('userDetails'),
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header section
+              Column(
+                children: [
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: const Icon(Icons.close),
+                    ),
                   ),
-                ),
-                Text(
-                  headertitle,
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontWeight: FontFamilies.bold,
-                    fontSize: 20,
-                    color: AppColors.instance.black600,
+                  Text(
+                    headertitle,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontWeight: FontFamilies.bold,
+                      fontSize: 20,
+                      color: AppColors.instance.black600,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  headersubtitle,
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontSize: 12,
-                    color: AppColors.instance.black300,
+                  const SizedBox(height: 4),
+                  Text(
+                    headersubtitle,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontSize: 12,
+                      color: AppColors.instance.black300,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 50),
-
-            // Primary option tile
-            _buildPrimaryOptionTile(bottom, ref, context),
-            const SizedBox(height: 5),
-
-            // Secondary option tile
-            _buildSecondaryOptionTile(bottom, ref, context),
-
-            if (bottom == BottomSheetView.messageuplodefile) ...[
+                ],
+              ),
+              const SizedBox(height: 50),
+          
+              // Primary option tile
+              _buildPrimaryOptionTile(bottom, ref, context),
               const SizedBox(height: 5),
-              _buildthirdaryOptionTile(bottom, ref, context),
+          
+              // Secondary option tile
+              _buildSecondaryOptionTile(bottom, ref, context),
+          
+              if (bottom == BottomSheetView.messageuplodefile) ...[
+                const SizedBox(height: 5),
+                _buildthirdaryOptionTile(bottom, ref, context),
+              ],
+          
+              const SizedBox(height: 5),
             ],
-
-            const SizedBox(height: 5),
-          ],
+          ),
         );
     }
   }

@@ -11,9 +11,8 @@ class Report {
     Map<int, String>? imagePaths,
     Map<int, ReportFile>? files,
     this.isAnonymous = false,
-  }) : 
-    imagePaths = imagePaths ?? const {},
-    files = files ?? const {};
+  }) : imagePaths = imagePaths ?? const {},
+       files = files ?? const {};
 
   Report copyWith({
     String? category,
@@ -73,4 +72,7 @@ class ReportState {
     );
   }
 }
+
 enum FileOperationStatus { idle, loading, success, error }
+
+

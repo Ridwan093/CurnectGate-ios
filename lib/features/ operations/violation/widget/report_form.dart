@@ -21,7 +21,7 @@ class ReportForm extends ConsumerWidget {
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom ,
           left: 0,
           right: 0,
           top: 0,

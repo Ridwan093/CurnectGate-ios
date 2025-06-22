@@ -87,42 +87,44 @@ class ReportViolation extends ConsumerWidget {
   Widget _buildContent(Size size, BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Report violation",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  fontSize: 25,
-                  fontWeight: FontFamilies.bold,
-                  color: AppColors.instance.black600,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Report violation",
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontSize: 25,
+                    fontWeight: FontFamilies.bold,
+                    color: AppColors.instance.black600,
+                  ),
                 ),
-              ),
-              CustomStatusDropdown(
-                statusOptions: _statusOptions,
-                initialStatus: 'Category',
-                onStatusChanged: (newStatus) {
-                  log('Selected status: $newStatus');
-                  // Handle status change
-                },
-              ),
-            ],
-          ),
+                CustomStatusDropdown(
+                  statusOptions: _statusOptions,
+                  initialStatus: 'Category',
+                  onStatusChanged: (newStatus) {
+                    log('Selected status: $newStatus');
+                    // Handle status change
+                  },
+                ),
+              ],
+            ),
 
-          const SizedBox(height: 25),
+            const SizedBox(height: 25),
 
-          ReportCard(),
-          // Expanded(
-          //   child:
-          //       report.isNotEmpty
-          //           ? ReportCard()
-          //           : _buildEmtyBody(),
-          // ),
-        ],
+            ReportCard(),
+            // Expanded(
+            //   child:
+            //       report.isNotEmpty
+            //           ? ReportCard()
+            //           : _buildEmtyBody(),
+            // ),
+          ],
+        ),
       ),
     );
   }
