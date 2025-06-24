@@ -1,13 +1,14 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/core/widgets/GetYourCode.dart';
 import 'package:curnectgate/features/%20operations/OTP_Activation/provider/active_provider.dart';
-import 'package:curnectgate/features/%20operations/OTP_Activation/widget/validity_period_drop_down.dart';
+import 'package:curnectgate/features/%20operations/OTP_Activation/widget/ScheduleTime_widget.dart';
+import 'package:curnectgate/features/%20operations/OTP_Activation/widget/scheduleDate_widget.dart';
+import 'package:curnectgate/features/%20operations/OTP_Activation/widget/validation_message_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class GenerateOTPWithValidity extends ConsumerWidget {
-  const GenerateOTPWithValidity({super.key});
+class ScheduleOTPinAdvance extends ConsumerWidget {
+  const ScheduleOTPinAdvance({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -53,16 +54,13 @@ class GenerateOTPWithValidity extends ConsumerWidget {
           ),
           const SizedBox(height: 20),
           // 1. Category dropdown (no Expanded!)
-          _buildCategoryDropdown(ref, activation.purposeofVisit),
+          _buildpurposeDropdown(ref, activation.purposeofVisit),
           const SizedBox(height: 25),
-          ValidityPickerTile(
-            selectedValue: activation.visitperiod,
-
-            onChanged:
-                (value) => ref
-                    .read(generateNotifierProvider.notifier)
-                    .setPeriod(value),
-          ),
+          DatePickerTile(),
+          const SizedBox(height: 25),
+          TimePickerTile(),
+          const SizedBox(height: 25),
+          ValidityMessage(),
           const SizedBox(height: 25),
 
           // 4. Submit button
@@ -116,7 +114,7 @@ Widget _buildSubmitButton({
   );
 }
 
-Widget _buildCategoryDropdown(WidgetRef ref, String currentValue) {
+Widget _buildpurposeDropdown(WidgetRef ref, String currentValue) {
   final purpose = {
     'Gust Visit': 'Vehicle parked in no-parking zone',
     'work order': 'Vehicle moving against traffic',
@@ -188,17 +186,18 @@ Future<void> _submit(WidgetRef ref, BuildContext context) async {
 
   try {
     visitors.submit();
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder:
-            (context) => GetYourCodeScreen(
-              title: "Your visitor access code: ",
-              accessCode: "3456GAT",
-              share: "Here's my vistor access code:",
-            ),
-      ),
-    );
+    Navigator.pop(context);
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder:
+    //         (context) => GetYourCodeScreen(
+    //           title: "Your visitor access code: ",
+    //           accessCode: "3456GAT",
+    //           share: "Here's my vistor access code:",
+    //         ),
+    //   ),
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Report submitted successfully!')),
     );

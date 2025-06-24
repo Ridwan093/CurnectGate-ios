@@ -6,13 +6,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ViolationFormBottomSheet extends ConsumerWidget {
   final String title;
   final String subtitle;
-
+  final double? titlefontSize;
+  final double? subtitlefontSize;
   final Widget widget;
-  const ViolationFormBottomSheet({
+  const ViolationFormBottomSheet( {
     super.key,
     required this.title,
     required this.subtitle,
     required this.widget,
+    this.subtitlefontSize = 12,
+    this.titlefontSize = 20
+
   });
 
   @override
@@ -21,51 +25,53 @@ class ViolationFormBottomSheet extends ConsumerWidget {
     return SizedBox(
       height: size.height,
       width: size.width,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: InkWell(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Text(
-                      "Close",
-                      style: TextStyle(
-                        fontFamily: FontFamilies.interDisplay,
-                        fontSize: 14,
-                        color: AppColors.instance.teal400,
+      child: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: InkWell(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Text(
+                        "Close",
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          fontSize: 14,
+                          color: AppColors.instance.teal400,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(height: 40),
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontWeight: FontFamilies.bold,
-                    fontSize: 20,
-                    color: AppColors.instance.black600,
+                  SizedBox(height: 40),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontWeight: FontFamilies.bold,
+                      fontSize: titlefontSize,
+                      color: AppColors.instance.black600,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontSize: 12,
-                    color: AppColors.instance.black300,
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontSize: subtitlefontSize,
+                      color: AppColors.instance.black300,
+                    ),
                   ),
-                ),
-              ],
-            ),
-
-            widget,
-          ],
+                ],
+              ),
+        
+              widget,
+            ],
+          ),
         ),
       ),
     );

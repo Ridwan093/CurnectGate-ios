@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 class InfoMessage extends StatelessWidget {
   final String icon;
   final String message;
+  final double size;
 
-  const InfoMessage({super.key, required this.icon, required this.message});
+
+  const InfoMessage({super.key, required this.icon, required this.message, this.size = 12});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class InfoMessage extends StatelessWidget {
                 message,
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
-                  fontSize: 12,
+                  fontSize: size,
                   color: AppColors.instance.black600,
                   fontWeight: FontFamilies.bold,
                 ),

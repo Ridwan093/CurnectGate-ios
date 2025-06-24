@@ -306,8 +306,8 @@ class BottomsheetDetails extends ConsumerWidget {
         break;
       case BottomSheetView.manageOTPforvisitor:
         onTap = () async {
-          Navigator.of(context).pop();
-          await chatNotifier.pickImage();
+          ref.read(bottomSheetStateProvider.notifier).state =
+              BottomSheetView.scheduleOtp;
         };
         leading = Container(
           height: 50,

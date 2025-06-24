@@ -1,68 +1,80 @@
 import 'dart:developer';
 
-
 import 'package:curnectgate/features/%20operations/OTP_Activation/model/generate_model.dart';
-
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
-final activeOTPProvider = StateNotifierProvider<ReportNotifier, GenerateState>((
-  ref,
-) {
-  return ReportNotifier();
-});
+final generateNotifierProvider =
+    StateNotifierProvider<ReportNotifier, GenerateState>((ref) {
+      return ReportNotifier();
+    });
 
 class ReportNotifier extends StateNotifier<GenerateState> {
   ReportNotifier() : super(GenerateState(isLoading: false));
 
   void setPurpose(String purpose) {
-    state = state.copyWith(purposeofVisit:purpose);
+    state = state.copyWith(purposeofVisit: purpose);
   }
-void setPeriod(String period) {
-    state = state.copyWith(visitperiod:period);
+
+  void setSelectedDate(DateTime date) {
+    state = state.copyWith(selectedDate: date);
+    _updateValidity();
+  }
+
+  void setSelectedTime(TimeOfDay time) {
+    state = state.copyWith(selectedTime: time);
+
+    _updateValidity();
+  }
+
+  void setValidityMinute(int minutes) {
+    state = state.copyWith(validityMinutes: minutes);
+    _updateValidity();
+  }
+
+  void _updateValidity() {
+    // This forces a rebuild of any widgets watching the state
+    state = state.copyWith();
+  }
+
+  void setPeriod(String period) {
+    state = state.copyWith(visitperiod: period);
   }
 
   void setVisitorName(String visitorName) {
-    state = state.copyWith(
-      vistorName: visitorName);
-    
+    state = state.copyWith(vistorName: visitorName);
   }
-
 
   void setLoading(bool loading) {
     state = state.copyWith(isLoading: loading);
   }
 
-  Future<void> submitReport() async {
+  Future<void> submit() async {
     setLoading(true);
     try {
-   
+      var name = state.vistorName;
+      var purposeofVisit = state.purposeofVisit;
+      var validatorperiod = state.visitperiod;
+      var date = state.selectedDate;
+      var time = state.selectedTime;
+      var minut = state.validityMinutes;
 
-      // Convert Map<int, ReportFile> to list of file maps
-    
-      // Prepare the complete report data
-     
-    //   final reportlist = Reports(
-    //     type: fileList.first["type"],
-    //     name: fileList.first["name"],
-    //     size: fileList.first["size"],
-    //     path: fileList.first["path"],
-    //     files: fileList.first["file"],
-    //     category: currentReport.category,
-    //     description: currentReport.description,
-    //     isAnonymous: currentReport.isAnonymous,
-    //     imagePaths: currentReport.imagePaths.values.toString(),
-    //   );
-    //  log('Submitting222 report: $reportlist');
-    //   log('Submitting report: $reportData');
+      var generatedList = GenerateState(
+        validityMinutes: minut,
+        vistorName: name,
+        purposeofVisit: purposeofVisit,
+        visitperiod: validatorperiod,
+        selectedDate: date,
+        selectedTime: time,
+      );
+      generated.add(generatedList);
 
-      // Simulate API call
+      log("Name: $name, Purpose:$purposeofVisit, Time: $validatorperiod");
       await Future.delayed(const Duration(seconds: 2));
 
       // Reset after submission
-      state = GenerateState(isLoading: false,);
+      state = GenerateState(isLoading: false);
     } catch (e) {
-     
       rethrow;
     } finally {
       setLoading(false);

@@ -10,17 +10,25 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
-class WorkRequestVendorCode extends ConsumerStatefulWidget {
-  const WorkRequestVendorCode({super.key});
+class GetYourCodeScreen extends ConsumerStatefulWidget {
+  final String? accessCode;
+  final String? title;
+  final String? share;
+  const GetYourCodeScreen({
+    super.key,
+    this.title = "Your vendor access code:",
+    this.accessCode = "3456GAT",
+    this.share = "Here's my vendor access code: ",
+
+  });
 
   @override
-  ConsumerState<WorkRequestVendorCode> createState() =>
+  ConsumerState<GetYourCodeScreen> createState() =>
       _WorkRequestVendorCodeState();
 }
 
-class _WorkRequestVendorCodeState extends ConsumerState<WorkRequestVendorCode> {
+class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
   bool isCopied = false;
-  final String accessCode = "3456GAT";
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +82,7 @@ class _WorkRequestVendorCodeState extends ConsumerState<WorkRequestVendorCode> {
         ),
         const SizedBox(height: 25),
         Text(
-          "Your vendor access code:",
+         widget.title!,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,
@@ -85,7 +93,7 @@ class _WorkRequestVendorCodeState extends ConsumerState<WorkRequestVendorCode> {
         ),
         const SizedBox(height: 10),
         Text(
-          accessCode,
+          widget.accessCode!,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,
@@ -112,7 +120,7 @@ class _WorkRequestVendorCodeState extends ConsumerState<WorkRequestVendorCode> {
       children: [
         InkWell(
           onTap: () {
-            Clipboard.setData(ClipboardData(text: accessCode));
+            Clipboard.setData(ClipboardData(text: widget.accessCode!));
             setState(() {
               isCopied = true;
             });
@@ -167,7 +175,7 @@ class _WorkRequestVendorCodeState extends ConsumerState<WorkRequestVendorCode> {
       children: [
         InkWell(
           onTap: () {
-            Share.share("Here's my vendor access code: $accessCode");
+            Share.share("${widget.share} ${widget.accessCode}");
           },
           borderRadius: BorderRadius.circular(25),
           child: Container(

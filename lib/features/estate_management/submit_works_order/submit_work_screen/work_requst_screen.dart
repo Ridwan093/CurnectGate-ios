@@ -3,7 +3,7 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/venodrLod_model.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/work_order_model.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/workformprovider.dart';
-import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_screen/work_requst_vendor_code.dart';
+import 'package:curnectgate/core/widgets/GetYourCode.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/date_picker.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/dayTimeWindow.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/incressxdecress.dart';
@@ -118,7 +118,7 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
     if (vendorList.isNotEmpty) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => WorkRequestVendorCode()),
+        MaterialPageRoute(builder: (context) => GetYourCodeScreen()),
       );
       resetForm();
       _clearAllFields();
@@ -410,8 +410,9 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
                 lastDate: state.endDate ?? DateTime(2100),
                 onDateSelected: notifier.updateStartDate,
                 errorText: state.startDateError,
-              buttonColor: AppColors.instance.black600, // Custom button color
-                selectionColor: AppColors.instance.teal300, // Custom selection color
+                buttonColor: AppColors.instance.black600, // Custom button color
+                selectionColor:
+                    AppColors.instance.teal300, // Custom selection color
                 textColor: AppColors.instance.black600, // Custom text color
               ),
             ),
@@ -427,7 +428,8 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
                 onDateSelected: notifier.updateEndDate,
                 errorText: state.endDateError,
                 buttonColor: AppColors.instance.black600, // Custom button color
-                selectionColor: AppColors.instance.teal300, // Custom selection color
+                selectionColor:
+                    AppColors.instance.teal300, // Custom selection color
                 textColor: AppColors.instance.black600, // Custom text color
               ),
             ),

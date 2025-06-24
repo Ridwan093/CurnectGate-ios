@@ -3,9 +3,7 @@ import 'dart:developer';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/estate_management/submit_works_order/model/enum/status_num.dart';
-import 'package:curnectgate/features/estate_management/submit_works_order/model/venodrLod_model.dart';
-import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/status_progress_widget.dart';
+import 'package:curnectgate/features/%20operations/OTP_Activation/model/generate_model.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/vendor_fileter.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/member_management/widget/app_bottom_sheet.dart';
@@ -17,7 +15,7 @@ import 'package:intl/intl.dart';
 class Otpactivation extends ConsumerWidget {
   Otpactivation({super.key});
 
-  final List<String> _statusOptions = ['All', 'Expired', 'Active'];
+  final List<String> _statusOptions = ['All', 'Expired', 'Active', 'Scheduled'];
 
   String _formatDate(DateTime date) {
     return DateFormat('M/d').format(date);
@@ -39,6 +37,7 @@ class Otpactivation extends ConsumerWidget {
       centerTitle: true,
       backgroundColor: Colors.transparent,
       leading: const Icon(Icons.arrow_back_ios_new),
+      actions: [IconButton(onPressed: () {}, icon: Icon(Icons.history_edu))],
     );
   }
 
@@ -118,7 +117,7 @@ class Otpactivation extends ConsumerWidget {
 
           Expanded(
             child:
-                vendorList.isNotEmpty
+                generated.isNotEmpty
                     ? _buildMemberList(ref, size)
                     : _buildEmtyBody(),
           ),
@@ -130,16 +129,16 @@ class Otpactivation extends ConsumerWidget {
   Widget _buildMemberList(WidgetRef ref, Size size) {
     return ListView.builder(
       physics: const BouncingScrollPhysics(),
-      itemCount: vendorList.length,
+      itemCount: generated.length,
       itemBuilder: (BuildContext context, int index) {
-        final vendorLog = vendorList[index];
-        return _buildListContent(vendorLog, context, ref, size);
+        final generatedList = generated[index];
+        return _buildListContent(generatedList, context, ref, size);
       },
     );
   }
 
   Widget _buildListContent(
-    VendorLogModel vendor,
+    GenerateState generated,
     BuildContext context,
     WidgetRef ref,
     Size size,
@@ -158,47 +157,38 @@ class Otpactivation extends ConsumerWidget {
           spacing: 10,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildvendorcardHead(ref, context, vendor),
-            _buildheaderText(vendor.worktype),
+            _buildvendorcardHead(ref, context, generated),
+
             _buildreUsableListTile(
-              title: "Start",
-              trailing: _formatDate(vendor.startDay),
+              title: "Type",
+              trailing: generated.purposeofVisit,
               isCode: false,
             ),
             _buildreUsableListTile(
               title: "End",
-              trailing: _formatDate(vendor.endDay),
+              trailing: _formatDate(generated.selectedDate!),
               isCode: false,
             ),
-            _buildreUsableListTile(
-              title: "No, of Workers",
-              trailing: vendor.workNumbers,
-              isCode: false,
-            ),
+
             _buildreUsableListTile(
               title: "Code",
               trailing: accessCode,
               isCode: true,
             ),
-            _buildreUsableListTile(
-              title: "States",
-              trailing: vendor.taskStatus,
-              isCode: false,
-            ),
-            _buildStatusProgress(vendor.taskStatus),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildheaderText(String workType) {
+  Widget _buildheaderText(String userName) {
     return Text(
-      "$workType service",
+      userName,
       style: TextStyle(
         fontFamily: FontFamilies.interDisplay,
-        fontWeight: FontFamilies.bold,
+        fontWeight: FontFamilies.medium,
         color: AppColors.instance.black600,
+        fontSize: 20,
       ),
     );
   }
@@ -220,7 +210,17 @@ class Otpactivation extends ConsumerWidget {
           ),
         ),
         Row(
+          spacing: isCode ? 7 : 0,
           children: [
+            if (isCode)
+              Text(
+                "Expired in 30 days",
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  color: AppColors.instance.error500,
+                  fontSize: 10,
+                ),
+              ),
             Text(
               trailing,
               style: TextStyle(
@@ -247,98 +247,40 @@ class Otpactivation extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatusProgress(String status) {
-    switch (status) {
-      case "Scheduled":
-        return SizedBox();
-      case "Acive":
-        return _buildStatusWidget(status, TaskStatus.start);
-
-      case "In Progress":
-        return _buildStatusWidget(status, TaskStatus.inProgress);
-      case "Completed":
-        return _buildStatusWidget(status, TaskStatus.complete);
-      default:
-        return _buildStatusWidget(status, TaskStatus.start);
-    }
-  }
-
-  Widget _buildStatusWidget(String status, TaskStatus state) {
-    Color getLabelColor(TaskStatus current, TaskStatus target) {
-      if (current.index >= target.index) {
-        return AppColors.instance.black600; // highlighted (or use custom color)
-      }
-      return AppColors.instance.black300; // dimmed
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ProgressLine(
-          status: state,
-          height: 5,
-          progressColor: AppColors.instance.yellow500,
-        ),
-        const SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "Start",
-              style: TextStyle(
-                color: getLabelColor(state, TaskStatus.start),
-                fontWeight: FontFamilies.bold,
-                fontFamily: FontFamilies.interDisplay,
-                fontSize: 14,
-              ),
-            ),
-            Text(
-              "In Progress",
-              style: TextStyle(
-                color: getLabelColor(state, TaskStatus.inProgress),
-                fontWeight: FontFamilies.bold,
-                fontFamily: FontFamilies.interDisplay,
-                fontSize: 14,
-              ),
-            ),
-            Text(
-              "Completed",
-              style: TextStyle(
-                color: getLabelColor(state, TaskStatus.complete),
-                fontWeight: FontFamilies.bold,
-                fontFamily: FontFamilies.interDisplay,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
   Widget _buildvendorcardHead(
     WidgetRef ref,
     BuildContext context,
-    VendorLogModel vendor,
+    GenerateState generated,
   ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        CircleAvatar(
-          backgroundColor: AppColors.instance.teal300,
-          child: Center(
-            child: Image.asset(AssetPaths.waterDrop, height: 20, width: 20),
-          ),
+        Row(
+          spacing: 5,
+          children: [
+            CircleAvatar(
+              backgroundColor: AppColors.instance.teal300,
+              child: Center(
+                child: Text(
+                  getInitialsFromFullName(generated.vistorName),
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    color: AppColors.instance.black600,
+                  ),
+                ),
+              ),
+            ),
+            _buildheaderText(generated.vistorName),
+          ],
         ),
         InkWell(
           onTap:
               () => showUserBottomSheet(
                 context: context,
                 headertitle: "Manage Vendor Log",
-                headersubtitle: "Manag ${vendor.worktype} Service",
+                headersubtitle: "Manag ${generated.purposeofVisit} Service",
                 ref: ref,
                 bottom: BottomSheetView.vendorLog,
-                vendor: vendor,
               ),
           child: Text(
             "Change",
@@ -351,6 +293,17 @@ class Otpactivation extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  String getInitialsFromFullName(String fullName) {
+    if (fullName.trim().isEmpty) return '';
+
+    final parts = fullName.trim().split(RegExp(r'\s+')); // Split by spaces
+
+    final first = parts.first[0].toUpperCase();
+    final last = parts.length > 1 ? parts.last[0].toUpperCase() : '';
+
+    return '$first$last';
   }
 
   Widget _buildEmtyBody() {

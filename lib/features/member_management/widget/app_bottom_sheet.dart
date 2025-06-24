@@ -1,6 +1,9 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/%20operations/OTP_Activation/provider/active_provider.dart';
+import 'package:curnectgate/features/%20operations/OTP_Activation/widget/custom_validity.dart';
 import 'package:curnectgate/features/%20operations/OTP_Activation/widget/generateOTP_with_validity.dart';
+import 'package:curnectgate/features/%20operations/OTP_Activation/widget/scheduleOTPS.dart';
 import 'package:curnectgate/features/%20operations/violation/widget/report_file_uplode.dart';
 import 'package:curnectgate/features/%20operations/violation/widget/violation_form_bottom_sheet.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/venodrLod_model.dart';
@@ -134,16 +137,32 @@ Widget _buildCurrentView(
         bottom: bottom,
       );
     case BottomSheetView.generateOtpwithperiod:
-      return ViolationFormBottomSheet(
-        widget: GenerateOTPWithValidity(),
-        title: "Generate OTP with validity period",
-        subtitle: "select a date and time for the OTP to be generate ",
+      return FractionallySizedBox(
+        heightFactor: 0.6,
+        child: ViolationFormBottomSheet(
+          titlefontSize: 18,
+          subtitlefontSize: 13,
+          widget: GenerateOTPWithValidity(),
+          title: "Generate OTP with validity period",
+          subtitle: "Select a date and time for the OTP to be generated.",
+        ),
+      );
+    case BottomSheetView.validatorcustom:
+      return CustomValidity(
+        onChanged:
+            (value) =>
+                ref.read(generateNotifierProvider.notifier).setPeriod(value),
       );
     case BottomSheetView.scheduleOtp:
-      return BottomsheetDetails(
-        headertitle: userName,
-        headersubtitle: userRole,
-        bottom: bottom,
+      return FractionallySizedBox(
+        heightFactor: 0.7,
+        child: ViolationFormBottomSheet(
+          titlefontSize: 18,
+          subtitlefontSize: 13,
+          widget: ScheduleOTPinAdvance(),
+          title: "Schedule OTPs in Advance",
+          subtitle: "Select a date and time for the OTP to be generated.",
+        ),
       );
   }
 }
