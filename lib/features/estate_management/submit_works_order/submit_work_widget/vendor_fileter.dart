@@ -107,7 +107,7 @@ class _CustomStatusDropdownState extends State<CustomStatusDropdown> {
             ),
             const SizedBox(width: 8),
             Icon(
-              Icons.arrow_drop_down,
+              Icons.keyboard_arrow_down,
               size: 20,
               color: AppColors.instance.black600,
             ),

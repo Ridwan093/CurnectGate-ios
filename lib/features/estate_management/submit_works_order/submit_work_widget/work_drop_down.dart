@@ -1,23 +1,14 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/workformprovider.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:curnectgate/core/style/colors.dart';
-import 'package:curnectgate/core/style/fontStyle.dart';
 
 class WorkDropDown extends ConsumerWidget {
   final List<String> workTypes;
   final ValueChanged<String?>? onChanged;
 
-  const WorkDropDown({
-    super.key, 
-    required this.workTypes,
-    this.onChanged,
-  });
+  const WorkDropDown({super.key, required this.workTypes, this.onChanged});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,6 +16,7 @@ class WorkDropDown extends ConsumerWidget {
     final notifier = ref.read(workOrderFormProvider.notifier);
 
     return DropdownButtonFormField<String>(
+      icon: Icon(Icons.keyboard_arrow_down),
       style: TextStyle(
         fontFamily: FontFamilies.interDisplay,
         color: AppColors.instance.black600,
@@ -66,17 +58,14 @@ class WorkDropDown extends ConsumerWidget {
         ),
       ),
       value: state.workType,
-      items: workTypes.map((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
+      items:
+          workTypes.map((String value) {
+            return DropdownMenuItem<String>(value: value, child: Text(value));
+          }).toList(),
       onChanged: (value) {
         notifier.updateWorkType(value);
         onChanged?.call(value);
         // Update form validation
-      
       },
       hint: Text(
         'Select work type',

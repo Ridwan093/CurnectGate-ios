@@ -132,7 +132,7 @@ class AllMemberListScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(width: 5),
-            const Icon(Icons.arrow_drop_up, size: 18),
+            const Icon(Icons.keyboard_arrow_down_rounded, size: 18),
           ],
         ),
         InkWell(

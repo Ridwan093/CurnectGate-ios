@@ -8,7 +8,8 @@ class GenerateState {
   final String visitperiod;
   final DateTime? selectedDate;
   final TimeOfDay? selectedTime;
-  final int? validityMinutes; // 30 or 90 minutes
+  final int? validityMinutes; 
+  final List<GenerateState> generatedList;// 30 or 90 minutes
 
   GenerateState({
     this.purposeofVisit = '',
@@ -18,6 +19,7 @@ class GenerateState {
     this.selectedDate,
     this.selectedTime,
     this.validityMinutes,
+     this.generatedList = const [],
   });
 
   // Get formatted validity duration (e.g. "27 hours 30 minutes")
@@ -85,6 +87,7 @@ class GenerateState {
     DateTime? selectedDate,
     TimeOfDay? selectedTime,
     int? validityMinutes,
+      List<GenerateState>? generatedList,
   }) {
     return GenerateState(
       visitperiod: visitperiod ?? this.visitperiod,
@@ -94,8 +97,9 @@ class GenerateState {
       selectedDate: selectedDate ?? this.selectedDate,
       selectedTime: selectedTime ?? this.selectedTime,
       validityMinutes: validityMinutes ?? this.validityMinutes,
+       generatedList: generatedList ?? this.generatedList,
     );
   }
 }
 
-List<GenerateState> generated = [];
+

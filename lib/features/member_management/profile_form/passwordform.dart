@@ -3,7 +3,7 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 
 class PasswordInputField extends StatefulWidget {
-  final TextEditingController  passControler;
+
   final String hintText;
   final String label;
   final bool showErroindicator;
@@ -14,7 +14,7 @@ class PasswordInputField extends StatefulWidget {
     required this.hintText,
     required this.label,
     this.onChanged,
-    required this.showErroindicator, required this.passControler,
+    required this.showErroindicator, 
   });
 
   @override
@@ -33,7 +33,7 @@ class _PasswordInputFieldState extends State<PasswordInputField> {
 
   @override
   void dispose() {
-    widget.passControler.dispose();
+
     super.dispose();
   }
 
@@ -43,7 +43,7 @@ class _PasswordInputFieldState extends State<PasswordInputField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextFormField(
-          controller:  widget.passControler,
+     
           obscureText: !_showPassword,
           decoration: _buildInputDecoration(),
           onChanged: (value) {

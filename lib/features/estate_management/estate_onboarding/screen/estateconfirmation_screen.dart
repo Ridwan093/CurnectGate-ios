@@ -1,8 +1,6 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/estate_button.dart';
-
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/codeconfirmation_widget/address_card.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/progresscontainer.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/stepcount.dart';
@@ -26,27 +24,29 @@ class ConfirmInfomation extends BaseVerificationScreen {
 }
 
 class _ConfirmInfomationState extends ConsumerState<ConfirmInfomation> {
-  
-
   Future<void> _submitForm() async {
     Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => MemberIdchecker()),
-      );
+      context,
+      MaterialPageRoute(builder: (context) => MemberIdchecker()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
 
-    return Scaffold(appBar: _buildAppBar(), body: _biuldbody(size));
+    return Scaffold(
+      appBar: _buildAppBar(),
+      bottomNavigationBar: _buildBottomAction(),
+      body: _biuldbody(size),
+    );
   }
 
   Widget _biuldbody(Size size) {
     return SizedBox(
       height: size.height,
       width: size.width,
-      child: Stack(children: [_buildContent(), _buildBottomAction()]),
+      child: _buildContent(),
     );
   }
 
@@ -96,11 +96,6 @@ class _ConfirmInfomationState extends ConsumerState<ConfirmInfomation> {
   Widget _buildBottomAction() {
     // final isLoading = ref.watch(estateCodeSubmissionProvider).isLoading;
 
-    return Positioned(
-      bottom: 0,
-      right: 0,
-      left: 0,
-      child: ActionButton(label: 'Yes, Confirm', onPressed: _submitForm),
-    );
+    return ActionButton(label: 'Yes, Confirm', onPressed: _submitForm);
   }
 }

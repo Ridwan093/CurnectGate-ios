@@ -178,6 +178,7 @@ Future<void> _submit(WidgetRef ref, BuildContext context) async {
   }
 
   if (visitor.vistorName.isEmpty) {
+ 
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('Please enter a description')));

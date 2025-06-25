@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/progresscontainer.dart';
@@ -27,10 +25,7 @@ class PasswordScreen extends BaseVerificationScreen {
 }
 
 class _PasswordScreenState extends ConsumerState<PasswordScreen> {
-  final _passwordController = TextEditingController();
   void _submitForm() {
-    String pass = _passwordController.text.trim();
-    log(pass);
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => OtpScreen(widget.email)),
@@ -41,14 +36,18 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
 
-    return Scaffold(appBar: _buildAppBar(), body: _biuldbody(size));
+    return Scaffold(
+      appBar: _buildAppBar(),
+      bottomNavigationBar: _buildBottomAction(),
+      body: _biuldbody(size),
+    );
   }
 
   Widget _biuldbody(Size size) {
     return SizedBox(
       height: size.height,
       width: size.width,
-      child: Stack(children: [_buildContent(), _buildBottomAction()]),
+      child: _buildContent(),
     );
   }
 
@@ -101,12 +100,11 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
                   fontSize: 11,
                 ),
               ),
-              Icon(Icons.arrow_drop_down),
+              Icon(Icons.keyboard_arrow_down_rounded, size: 20),
             ],
           ),
           const SizedBox(height: 32),
           PasswordInputField(
-            passControler: _passwordController,
             hintText: "e.g Gre&&^#098",
             label: 'Creat a password ',
             showErroindicator: true,
@@ -119,19 +117,14 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
   Widget _buildBottomAction() {
     // final isLoading = ref.watch(estateCodeSubmissionProvider).isLoading;
 
-    return Positioned(
-      bottom: 0,
-      right: 0,
-      left: 0,
-      child: Consumer(
-        builder: (context, ref, _) {
-          final formState = ref.watch(formProvider);
-          return ActionButton(
-            label: 'Finish setup',
-            onPressed: formState.allValid ? _submitForm : null,
-          );
-        },
-      ),
+    return Consumer(
+      builder: (context, ref, _) {
+        final formState = ref.watch(formProvider);
+        return ActionButton(
+          label: 'Finish setup',
+          onPressed: formState.allValid ? _submitForm : null,
+        );
+      },
     );
   }
 }

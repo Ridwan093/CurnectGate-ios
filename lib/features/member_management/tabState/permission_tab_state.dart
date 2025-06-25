@@ -9,7 +9,7 @@ enum PermissionType {
 
 }
 
-enum BottomSheetView { userDetails, permissions, deleteConfirmation, vendorLog ,revokevendorconfirm, startConversation,messageuplodefile,chatSettings,messageEmergency, reportviolation,reportfileuplode, resolutionTime, manageOTPforvisitor,generateOtpwithperiod, validatorcustom,scheduleOtp}
+enum BottomSheetView { userDetails, permissions, deleteConfirmation, vendorLog ,revokevendorconfirm, startConversation,messageuplodefile,chatSettings,messageEmergency, reportviolation,reportfileuplode, resolutionTime, manageOTPforvisitor,generateOtpwithperiod, validatorcustom,scheduleOtp,revorkActiveOtp, revorkActiveOtpConfirmation, activeOTPHistory}
 
 // State notifier for permissions
 class PermissionsNotifier extends StateNotifier<Set<PermissionType>> {

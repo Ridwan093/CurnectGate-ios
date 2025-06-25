@@ -1,6 +1,7 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/%20operations/violation/screens/reportViolation.dart';
 import 'package:curnectgate/features/chat/data/chat_model/message_state.dart';
 import 'package:curnectgate/features/chat/data/provider/chat_provier.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/displayFileCard.dart';
@@ -30,8 +31,8 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
     super.initState();
     // Add initial messages for testing
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(chatProvider.notifier).sendMessage("Hello!",ref);
-      ref.read(chatProvider.notifier).sendMessage("How are you?",ref);
+      ref.read(chatProvider.notifier).sendMessage("Hello!", ref);
+      ref.read(chatProvider.notifier).sendMessage("How are you?", ref);
     });
   }
 
@@ -90,7 +91,7 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
     return AppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: AppColors.instance.black600),
+        icon: Icon(Icons.arrow_back_ios, color: AppColors.instance.black600),
         onPressed: () => Navigator.pop(context),
       ),
       title: Row(
@@ -136,26 +137,35 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        'John Doe',
-                        style: TextStyle(
-                          fontFamily: FontFamilies.interDisplay,
-                          fontWeight: FontFamilies.bold,
-                          fontSize: 16,
+                  InkWell(
+                    onTap:
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (contexr) => ReportViolation(),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 6),
-                      Container(
-                        width: 10,
-                        height: 10,
-                        decoration: const BoxDecoration(
-                          color: Colors.green,
-                          shape: BoxShape.circle,
+                    child: Row(
+                      children: [
+                        Text(
+                          'John Doe',
+                          style: TextStyle(
+                            fontFamily: FontFamilies.interDisplay,
+                            fontWeight: FontFamilies.bold,
+                            fontSize: 16,
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 6),
+                        Container(
+                          width: 10,
+                          height: 10,
+                          decoration: const BoxDecoration(
+                            color: Colors.green,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   Text(
                     'Estate Committee',
@@ -352,7 +362,7 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
                 if (_textController.text.trim().isNotEmpty ||
                     ref.read(chatProvider).selectedImage != null ||
                     ref.read(chatProvider).selectedFilePath != null) {
-                  chatNotifier.sendMessage(_textController.text,ref);
+                  chatNotifier.sendMessage(_textController.text, ref);
                   _textController.clear();
                   chatNotifier.clearImage();
                 }

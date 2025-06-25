@@ -188,6 +188,8 @@ Future<void> _submit(WidgetRef ref, BuildContext context) async {
 
   try {
     visitors.submit();
+    Navigator.pop(context);
+
     Navigator.push(
       context,
       MaterialPageRoute(

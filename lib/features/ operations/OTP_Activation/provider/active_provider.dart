@@ -67,13 +67,15 @@ class ReportNotifier extends StateNotifier<GenerateState> {
         selectedDate: date,
         selectedTime: time,
       );
-      generated.add(generatedList);
+     final updatedList = [...state.generatedList, generatedList];
+
+state = state.copyWith(generatedList: updatedList); 
 
       log("Name: $name, Purpose:$purposeofVisit, Time: $validatorperiod");
       await Future.delayed(const Duration(seconds: 2));
 
       // Reset after submission
-      state = GenerateState(isLoading: false);
+      // state = GenerateState(isLoading: false);
     } catch (e) {
       rethrow;
     } finally {

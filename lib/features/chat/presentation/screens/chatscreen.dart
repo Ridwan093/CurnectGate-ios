@@ -1,4 +1,3 @@
-
 import 'package:curnectgate/features/chat/presentation/controllers/chat_controller.dart';
 import 'package:curnectgate/features/chat/presentation/screens/messagescreen.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +19,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   @override
   void initState() {
     super.initState();
-   
   }
 
   void sendMessages({
@@ -50,7 +48,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    
 
     return Scaffold(
       appBar: AppBar(
@@ -60,7 +57,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back_ios),
         ),
         title: Row(
           children: [
@@ -74,7 +71,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         ),
       ),
 
-      
       body: SizedBox(
         height: size.height,
         width: size.width,
@@ -130,7 +126,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ),
               ],
             ),
-          ), 
+          ),
         ),
       ),
     );

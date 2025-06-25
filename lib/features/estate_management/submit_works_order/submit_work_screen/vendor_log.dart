@@ -104,6 +104,8 @@ class VendorLog extends ConsumerWidget {
               Text(
                 "Vendor Log",
                 style: TextStyle(
+
+                  
                   fontFamily: FontFamilies.interDisplay,
                   fontSize: 20,
                   fontWeight: FontFamilies.bold,

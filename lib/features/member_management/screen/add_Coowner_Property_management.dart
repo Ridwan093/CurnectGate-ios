@@ -60,7 +60,7 @@ class _SetUppRofiledState extends ConsumerState<AddCOowner> {
     _lastNameController.clear();
     _emailController.clear();
     _phoneController.clear();
-    if (memebers.isNotEmpty){
+    if (memebers.isNotEmpty|| _emailController.text.isNotEmpty || _firstNameController.text.isNotEmpty|| _lastNameController.text.isNotEmpty|| _phoneController.text.isNotEmpty){
        Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => MainNavigationScreen(mainPage: AllMemberListScreen(),)));
@@ -84,14 +84,14 @@ class _SetUppRofiledState extends ConsumerState<AddCOowner> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
 
-    return Scaffold(appBar: _buildAppBar(), body: _biuldbody(size));
+    return Scaffold(appBar: _buildAppBar(),bottomNavigationBar: _buildBottomAction(), body: _biuldbody(size));
   }
 
   Widget _biuldbody(Size size) {
     return SizedBox(
       height: size.height,
       width: size.width,
-      child: Stack(children: [_buildContent(), _buildBottomAction()]),
+      child: _buildContent(),
     );
   }
 
@@ -210,15 +210,10 @@ class _SetUppRofiledState extends ConsumerState<AddCOowner> {
     final formState = ref.watch(formProvider);
     // final isLoading = ref.watch(estateCodeSubmissionProvider).isLoading;
 
-    return Positioned(
-      bottom: 0,
-      right: 0,
-      left: 0,
-      child: ActionButton(
-        label: 'Continue',
-        onPressed:
-            formState.allValid ? _submitForm : null,
-      ),
+    return ActionButton(
+      label: 'Continue',
+      onPressed:
+          formState.allValid ? _submitForm : null,
     );
   }
 }

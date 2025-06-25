@@ -102,7 +102,7 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
     final vendor = VendorLogModel(
       daysCount: state.daysCount.toString(),
       description: _discriptionController.text,
-      taskStatus: "Scheduled",
+      taskStatus: "Active",
       startDay: state.startDate!,
       endDay: state.endDate!,
       windowTime: state.selectedTimeWindow!,

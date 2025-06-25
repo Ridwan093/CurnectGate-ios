@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/%20operations/OTP_Activation/widget/Active_history.dart';
 import 'package:curnectgate/features/%20operations/violation/widget/report_form.dart';
 import 'package:curnectgate/features/%20operations/violation/widget/resulationTime.dart';
 import 'package:curnectgate/features/%20operations/violation/widget/violation_form_bottom_sheet.dart';
@@ -44,6 +45,8 @@ class BottomsheetDetails extends ConsumerWidget {
           title: headertitle,
           subtitle: headersubtitle,
         );
+      case BottomSheetView.activeOTPHistory:
+        return ActiveHistory();
 
       case BottomSheetView.resolutionTime:
         return ResolutionTimeline();
@@ -85,8 +88,12 @@ class BottomsheetDetails extends ConsumerWidget {
               ),
               const SizedBox(height: 50),
 
-              // Primary option tile
-              _buildPrimaryOptionTile(bottom, ref, context),
+              if (bottom == BottomSheetView.revorkActiveOtp)
+                ...[
+          
+              
+              ]else
+                _buildPrimaryOptionTile(bottom, ref, context),
               const SizedBox(height: 5),
 
               // Secondary option tile
@@ -255,6 +262,19 @@ class BottomsheetDetails extends ConsumerWidget {
           ),
         );
         title = "Revoke vendor Log";
+        break;
+      case BottomSheetView.revorkActiveOtp:
+        onTap = () {
+          ref.read(bottomSheetStateProvider.notifier).state =
+              BottomSheetView.revorkActiveOtpConfirmation;
+        };
+        leading = CircleAvatar(
+          backgroundColor: AppColors.instance.error300,
+          child: Center(
+            child: Icon(Icons.restore, color: AppColors.instance.error500),
+          ),
+        );
+        title = "Revoke active Otp";
         break;
 
       case BottomSheetView.permissions:

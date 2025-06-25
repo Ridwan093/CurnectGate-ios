@@ -86,7 +86,15 @@ Widget _buildCurrentView(
       return _buildDeleteConfirmationView(context, ref, userName);
     case BottomSheetView.revokevendorconfirm:
       return _buildVendorDeleteConfirmationView(context, ref);
+      case BottomSheetView.revorkActiveOtpConfirmation:
+      return _buildVendorDeleteConfirmationView(context, ref);
     // start conversation buttom sheet
+    case BottomSheetView.revorkActiveOtp:
+      return BottomsheetDetails(
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
     case BottomSheetView.startConversation:
       return BottomsheetDetails(
         headertitle: userName,
@@ -163,6 +171,14 @@ Widget _buildCurrentView(
           title: "Schedule OTPs in Advance",
           subtitle: "Select a date and time for the OTP to be generated.",
         ),
+      );
+       case BottomSheetView.activeOTPHistory:
+      return ViolationFormBottomSheet(
+        titlefontSize: 18,
+        subtitlefontSize: 13,
+        widget: ScheduleOTPinAdvance(),
+        title: "OTP Usage History",
+        subtitle: "Track who accessed your property and when.",
       );
   }
 }
@@ -326,7 +342,7 @@ Widget _buildVendorDeleteConfirmationView(BuildContext context, WidgetRef ref) {
       ),
       const SizedBox(height: 16),
       Text(
-        'Revoke vendoe Log?',
+        'Revoke Active Otp?',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontFamily: FontFamilies.interDisplay,
@@ -335,7 +351,7 @@ Widget _buildVendorDeleteConfirmationView(BuildContext context, WidgetRef ref) {
         ),
       ),
       Text(
-        'Are you sure you want to revoke vendor log?',
+        'Are you sure you want to revoke Active Otp?',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontFamily: FontFamilies.interDisplay,

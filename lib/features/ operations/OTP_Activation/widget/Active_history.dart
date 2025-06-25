@@ -13,8 +13,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-class Otpactivation extends ConsumerWidget {
-  Otpactivation({super.key});
+class ActiveHistory extends ConsumerWidget {
+  ActiveHistory({super.key});
 
   final List<String> _statusOptions = ['All', 'Expired', 'Active', 'Scheduled'];
 
@@ -32,43 +32,58 @@ class Otpactivation extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
-    
+
     return Scaffold(
+      bottomNavigationBar: SizedBox(
+        height: 50,
+        child: _buildAddMemberButton(size, context, ref),
+      ),
       backgroundColor: Colors.white,
-      appBar: _buildAppBar(ref,context),
+
       body: _buildBody(size, ref, context),
-    );
-  }
-
-  PreferredSizeWidget _buildAppBar(WidgetRef ref, BuildContext context) {
-   
-
-    return AppBar(
-      centerTitle: true,
-      backgroundColor: Colors.transparent,
-      leading: const Icon(Icons.arrow_back_ios_new),
-      actions: [
-        IconButton(
-          onPressed: () {
-            showUserBottomSheet(
-              context: context,
-              headertitle: "OTP Usage History",
-              headersubtitle: "Track who accessed your property and when.",
-              ref: ref,
-              bottom: BottomSheetView.activeOTPHistory,
-            );
-          },
-          icon: Icon(Icons.history_edu),
-        ),
-      ],
     );
   }
 
   Widget _buildBody(Size size, WidgetRef ref, BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildAddMemberButton(size, context, ref),
-        const SizedBox(height: 30),
+        Align(
+          alignment: Alignment.topRight,
+          child: InkWell(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              "Close",
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                fontSize: 14,
+                color: AppColors.instance.teal400,
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 40),
+        Text(
+          "OTP Usage History",
+          style: TextStyle(
+            fontFamily: FontFamilies.interDisplay,
+            fontWeight: FontFamilies.bold,
+            fontSize: 18,
+            color: AppColors.instance.black600,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          "Track who accessed your property and when.",
+          style: TextStyle(
+            fontFamily: FontFamilies.interDisplay,
+            fontSize: 13,
+            color: AppColors.instance.black300,
+          ),
+        ),
+
         Expanded(child: _buildContent(size, context, ref)),
       ],
     );
@@ -86,7 +101,7 @@ class Otpactivation extends ConsumerWidget {
         );
       },
       child: Container(
-        margin: const EdgeInsets.all(12),
+       
         height: 50,
         width: size.width,
         decoration: BoxDecoration(
@@ -95,7 +110,7 @@ class Otpactivation extends ConsumerWidget {
         ),
         child: Center(
           child: Text(
-            "Add new OTP +",
+            "Generate OTP",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               color: AppColors.instance.grey200,
@@ -111,44 +126,32 @@ class Otpactivation extends ConsumerWidget {
     final generatedList = ref.watch(
       generateNotifierProvider.select((s) => s.generatedList),
     );
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Active OTPs",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  fontSize: 25,
-                  fontWeight: FontFamilies.bold,
-                  color: AppColors.instance.black600,
-                ),
-              ),
-              CustomStatusDropdown(
-                statusOptions: _statusOptions,
-                initialStatus: 'All',
-                onStatusChanged: (newStatus) {
-                  log('Selected status: $newStatus');
-                  // Handle status change
-                },
-              ),
-            ],
-          ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 10),
+        Row(
+          children: [
+            CustomStatusDropdown(
+              statusOptions: _statusOptions,
+              initialStatus: 'All',
+              onStatusChanged: (newStatus) {
+                log('Selected status: $newStatus');
+                // Handle status change
+              },
+            ),
+          ],
+        ),
 
-          const SizedBox(height: 23),
+        const SizedBox(height: 23),
 
-          Expanded(
-            child:
-                generatedList.isNotEmpty
-                    ? _buildMemberList(ref, size)
-                    : _buildEmtyBody(),
-          ),
-        ],
-      ),
+        Expanded(
+          child:
+              generatedList.isNotEmpty
+                  ? _buildMemberList(ref, size)
+                  : _buildEmtyBody(),
+        ),
+      ],
     );
   }
 
@@ -255,7 +258,7 @@ class Otpactivation extends ConsumerWidget {
           children: [
             if (isCode)
               Text(
-                "Expired in 30 days",
+                "Revorked",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   color: AppColors.instance.error500,
@@ -323,24 +326,6 @@ class Otpactivation extends ConsumerWidget {
             ),
             _buildheaderText(generated.vistorName),
           ],
-        ),
-        InkWell(
-          onTap:
-              () => showUserBottomSheet(
-                context: context,
-                headertitle: "Manage Active OTPs",
-                headersubtitle: "Manage ${generated.purposeofVisit} Service",
-                ref: ref,
-                bottom: BottomSheetView.revorkActiveOtp,
-              ),
-          child: Text(
-            "Change",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontWeight: FontFamilies.bold,
-              color: AppColors.instance.teal300,
-            ),
-          ),
         ),
       ],
     );

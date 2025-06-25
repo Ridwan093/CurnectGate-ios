@@ -19,7 +19,6 @@ class GetYourCodeScreen extends ConsumerStatefulWidget {
     this.title = "Your vendor access code:",
     this.accessCode = "3456GAT",
     this.share = "Here's my vendor access code: ",
-
   });
 
   @override
@@ -41,14 +40,18 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
             ActionButton(
               label: "Got it",
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) =>
-                            MainNavigationScreen(mainPage: VendorLog()),
-                  ),
-                );
+                if (widget.title == "Your vendor access code:") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) =>
+                              MainNavigationScreen(mainPage: VendorLog()),
+                    ),
+                  );
+                } else {
+                  Navigator.pop(context);
+                }
               },
             ),
           ],
@@ -82,7 +85,7 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
         ),
         const SizedBox(height: 25),
         Text(
-         widget.title!,
+          widget.title!,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,

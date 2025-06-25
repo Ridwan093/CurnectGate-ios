@@ -43,14 +43,18 @@ class _EstateCodeVerificationScreenState
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
 
-    return Scaffold(appBar: _buildAppBar(), body: _biuldbody(size));
+    return Scaffold(
+      appBar: _buildAppBar(),
+      bottomNavigationBar: _buildBottomAction(),
+      body: _biuldbody(size),
+    );
   }
 
   Widget _biuldbody(Size size) {
     return SizedBox(
       height: size.height,
       width: size.width,
-      child: Stack(children: [_buildContent(), _buildBottomAction()]),
+      child: _buildContent(),
     );
   }
 
@@ -94,7 +98,6 @@ class _EstateCodeVerificationScreenState
           ),
           const SizedBox(height: 32),
           ReUsableForm(
-            
             label: "Menber ID",
             hintText: "eg 045679",
             key: _formKey,
@@ -114,14 +117,9 @@ class _EstateCodeVerificationScreenState
   Widget _buildBottomAction() {
     final isLoading = ref.watch(estateCodeSubmissionProvider).isLoading;
 
-    return Positioned(
-      bottom: 0,
-      right: 0,
-      left: 0,
-      child: ActionButton(
-        label: 'Validate',
-        onPressed: _isValid && !isLoading ? _submitForm : null,
-      ),
+    return ActionButton(
+      label: 'Validate',
+      onPressed: _isValid && !isLoading ? _submitForm : null,
     );
   }
 }

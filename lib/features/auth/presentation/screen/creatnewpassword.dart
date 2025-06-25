@@ -7,7 +7,6 @@ import 'package:curnectgate/features/estate_management/screen_managment.dart';
 import 'package:curnectgate/features/member_management/profile_form/passwordform.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/screen/add_member.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -50,14 +49,18 @@ class _SignInState extends ConsumerState<NewPassword> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
 
-    return Scaffold(appBar: _buildAppBar(), body: _biuldbody(size));
+    return Scaffold(
+      appBar: _buildAppBar(),
+      bottomNavigationBar: _buildBottomAction(),
+      body: _biuldbody(size),
+    );
   }
 
   Widget _biuldbody(Size size) {
     return SizedBox(
       height: size.height,
       width: size.width,
-      child: Stack(children: [_buildContent(), _buildBottomAction()]),
+      child: _buildContent(),
     );
   }
 
@@ -120,7 +123,6 @@ class _SignInState extends ConsumerState<NewPassword> {
 
           const SizedBox(height: 30),
           PasswordInputField(
-            passControler: _newpassController,
             hintText: "rge738\$..",
             label: 'Create a password',
             onChanged: (value) {},
@@ -128,7 +130,6 @@ class _SignInState extends ConsumerState<NewPassword> {
           ),
           const SizedBox(height: 8),
           PasswordInputField(
-            passControler: _reEnterpassController,
             hintText: "rge738\$..",
             label: 'Create a password',
             onChanged: (value) {},
@@ -140,11 +141,6 @@ class _SignInState extends ConsumerState<NewPassword> {
   }
 
   Widget _buildBottomAction() {
-    return Positioned(
-      bottom: 0,
-      right: 0,
-      left: 0,
-      child: ActionButton(label: 'Continue', onPressed: _submitForm),
-    );
+    return ActionButton(label: 'Continue', onPressed: _submitForm);
   }
 }

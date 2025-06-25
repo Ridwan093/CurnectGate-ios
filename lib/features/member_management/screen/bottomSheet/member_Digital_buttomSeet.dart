@@ -183,7 +183,6 @@ Widget _buildConfirmationSheet(BuildContext context, WidgetRef ref) {
 Widget _buildRegenerateConfirmation(BuildContext context, WidgetRef ref) {
   return Column(
     children: [
-      const Icon(Icons.autorenew, size: 48, color: Colors.blue),
       const SizedBox(height: 20),
       Text(
         'Regenerate Code?',

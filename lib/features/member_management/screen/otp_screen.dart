@@ -31,14 +31,18 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
 
-    return Scaffold(appBar: _buildAppBar(), body: _biuldbody(size));
+    return Scaffold(
+      appBar: _buildAppBar(),
+      bottomNavigationBar: _buildBottomAction(),
+      body: _biuldbody(size),
+    );
   }
 
   Widget _biuldbody(Size size) {
     return SizedBox(
       height: size.height,
       width: size.width,
-      child: Stack(children: [_buildContent(), _buildBottomAction()]),
+      child: _buildContent(),
     );
   }
 
@@ -151,19 +155,14 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   Widget _buildBottomAction() {
     // final isLoading = ref.watch(estateCodeSubmissionProvider).isLoading;
 
-    return Positioned(
-      bottom: 0,
-      right: 0,
-      left: 0,
-      child: ActionButton(
-        label: 'Finish setup',
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AuthOnboardingScreen()),
-          );
-        },
-      ),
+    return ActionButton(
+      label: 'Finish setup',
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AuthOnboardingScreen()),
+        );
+      },
     );
   }
 }

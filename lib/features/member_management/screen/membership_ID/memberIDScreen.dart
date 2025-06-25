@@ -1,14 +1,11 @@
-
-
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-
+import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_screen/work_requst_screen.dart';
 import 'package:curnectgate/features/member_management/screen/bottomSheet/member_Digital_buttomSeet.dart';
 import 'package:curnectgate/features/member_management/screen/membership_ID/DigitCodeTab.dart';
 import 'package:curnectgate/features/member_management/screen/membership_ID/QRCodeTab.dart';
 import 'package:curnectgate/features/member_management/tabState/memberid_provider/provider.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,13 +22,21 @@ class DigitalCardScreen extends ConsumerWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
-          'Digital Membership Card',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontFamilies.medium,
-            fontFamily: FontFamilies.interDisplay,
-            color: AppColors.instance.black600,
+        title: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SubmitWorkOrderPage()),
+            );
+          },
+          child: Text(
+            'Digital Membership Card',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontFamilies.medium,
+              fontFamily: FontFamilies.interDisplay,
+              color: AppColors.instance.black600,
+            ),
           ),
         ),
         centerTitle: true,
@@ -150,5 +155,4 @@ class DigitalCardScreen extends ConsumerWidget {
       ),
     );
   }
-
 }

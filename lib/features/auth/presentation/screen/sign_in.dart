@@ -41,14 +41,14 @@ class _SignInState extends ConsumerState<SignIn> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
 
-    return Scaffold(appBar: _buildAppBar(), body: _biuldbody(size));
+    return Scaffold(appBar: _buildAppBar(),bottomNavigationBar: _buildBottomAction(), body: _biuldbody(size));
   }
 
   Widget _biuldbody(Size size) {
     return SizedBox(
       height: size.height,
       width: size.width,
-      child: Stack(children: [_buildContent(), _buildBottomAction()]),
+      child: _buildContent(),
     );
   }
 
@@ -174,11 +174,6 @@ class _SignInState extends ConsumerState<SignIn> {
   }
 
   Widget _buildBottomAction() {
-    return Positioned(
-      bottom: 0,
-      right: 0,
-      left: 0,
-      child: ActionButton(label: 'Sign in', onPressed: _submitForm),
-    );
+    return ActionButton(label: 'Sign in', onPressed: _submitForm);
   }
 }

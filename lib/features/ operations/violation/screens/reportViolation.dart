@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/%20operations/OTP_Activation/screen/Activate_Otp_screen.dart';
 import 'package:curnectgate/features/%20operations/violation/widget/report_card.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/venodrLod_model.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/vendor_fileter.dart';
@@ -94,13 +95,21 @@ class ReportViolation extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Report violation",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontSize: 25,
-                    fontWeight: FontFamilies.bold,
-                    color: AppColors.instance.black600,
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Otpactivation()),
+                    );
+                  },
+                  child: Text(
+                    "Report violation",
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontSize: 25,
+                      fontWeight: FontFamilies.bold,
+                      color: AppColors.instance.black600,
+                    ),
                   ),
                 ),
                 CustomStatusDropdown(

@@ -47,6 +47,7 @@ class _EstateCodeVerificationScreenState
 
     return Scaffold(
       appBar: !submissionState.isLoading ? _buildAppBar() : null,
+      bottomNavigationBar: _buildBottomAction(),
       body:
           !submissionState.isLoading
               ? _biuldbody(size)
@@ -58,7 +59,7 @@ class _EstateCodeVerificationScreenState
     return SizedBox(
       height: size.height,
       width: size.width,
-      child: Stack(children: [_buildContent(), _buildBottomAction()]),
+      child: _buildContent(),
     );
   }
 
@@ -122,14 +123,9 @@ class _EstateCodeVerificationScreenState
   Widget _buildBottomAction() {
     final isLoading = ref.watch(estateCodeSubmissionProvider).isLoading;
 
-    return Positioned(
-      bottom: 0,
-      right: 0,
-      left: 0,
-      child: ActionButton(
-        label: 'Validate',
-        onPressed: _isValid && !isLoading ? _submitForm : null,
-      ),
+    return ActionButton(
+      label: 'Validate',
+      onPressed: _isValid && !isLoading ? _submitForm : null,
     );
   }
 }
