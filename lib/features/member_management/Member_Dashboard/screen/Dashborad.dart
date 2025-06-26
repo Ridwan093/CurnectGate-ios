@@ -305,7 +305,6 @@ class Dashborad extends ConsumerWidget {
         ),
         Material(
           elevation: 3,
-          // ignore: deprecated_member_use
           color: AppColors.instance.teal200.withOpacity(.9),
           // ignore: deprecated_member_use
           borderRadius: BorderRadius.only(

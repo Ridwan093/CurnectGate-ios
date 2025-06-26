@@ -86,7 +86,7 @@ Widget _buildCurrentView(
       return _buildDeleteConfirmationView(context, ref, userName);
     case BottomSheetView.revokevendorconfirm:
       return _buildVendorDeleteConfirmationView(context, ref);
-      case BottomSheetView.revorkActiveOtpConfirmation:
+    case BottomSheetView.revorkActiveOtpConfirmation:
       return _buildrevokActiveOtp(context, ref);
     // start conversation buttom sheet
     case BottomSheetView.revorkActiveOtp:
@@ -172,7 +172,7 @@ Widget _buildCurrentView(
           subtitle: "Select a date and time for the OTP to be generated.",
         ),
       );
-       case BottomSheetView.activeOTPHistory:
+    case BottomSheetView.activeOTPHistory:
       return ViolationFormBottomSheet(
         titlefontSize: 18,
         subtitlefontSize: 13,
@@ -180,6 +180,15 @@ Widget _buildCurrentView(
         title: "OTP Usage History",
         subtitle: "Track who accessed your property and .",
       );
+    case BottomSheetView.fundingWithbankTransfer:
+      return BottomsheetDetails(
+        vendor: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.payOustanding:
+      return Text('payoustanding');
   }
 }
 
@@ -372,7 +381,6 @@ Widget _buildVendorDeleteConfirmationView(BuildContext context, WidgetRef ref) {
   );
 }
 
-
 Widget _buildrevokActiveOtp(BuildContext context, WidgetRef ref) {
   return Column(
     key: const ValueKey('deleteVendorConfirmation'),
@@ -419,6 +427,7 @@ Widget _buildrevokActiveOtp(BuildContext context, WidgetRef ref) {
     ],
   );
 }
+
 Widget _button({
   required VoidCallback onPressed,
   required String buttiontitle,

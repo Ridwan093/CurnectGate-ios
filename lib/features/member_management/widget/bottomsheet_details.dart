@@ -14,6 +14,8 @@ import 'package:curnectgate/features/chat/presentation/screens/messagbody.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/venodrLod_model.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_screen/work_requst_screen.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/payment/widget/buttom_sheet_widget/funding_wallet.dart';
+import 'package:curnectgate/features/payment/widget/buttom_sheet_widget/payOutstanding.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -50,6 +52,10 @@ class BottomsheetDetails extends ConsumerWidget {
 
       case BottomSheetView.resolutionTime:
         return ResolutionTimeline();
+        case BottomSheetView.fundingWithbankTransfer:
+        return FundingWallet(headertitle: headertitle,);
+        case BottomSheetView.payOustanding:
+        return PayOutstanding(headertitle: headertitle,);
       default:
         return SingleChildScrollView(
           child: Column(
