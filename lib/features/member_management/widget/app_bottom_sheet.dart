@@ -87,7 +87,7 @@ Widget _buildCurrentView(
     case BottomSheetView.revokevendorconfirm:
       return _buildVendorDeleteConfirmationView(context, ref);
       case BottomSheetView.revorkActiveOtpConfirmation:
-      return _buildVendorDeleteConfirmationView(context, ref);
+      return _buildrevokActiveOtp(context, ref);
     // start conversation buttom sheet
     case BottomSheetView.revorkActiveOtp:
       return BottomsheetDetails(
@@ -178,7 +178,7 @@ Widget _buildCurrentView(
         subtitlefontSize: 13,
         widget: ScheduleOTPinAdvance(),
         title: "OTP Usage History",
-        subtitle: "Track who accessed your property and when.",
+        subtitle: "Track who accessed your property and .",
       );
   }
 }
@@ -342,6 +342,54 @@ Widget _buildVendorDeleteConfirmationView(BuildContext context, WidgetRef ref) {
       ),
       const SizedBox(height: 16),
       Text(
+        'Revoke vendor Log?',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontFamily: FontFamilies.interDisplay,
+          fontWeight: FontFamilies.bold,
+          color: AppColors.instance.black600,
+        ),
+      ),
+      Text(
+        'Are you sure you want to revoke vendor Log?',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontFamily: FontFamilies.interDisplay,
+          fontWeight: FontFamilies.medium,
+          color: AppColors.instance.black300,
+          fontSize: 15,
+        ),
+      ),
+      const SizedBox(height: 70),
+      _button(
+        onPressed: () {
+          // Add your delete logic here
+          Navigator.of(context).pop();
+        },
+        buttiontitle: "Yes, Revoke",
+      ),
+    ],
+  );
+}
+
+
+Widget _buildrevokActiveOtp(BuildContext context, WidgetRef ref) {
+  return Column(
+    key: const ValueKey('deleteVendorConfirmation'),
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Align(
+        alignment: Alignment.topRight,
+        child: IconButton(
+          onPressed:
+              () =>
+                  ref.read(bottomSheetStateProvider.notifier).state =
+                      BottomSheetView.userDetails,
+          icon: Icon(Icons.close, color: AppColors.instance.black600),
+        ),
+      ),
+      const SizedBox(height: 16),
+      Text(
         'Revoke Active Otp?',
         textAlign: TextAlign.center,
         style: TextStyle(
@@ -371,7 +419,6 @@ Widget _buildVendorDeleteConfirmationView(BuildContext context, WidgetRef ref) {
     ],
   );
 }
-
 Widget _button({
   required VoidCallback onPressed,
   required String buttiontitle,

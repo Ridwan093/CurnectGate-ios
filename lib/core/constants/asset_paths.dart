@@ -41,7 +41,6 @@ class AssetPaths {
 
   static const String generateOtpwithperiod = '${_actions}pin-code.png';
 
-
   // Auth Icons
   static const String checkId = '${_auth}check_id.png';
   static const String clipboard = '${_auth}clipboard.png';
@@ -62,6 +61,11 @@ class AssetPaths {
   static const String dashboardReports = '${_dashboard}reports.png';
   static const String dashboardVisitors = '${_dashboard}visitors.png';
   static const String dashboardWorkOrder = '${_dashboard}work_order.png';
+  static const String dashboardcalenderSetting =
+      '${_dashboard}calendar-setting.png';
+  static const String dashboardpropertyFee = '${_dashboard}property_fee.png';
+  static const String dashboardrepair = '${_dashboard}repair.png';
+  static const String dashboardservice = '${_dashboard}service.png';
 
   // Member Icons
   static const String memberId = '${_member}id.png';
