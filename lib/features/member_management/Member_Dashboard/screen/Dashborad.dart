@@ -1,15 +1,28 @@
+import 'dart:math';
+
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/%20operations/OTP_Activation/provider/active_provider.dart';
+import 'package:curnectgate/features/%20operations/OTP_Activation/screen/Activate_Otp_screen.dart';
+import 'package:curnectgate/features/member_management/Member_Dashboard/screen/viewAll.dart';
+import 'package:curnectgate/features/member_management/Member_Dashboard/widget/dashBordRowcard.dart';
+import 'package:curnectgate/features/member_management/Member_Dashboard/widget/empty_body.dart';
+import 'package:curnectgate/features/member_management/Member_Dashboard/widget/headCard.dart';
+import 'package:curnectgate/features/member_management/Member_Dashboard/widget/reusable_vistor_card.dart';
+import 'package:curnectgate/features/member_management/Member_Dashboard/widget/vewMoreButton.dart';
+import 'package:curnectgate/features/member_management/Member_Dashboard/widget/visitorActiveCount.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class Dashborad extends ConsumerWidget {
-  const Dashborad({super.key});
+  Dashborad({super.key});
+  int maxItems = 2;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
+
     return Scaffold(
       appBar: _buildAppBar(),
       body: SizedBox(
@@ -20,9 +33,9 @@ class Dashborad extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildDashboardHeardCard(size),
+              Headcard(),
               SizedBox(height: 15),
-              _buildRow(),
+              _buildRow(context),
               SizedBox(height: 25),
               Text(
                 "YOUR DUES",
@@ -42,7 +55,8 @@ class Dashborad extends ConsumerWidget {
                 ),
               ),
               SizedBox(height: 15),
-            _buildvisitorRow()
+              _buildvisitorRow(),
+              _buildContent(size, context, ref),
             ],
           ),
         ),
@@ -65,6 +79,60 @@ class Dashborad extends ConsumerWidget {
         SizedBox(width: 15),
         _buildNotificationBell(),
       ],
+    );
+  }
+
+  Widget _buildContent(Size size, BuildContext context, WidgetRef ref) {
+    final generatedList = ref.watch(
+      generateNotifierProvider.select((s) => s.generatedList),
+    );
+
+    return Column(
+      children: [
+        if (generatedList.isNotEmpty) ...[
+          SizedBox(height: 200, child: _buildMemberList(ref, size)),
+          ViewMoreButton(
+            buttontext: "View all",
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ViewAllPage()),
+              );
+            },
+          ),
+        ] else
+          EmptyBody(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ViewAllPage()),
+              );
+            },
+            imagepath: AssetPaths.dashboardActivities,
+            emptyMessag: "Your visitor activity will appear here",
+            buttonTexe: "View all",
+          ),
+      ],
+    );
+  }
+
+  Widget _buildMemberList(WidgetRef ref, Size size) {
+    final generatedList = ref.watch(
+      generateNotifierProvider.select((s) => s.generatedList),
+    );
+    return ListView.builder(
+      physics: const BouncingScrollPhysics(),
+      itemCount: min(2, generatedList.length),
+      itemBuilder: (BuildContext context, int index) {
+        final generatedLists = generatedList[index];
+        return VisitorCard(
+          userName: generatedLists.vistorName,
+          purposeOfVisit: generatedLists.purposeofVisit,
+          selectedDate: generatedLists.selectedDate,
+          selectedTime: generatedLists.selectedTime,
+          onChangePressed: () {},
+        );
+      },
     );
   }
 
@@ -110,30 +178,35 @@ class Dashborad extends ConsumerWidget {
     );
   }
 
-  Widget _buildRow() {
+  Widget _buildRow(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _builddashboardRowCard(
+          Dashbordrowcard(
             title: "Digital ID",
             icon: AssetPaths.dashboardIdVerification,
             onTap: () {},
           ),
           SizedBox(width: 10),
-          _builddashboardRowCard(
+          Dashbordrowcard(
             title: "Work Order",
             icon: AssetPaths.dashboardWorkOrder,
             onTap: () {},
           ),
           SizedBox(width: 10),
-          _builddashboardRowCard(
+          Dashbordrowcard(
             title: "Visitor",
             icon: AssetPaths.dashboardVisitors,
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Otpactivation()),
+              );
+            },
           ),
           SizedBox(width: 10),
-          _builddashboardRowCard(
+          Dashbordrowcard(
             title: "Report",
             icon: AssetPaths.dashboardReports,
             onTap: () {},
@@ -148,24 +221,11 @@ class Dashborad extends ConsumerWidget {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _buildVisitorActivitesCard(
-            title: "Total today",
-            count: '0',
-            onTap: () {},
-          ),
+          Visitoractivecount(title: "Total today", count: '0'),
           SizedBox(width: 10),
-          _buildVisitorActivitesCard(
-            title: "Active",
-            count: "0",
-            onTap: () {},
-          ),
+          Visitoractivecount(title: "Active", count: "0"),
           SizedBox(width: 10),
-          _buildVisitorActivitesCard(
-            title: "Expired",
-            count: "0",
-            onTap: () {},
-          ),
-         
+          Visitoractivecount(title: "Expired", count: "0"),
         ],
       ),
     );
@@ -199,192 +259,6 @@ class Dashborad extends ConsumerWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildVisitorActivitesCard(
-    {
-      required String title,
-      required String count,
-     required VoidCallback onTap
-    }
-  ) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.only(top: 8),
-        height: 60,
-        width: 100,
-        decoration: BoxDecoration(
-          color: AppColors.instance.grey300,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontSize: 11,
-                color: AppColors.instance.black300,
-                fontWeight: FontFamilies.bold,
-              ),
-            ),
-            SizedBox(height: 2),
-            Expanded(
-              child: Text(
-                count,
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  fontSize: 22,
-                  color: AppColors.instance.black600,
-                  fontWeight: FontFamilies.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDashboardHeardCard(Size size) {
-    return Column(
-      children: [
-        Material(
-          color: AppColors.instance.teal400,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10),
-            topRight: Radius.circular(10),
-          ),
-          child: Container(
-            padding: EdgeInsets.all(12),
-            height: 100,
-            decoration: BoxDecoration(
-              color: AppColors.instance.teal400,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Greenville.",
-                      style: TextStyle(
-                        fontFamily: FontFamilies.interDisplay,
-                        fontSize: 25,
-                        color: AppColors.instance.grey200,
-                        fontWeight: FontFamilies.bold,
-                      ),
-                    ),
-                    Text(
-                      "ESTATE",
-                      style: TextStyle(
-                        fontFamily: FontFamilies.interDisplay,
-                        fontSize: 14,
-                        wordSpacing: 10,
-                        letterSpacing: 10,
-                        color: AppColors.instance.grey400,
-                        fontWeight: FontFamilies.medium,
-                      ),
-                    ),
-                  ],
-                ),
-                Image.asset(AssetPaths.qrCode, width: 40, height: 40),
-              ],
-            ),
-          ),
-        ),
-        Material(
-          elevation: 3,
-          color: AppColors.instance.teal200.withOpacity(.9),
-          // ignore: deprecated_member_use
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(10),
-            bottomRight: Radius.circular(10),
-          ),
-          child: Container(
-            padding: EdgeInsets.all(12),
-            height: 100,
-            width: size.width,
-            decoration: BoxDecoration(
-              // ignore: deprecated_member_use
-              color: AppColors.instance.teal400.withOpacity(.8),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "MEMBER",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontSize: 14,
-
-                    color: AppColors.instance.grey400,
-                    fontWeight: FontFamilies.medium,
-                  ),
-                ),
-                Text(
-                  "Benjamin Afolabi",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontSize: 19,
-                    color: AppColors.instance.grey200,
-                    fontWeight: FontFamilies.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _builddashboardRowCard({
-    required String icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Material(
-        elevation: 1,
-        borderRadius: BorderRadius.circular(5),
-        child: Container(
-          height: 90,
-          width: 70,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(icon, width: 20),
-              SizedBox(height: 17),
-              Text(
-                title,
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  fontSize: 11,
-                  color: AppColors.instance.black600,
-                  fontWeight: FontFamilies.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
