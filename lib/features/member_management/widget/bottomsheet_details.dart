@@ -7,6 +7,7 @@ import 'package:curnectgate/features/%20operations/OTP_Activation/widget/Active_
 import 'package:curnectgate/features/%20operations/violation/widget/report_form.dart';
 import 'package:curnectgate/features/%20operations/violation/widget/resulationTime.dart';
 import 'package:curnectgate/features/%20operations/violation/widget/violation_form_bottom_sheet.dart';
+import 'package:curnectgate/features/ResidentDirectory/Screen/bottom_seet/emergency.dart';
 import 'package:curnectgate/features/chat/data/provider/chat_provier.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/chat_setting_widget.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/emergency_widget.dart';
@@ -16,6 +17,12 @@ import 'package:curnectgate/features/estate_management/submit_works_order/submit
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/payment/widget/buttom_sheet_widget/funding_wallet.dart';
 import 'package:curnectgate/features/payment/widget/buttom_sheet_widget/payOutstanding.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/accessGranted.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/confirmEntry.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/specifyNumberofGuest.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validateOtp.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validatorComfirmEntry.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/workEmergency.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -52,10 +59,24 @@ class BottomsheetDetails extends ConsumerWidget {
 
       case BottomSheetView.resolutionTime:
         return ResolutionTimeline();
-        case BottomSheetView.fundingWithbankTransfer:
-        return FundingWallet(headertitle: headertitle,);
-        case BottomSheetView.payOustanding:
-        return PayOutstanding(headertitle: headertitle,);
+      case BottomSheetView.fundingWithbankTransfer:
+        return FundingWallet(headertitle: headertitle);
+      case BottomSheetView.payOustanding:
+        return PayOutstanding(headertitle: headertitle);
+      case BottomSheetView.confirmEntry:
+        return Confirmentry();
+      case BottomSheetView.validatedOTP:
+        return Validateotp();
+      case BottomSheetView.valdationConfrm:
+        return ValidateConfirmEntry();
+      case BottomSheetView.accesGranted:
+        return Accessgranted();
+      case BottomSheetView.specifyNumberofGust:
+        return SpecifyumberOfGuest();
+      case BottomSheetView.workEmgencyContacts:
+        return WorkEmergency();
+      case BottomSheetView.residentEmgencyContacts:
+        return Residentmergency();
       default:
         return SingleChildScrollView(
           child: Column(

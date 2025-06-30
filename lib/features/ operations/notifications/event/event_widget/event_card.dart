@@ -2,6 +2,7 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/%20operations/notifications/event/model/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -182,14 +183,4 @@ Widget _buuildEventconfirmButton({
       ),
     ),
   );
-}
-
-class Event {
-  final String title;
-  final String subtitle;
-  final DateTime date;
-  final String description;
-  final String location;
-
-  Event(this.title, this.subtitle, this.date, this.description, this.location);
 }

@@ -3,7 +3,7 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-enum FieldType { name, email, phone, general, password }
+enum FieldType { name, email, phone, oTpCode, general, password }
 
 class ReusabelProfileForm extends StatefulWidget {
   final String hintText;
@@ -35,7 +35,7 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
   late final TextEditingController _controller;
   final AppColors colors = AppColors.instance;
   String? _errorMessage;
-  bool _obscureText = true;
+  final bool _obscureText = true;
 
   @override
   void initState() {
@@ -55,7 +55,7 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: _controller,
-       maxLength:widget. maxLength,
+      maxLength: widget.maxLength,
       maxLines: widget.maxLines,
       obscureText:
           widget.fieldType == FieldType.password ? _obscureText : false,
@@ -70,7 +70,6 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
 
   InputDecoration _buildInputDecoration() {
     return InputDecoration(
-      
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: colors.black400),
@@ -150,6 +149,13 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
           // } else if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
           //   error = '';
           // }
+          break;
+        case FieldType.oTpCode:
+          if (value.length < 6) {
+            error = 'OTP Code  must be at least 6 characters';
+          } else if (value.isEmpty) {
+            error = 'Please enter a correct OTP code';
+          }
           break;
         case FieldType.general:
           if (value.length < 50) {

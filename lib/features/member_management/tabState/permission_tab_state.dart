@@ -30,6 +30,14 @@ enum BottomSheetView {
   activeOTPHistory,
   fundingWithbankTransfer,
   payOustanding,
+  confirmEntry,
+  validatedOTP,
+  valdationConfrm,
+  accesGranted,
+  specifyNumberofGust,
+  workEmgencyContacts,
+   residentEmgencyContacts
+  
   
 }
 

@@ -2,6 +2,7 @@ import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/%20operations/notifications/event/event_widget/event_card.dart';
+import 'package:curnectgate/features/%20operations/notifications/event/model/event_model.dart';
 import 'package:curnectgate/features/%20operations/notifications/provider/eventprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

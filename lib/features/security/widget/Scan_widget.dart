@@ -1,0 +1,179 @@
+import 'package:curnectgate/core/style/colors.dart';
+import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/member_management/screen/bottomSheet/member_Digital_buttomSeet.dart';
+import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/member_management/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/security/provider/scanProvider.dart';
+import 'package:curnectgate/features/security/widget/Scan_code.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+
+class ScanWidget extends ConsumerWidget {
+  const ScanWidget({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scanAreaSize = MediaQuery.of(context).size.width * 0.7;
+    final torchEnabled = ref.watch(torchStateProvider);
+
+    final mobileScannerController = MobileScannerController(
+      torchEnabled: torchEnabled,
+      detectionSpeed: DetectionSpeed.normal,
+      facing: CameraFacing.back,
+    );
+    // Scanner Overlay Widget
+
+    return Stack(
+      children: [
+        // Dark Background
+        Positioned.fill(child: Container(color: Colors.black.withOpacity(0.7))),
+
+        // Title Text
+        Positioned(
+          top: MediaQuery.of(context).padding.top + 20,
+          left: 0,
+          right: 0,
+          child: Text(
+            "Scan QR Code",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: AppColors.instance.grey200,
+              fontFamily: FontFamilies.interDisplay,
+              fontWeight: FontFamilies.bold,
+            ),
+          ),
+        ),
+
+        // Scanner Container
+        Positioned(
+          top: MediaQuery.of(context).size.height * 0.3,
+          left: (MediaQuery.of(context).size.width - scanAreaSize) / 2,
+          child: SizedBox(
+            width: scanAreaSize,
+            height: scanAreaSize,
+            child: Stack(
+              children: [
+                // Camera Preview
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: MobileScanner(
+                    controller: mobileScannerController,
+                    onDetect: (capture) {
+                      final barcode = capture.barcodes.firstOrNull;
+                      if (barcode?.rawValue != null) {
+                        ref.read(qrScanProvider.notifier).state = false;
+                        // _showScanResult(context, barcode!.rawValue!);
+///hey is the place to get the scan information and send it to view
+                        showUserBottomSheet(
+                          context: context,
+                          headertitle: barcode!.rawValue!,
+                          headersubtitle:
+                              barcode.contactInfo!.phones.first.type.toString(),
+                          ref: ref,
+                          bottom: BottomSheetView.confirmEntry,
+                        );
+                      }
+                    },
+                  ),
+                ),
+
+                // Scanner Overlay with Animated Line
+                ScannerOverlay(scanAreaSize: scanAreaSize),
+              ],
+            ),
+          ),
+        ),
+
+        // Bottom Controls
+        Positioned(
+          bottom: .10,
+          left: 0,
+          right: 0,
+          child: Column(
+            children: [
+              // Torch Button
+              IconButton(
+                icon: Icon(
+                  torchEnabled ? Icons.flash_on : Icons.flash_off,
+                  size: 32,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  ref.read(torchStateProvider.notifier).state = !torchEnabled;
+                  mobileScannerController.toggleTorch();
+                },
+              ),
+              const SizedBox(height: 10),
+
+              // Enter ID Button
+              InkWell(
+                onTap: () {
+                  mobileScannerController.dispose();
+                  ref.read(qrScanProvider.notifier).state = false;
+                  _showManualIDEntry(context);
+                },
+                child: Text(
+                  "Enter ID Instead",
+                  style: TextStyle(
+                    color: AppColors.instance.grey200,
+                    fontFamily: FontFamilies.interDisplay,
+                    fontWeight: FontFamilies.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        ),
+
+        // Close Button
+        Positioned(
+          top: MediaQuery.of(context).padding.top + 16,
+          right: 16,
+          child: IconButton(
+            icon: const Icon(Icons.close, size: 32, color: Colors.white),
+            onPressed: () {
+              mobileScannerController.dispose();
+              ref.read(qrScanProvider.notifier).state = false;
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showManualIDEntry(BuildContext context) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text("Enter ID Manually"),
+            content: TextField(
+              decoration: const InputDecoration(
+                hintText: "Enter the ID number",
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.number,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("ID submitted successfully")),
+                  );
+                },
+                child: const Text("Submit"),
+              ),
+            ],
+          ),
+    );
+  }
+}

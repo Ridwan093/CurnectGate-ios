@@ -78,6 +78,7 @@ class VisitorCard extends StatelessWidget {
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     color: AppColors.instance.black600,
+                    fontWeight: FontFamilies.bold,
                   ),
                 ),
               ),
@@ -87,8 +88,9 @@ class VisitorCard extends StatelessWidget {
               userName,
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
-                fontWeight: FontFamilies.medium,
+                fontWeight: FontFamilies.bold,
                 color: AppColors.instance.black600,
+
                 fontSize: 20,
               ),
             ),

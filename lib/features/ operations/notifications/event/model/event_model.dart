@@ -1,5 +1,3 @@
-
-import 'package:curnectgate/features/%20operations/notifications/event/event_widget/event_card.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 /// State class that holds all events-related data
@@ -45,4 +43,22 @@ class EventsState {
       showDetails: showDetails ?? this.showDetails,
     );
   }
+}
+
+class Event {
+  final String title;
+  final String subtitle;
+  final DateTime date;
+  final String description;
+  final String location;
+  final String imagepath;
+
+  Event(
+    this.title,
+    this.subtitle,
+    this.date,
+    this.description,
+    this.location,
+    this.imagepath,
+  );
 }

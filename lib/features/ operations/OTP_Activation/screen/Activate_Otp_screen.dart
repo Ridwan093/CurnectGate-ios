@@ -225,7 +225,7 @@ class Otpactivation extends ConsumerWidget {
       userName,
       style: TextStyle(
         fontFamily: FontFamilies.interDisplay,
-        fontWeight: FontFamilies.medium,
+        fontWeight: FontFamilies.bold,
         color: AppColors.instance.black600,
         fontSize: 20,
       ),
@@ -317,6 +317,7 @@ class Otpactivation extends ConsumerWidget {
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     color: AppColors.instance.black600,
+                    fontWeight: FontFamilies.bold
                   ),
                 ),
               ),

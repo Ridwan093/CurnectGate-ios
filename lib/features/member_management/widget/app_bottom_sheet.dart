@@ -187,8 +187,69 @@ Widget _buildCurrentView(
         headersubtitle: userRole,
         bottom: bottom,
       );
+    case BottomSheetView.confirmEntry:
+      return BottomsheetDetails(
+        vendor: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
     case BottomSheetView.payOustanding:
       return Text('payoustanding');
+    case BottomSheetView.validatedOTP:
+      return FractionallySizedBox(
+        heightFactor: 0.6,
+        child: ViolationFormBottomSheet(
+          titlefontSize: 18,
+          subtitlefontSize: 13,
+          widget: GenerateOTPWithValidity(),
+          title: "Validate OTP",
+          subtitle: "Valiate access code to grant entry.",
+        ),
+      );
+    case BottomSheetView.valdationConfrm:
+      return FractionallySizedBox(
+        heightFactor: 0.6,
+        child: ViolationFormBottomSheet(
+          titlefontSize: 18,
+          subtitlefontSize: 13,
+          widget: GenerateOTPWithValidity(),
+          title: "Generate OTP with validity period",
+          subtitle: "Select a date and time for the OTP to be generated.",
+        ),
+      );
+    case BottomSheetView.specifyNumberofGust:
+      return FractionallySizedBox(
+        heightFactor: 0.6,
+        child: ViolationFormBottomSheet(
+          titlefontSize: 18,
+          subtitlefontSize: 13,
+          widget: GenerateOTPWithValidity(),
+          title: "Generate OTP with validity period",
+          subtitle: "Select a date and time for the OTP to be generated.",
+        ),
+      );
+    case BottomSheetView.accesGranted:
+      return BottomsheetDetails(
+        vendor: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+      case BottomSheetView.workEmgencyContacts:
+      return BottomsheetDetails(
+        vendor: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+       case BottomSheetView.residentEmgencyContacts:
+      return BottomsheetDetails(
+        vendor: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
   }
 }
 

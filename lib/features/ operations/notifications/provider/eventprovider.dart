@@ -1,5 +1,4 @@
-
-import 'package:curnectgate/features/%20operations/notifications/event/event_widget/event_card.dart';
+import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/features/%20operations/notifications/event/model/event_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -14,7 +13,8 @@ final eventsProvider = StateNotifierProvider<EventsNotifier, EventsState>((
 /// State notifier that handles all events logic
 class EventsNotifier extends StateNotifier<EventsState> {
   EventsNotifier()
-      : super(EventsState(
+    : super(
+        EventsState(
           currentTab: 0,
           calendarFormat: CalendarFormat.month,
           focusedDay: DateTime.now(),
@@ -25,6 +25,7 @@ class EventsNotifier extends StateNotifier<EventsState> {
               DateTime.now().add(const Duration(days: 17)),
               "Hosted by",
               "Greendoor Estate",
+              AssetPaths.commiteteal,
             ),
             Event(
               "Discussion with committee",
@@ -32,6 +33,7 @@ class EventsNotifier extends StateNotifier<EventsState> {
               DateTime.now().add(const Duration(days: 2)),
               "Hosted by",
               "Estate Clubhouse",
+              AssetPaths.commiteyellow,
             ),
             Event(
               "Estate Meeting",
@@ -39,13 +41,15 @@ class EventsNotifier extends StateNotifier<EventsState> {
               DateTime.now().add(const Duration(days: 90)),
               "Hosted by",
               "Estate Clubhouse",
+              AssetPaths.commiteteal,
             ),
           ],
           goingEvents: [],
           cancelledEvents: [],
           selectedEvent: null,
           showDetails: false,
-        ));
+        ),
+      );
 
   void changeTab(int index) {
     state = state.copyWith(currentTab: index);
@@ -72,7 +76,7 @@ class EventsNotifier extends StateNotifier<EventsState> {
     final cancelledEvents = List<Event>.from(state.cancelledEvents);
 
     events.remove(event);
-    
+
     if (isGoing) {
       goingEvents.add(event);
     } else {

@@ -11,6 +11,7 @@ class FormState {
   final String? lastNameError;
   final String? emailError;
   final String? phoneError;
+  
 
   const FormState({
     this.firstNameValid = false,
@@ -84,6 +85,11 @@ class FormNotifier extends StateNotifier<FormState> {
           phoneError: errorMessage,
         );
         break;
+         case 'OTPCode':
+        state = state.copyWith(
+          phoneValid: isValid,
+          phoneError: errorMessage,
+        );
     }
   }
 

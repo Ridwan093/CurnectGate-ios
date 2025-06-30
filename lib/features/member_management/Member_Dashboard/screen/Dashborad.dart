@@ -5,7 +5,10 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/%20operations/OTP_Activation/provider/active_provider.dart';
 import 'package:curnectgate/features/%20operations/OTP_Activation/screen/Activate_Otp_screen.dart';
+import 'package:curnectgate/features/%20operations/notifications/event/model/event_model.dart';
+import 'package:curnectgate/features/%20operations/notifications/provider/eventprovider.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/screen/viewAll.dart';
+import 'package:curnectgate/features/member_management/Member_Dashboard/widget/dasboardEventCard.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/dashBordRowcard.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/empty_body.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/headCard.dart';
@@ -42,6 +45,7 @@ class Dashborad extends ConsumerWidget {
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   color: AppColors.instance.black300,
+                  fontWeight: FontFamilies.bold,
                 ),
               ),
               SizedBox(height: 15),
@@ -52,15 +56,195 @@ class Dashborad extends ConsumerWidget {
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   color: AppColors.instance.black300,
+                  fontWeight: FontFamilies.bold,
                 ),
               ),
               SizedBox(height: 15),
               _buildvisitorRow(),
               _buildContent(size, context, ref),
+              SizedBox(height: 24),
+              Text(
+                "EVENTS",
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  color: AppColors.instance.black300,
+                  fontWeight: FontFamilies.bold,
+                ),
+              ),
+              SizedBox(height: 24),
+              _buildEventContent(ref, context, size),
+              SizedBox(height: 25),
+              Text(
+                "OTHER LINK",
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  color: AppColors.instance.black300,
+                  fontWeight: FontFamilies.bold,
+                ),
+              ),
+              SizedBox(height: 25),
+              _otherLinks(title: "ADD FAMILY", onTap: () {}),
+              Divider(color: AppColors.instance.grey400),
+              _otherLinks(title: "ACCOUNT SETTINGS", onTap: () {}),
+              Divider(color: AppColors.instance.grey400),
+               SizedBox(height: 5),
+              _otherLinks(title: "VISITORS LOG", onTap: () {}),
+              SizedBox(height: 20),
+              Text(
+                "NEED SAFETY HELP?",
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  color: AppColors.instance.black300,
+                  fontWeight: FontFamilies.bold,
+                ),
+              ),
+              SizedBox(height: 10),
+              _buildSaftyRow(),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSaftyRow() {
+    return Row(
+      spacing: 10,
+      children: [
+        Expanded(
+          child: _buildSaftyBox(
+            onTap: () {},
+            imagepath: AssetPaths.dashboardemergency,
+            title: 'Emergency',
+          ),
+        ),
+        Expanded(
+          child: _buildSaftyBox(
+            onTap: () {},
+            imagepath: AssetPaths.dashboardCall,
+            title: 'Support',
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSaftyBox({
+    required String imagepath,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.only(top: 10, left: 10),
+        height: 80,
+
+        decoration: BoxDecoration(
+          color: AppColors.instance.grey300,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          spacing: 10,
+
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.asset(imagepath, width: 20),
+            Text(
+              title,
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                color: AppColors.instance.black600,
+                fontWeight: FontFamilies.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _otherLinks({required String title, required VoidCallback onTap}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              color: AppColors.instance.black600,
+              fontWeight: FontFamilies.bold,
+              fontSize: 13,
+            ),
+          ),
+          Icon(
+            Icons.arrow_forward_ios,
+            color: AppColors.instance.black600,
+            size: 14,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEventContent(WidgetRef ref, BuildContext context, Size size) {
+    final state = ref.watch(eventsProvider);
+
+    return Column(
+      children: [
+        if (state.events.isNotEmpty) ...[
+          SizedBox(
+            width: size.width,
+            height: 300,
+            child: _buildEventList(state.events, true, false, ref, context),
+          ),
+          ViewMoreButton(
+            buttontext: "All events",
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ViewAllPage()),
+              );
+            },
+          ),
+        ] else
+          EmptyBody(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ViewAllPage()),
+              );
+            },
+            imagepath: AssetPaths.dashboardEvents,
+            emptyMessag: "Your visitor activity will appear here",
+            buttonTexe: "View all",
+          ),
+      ],
+    );
+  }
+
+  Widget _buildEventList(
+    List<Event> events,
+    bool showActions,
+    bool isCancel,
+    WidgetRef ref,
+    BuildContext context,
+  ) {
+    final notifier = ref.read(eventsProvider.notifier);
+
+    return ListView.builder(
+      controller: PrimaryScrollController.of(context),
+      itemCount: events.length,
+      itemBuilder:
+          (context, index) => DasboardEventcard(
+            iscancle: isCancel,
+            event: events[index],
+            showActions: showActions,
+            onGoing: notifier.toggleEventAttendance,
+            onTap: () => notifier.selectEvent(events[index]),
+          ),
     );
   }
 
@@ -77,7 +261,7 @@ class Dashborad extends ConsumerWidget {
       actions: [
         Image.asset(AssetPaths.dashboardcalenderSetting, width: 20),
         SizedBox(width: 15),
-        _buildNotificationBell(),
+        _buildNotificationBell(1000),
       ],
     );
   }
@@ -231,24 +415,32 @@ class Dashborad extends ConsumerWidget {
     );
   }
 
-  Widget _buildNotificationBell() {
-    return Padding(
-      padding: const EdgeInsets.only(right: 12),
-      child: Stack(
-        clipBehavior: Clip.none, // allows badge to overflow if needed
-        children: [
-          Image.asset(AssetPaths.dashboardNotification, width: 25, height: 20),
+Widget _buildNotificationBell(int count) {
+  String displayCount = _formatCount(count);
+
+  return Padding(
+    padding: const EdgeInsets.only(right: 35),
+    child: Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Image.asset(
+          AssetPaths.dashboardNotification,
+          width: 25,
+          height: 25,
+        ),
+        if (count > 0)
           Positioned(
-            top: -4,
-            right: -4,
+            top: -6,
+            right:count>999?-20 :-10,
             child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
               decoration: BoxDecoration(
                 color: AppColors.instance.yellow500,
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(10),
               ),
-              alignment: Alignment.center,
+              constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
               child: Text(
-                "1000",
+                displayCount,
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -258,8 +450,20 @@ class Dashborad extends ConsumerWidget {
               ),
             ),
           ),
-        ],
-      ),
-    );
+      ],
+    ),
+  );
+}
+
+// Format number into compact form (e.g., 1k, 1.2M)
+String _formatCount(int count) {
+  if (count >= 1000000) {
+    return "${(count / 1000000).toStringAsFixed(1)}M";
+  } else if (count >= 1000) {
+    return "${(count / 1000).toStringAsFixed(1)}k";
+  } else {
+    return count.toString();
   }
+}
+
 }
