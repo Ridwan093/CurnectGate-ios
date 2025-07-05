@@ -1,10 +1,25 @@
-import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/screen/setuprofilledInfo.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-Widget buildSuccessContent(String address, BuildContext context) {
+Widget buildSuccessContent({
+  required String address,
+  required String estateName,
+  required String estateLogo,
+
+  required String estateCode,
+  required String memberCode,
+  required String digitalID,
+  required String role,
+  required String userEmail,
+  required String userPhone,
+  required String firstName,
+  required String lastName,
+
+  required BuildContext context,
+}) {
   return Container(
     decoration: BoxDecoration(
       color: Colors.white,
@@ -47,7 +62,7 @@ Widget buildSuccessContent(String address, BuildContext context) {
                   fontWeight: FontFamilies.medium,
                   color: AppColors.instance.black400,
                 ),
-                text: "This ID is addociated with",
+                text: "This ID is associated with ",
               ),
               TextSpan(
                 style: TextStyle(
@@ -56,7 +71,7 @@ Widget buildSuccessContent(String address, BuildContext context) {
                   fontWeight: FontFamilies.bold,
                   color: AppColors.instance.black600,
                 ),
-                text: "  Adamu Benjamin ",
+                text: "$firstName  $lastName",
               ),
               TextSpan(
                 style: TextStyle(
@@ -65,7 +80,7 @@ Widget buildSuccessContent(String address, BuildContext context) {
                   fontWeight: FontFamilies.medium,
                   color: AppColors.instance.black400,
                 ),
-                text: "of Greenwood Estate",
+                text: " of $estateName",
               ),
             ],
           ),
@@ -74,8 +89,8 @@ Widget buildSuccessContent(String address, BuildContext context) {
         SizedBox(height: 20),
         _buildAddressCard(
           address: address,
-          housename: "Greenwood Estate",
-          locationmark: AssetPaths.memberIdConfirmed,
+          housename: estateName,
+          locationmark: estateLogo,
           context: context,
         ),
 
@@ -91,9 +106,19 @@ Widget buildSuccessContent(String address, BuildContext context) {
           child: InkWell(
             borderRadius: BorderRadius.circular(12),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SetUppRofiled()),
+              context.pushNamed(
+                AppRoutes.filleMemberInfo,
+                extra: {
+                  'estateName': estateName,
+                  'memberCode': memberCode,
+                  'estatecode': estateCode,
+                  "role": role,
+                  "digitalID": digitalID,
+                  "userEmail": userEmail,
+                  "userPhone": userPhone,
+                  "firstName": firstName,
+                  "lastName":lastName,
+                },
               );
             },
             child: Center(
@@ -140,7 +165,7 @@ Widget _buildAddressCard({
     child: Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Image.asset(locationmark, width: 50),
+        Image.network(locationmark, width: 50),
         const SizedBox(width: 13.0),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,

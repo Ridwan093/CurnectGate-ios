@@ -1,12 +1,13 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/screen/onboard_code_confirm.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/onboard_button.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/onboadWidget/logo.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/onboadWidget/startcontent.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class EstateOnboardingScreen extends StatelessWidget {
   EstateOnboardingScreen({super.key});
@@ -67,14 +68,8 @@ class EstateOnboardingScreen extends StatelessWidget {
                     label: "Get Started",
                     onPressed: () {
                       // domming navigator
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return EstateCodeVerificationScreen();
-                          },
-                        ),
-                      );
+                      context.goNamed(AppRoutes.estateCodeVerificationScreen);
+                     
                     },
                   ),
                 ],

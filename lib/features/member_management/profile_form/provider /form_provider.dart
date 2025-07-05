@@ -1,59 +1,23 @@
 // features/member_management/provider/form_provider.dart
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:curnectgate/core/%20utils/api/api_Service.dart';
+import 'package:curnectgate/core/%20utils/api/api_method.dart';
+import 'package:curnectgate/core/style/colors.dart';
+import 'package:curnectgate/features/estate_management/estate_onboarding/provider/estate_code_repository.dart';
+import 'package:curnectgate/features/member_management/Member_Dashboard/state_model/infoFilled_model.dart';
+import 'package:curnectgate/features/member_management/widget/customtoast.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FormState {
-  final bool firstNameValid;
-  final bool lastNameValid;
-  final bool emailValid;
-  final bool phoneValid;
-  final bool isLoading;
-  final String? firstNameError;
-  final String? lastNameError;
-  final String? emailError;
-  final String? phoneError;
-  
+final profileRepositoryProvider = Provider(
+  (ref) => AppApiMethod(ref.read(dioProvider)),
+);
 
-  const FormState({
-    this.firstNameValid = false,
-    this.lastNameValid = false,
-    this.emailValid = false,
-    this.phoneValid = false,
-    this.isLoading = false,
-    this.firstNameError,
-    this.lastNameError,
-    this.emailError,
-    this.phoneError,
-  });
-
-  bool get allValid => firstNameValid && lastNameValid && emailValid && phoneValid;
-
-  FormState copyWith({
-    bool? firstNameValid,
-    bool? lastNameValid,
-    bool? emailValid,
-    bool? phoneValid,
-    bool? isLoading,
-    String? firstNameError,
-    String? lastNameError,
-    String? emailError,
-    String? phoneError,
-  }) {
-    return FormState(
-      firstNameValid: firstNameValid ?? this.firstNameValid,
-      lastNameValid: lastNameValid ?? this.lastNameValid,
-      emailValid: emailValid ?? this.emailValid,
-      phoneValid: phoneValid ?? this.phoneValid,
-      isLoading: isLoading ?? this.isLoading,
-      firstNameError: firstNameError ?? this.firstNameError,
-      lastNameError: lastNameError ?? this.lastNameError,
-      emailError: emailError ?? this.emailError,
-      phoneError: phoneError ?? this.phoneError,
-    );
-  }
-}
-
-class FormNotifier extends StateNotifier<FormState> {
-  FormNotifier() : super(const FormState());
+class FormNotifier extends StateNotifier<FormStates> {
+  FormNotifier() : super(FormStates());
 
   void updateField({
     required String field,
@@ -74,31 +38,115 @@ class FormNotifier extends StateNotifier<FormState> {
         );
         break;
       case 'email':
-        state = state.copyWith(
-          emailValid: isValid,
-          emailError: errorMessage,
-        );
+        state = state.copyWith(emailValid: isValid, emailError: errorMessage);
         break;
       case 'phone':
-        state = state.copyWith(
-          phoneValid: isValid,
-          phoneError: errorMessage,
-        );
+        state = state.copyWith(phoneValid: isValid, phoneError: errorMessage);
         break;
-         case 'OTPCode':
-        state = state.copyWith(
-          phoneValid: isValid,
-          phoneError: errorMessage,
-        );
+      case 'OTPCode':
+        state = state.copyWith(phoneValid: isValid, phoneError: errorMessage);
     }
+  }
+
+  void updateGender(String? gender) {
+    state = state.copyWith(gender: gender);
+  }
+
+  void updateAgreement(bool? agreed) {
+    // Ensure we never pass null to a non-tristate checkbox
+    state = state.copyWith(agreedToTerms: agreed ?? false);
   }
 
   void updateLoading(bool isLoading) {
     ///loading state if (optioner)
     state = state.copyWith(isLoading: isLoading);
   }
+
+  void updatePassword(String pass) {
+    ///loading state if (optioner)
+    log("Pass:$pass");
+    state = state.copyWith(pass: pass);
+  }
+
+  Future<void> submitCode({
+    required BuildContext context,
+    required String firstName,
+    required String lasetName,
+    required String estateCode,
+    required String memberCode,
+    required String phnoneNumber,
+    required String email,
+    required String pass,
+    required bool identityconfirmed,
+    required WidgetRef ref,
+  }) async {
+    if (firstName.isEmpty &&
+        lasetName.isEmpty &&
+        estateCode.isEmpty &&
+        memberCode.isEmpty &&
+        phnoneNumber.isEmpty &&
+        !state.agreedToTerms &&
+        !identityconfirmed &&
+        state.pass!.isEmpty) {
+      return;
+    }
+    // Force validation check
+ 
+    updateLoading(true);
+
+    try {
+      final response = await ref
+          .read(estateCodeRepositoryProvider)
+          .onboardingRegistration(
+            membercode: memberCode,
+            estateCode: estateCode,
+            firstname: firstName,
+            lastName: lasetName,
+            email: email,
+            phoneNumber: phnoneNumber,
+            gender: state.gender,
+            identityConfirmed: true,
+            agreetoterms: state.agreedToTerms,
+            password: state.pass ?? "",
+          );
+
+      if (response['status'] == true) {
+        if (context.mounted) {
+          log(response['data'].toString());
+          // context.goNamed(AppRoutes.confirmInfomation, extra: response['data']);
+        }
+      } else {
+        log(response['data'].toString());
+      }
+    } on DioException catch (e) {
+      if (e.error is SocketException) {
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error600,
+          icon: Icons.close,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+
+      log(e.toString());
+    } catch (e) {
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error600,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      updateLoading(false);
+    }
+  }
 }
 
-final formProvider = StateNotifierProvider<FormNotifier, FormState>((ref) {
+final formProvider = StateNotifierProvider<FormNotifier, FormStates>((ref) {
   return FormNotifier();
 });

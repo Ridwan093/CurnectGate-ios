@@ -1,24 +1,45 @@
 import 'dart:developer';
 
+import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/estate_management/estate_onboarding/screen/loading_screen/loading_page.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/progresscontainer.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/stepcount.dart';
 import 'package:curnectgate/features/estate_management/screen_managment.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
-import 'package:curnectgate/features/member_management/screen/password_screen.dart';
+import 'package:curnectgate/features/member_management/profile_form/termsTogender_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class SetUppRofiled extends BaseVerificationScreen {
-  const SetUppRofiled({super.key})
-    : super(
-        currentStep: 4,
-        totalSteps: 5,
-        title: "Let's get you setup",
-        description: 'Your information are pre-filed',
-      );
+  final String role;
+  final String memberCode;
+  final String estateCode;
+  final String userEmail;
+  final String userPhone;
+  final String digitalID;
+  final String firstName;
+  final String lastName;
+
+  const SetUppRofiled({
+    super.key,
+    required this.userEmail,
+    required this.userPhone,
+    required this.firstName,
+    required this.lastName,
+    required this.role,
+    required this.memberCode,
+    required this.estateCode,
+    required this.digitalID,
+  }) : super(
+         currentStep: 4,
+         totalSteps: 5,
+         title: "Let's get you setup",
+         description: 'Your information are pre-filed',
+       );
 
   @override
   ConsumerState<SetUppRofiled> createState() => _SetUppRofiledState();
@@ -30,7 +51,7 @@ class _SetUppRofiledState extends ConsumerState<SetUppRofiled> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   void _submitForm() {
-    ref.read(formProvider.notifier).updateLoading(true);
+   final state = ref.read(formProvider);
     final firstName = _firstNameController.text;
     final lastName = _lastNameController.text;
     final email = _emailController.text;
@@ -40,18 +61,56 @@ class _SetUppRofiledState extends ConsumerState<SetUppRofiled> {
     log('Last Name: $lastName');
     log('Email: $email');
     log('Phone: $phone');
+    // ref
+    //     .read(formProvider.notifier)
+    //     .submitCode(
+    //       context: context,
+    //       firstName: firstName,
+    //       lasetName: lastName,
+    //       estateCode: widget.estateCode,
+    //       memberCode: widget.memberCode,
+    //       phnoneNumber: phone,
+    //       email: email,
+    //       term: false,
+    //       identityconfirmed: false,
+    //       ref: ref,
+    //     );
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => PasswordScreen(firstName, email)),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => PasswordScreen(firstName, email)),
+    // );
+
+   context.goNamed(
+  AppRoutes.memberPassCreated,
+  extra: {
+    "role": widget.role,
+    "memberCode": widget.memberCode,
+    "estateCode": widget.estateCode, // Note: lowercase 'c' in route
+    "userEmail": widget.userEmail,
+    "userPhone": widget.userPhone,
+    "digitalID": widget.digitalID,
+    "firstName": firstName,
+    "lastName": lastName, // Fixed from 'flastName' to 'lastName'
+    "terms": state.agreedToTerms,
+    "gender": state.gender,
+  },
+);
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+    final state = ref.read(formProvider);
 
-    return Scaffold(appBar: _buildAppBar(),bottomNavigationBar:  _buildBottomAction(), body: _biuldbody(size));
+    return Scaffold(
+      appBar: _buildAppBar(),
+      bottomNavigationBar: _buildBottomAction(),
+      body:
+          state.isLoading
+              ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)
+              : _biuldbody(size),
+    );
   }
 
   Widget _biuldbody(Size size) {
@@ -102,6 +161,7 @@ class _SetUppRofiledState extends ConsumerState<SetUppRofiled> {
           ),
           const SizedBox(height: 32),
           ReusabelProfileForm(
+            initialValue: widget.firstName,
             controller: _firstNameController,
             fieldKey: 'firstName',
             fieldType: FieldType.name,
@@ -119,6 +179,7 @@ class _SetUppRofiledState extends ConsumerState<SetUppRofiled> {
           ),
           const SizedBox(height: 16),
           ReusabelProfileForm(
+            initialValue: widget.lastName,
             controller: _lastNameController,
             fieldKey: 'lastName',
             fieldType: FieldType.name,
@@ -136,6 +197,9 @@ class _SetUppRofiledState extends ConsumerState<SetUppRofiled> {
           ),
           const SizedBox(height: 16),
           ReusabelProfileForm(
+            initialValue: widget.userEmail,
+            isRead: true,
+            showLockIcon: true,
             controller: _emailController,
             fieldKey: 'email',
             fieldType: FieldType.email,
@@ -153,6 +217,9 @@ class _SetUppRofiledState extends ConsumerState<SetUppRofiled> {
           ),
           const SizedBox(height: 16),
           ReusabelProfileForm(
+            initialValue: widget.userPhone,
+            isRead: true,
+            showLockIcon: true,
             controller: _phoneController,
             fieldKey: 'phone',
             fieldType: FieldType.phone,
@@ -168,6 +235,8 @@ class _SetUppRofiledState extends ConsumerState<SetUppRofiled> {
                   );
             },
           ),
+          const SizedBox(height: 16),
+          GenderAndTermsWidget(),
         ],
       ),
     );

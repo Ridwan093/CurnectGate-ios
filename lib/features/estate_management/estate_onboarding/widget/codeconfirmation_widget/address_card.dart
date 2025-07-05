@@ -6,8 +6,10 @@ class AddressCard extends StatelessWidget {
   final String icon;
   final String address;
   final String code;
+  final String? estateName;
   const AddressCard({
     super.key,
+    this.estateName,
     required this.icon,
     required this.address,
     required this.code,
@@ -55,7 +57,7 @@ class AddressCard extends StatelessWidget {
           color: Colors.grey.shade100.withOpacity(.7),
           child: Container(
             height: 110,
-            padding: const EdgeInsets.only(left: 10,right: 10),
+            padding: const EdgeInsets.only(left: 10, right: 10),
             decoration: BoxDecoration(
               color: Colors.transparent,
               borderRadius: BorderRadius.only(
@@ -63,11 +65,18 @@ class AddressCard extends StatelessWidget {
                 bottomRight: Radius.circular(15),
               ),
             ),
-            child: Column(children: [
-                Expanded(child: _buildestatelable(label: "Estate Code", triling: code)),
-               
-                 Expanded(child: _buildestatelable(label: "Estate Name", triling: "Greenwood Estate"))
-                
+            child: Column(
+              children: [
+                Expanded(
+                  child: _buildestatelable(label: "Estate Code", triling: code),
+                ),
+
+                Expanded(
+                  child: _buildestatelable(
+                    label: "Estate Name",
+                    triling: estateName!,
+                  ),
+                ),
               ],
             ),
           ),
@@ -77,17 +86,25 @@ class AddressCard extends StatelessWidget {
   }
 
   Widget _buildestatelable({required String label, required String triling}) {
-
-    return ListTile(title: Text(label,style: TextStyle(
-      fontFamily: FontFamilies.interDisplay,
-      color: AppColors.instance.black400,
-      fontWeight: FontFamilies.bold,
-      fontSize: 12
-    ),), trailing: Text(triling,style: TextStyle(
-      fontFamily: FontFamilies.interDisplay,
-      color: AppColors.instance.black600,
-      fontWeight: FontFamilies.bold,
-      fontSize: 12
-    ),));
+    return ListTile(
+      title: Text(
+        label,
+        style: TextStyle(
+          fontFamily: FontFamilies.interDisplay,
+          color: AppColors.instance.black400,
+          fontWeight: FontFamilies.bold,
+          fontSize: 12,
+        ),
+      ),
+      trailing: Text(
+        triling,
+        style: TextStyle(
+          fontFamily: FontFamilies.interDisplay,
+          color: AppColors.instance.black600,
+          fontWeight: FontFamilies.bold,
+          fontSize: 12,
+        ),
+      ),
+    );
   }
 }

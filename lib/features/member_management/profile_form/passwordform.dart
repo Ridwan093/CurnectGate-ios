@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PasswordInputField extends StatefulWidget {
-
+class PasswordInputField extends ConsumerStatefulWidget {
   final String hintText;
   final String label;
   final bool showErroindicator;
@@ -14,15 +15,14 @@ class PasswordInputField extends StatefulWidget {
     required this.hintText,
     required this.label,
     this.onChanged,
-    required this.showErroindicator, 
+    required this.showErroindicator,
   });
 
   @override
-  State<PasswordInputField> createState() => _PasswordInputFieldState();
+  ConsumerState<PasswordInputField> createState() => _PasswordInputFieldState();
 }
 
-class _PasswordInputFieldState extends State<PasswordInputField> {
- 
+class _PasswordInputFieldState extends ConsumerState<PasswordInputField> {
   final AppColors colors = AppColors.instance;
   final bool _showPassword = false;
 
@@ -33,7 +33,6 @@ class _PasswordInputFieldState extends State<PasswordInputField> {
 
   @override
   void dispose() {
-
     super.dispose();
   }
 
@@ -43,10 +42,11 @@ class _PasswordInputFieldState extends State<PasswordInputField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextFormField(
-     
+
           obscureText: !_showPassword,
           decoration: _buildInputDecoration(),
           onChanged: (value) {
+            ref.read(formProvider.notifier).updatePassword(value);
             _validatePassword(value);
             widget.onChanged?.call(value);
           },

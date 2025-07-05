@@ -1,16 +1,13 @@
 import 'dart:developer';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:curnectgate/features/ResidentDirectory/Screen/Resident.dart';
+import 'package:curnectgate/core/navigation/app_rout.dart';
 import 'package:curnectgate/features/chat/data/chat_model/message_model.dart';
 import 'package:curnectgate/features/chat/data/chat_model/messages_Enum/M_enum.dart';
 import 'package:curnectgate/features/chat/data/hive_migration.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/screen/estateOnbarding.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,21 +27,36 @@ void main() async {
   // Open message boxes
   await Hive.openBox<Messages>('chat_messages'); // Active messages
   await Hive.openBox<Messages>('pending_messages');
-  if (await Connectivity().checkConnectivity() != ConnectivityResult.none) {}
 
-  SharedPreferences preferences = await SharedPreferences.getInstance();
+  // SharedPreferences preferences = await SharedPreferences.getInstance();
 
-  var id = preferences.getString("currentuserId");
   runApp(
     ProviderScope(
       // Wrap your app with ProviderScope
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: id != null ? EstateOnboardingScreen() : Resident(),
-      ),
+      child: MyApp(),
     ),
   );
 }
 
+//  MaterialApp(
+//         debugShowCheckedModeBanner: false,
+//         home: id != null ? EstateOnboardingScreen() : ActivityPage(),
+//       ),
+//     ),
+//   );
 
-  //  MainNavigationScreen(mainPage:Dashborad()), LAST PAGE 
+class MyApp extends ConsumerWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider); // Get the router
+
+    return MaterialApp.router(
+      // theme: Theme.of(context).,
+      routerConfig: router, // GoRouter integration
+      debugShowCheckedModeBanner: false,
+      title: 'CurnectGate',
+    );
+  }
+}

@@ -1,17 +1,22 @@
+import 'dart:developer';
+
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/auth/data/repositories/estate_code_repository.dart';
+import 'package:curnectgate/features/estate_management/estate_onboarding/model/estate_code_validator_state.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/code_check_widget/buildnotifymessage.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/code_check_widget/codeformfield.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/progresscontainer.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/stepcount.dart';
 import 'package:curnectgate/features/estate_management/screen_managment.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider%20/member_code%20_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MemberIdchecker extends BaseVerificationScreen {
-  const MemberIdchecker({super.key})
+  final Map<String, dynamic>? estateData;
+
+  const MemberIdchecker({super.key, required this.estateData})
     : super(
         currentStep: 3,
         totalSteps: 5,
@@ -27,18 +32,6 @@ class MemberIdchecker extends BaseVerificationScreen {
 
 class _EstateCodeVerificationScreenState
     extends ConsumerState<MemberIdchecker> {
-  final _formKey = GlobalKey<ReUsableFormState>();
-  bool _isValid = false;
-
-  Future<void> _submitForm() async {
-    if (_formKey.currentState?.isValid ?? false) {
-      final code = _formKey.currentState!.currentValue;
-      await ref
-          .read(memberCodeSubmissionProvider.notifier)
-          .submitCode2(code, context);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
@@ -97,13 +90,7 @@ class _EstateCodeVerificationScreenState
             ),
           ),
           const SizedBox(height: 32),
-          ReUsableForm(
-            label: "Menber ID",
-            hintText: "eg 045679",
-            key: _formKey,
-            onValidationChanged:
-                (isValid) => setState(() => _isValid = isValid),
-          ),
+          ReUsableForm(label: "Menber ID", hintText: "eg 045679", length: 6),
           const SizedBox(height: 24),
           const InfoMessage(
             icon: AssetPaths.location,
@@ -115,11 +102,25 @@ class _EstateCodeVerificationScreenState
   }
 
   Widget _buildBottomAction() {
-    final isLoading = ref.watch(estateCodeSubmissionProvider).isLoading;
+    final formState = ref.watch(estateCodeFormProvider);
+    final submitNotifier = ref.read(memberCodeSubmissionProvider.notifier);
 
     return ActionButton(
       label: 'Validate',
-      onPressed: _isValid && !isLoading ? _submitForm : null,
+      onPressed:
+          formState.isValid
+              ? () {
+                submitNotifier.submitCode(
+                  context: context,
+                  estateCode: widget.estateData?['estate_code'] ?? "",
+                  estateName: widget.estateData?['name'] ?? "",
+                  estateAddress: widget.estateData?['address'] ?? "",
+
+                  estateLogo:widget.estateData?['settings']?['image_url'] ?? "",
+                );
+                // log(widget.estateData!['image_url'].toString());
+              }
+              : null,
     );
   }
 }

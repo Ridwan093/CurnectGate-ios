@@ -5,20 +5,39 @@ import 'package:curnectgate/features/estate_management/estate_onboarding/widget/
 import 'package:curnectgate/features/estate_management/screen_managment.dart';
 import 'package:curnectgate/features/member_management/profile_form/passwordform.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
-import 'package:curnectgate/features/member_management/screen/otp_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PasswordScreen extends BaseVerificationScreen {
+  final String role;
+  final String memberCode;
+  final String estateCode;
+  final String userEmail;
+  final String userPhone;
+  final String digitalID;
   final String firstName;
-  final String email;
-  const PasswordScreen(this.firstName, this.email, {super.key})
-    : super(
-        currentStep: 5,
-        totalSteps: 5,
-        title: "Hi $firstName.",
-        description: "Let's cerate a password",
-      );
+  final String lastName;
+  final String gender;
+  final bool terms;
+
+  const PasswordScreen({
+    super.key,
+    required this.userEmail,
+    required this.userPhone,
+    required this.firstName,
+    required this.lastName,
+    required this.role,
+    required this.memberCode,
+    required this.estateCode,
+    required this.digitalID,
+    required this.gender,
+    required this.terms,
+  }) : super(
+         currentStep: 5,
+         totalSteps: 5,
+         title: "Hi $firstName.",
+         description: "Let's cerate a password",
+       );
 
   @override
   ConsumerState<PasswordScreen> createState() => _PasswordScreenState();
@@ -26,10 +45,22 @@ class PasswordScreen extends BaseVerificationScreen {
 
 class _PasswordScreenState extends ConsumerState<PasswordScreen> {
   void _submitForm() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => OtpScreen(widget.email)),
-    );
+
+    ref
+        .read(formProvider.notifier)
+        .submitCode(
+          context: context,
+          pass: '',
+          firstName: widget.firstName,
+          lasetName: widget.lastName,
+          estateCode: widget.estateCode,
+          memberCode: widget.memberCode,
+          phnoneNumber: widget.userPhone,
+          email: widget.userEmail,
+
+          identityconfirmed: true,
+          ref: ref,
+        );
   }
 
   @override
@@ -93,7 +124,7 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
           Row(
             children: [
               Text(
-                widget.email,
+                widget.userEmail,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontFamily: FontFamilies.interDisplay,
                   fontWeight: FontFamilies.bold,

@@ -1,0 +1,55 @@
+class AppRoutes {
+  // ------------------------------------------------------------------
+  // Initialization Flow (Keep your exact names)
+  static const String estatateOnbording = '/';
+  static const String estateCodeVerificationScreen = 'codeverify';
+  static const String confirmInfomation = 'Onbordinfo';
+  static const String estategetstart = 'estate';
+
+  // ------------------------------------------------------------------
+  // Auth Flow (Grouped with prefix)
+  static const String signIN = 'auth_signIn';
+  static const String passForgot = 'auth_passForgot';
+  static const String passReset = 'auth_resetPass';
+  static const String oTPCode = 'auth_otpCode';
+  static const String activateOTP = 'auth_activateOtp';
+
+  // ------------------------------------------------------------------
+  // Member Management (Your original names + slight grouping)
+  static const String memberIdCheck = 'member_idCheck';
+  static const String getMemberInfo = 'member_info';
+  static const String memberPassCreated = 'pass_created';
+  static const String selectedMemeber = 'member_selected';
+  static const String filleMemberInfo = 'member_fillInfo';
+  static const String memeberPage = 'member_page';
+
+  // ------------------------------------------------------------------
+  // Estate Operations (Keep your exact flat names)
+  static const String addHoused_CoOnwner = 'addMembers';
+  static const String dashbord = 'dashboard';
+  static const String securityguide = 'security';
+  static const String eventSet = 'eventSet';
+
+  // ------------------------------------------------------------------
+  // Digital Features
+  static const String digitalIDMember = 'digitalID';
+  static const String digitalIDsuccessScreen = 'digitalID_success';
+
+  // ------------------------------------------------------------------
+  // Vendor/Visitor (Grouped)
+  static const String vendorAccessCode = 'vendor_accessCode';
+  static const String vendorLog = 'vendor_log';
+  static const String visitorAccessCode = 'visitor_accessCode';
+  static const String violation = 'violation';
+  static const String workSubmit = 'workOrder';
+
+  // ------------------------------------------------------------------
+  // Payments (Grouped)
+  static const String paymentMethod = 'payment_method';
+  static const String virtualAccount = 'payment_virtualAccount';
+  static const String paymentReview = 'payment_review';
+  static const String revieAndPay = 'payment_reviewPay';
+  static const String paymentSuccess = 'payment_success';
+  static const String selectedDueTopay = 'payment_due';
+  static const String paymentHistory = 'payment_history';
+}

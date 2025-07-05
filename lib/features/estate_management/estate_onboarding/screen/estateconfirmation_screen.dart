@@ -1,17 +1,18 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/codeconfirmation_widget/address_card.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/progresscontainer.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/stepcount.dart';
 import 'package:curnectgate/features/estate_management/screen_managment.dart';
-import 'package:curnectgate/features/member_management/screen/memberIdchecker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class ConfirmInfomation extends BaseVerificationScreen {
-  final String code;
-  const ConfirmInfomation({super.key, required this.code})
+  final Map<String, dynamic>? estateData;
+  const ConfirmInfomation({super.key, required this.estateData})
     : super(
         currentStep: 2,
         totalSteps: 5,
@@ -25,10 +26,12 @@ class ConfirmInfomation extends BaseVerificationScreen {
 
 class _ConfirmInfomationState extends ConsumerState<ConfirmInfomation> {
   Future<void> _submitForm() async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MemberIdchecker()),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => MemberIdchecker()),
+    // );
+
+      context.goNamed(AppRoutes.memberIdCheck, extra:widget.estateData, );
   }
 
   @override
@@ -85,8 +88,9 @@ class _ConfirmInfomationState extends ConsumerState<ConfirmInfomation> {
 
           AddressCard(
             icon: AssetPaths.locationInfo,
-            address: "5474 Cochise St Simi Valley, CA 93063, Nigeria.",
-            code: widget.code,
+            address: widget.estateData?['address'] ?? "",
+            code: widget.estateData?['estate_code'] ?? "",
+            estateName: widget.estateData?['name'] ?? "",
           ),
         ],
       ),
@@ -99,3 +103,8 @@ class _ConfirmInfomationState extends ConsumerState<ConfirmInfomation> {
     return ActionButton(label: 'Yes, Confirm', onPressed: _submitForm);
   }
 }
+
+
+
+
+

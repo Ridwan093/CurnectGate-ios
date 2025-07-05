@@ -250,6 +250,34 @@ Widget _buildCurrentView(
         headersubtitle: userRole,
         bottom: bottom,
       );
+       case BottomSheetView.notificationReminderFilter:
+      return BottomsheetDetails(
+        vendor: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+       case BottomSheetView.addReminder:
+      return BottomsheetDetails(
+        vendor: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+       case BottomSheetView.notificationSetting:
+      return BottomsheetDetails(
+        vendor: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+       case BottomSheetView.remidermarks:
+      return BottomsheetDetails(
+        vendor: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
   }
 }
 

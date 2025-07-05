@@ -1,6 +1,7 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/auth/data/repositories/estate_code_repository.dart';
+import 'package:curnectgate/features/estate_management/estate_onboarding/model/estate_code_validator_state.dart';
+import 'package:curnectgate/features/estate_management/estate_onboarding/provider/estate_code_repository.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/screen/loading_screen/loading_page.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/code_check_widget/buildnotifymessage.dart';
@@ -28,34 +29,22 @@ class EstateCodeVerificationScreen extends BaseVerificationScreen {
 
 class _EstateCodeVerificationScreenState
     extends ConsumerState<EstateCodeVerificationScreen> {
-  final _formKey = GlobalKey<ReUsableFormState>();
-  bool _isValid = false;
-
-  Future<void> _submitForm() async {
-    if (_formKey.currentState?.isValid ?? false) {
-      final code = _formKey.currentState!.currentValue;
-      await ref
-          .read(estateCodeSubmissionProvider.notifier)
-          .submitCode(code, context);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final submissionState = ref.watch(estateCodeSubmissionProvider);
-    final size = MediaQuery.sizeOf(context);
+    final formState = ref.watch(estateCodeFormProvider);
+    final asyncState = ref.watch(estateCodeSubmissionProvider);
 
     return Scaffold(
-      appBar: !submissionState.isLoading ? _buildAppBar() : null,
-      bottomNavigationBar: _buildBottomAction(),
+      appBar: !formState.isLoading ? _buildAppBar() : null,
+      bottomNavigationBar: !formState.isLoading ? _buildBottomAction() : null,
       body:
-          !submissionState.isLoading
-              ? _biuldbody(size)
-              : AppLoader(size: LoaderSize.large, type: LoaderType.circular),
+          formState.isLoading
+              ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)
+              : _buildBody(MediaQuery.sizeOf(context)),
     );
   }
 
-  Widget _biuldbody(Size size) {
+  Widget _buildBody(Size size) {
     return SizedBox(
       height: size.height,
       width: size.width,
@@ -102,13 +91,7 @@ class _EstateCodeVerificationScreenState
             ),
           ),
           const SizedBox(height: 32),
-          ReUsableForm(
-            label: "Estate ID",
-            key: _formKey,
-            onValidationChanged:
-                (isValid) => setState(() => _isValid = isValid),
-            hintText: 'eg 045679',
-          ),
+          ReUsableForm(label: "Estate ID", length: 10, hintText: 'eg 045679'),
           const SizedBox(height: 24),
           const InfoMessage(
             icon: AssetPaths.location,
@@ -121,11 +104,14 @@ class _EstateCodeVerificationScreenState
   }
 
   Widget _buildBottomAction() {
-    final isLoading = ref.watch(estateCodeSubmissionProvider).isLoading;
+    // final isLoading = ref.watch(estateCodeSubmissionProvider).isLoading;
+    final formState = ref.watch(estateCodeFormProvider);
+    final submitNotifier = ref.read(estateCodeSubmissionProvider.notifier);
 
     return ActionButton(
       label: 'Validate',
-      onPressed: _isValid && !isLoading ? _submitForm : null,
+      onPressed:
+          formState.isValid ? () => submitNotifier.submitCode(context) : null,
     );
   }
 }

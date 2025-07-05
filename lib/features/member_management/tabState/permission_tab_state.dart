@@ -36,7 +36,11 @@ enum BottomSheetView {
   accesGranted,
   specifyNumberofGust,
   workEmgencyContacts,
-   residentEmgencyContacts
+   residentEmgencyContacts,
+  notificationReminderFilter,
+  notificationSetting,
+  addReminder,
+  remidermarks;
   
   
 }
