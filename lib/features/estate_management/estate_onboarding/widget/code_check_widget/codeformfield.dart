@@ -10,7 +10,12 @@ class ReUsableForm extends ConsumerWidget {
   final String label;
   final int length;
 
-  const ReUsableForm({super.key, required this.hintText,required this.length, required this.label});
+  const ReUsableForm({
+    super.key,
+    required this.hintText,
+    required this.length,
+    required this.label,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,7 +30,9 @@ class ReUsableForm extends ConsumerWidget {
       validator: (_) => state.errorMessage,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};:"\\|,.<>\/? ]')),
+        FilteringTextInputFormatter.allow(
+          RegExp(r'[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};:"\\|,.<>\/? ]'),
+        ),
       ],
     );
   }

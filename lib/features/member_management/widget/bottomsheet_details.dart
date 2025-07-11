@@ -23,6 +23,10 @@ import 'package:curnectgate/features/security/widget/security_buttom_sheet/speci
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validateOtp.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validatorComfirmEntry.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/workEmergency.dart';
+import 'package:curnectgate/features/userProfile/profile/widget/change_password_sheet.dart';
+import 'package:curnectgate/features/userProfile/profile/widget/decativeAccount.dart';
+import 'package:curnectgate/features/userProfile/profile/widget/updateUserProfile.dart';
+import 'package:curnectgate/features/userProfile/profile/widget/uplodeImage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -77,6 +81,15 @@ class BottomsheetDetails extends ConsumerWidget {
         return WorkEmergency();
       case BottomSheetView.residentEmgencyContacts:
         return Residentmergency();
+        case BottomSheetView.profileUpdat:
+        return UpdateProfileDialog();
+      case BottomSheetView.profilePiceUpdate:
+        return UpdateProfilePrompt();
+
+         case BottomSheetView.deactivateAccount:
+        return DeactiveAccount();
+      case BottomSheetView.changePassword:
+        return ChangePasswordSheet();
       default:
         return SingleChildScrollView(
           child: Column(

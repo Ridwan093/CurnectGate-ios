@@ -1,4 +1,5 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/navigation/back_manageent/back_provider/provider.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/model/estate_code_validator_state.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/provider/estate_code_repository.dart';
@@ -11,6 +12,7 @@ import 'package:curnectgate/features/estate_management/estate_onboarding/widget/
 import 'package:curnectgate/features/estate_management/screen_managment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class EstateCodeVerificationScreen extends BaseVerificationScreen {
   const EstateCodeVerificationScreen({super.key})
@@ -32,7 +34,7 @@ class _EstateCodeVerificationScreenState
   @override
   Widget build(BuildContext context) {
     final formState = ref.watch(estateCodeFormProvider);
-    final asyncState = ref.watch(estateCodeSubmissionProvider);
+    // final asyncState = ref.watch(estateCodeSubmissionProvider);
 
     return Scaffold(
       appBar: !formState.isLoading ? _buildAppBar() : null,
@@ -53,14 +55,21 @@ class _EstateCodeVerificationScreenState
   }
 
   PreferredSizeWidget _buildAppBar() {
+    final backPressNotifier = ref.read(backPressProvider.notifier);
+    final router = GoRouter.of(context);
     return AppBar(
-      leading: const Icon(Icons.arrow_back_ios_new),
+      leading: InkWell(
+        onTap: () {
+          backPressNotifier.reset();
+          router.pop();
+        },
+        child: const Icon(Icons.arrow_back_ios_new),
+      ),
       actions: [
         StepIndicator(current: widget.currentStep, total: widget.totalSteps),
       ],
     );
   }
-
   Widget _buildContent() {
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 80),

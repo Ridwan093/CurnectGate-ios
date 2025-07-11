@@ -40,7 +40,12 @@ enum BottomSheetView {
   notificationReminderFilter,
   notificationSetting,
   addReminder,
-  remidermarks;
+  remidermarks,
+  profileUpdat,
+  profilePiceUpdate,
+  deactivateAccount,
+  changePassword
+
   
   
 }

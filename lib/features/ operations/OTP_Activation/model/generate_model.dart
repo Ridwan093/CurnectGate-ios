@@ -4,22 +4,32 @@ import 'package:intl/intl.dart';
 class GenerateState {
   final String vistorName;
   final String purposeofVisit;
+  final String? securitylevel;
+  final String vehiclenumber;
+  final String phoneNumber;
   final bool isLoading;
-  final String visitperiod;
+  final String? visitperiod;
   final DateTime? selectedDate;
   final TimeOfDay? selectedTime;
-  final int? validityMinutes; 
-  final List<GenerateState> generatedList;// 30 or 90 minutes
+  final int? validityMinutes;
+  final bool isAdditionalInfo;
+
+  final List<GenerateState> generatedList; // 30 or 90 minutes
 
   GenerateState({
     this.purposeofVisit = '',
     this.visitperiod = '',
     this.isLoading = false,
     this.vistorName = '',
+    this.vehiclenumber = '',
+    this.securitylevel = '',
+    this.isAdditionalInfo = false,
+    this.phoneNumber = '',
+
     this.selectedDate,
     this.selectedTime,
     this.validityMinutes,
-     this.generatedList = const [],
+    this.generatedList = const [],
   });
 
   // Get formatted validity duration (e.g. "27 hours 30 minutes")
@@ -87,7 +97,11 @@ class GenerateState {
     DateTime? selectedDate,
     TimeOfDay? selectedTime,
     int? validityMinutes,
-      List<GenerateState>? generatedList,
+    List<GenerateState>? generatedList,
+    bool? isAdditionalInfo,
+    String? securitylevel,
+    String? vehiclenumber,
+    String? phoneNumber,
   }) {
     return GenerateState(
       visitperiod: visitperiod ?? this.visitperiod,
@@ -97,9 +111,12 @@ class GenerateState {
       selectedDate: selectedDate ?? this.selectedDate,
       selectedTime: selectedTime ?? this.selectedTime,
       validityMinutes: validityMinutes ?? this.validityMinutes,
-       generatedList: generatedList ?? this.generatedList,
+      generatedList: generatedList ?? this.generatedList,
+      isAdditionalInfo: isAdditionalInfo ?? this.isAdditionalInfo,
+      vehiclenumber: vehiclenumber ?? this.vehiclenumber,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+
+      securitylevel: securitylevel ?? this.securitylevel,
     );
   }
 }
-
-

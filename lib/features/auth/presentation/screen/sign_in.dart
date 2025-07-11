@@ -1,8 +1,12 @@
 import 'dart:developer';
 
+import 'package:curnectgate/core/local_store/share_prefrence.dart';
+import 'package:curnectgate/core/navigation/back_manageent/back_provider/provider.dart';
+import 'package:curnectgate/core/navigation/back_manageent/back_widget/back_navigator.dart';
+import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/auth/presentation/screen/forgot_password.dart';
+import 'package:curnectgate/features/estate_management/estate_onboarding/screen/loading_screen/loading_page.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/screen/onboard_code_confirm.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/estate_management/screen_managment.dart';
@@ -10,13 +14,14 @@ import 'package:curnectgate/features/member_management/profile_form/provider%20/
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class SignIn extends BaseVerificationScreen {
   const SignIn({super.key})
     : super(
         currentStep: 4,
         totalSteps: 5,
-        title: "Hi Sam.👋🏻",
+        title: "Hi",
         description: 'Sign in to continue',
       );
 
@@ -27,21 +32,58 @@ class SignIn extends BaseVerificationScreen {
 class _SignInState extends ConsumerState<SignIn> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  void _submitForm() {
-    ref.read(formProvider.notifier).updateLoading(true);
+  String name = "";
 
+  void _submitForm() {
     final email = _emailController.text;
     final pass = _passwordController.text;
 
     log('Email: $email');
     log('Phone: $pass');
+
+    ref
+        .read(formProvider.notifier)
+        .logIn(context: context, email: email, password: pass, ref: ref);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserName();
+  }
+
+  void getUserName() async {
+    final userName = await SharedPrefsService().getUserName();
+    if (userName != null) {
+      setState(() {
+      name = userName;
+      });
+
+      log(userName);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+    final state = ref.watch(formProvider);
 
-    return Scaffold(appBar: _buildAppBar(),bottomNavigationBar: _buildBottomAction(), body: _biuldbody(size));
+    return BackButtonHandler(
+      child: Scaffold(
+        appBar: state.isLoading ? null : _buildAppBar(),
+        bottomNavigationBar:
+            state.isLoading
+                ? null
+                : _buildBottomAction(
+                  _emailController.text,
+                  _passwordController.text,
+                ),
+        body:
+            state.isLoading
+                ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)
+                : _biuldbody(size),
+      ),
+    );
   }
 
   Widget _biuldbody(Size size) {
@@ -53,8 +95,16 @@ class _SignInState extends ConsumerState<SignIn> {
   }
 
   PreferredSizeWidget _buildAppBar() {
+    final backPressNotifier = ref.read(backPressProvider.notifier);
+    final router = GoRouter.of(context);
     return AppBar(
-      leading: const Icon(Icons.arrow_back_ios_new),
+      leading: InkWell(
+        onTap: () {
+          backPressNotifier.reset();
+          router.pop();
+        },
+        child: const Icon(Icons.arrow_back_ios_new),
+      ),
       actions: [_buildTextButton()],
     );
   }
@@ -94,7 +144,7 @@ class _SignInState extends ConsumerState<SignIn> {
           const SizedBox(height: 20),
 
           Text(
-            widget.title,
+            "${widget.title} $name.👋🏻",
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               fontFamily: FontFamilies.interDisplay,
               fontWeight: FontFamilies.bold,
@@ -138,6 +188,13 @@ class _SignInState extends ConsumerState<SignIn> {
               // setState(() {
               //   _isPasswordValid = validation.isValid;
               // });
+              ref
+                  .read(formProvider.notifier)
+                  .updateField(
+                    field: 'password',
+                    isValid: validation.isValid,
+                    errorMessage: validation.error,
+                  );
             },
           ),
           _buildForgotButton(),
@@ -150,10 +207,11 @@ class _SignInState extends ConsumerState<SignIn> {
     return InkWell(
       onTap: () {
         //domin rougte chang later PasswordReset
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => PasswordReset()),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => PasswordReset()),
+        // );
+        context.pushNamed(AppRoutes.passForgot);
       },
       child: Padding(
         padding: EdgeInsets.only(top: 20),
@@ -173,7 +231,10 @@ class _SignInState extends ConsumerState<SignIn> {
     );
   }
 
-  Widget _buildBottomAction() {
-    return ActionButton(label: 'Sign in', onPressed: _submitForm);
+  Widget _buildBottomAction(String email, String pass) {
+    return ActionButton(
+      label: 'Sign in',
+      onPressed: email.isNotEmpty && pass.isNotEmpty ? _submitForm : null,
+    );
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/%20operations/OTP_Activation/provider/active_provider.dart';
@@ -83,11 +84,16 @@ class Dashborad extends ConsumerWidget {
                 ),
               ),
               SizedBox(height: 25),
-              _otherLinks(title: "ADD FAMILY", onTap: () {}),
+              _otherLinks(
+                title: "ADD FAMILY",
+                onTap: () async {
+                  SharedPrefsService().clearAuthData();
+                },
+              ),
               Divider(color: AppColors.instance.grey400),
               _otherLinks(title: "ACCOUNT SETTINGS", onTap: () {}),
               Divider(color: AppColors.instance.grey400),
-               SizedBox(height: 5),
+              SizedBox(height: 5),
               _otherLinks(title: "VISITORS LOG", onTap: () {}),
               SizedBox(height: 20),
               Text(
@@ -167,24 +173,27 @@ class Dashborad extends ConsumerWidget {
   Widget _otherLinks({required String title, required VoidCallback onTap}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.black600,
-              fontWeight: FontFamilies.bold,
-              fontSize: 13,
+      child: InkWell(
+        onTap: onTap,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                color: AppColors.instance.black600,
+                fontWeight: FontFamilies.bold,
+                fontSize: 13,
+              ),
             ),
-          ),
-          Icon(
-            Icons.arrow_forward_ios,
-            color: AppColors.instance.black600,
-            size: 14,
-          ),
-        ],
+            Icon(
+              Icons.arrow_forward_ios,
+              color: AppColors.instance.black600,
+              size: 14,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -415,55 +424,50 @@ class Dashborad extends ConsumerWidget {
     );
   }
 
-Widget _buildNotificationBell(int count) {
-  String displayCount = _formatCount(count);
+  Widget _buildNotificationBell(int count) {
+    String displayCount = _formatCount(count);
 
-  return Padding(
-    padding: const EdgeInsets.only(right: 35),
-    child: Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Image.asset(
-          AssetPaths.dashboardNotification,
-          width: 25,
-          height: 25,
-        ),
-        if (count > 0)
-          Positioned(
-            top: -6,
-            right:count>999?-20 :-10,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-              decoration: BoxDecoration(
-                color: AppColors.instance.yellow500,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
-              child: Text(
-                displayCount,
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.instance.black600,
-                  fontFamily: FontFamilies.interDisplay,
+    return Padding(
+      padding: const EdgeInsets.only(right: 35),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Image.asset(AssetPaths.dashboardNotification, width: 25, height: 25),
+          if (count > 0)
+            Positioned(
+              top: -6,
+              right: count > 999 ? -20 : -10,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                decoration: BoxDecoration(
+                  color: AppColors.instance.yellow500,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                child: Text(
+                  displayCount,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.instance.black600,
+                    fontFamily: FontFamilies.interDisplay,
+                  ),
                 ),
               ),
             ),
-          ),
-      ],
-    ),
-  );
-}
-
-// Format number into compact form (e.g., 1k, 1.2M)
-String _formatCount(int count) {
-  if (count >= 1000000) {
-    return "${(count / 1000000).toStringAsFixed(1)}M";
-  } else if (count >= 1000) {
-    return "${(count / 1000).toStringAsFixed(1)}k";
-  } else {
-    return count.toString();
+        ],
+      ),
+    );
   }
-}
 
+  // Format number into compact form (e.g., 1k, 1.2M)
+  String _formatCount(int count) {
+    if (count >= 1000000) {
+      return "${(count / 1000000).toStringAsFixed(1)}M";
+    } else if (count >= 1000) {
+      return "${(count / 1000).toStringAsFixed(1)}k";
+    } else {
+      return count.toString();
+    }
+  }
 }

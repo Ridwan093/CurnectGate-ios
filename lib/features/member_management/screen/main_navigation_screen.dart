@@ -3,7 +3,7 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/screen/tab_screen/CommunityScreen.dart';
 import 'package:curnectgate/features/payment/screen/PaymentScreen.dart';
-import 'package:curnectgate/features/member_management/screen/tab_screen/ProfilesScreen.dart';
+import 'package:curnectgate/features/userProfile/profile/screen/ProfilesScreen.dart';
 import 'package:curnectgate/features/member_management/tabState/image_tab.dart';
 import 'package:curnectgate/features/member_management/tabState/tab_state.dart';
 import 'package:flutter/material.dart';

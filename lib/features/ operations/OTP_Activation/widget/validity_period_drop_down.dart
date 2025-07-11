@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ValidityPickerTile extends ConsumerWidget {
-  
   final String? selectedValue;
   final Function(String) onChanged;
 
@@ -22,7 +21,7 @@ class ValidityPickerTile extends ConsumerWidget {
       borderRadius: BorderRadius.circular(8),
       child: Row(
         children: [
-           Text(
+          Text(
             'Validity period*',
             style: TextStyle(
               fontWeight: FontFamilies.medium,
@@ -34,8 +33,12 @@ class ValidityPickerTile extends ConsumerWidget {
           ),
           const Spacer(),
           Text(
-            selectedValue ?? "hrs",
-            style:  TextStyle(fontSize: 14, fontFamily: FontFamilies.interDisplay,color: AppColors.instance.black500),
+            selectedValue!.isEmpty ? "hrs" : selectedValue!,
+            style: TextStyle(
+              fontSize: 14,
+              fontFamily: FontFamilies.interDisplay,
+              color: AppColors.instance.black500,
+            ),
           ),
           const SizedBox(width: 4),
           const Icon(Icons.keyboard_arrow_down_rounded),
@@ -67,12 +70,12 @@ class ValidityPickerTile extends ConsumerWidget {
         position.dx + box.size.width,
         position.dy,
       ),
-      items: hours
-          .map((hour) => PopupMenuItem<String>(
-                value: hour,
-                child: Text(hour),
-              ))
-          .toList(),
+      items:
+          hours
+              .map(
+                (hour) => PopupMenuItem<String>(value: hour, child: Text(hour)),
+              )
+              .toList(),
     );
 
     if (selected != null) {

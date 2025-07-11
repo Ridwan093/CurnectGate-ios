@@ -2,6 +2,7 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/core/widgets/GetYourCode.dart';
 import 'package:curnectgate/features/%20operations/OTP_Activation/provider/active_provider.dart';
+import 'package:curnectgate/features/%20operations/OTP_Activation/widget/securuty_standard.dart';
 import 'package:curnectgate/features/%20operations/OTP_Activation/widget/validity_period_drop_down.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,9 +52,12 @@ class GenerateOTPWithValidity extends ConsumerWidget {
                     .read(generateNotifierProvider.notifier)
                     .setVisitorName(value),
           ),
+
           const SizedBox(height: 20),
           // 1. Category dropdown (no Expanded!)
-          _buildCategoryDropdown(ref, activation.purposeofVisit),
+          _buildPurposeDropdown(ref, activation.purposeofVisit),
+          const SizedBox(height: 20),
+          _buildSwitch(ref),
           const SizedBox(height: 25),
           ValidityPickerTile(
             selectedValue: activation.visitperiod,
@@ -62,6 +66,14 @@ class GenerateOTPWithValidity extends ConsumerWidget {
                 (value) => ref
                     .read(generateNotifierProvider.notifier)
                     .setPeriod(value),
+          ),
+          const SizedBox(height: 10),
+          SecuritiesStandrd(
+            selectedValue: activation.securitylevel,
+            onChanged:
+                (value) => ref
+                    .read(generateNotifierProvider.notifier)
+                    .setSecuriteLevel(value),
           ),
           const SizedBox(height: 25),
 
@@ -76,9 +88,23 @@ class GenerateOTPWithValidity extends ConsumerWidget {
       ),
     );
   }
+}
 
-  // [Keep all your helper methods unchanged]
-  // _buildanonymousHide, _buildSubmitButton, etc.
+Widget _buildSwitch(WidgetRef ref) {
+  final activation = ref.watch(generateNotifierProvider);
+  final state = ref.watch(generateNotifierProvider.notifier);
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text("Add More info about visitor"),
+      Switch(
+        value: activation.isAdditionalInfo,
+        onChanged: (value) {
+          state.setAdditionalInfo(value);
+        },
+      ),
+    ],
+  );
 }
 
 Widget _buildSubmitButton({
@@ -116,13 +142,22 @@ Widget _buildSubmitButton({
   );
 }
 
-Widget _buildCategoryDropdown(WidgetRef ref, String currentValue) {
+Widget _buildPurposeDropdown(WidgetRef ref, String currentValue) {
   final purpose = {
-    'Gust Visit': 'Vehicle parked in no-parking zone',
-    'work order': 'Vehicle moving against traffic',
-    'Delivery': 'Vehicle exceeding speed limit',
-    'Other': 'Other traffic violation',
+    'Business meeting': 'Business meeting with property owner',
+    'Property viewing': 'Viewing apartments or properties for rent/purchase',
+    'Site inspection': 'Inspecting property for potential purchase or lease',
+    'Lease discussion': 'Discussing lease terms or renewal',
+    'Maintenance issue': 'Addressing maintenance or repair issues',
+    'Family visit': 'Visiting family members residing in the property',
+    'Friend visit': 'Visiting friends residing in the property',
+    'Coworker visit': 'Meeting with coworkers residing in the property',
+    'Delivery/services': 'Granting access for delivery or service personnel',
+    'Property tour': 'Taking a tour of the property and its facilities',
   };
+
+  // Ensure currentValue is either null or a valid key from the purpose map
+  final validValue = purpose.containsKey(currentValue) ? currentValue : null;
 
   return SizedBox(
     child: DropdownButtonFormField<String>(
@@ -130,7 +165,7 @@ Widget _buildCategoryDropdown(WidgetRef ref, String currentValue) {
         Icons.keyboard_arrow_down_rounded,
         color: AppColors.instance.black600,
       ),
-      value: currentValue.isEmpty ? null : currentValue,
+      value: validValue,
       decoration: InputDecoration(
         labelText: 'Purpose of Visit',
         border: OutlineInputBorder(
@@ -147,22 +182,51 @@ Widget _buildCategoryDropdown(WidgetRef ref, String currentValue) {
           color: AppColors.instance.black500,
         ),
       ),
+      selectedItemBuilder: (BuildContext context) {
+        return purpose.keys.map((String key) {
+          return Text(
+            key,
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              color: AppColors.instance.black600,
+            ),
+          );
+        }).toList();
+      },
       items:
           purpose.entries.map((entry) {
-            return DropdownMenuItem(
+            return DropdownMenuItem<String>(
               value: entry.key,
-              child: Text(
-                entry.key,
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black600,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    entry.key,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      color: AppColors.instance.black600,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    entry.value,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      color: AppColors.instance.black500,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
               ),
             );
           }).toList(),
-      onChanged:
-          (value) =>
-              ref.read(generateNotifierProvider.notifier).setPurpose(value!),
+      onChanged: (value) {
+        if (value != null) {
+          ref.read(generateNotifierProvider.notifier).setPurpose(value);
+        }
+      },
     ),
   );
 }

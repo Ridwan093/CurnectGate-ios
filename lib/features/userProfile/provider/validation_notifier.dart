@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/member_code%20_repo.dart';
 import 'package:curnectgate/features/member_management/screen/bottomSheet/validation_state.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // validation_notifier.dart
@@ -16,13 +17,14 @@ class ValidationNotifier extends StateNotifier<ValidationState> {
     String code,
     String estateCode,
     String estateName,
+    BuildContext context
   ) async {
     state = state.copyWith(status: ValidationStatus.loading);
 
     try {
       final response = await ref
           .read(memberCodeRepositoryProvider)
-          .submitMemberCode(code: code, estateCode: estateCode);
+          .submitMemberCode(code: code, estateCode: estateCode, context: context);
 
       if (response['status'] == true) {
         state = state.copyWith(
@@ -44,8 +46,10 @@ class ValidationNotifier extends StateNotifier<ValidationState> {
         state = state.copyWith(
           status: ValidationStatus.error,
           errorMessage:
-              response['message'] ??
-              "We couldn't find this ID for $estateName, please check your ID or contact your estate management",
+              response['message'] ==
+                      "This member code is already registered and active. Please login instead."
+                  ? response['message']
+                  : "We couldn't find this ID for $estateName, please check your ID or contact your estate management",
         );
       }
     } on DioException catch (e) {

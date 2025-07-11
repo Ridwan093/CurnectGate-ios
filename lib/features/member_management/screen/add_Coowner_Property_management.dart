@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/navigation/back_manageent/back_provider/provider.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/estate_button.dart';
@@ -15,6 +16,7 @@ import 'package:curnectgate/features/member_management/screen/tab_screen/allmemb
 import 'package:curnectgate/features/member_management/widget/customtoast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class AddCOowner extends BaseVerificationScreen {
   final String selectedRole;
@@ -60,31 +62,40 @@ class _SetUppRofiledState extends ConsumerState<AddCOowner> {
     _lastNameController.clear();
     _emailController.clear();
     _phoneController.clear();
-    if (memebers.isNotEmpty|| _emailController.text.isNotEmpty || _firstNameController.text.isNotEmpty|| _lastNameController.text.isNotEmpty|| _phoneController.text.isNotEmpty){
-       Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MainNavigationScreen(mainPage: AllMemberListScreen(),)));
+    if (memebers.isNotEmpty ||
+        _emailController.text.isNotEmpty ||
+        _firstNameController.text.isNotEmpty ||
+        _lastNameController.text.isNotEmpty ||
+        _phoneController.text.isNotEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (context) =>
+                  MainNavigationScreen(mainPage: AllMemberListScreen()),
+        ),
+      );
 
-
-    showCustomSuccessToast(
-
-      positionNumber: 70,
-      context: context,
-      message: "$firstName  $lastName has been added",
-      color: AppColors.instance.teal300,
-      icon: Icons.check_circle,
-      iconColors: AppColors.instance.black600,
-    );
+      showCustomSuccessToast(
+        positionNumber: 70,
+        context: context,
+        message: "$firstName  $lastName has been added",
+        color: AppColors.instance.teal300,
+        icon: Icons.check_circle,
+        iconColors: AppColors.instance.black600,
+      );
     }
-   
-    
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
 
-    return Scaffold(appBar: _buildAppBar(),bottomNavigationBar: _buildBottomAction(), body: _biuldbody(size));
+    return Scaffold(
+      appBar: _buildAppBar(),
+      bottomNavigationBar: _buildBottomAction(),
+      body: _biuldbody(size),
+    );
   }
 
   Widget _biuldbody(Size size) {
@@ -96,8 +107,16 @@ class _SetUppRofiledState extends ConsumerState<AddCOowner> {
   }
 
   PreferredSizeWidget _buildAppBar() {
+    final backPressNotifier = ref.read(backPressProvider.notifier);
+    final router = GoRouter.of(context);
     return AppBar(
-      leading: const Icon(Icons.arrow_back_ios_new),
+      leading: InkWell(
+        onTap: () {
+          backPressNotifier.reset();
+          router.pop();
+        },
+        child: const Icon(Icons.arrow_back_ios_new),
+      ),
       actions: [
         StepIndicator(current: widget.currentStep, total: widget.totalSteps),
       ],
@@ -130,7 +149,7 @@ class _SetUppRofiledState extends ConsumerState<AddCOowner> {
             widget.description,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               fontFamily: FontFamilies.interDisplay,
-              fontWeight: FontFamilies.light,
+              fontWeight: FontFamilies.medium,
             ),
           ),
           const SizedBox(height: 32),
@@ -212,8 +231,7 @@ class _SetUppRofiledState extends ConsumerState<AddCOowner> {
 
     return ActionButton(
       label: 'Continue',
-      onPressed:
-          formState.allValid ? _submitForm : null,
+      onPressed: formState.allValidAddmember ? _submitForm : null,
     );
   }
 }

@@ -42,11 +42,11 @@ class _PasswordInputFieldState extends ConsumerState<PasswordInputField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextFormField(
-
           obscureText: !_showPassword,
           decoration: _buildInputDecoration(),
           onChanged: (value) {
             ref.read(formProvider.notifier).updatePassword(value);
+          
             _validatePassword(value);
             widget.onChanged?.call(value);
           },

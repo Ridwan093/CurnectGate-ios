@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/auth/presentation/screen/passresetemailsent.dart';
+import 'package:curnectgate/features/estate_management/estate_onboarding/screen/loading_screen/loading_page.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/estate_management/screen_managment.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
@@ -27,27 +28,35 @@ class _PasswordResetState extends ConsumerState<PasswordReset> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   void _submitForm() {
-    ref.read(formProvider.notifier).updateLoading(true);
-
     final email = _emailController.text;
     final pass = _passwordController.text;
 
     log('Email: $email');
     log('Phone: $pass');
-  
+    ref
+        .read(formProvider.notifier)
+        .forgetPass(context: context, email: email, ref: ref);
 
-     //domin rougte chang later PasswordReset
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) =>   PasswordResetSend()),
-        );
+    //domin rougte chang later PasswordReset
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => PasswordResetSend()),
+    // );
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+    final state = ref.watch(formProvider);
 
-    return Scaffold(appBar: _buildAppBar(),bottomNavigationBar: _buildBottomAction(), body: _biuldbody(size));
+    return Scaffold(
+      appBar: state.isLoading ? null : _buildAppBar(),
+      bottomNavigationBar: state.isLoading ? null : _buildBottomAction(),
+      body:
+          state.isLoading
+              ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)
+              : _biuldbody(size),
+    );
   }
 
   Widget _biuldbody(Size size) {
@@ -97,7 +106,7 @@ class _PasswordResetState extends ConsumerState<PasswordReset> {
               fontWeight: FontFamilies.bold,
             ),
           ),
-         
+
           const SizedBox(height: 24),
           ReusabelProfileForm(
             controller: _emailController,
@@ -115,14 +124,15 @@ class _PasswordResetState extends ConsumerState<PasswordReset> {
                   );
             },
           ),
-        
         ],
       ),
     );
   }
 
-
   Widget _buildBottomAction() {
-    return ActionButton(label: 'Email me a recovery link', onPressed: _submitForm);
+    return ActionButton(
+      label: 'Email me a recovery link',
+      onPressed: _submitForm,
+    );
   }
 }

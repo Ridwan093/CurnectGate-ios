@@ -41,6 +41,23 @@ class ReportNotifier extends StateNotifier<GenerateState> {
     state = state.copyWith(visitperiod: period);
   }
 
+  void setSecuriteLevel(String? level) {
+    log(level!);
+    state = state.copyWith(securitylevel: level);
+  }
+
+  void setVehicleNume(String vehiclenumber) {
+    state = state.copyWith(vehiclenumber: vehiclenumber);
+  }
+
+  void setPhoneNume(String phoneNumber) {
+    state = state.copyWith(phoneNumber: phoneNumber);
+  }
+
+  void setAdditionalInfo(bool info) {
+    state = state.copyWith(isAdditionalInfo: info);
+  }
+
   void setVisitorName(String visitorName) {
     state = state.copyWith(vistorName: visitorName);
   }
@@ -67,9 +84,9 @@ class ReportNotifier extends StateNotifier<GenerateState> {
         selectedDate: date,
         selectedTime: time,
       );
-     final updatedList = [...state.generatedList, generatedList];
+      final updatedList = [...state.generatedList, generatedList];
 
-state = state.copyWith(generatedList: updatedList); 
+      state = state.copyWith(generatedList: updatedList);
 
       log("Name: $name, Purpose:$purposeofVisit, Time: $validatorperiod");
       await Future.delayed(const Duration(seconds: 2));

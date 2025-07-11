@@ -2,19 +2,20 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/auth/presentation/screen/memeber_getstarted.dart';
+import 'package:curnectgate/features/estate_management/estate_onboarding/screen/loading_screen/loading_page.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/stepcount.dart';
 import 'package:curnectgate/features/estate_management/screen_managment.dart'
     show BaseVerificationScreen;
 import 'package:curnectgate/features/member_management/profile_form/otp_form.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class OtpScreen extends BaseVerificationScreen {
-  final String email;
+  final Map<String, dynamic>? data;
 
-  const OtpScreen(this.email, {super.key})
+  const OtpScreen(this.data, {super.key})
     : super(
         currentStep: 5,
         totalSteps: 5,
@@ -27,14 +28,38 @@ class OtpScreen extends BaseVerificationScreen {
 }
 
 class _OtpScreenState extends ConsumerState<OtpScreen> {
+  final TextEditingController _otpController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _otpController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+    final state = ref.watch(formProvider);
 
     return Scaffold(
-      appBar: _buildAppBar(),
-      bottomNavigationBar: _buildBottomAction(),
-      body: _biuldbody(size),
+      appBar: state.isLoading ? null : _buildAppBar(),
+      bottomNavigationBar:
+          state.isLoading
+              ? null
+              : _buildVerifyButton(
+                widget.data!["email"] ?? "",
+                _otpController.text.trim(),
+                context,
+              ),
+      body:
+          state.isLoading
+              ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)
+              : _biuldbody(size),
     );
   }
 
@@ -72,33 +97,40 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
           ),
           const SizedBox(height: 10),
 
-          _buildrichText(
-            firsttext: widget.description,
-            secondtext: widget.email,
-            lasttext: ' please enter below',
+          _buildEmailRichText(
+            firstText: widget.description,
+            email: widget.data!["email"] ?? "",
+            lastText: ' please enter below',
+            visibleStartChars: 3,
+            visibleEndChars: 3,
           ),
 
+          // Displays: "exa****ser@domain.com"
           const SizedBox(height: 42),
 
           OtpInputField(
-            activeColor: AppColors.instance.grey400,
+            controller: _otpController,
+            activeColor: AppColors.instance.yellow500,
             filledColor: AppColors.instance.yellow500,
             defaultColor: AppColors.instance.grey400,
             length: 6,
-            onCompleted: (otp) {
-              log('Completed OTP: $otp');
-
-              // Handle OTP verification here
+            onChanged: (value) {
+              log(value);
+              ref
+                  .read(formProvider.notifier)
+                  .updateOtp(value, value.isNotEmpty);
             },
           ),
           const SizedBox(height: 32),
-          _buildResend(),
+          _buildResend(widget.data!["email"] ?? ""),
         ],
       ),
     );
   }
 
-  Widget _buildResend() {
+  Widget _buildResend(String email) {
+    final formState = ref.watch(formProvider);
+    final formNotifier = ref.read(formProvider.notifier);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -112,24 +144,51 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
             color: AppColors.instance.black300,
           ),
         ),
-        Text(
-          "Resend",
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontSize: 12,
-            fontWeight: FontFamilies.bold,
-            color: AppColors.instance.black400,
+        InkWell(
+          onTap:
+              formState.isResendOtpEnabled
+                  ? () => formNotifier.requestNewOtp(
+                    context: context,
+                    email: email,
+                    ref: ref,
+                  )
+                  : null,
+          child: Text(
+            formState.isResendOtpEnabled
+                ? 'Resend'
+                : 'Wait ${formState.resendCountdownTime}s',
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              fontSize: 12,
+              fontWeight: FontFamilies.bold,
+              color: AppColors.instance.black400,
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildrichText({
-    required String firsttext,
-    required String secondtext,
-    required lasttext,
+  Widget _buildEmailRichText({
+    required String email,
+    required String firstText,
+    required String lastText,
+    int visibleStartChars = 3,
+    int visibleEndChars = 3,
   }) {
+    // Split the email into parts
+    final atIndex = email.indexOf('@');
+    if (atIndex == -1) return Text(email); // Not a valid email format
+
+    final username = email.substring(0, atIndex);
+    final domain = email.substring(atIndex);
+
+    // Hide middle characters of username
+    final hiddenUsername =
+        username.length > (visibleStartChars + visibleEndChars)
+            ? '${username.substring(0, visibleStartChars)}${'*' * (username.length - visibleStartChars - visibleEndChars)}${username.substring(username.length - visibleEndChars)}'
+            : username; // Show full if too short
+
     return RichText(
       text: TextSpan(
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -137,32 +196,55 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
           fontWeight: FontFamilies.light,
         ),
         children: [
-          TextSpan(text: firsttext),
           TextSpan(
+            text: firstText,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontFamily: FontFamilies.interDisplay,
+
+              fontWeight: FontFamilies.light,
+            ),
+          ),
+          TextSpan(
+            text: hiddenUsername + domain,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               fontFamily: FontFamilies.interDisplay,
               fontWeight: FontFamilies.bold,
-              fontSize: 11,
+              fontSize: 12,
             ),
-            text: secondtext,
           ),
-          TextSpan(text: lasttext),
+
+          TextSpan(
+            text: lastText,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontFamily: FontFamilies.interDisplay,
+              fontWeight: FontFamilies.light,
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildBottomAction() {
-    // final isLoading = ref.watch(estateCodeSubmissionProvider).isLoading;
-
+  Widget _buildVerifyButton(String email, String otp, BuildContext context) {
+    final isOtpComplete = ref.watch(
+      formProvider.select((state) => state.isOtpComplete),
+    );
     return ActionButton(
-      label: 'Finish setup',
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => AuthOnboardingScreen()),
-        );
-      },
+      label: 'Verify OTP',
+      onPressed:
+          isOtpComplete
+              ? () {
+              
+                ref
+                    .read(formProvider.notifier)
+                    .verifyOTP(
+                      context: context,
+                      email: email,
+                      otp: otp,
+                      ref: ref,
+                    );
+              }
+              : null,
     );
   }
 }

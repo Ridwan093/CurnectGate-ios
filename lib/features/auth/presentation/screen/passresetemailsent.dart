@@ -1,6 +1,5 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/auth/presentation/screen/creatnewpassword.dart';
 import 'package:flutter/material.dart';
 
 class PasswordResetSend extends StatelessWidget {
@@ -99,10 +98,10 @@ class PasswordResetSend extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   //domin rougte chang later PasswordReset
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => NewPassword()),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => NewPassword()),
+                  // );
                 },
                 child: Text(
                   'Resend Link',

@@ -13,6 +13,7 @@ class AppRoutes {
   static const String passReset = 'auth_resetPass';
   static const String oTPCode = 'auth_otpCode';
   static const String activateOTP = 'auth_activateOtp';
+    static const String passRestOtpVerify = 'pass_otp_verify';
 
   // ------------------------------------------------------------------
   // Member Management (Your original names + slight grouping)

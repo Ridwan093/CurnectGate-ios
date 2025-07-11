@@ -1,4 +1,5 @@
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/estate_management/estate_onboarding/screen/loading_screen/loading_page.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/progresscontainer.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/stepcount.dart';
@@ -45,10 +46,9 @@ class PasswordScreen extends BaseVerificationScreen {
 
 class _PasswordScreenState extends ConsumerState<PasswordScreen> {
   void _submitForm() {
-
     ref
         .read(formProvider.notifier)
-        .submitCode(
+        .completeRegristration(
           context: context,
           pass: '',
           firstName: widget.firstName,
@@ -66,11 +66,15 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+    final state = ref.watch(formProvider);
 
     return Scaffold(
-      appBar: _buildAppBar(),
-      bottomNavigationBar: _buildBottomAction(),
-      body: _biuldbody(size),
+      appBar: state.isLoading ? null : _buildAppBar(),
+      bottomNavigationBar: state.isLoading ? null : _buildBottomAction(),
+      body:
+          state.isLoading
+              ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)
+              : _biuldbody(size),
     );
   }
 
@@ -146,14 +150,14 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
   }
 
   Widget _buildBottomAction() {
-    // final isLoading = ref.watch(estateCodeSubmissionProvider).isLoading;
-
     return Consumer(
       builder: (context, ref, _) {
-        final formState = ref.watch(formProvider);
+        final isValid = ref.watch(
+          formProvider.select((state) => state.passValid),
+        );
         return ActionButton(
           label: 'Finish setup',
-          onPressed: formState.allValid ? _submitForm : null,
+          onPressed: isValid ? _submitForm : null,
         );
       },
     );

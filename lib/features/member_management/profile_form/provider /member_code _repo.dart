@@ -60,6 +60,7 @@ class MemberCodeSubmissionNotifier extends AutoDisposeAsyncNotifier<void> {
         formState.code,
         estateCode,
         estateName,
+        context,
       );
       log(formState.code);
       final validationState = ref.read(validationProvider);
@@ -73,6 +74,7 @@ class MemberCodeSubmissionNotifier extends AutoDisposeAsyncNotifier<void> {
       if (context.mounted) {}
     } finally {
       formNotifier.setLoading(false);
+      formNotifier.updateCode("", 0);
     }
   }
 

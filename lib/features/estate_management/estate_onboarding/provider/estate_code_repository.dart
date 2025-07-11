@@ -48,10 +48,16 @@ class EstateCodeSubmissionNotifier extends AutoDisposeAsyncNotifier<void> {
 
       if (response['status'] == true) {
         formNotifier.clearApiError();
+        formNotifier.setApiError('');
 
         if (context.mounted) {
-          context.goNamed(AppRoutes.confirmInfomation, extra: response['data']);
+          formNotifier.setApiError('');
+          context.pushNamed(
+            AppRoutes.confirmInfomation,
+            extra: response['data'],
+          );
           formNotifier.setLoading(false);
+          state = const AsyncValue.data(null);
         }
         formNotifier.setLoading(false);
         state = const AsyncValue.data(null);
@@ -71,7 +77,7 @@ class EstateCodeSubmissionNotifier extends AutoDisposeAsyncNotifier<void> {
           context: context,
           message:
               "Network unavailable. Please check your internet connection.",
-          color: AppColors.instance.error600,
+          color: AppColors.instance.error500,
           icon: Icons.close,
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
@@ -89,7 +95,9 @@ class EstateCodeSubmissionNotifier extends AutoDisposeAsyncNotifier<void> {
       state = AsyncValue.error(e, st);
     } finally {
       formNotifier.setLoading(false);
+      formNotifier.updateCode("", 0);
       state = const AsyncValue.data(null);
+      state = AsyncValue.error('', StackTrace.current);
     }
   }
 }

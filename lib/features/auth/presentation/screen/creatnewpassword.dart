@@ -2,21 +2,23 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/estate_management/estate_onboarding/screen/loading_screen/loading_page.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/estate_management/screen_managment.dart';
 import 'package:curnectgate/features/member_management/profile_form/passwordform.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
-import 'package:curnectgate/features/member_management/screen/add_member.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class NewPassword extends BaseVerificationScreen {
-  const NewPassword({super.key})
+  final String token;
+  final String localEmail;
+  const NewPassword({super.key, required this.localEmail, required this.token})
     : super(
         currentStep: 4,
         totalSteps: 5,
-        title: "Hi Sam.👋🏻",
-        description: 'Sign in to continue',
+        title: "Hey .👋🏻",
+        description: 'You almost there ',
       );
 
   @override
@@ -24,35 +26,31 @@ class NewPassword extends BaseVerificationScreen {
 }
 
 class _SignInState extends ConsumerState<NewPassword> {
-  final TextEditingController _newpassController = TextEditingController();
-  final TextEditingController _reEnterpassController = TextEditingController();
   void _submitForm() {
-    ref.read(formProvider.notifier).updateLoading(true);
-
-    final newpass = _newpassController.text;
-    final reEnterpass = _reEnterpassController.text;
-    if (newpass.contains(reEnterpass)) {
-      log('Email: $newpass');
-      log('Phone: $reEnterpass');
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => AddNewMember()),
-      );
-    } else {
-      log("password do not match");
-      log('Phone: $reEnterpass');
-    }
+    log(widget.token.toString());
+    log(widget.localEmail.toString());
+    ref
+        .read(formProvider.notifier)
+        .creatNewPassword(
+          context: context,
+          email: widget.localEmail,
+          token: widget.token.toString(),
+          ref: ref,
+        );
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+    final state = ref.watch(formProvider);
 
     return Scaffold(
-      appBar: _buildAppBar(),
-      bottomNavigationBar: _buildBottomAction(),
-      body: _biuldbody(size),
+      appBar: state.isLoading ? null : _buildAppBar(),
+      bottomNavigationBar: state.isLoading ? null : _buildBottomAction(),
+      body:
+          state.isLoading
+              ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)
+              : _biuldbody(size),
     );
   }
 
@@ -125,14 +123,18 @@ class _SignInState extends ConsumerState<NewPassword> {
           PasswordInputField(
             hintText: "rge738\$..",
             label: 'Create a password',
-            onChanged: (value) {},
+            onChanged: (value) {
+              ref.read(formProvider.notifier).updateCreateNewPass(value);
+            },
             showErroindicator: false,
           ),
           const SizedBox(height: 8),
           PasswordInputField(
             hintText: "rge738\$..",
-            label: 'Create a password',
-            onChanged: (value) {},
+            label: 'cornfirm a password',
+            onChanged: (value) {
+              ref.read(formProvider.notifier).updateConfirmNewPass(value);
+            },
             showErroindicator: true,
           ),
         ],
@@ -141,6 +143,12 @@ class _SignInState extends ConsumerState<NewPassword> {
   }
 
   Widget _buildBottomAction() {
-    return ActionButton(label: 'Continue', onPressed: _submitForm);
+    final isOtpComplete = ref.watch(
+      formProvider.select((state) => state.allNewpassValid),
+    );
+    return ActionButton(
+      label: 'Continue',
+      onPressed: isOtpComplete ? _submitForm : null,
+    );
   }
 }

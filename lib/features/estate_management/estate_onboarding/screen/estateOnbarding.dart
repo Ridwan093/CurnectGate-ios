@@ -68,7 +68,7 @@ class EstateOnboardingScreen extends StatelessWidget {
                     label: "Get Started",
                     onPressed: () {
                       // domming navigator
-                      context.goNamed(AppRoutes.estateCodeVerificationScreen);
+                      context.goNamed(AppRoutes.addHoused_CoOnwner);
                      
                     },
                   ),

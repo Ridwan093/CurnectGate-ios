@@ -278,6 +278,34 @@ Widget _buildCurrentView(
         headersubtitle: userRole,
         bottom: bottom,
       );
+       case BottomSheetView.profileUpdat:
+      return BottomsheetDetails(
+        vendor: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+       case BottomSheetView.profilePiceUpdate:
+      return BottomsheetDetails(
+        vendor: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+       case BottomSheetView.deactivateAccount:
+      return BottomsheetDetails(
+        vendor: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+       case BottomSheetView.changePassword:
+      return BottomsheetDetails(
+        vendor: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
   }
 }
 

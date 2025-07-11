@@ -31,7 +31,7 @@ class _ConfirmInfomationState extends ConsumerState<ConfirmInfomation> {
     //   MaterialPageRoute(builder: (context) => MemberIdchecker()),
     // );
 
-      context.goNamed(AppRoutes.memberIdCheck, extra:widget.estateData, );
+    context.pushNamed(AppRoutes.memberIdCheck, extra: widget.estateData);
   }
 
   @override
@@ -103,8 +103,3 @@ class _ConfirmInfomationState extends ConsumerState<ConfirmInfomation> {
     return ActionButton(label: 'Yes, Confirm', onPressed: _submitForm);
   }
 }
-
-
-
-
-

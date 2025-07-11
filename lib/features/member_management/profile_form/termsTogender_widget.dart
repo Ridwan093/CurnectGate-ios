@@ -71,9 +71,9 @@ class GenderAndTermsWidget extends ConsumerWidget {
                   ),
                 ),
                 DropdownMenuItem(
-                  value: 'Male',
+                  value: 'male',
                   child: Text(
-                    'Male',
+                    'male',
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       color: AppColors.instance.black600,
@@ -82,9 +82,9 @@ class GenderAndTermsWidget extends ConsumerWidget {
                 ),
 
                 DropdownMenuItem(
-                  value: 'Female',
+                  value: 'female',
                   child: Text(
-                    'Female',
+                    'female',
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       color: AppColors.instance.black600,

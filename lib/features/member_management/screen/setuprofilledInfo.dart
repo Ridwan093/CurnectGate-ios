@@ -51,7 +51,7 @@ class _SetUppRofiledState extends ConsumerState<SetUppRofiled> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   void _submitForm() {
-   final state = ref.read(formProvider);
+    final state = ref.read(formProvider);
     final firstName = _firstNameController.text;
     final lastName = _lastNameController.text;
     final email = _emailController.text;
@@ -81,21 +81,21 @@ class _SetUppRofiledState extends ConsumerState<SetUppRofiled> {
     //   MaterialPageRoute(builder: (context) => PasswordScreen(firstName, email)),
     // );
 
-   context.goNamed(
-  AppRoutes.memberPassCreated,
-  extra: {
-    "role": widget.role,
-    "memberCode": widget.memberCode,
-    "estateCode": widget.estateCode, // Note: lowercase 'c' in route
-    "userEmail": widget.userEmail,
-    "userPhone": widget.userPhone,
-    "digitalID": widget.digitalID,
-    "firstName": firstName,
-    "lastName": lastName, // Fixed from 'flastName' to 'lastName'
-    "terms": state.agreedToTerms,
-    "gender": state.gender,
-  },
-);
+    context.pushNamed(
+      AppRoutes.memberPassCreated,
+      extra: {
+        "role": widget.role,
+        "memberCode": widget.memberCode,
+        "estateCode": widget.estateCode, // Note: lowercase 'c' in route
+        "userEmail": widget.userEmail,
+        "userPhone": widget.userPhone,
+        "digitalID": widget.digitalID,
+        "firstName": firstName,
+        "lastName": lastName, // Fixed from 'flastName' to 'lastName'
+        "terms": state.agreedToTerms,
+        "gender": state.gender,
+      },
+    );
   }
 
   @override

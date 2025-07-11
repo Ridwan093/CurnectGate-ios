@@ -8,5 +8,22 @@ final dioProvider = Provider(
           baseUrl: "https://staging.curnectgate.com",
           headers: {'Content-Type': 'application/json'},
         )
-        ..interceptors.add(LogInterceptor(responseBody: true)),
+        // ..interceptors.add(LogInterceptor(responseBody: true)),
+        ..interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) async {
+              // Only proceed with token if this request requires auth
+              if (options.extra['requiresAuth'] == true) {}
+              return handler.next(options);
+            },
+          ),
+        )
+        ..interceptors.add(
+          LogInterceptor(
+            request: true,
+            responseBody: true,
+            requestBody: true,
+            error: true,
+          ),
+        ),
 );

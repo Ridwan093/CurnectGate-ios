@@ -136,7 +136,10 @@ class _PasswordScreenState extends ConsumerState<MemberSelection> {
       left: 0,
       child: Consumer(
         builder: (context, ref, _) {
-          return ActionButton(label: 'Continue', onPressed: _submitForm);
+          return ActionButton(
+            label: 'Continue',
+            onPressed: selectedRole != null ? _submitForm : null,
+          );
         },
       ),
     );
