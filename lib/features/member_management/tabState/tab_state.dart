@@ -7,6 +7,11 @@ class TabStateNotifier extends StateNotifier<int> {
   void setTab(int index) {
     state = index;
   }
+
+  void resetToMainTab() {
+    state = 0; // Reset to main tab (index 0)
+  }
+
 }
 
 final tabStateProvider = StateNotifierProvider<TabStateNotifier, int>((ref) {

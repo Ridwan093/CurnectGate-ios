@@ -1,116 +1,163 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/%20operations/violation/model/report_model.dart';
+import 'package:curnectgate/features/%20operations/violation/report_provider/getCategory_provider.dart';
 import 'package:curnectgate/features/%20operations/violation/report_provider/report_provider.dart';
+import 'package:curnectgate/features/%20operations/violation/widget/category_dropdwon.dart';
+import 'package:curnectgate/features/%20operations/violation/widget/estate_dropdwon_Address.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
+import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ReportForm extends ConsumerWidget {
+class ReportForm extends ConsumerStatefulWidget {
   const ReportForm({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _ReportFormState();
+}
+
+class _ReportFormState extends ConsumerState<ReportForm> {
+  late TextEditingController decController;
+
+  @override
+  void initState() {
+    super.initState();
+  
+    decController = TextEditingController(
+      text: ref.read(reportProvider).report.description,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final reportState = ref.watch(reportProvider);
     final report = reportState.report;
-    final isLoading = reportState.isLoading;
+    final isLoading = ref.watch(formProvider).reportLoading;
+    // final isLoading = reportState.isLoading;
+
     final size = MediaQuery.sizeOf(context);
 
     return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom ,
-          left: 0,
-          right: 0,
-          top: 0,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 20),
-
-              // 1. Category dropdown (no Expanded!)
-              _buildCategoryDropdown(ref, report.category),
-              const SizedBox(height: 20),
-
-              // 2. Description field (no Expanded!)
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Description',
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: AppColors.instance.black500),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: AppColors.instance.black500),
-                  ),
-                  labelStyle: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    color: AppColors.instance.black500,
-                  ),
-                ),
-                maxLines: 3,
-                onChanged:
-                    (value) =>
-                        ref.read(reportProvider.notifier).setDescription(value),
-              ),
-
-              const SizedBox(height: 8.0),
-              Text(
-                "Maximum 100 characters",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black300,
-                  fontSize: 13,
-                ),
-              ),
-
-              const SizedBox(height: 20),
-              const SizedBox(height: 25),
-              Text(
-                "Uploade image Proof",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black500,
-                  fontWeight: FontFamilies.bold,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Row(
+      child: Stack(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+              left: 0,
+              right: 0,
+              top: 0,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildImagePicker(
-                    ref,
-                    index: 0,
-                    imagePaths: report.imagePaths,
-                    files: report.files,
+                  const SizedBox(height: 20),
+
+                  // 1. Category dropdown (no Expanded!)
+                  _buildCategoryDropdown(ref, report.category ?? "", context),
+                  const SizedBox(height: 20),
+
+                  // 2. Description field (no Expanded!)
+                  TextFormField(
+                    controller: decController,
+                    decoration: InputDecoration(
+                      labelText: 'Description',
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: AppColors.instance.black500,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: AppColors.instance.black500,
+                        ),
+                      ),
+                      labelStyle: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        color: AppColors.instance.black500,
+                      ),
+                    ),
+                    maxLines: 3,
+                    onChanged:
+                        (value) => ref
+                            .read(reportProvider.notifier)
+                            .setDescription(value),
                   ),
-                  const SizedBox(width: 20),
-                  _buildImagePicker(
-                    ref,
-                    index: 1,
-                    imagePaths: report.imagePaths,
-                    files: report.files,
+
+                  const SizedBox(height: 8.0),
+                  Text(
+                    "Maximum 100 characters",
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      color: AppColors.instance.black300,
+                      fontSize: 13,
+                    ),
                   ),
+
+                  const SizedBox(height: 20),
+                  // Replace your existing dropdown with:
+                  const CustomSearchDropdown(),
+                  const SizedBox(height: 25),
+                  Text(
+                    "Uploade image Proof",
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      color: AppColors.instance.black500,
+                      fontWeight: FontFamilies.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      _buildImagePicker(
+                        ref,
+                        index: 0,
+                        imagePaths: report.imagePaths,
+                        files: report.files,
+                      ),
+                      const SizedBox(width: 20),
+                      _buildImagePicker(
+                        ref,
+                        index: 1,
+                        imagePaths: report.imagePaths,
+                        files: report.files,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  // 3. Optional anonymous toggle
+                  _buildanonymousHide(report, ref),
+
+                  const SizedBox(height: 20),
+
+                  // 4. Submit button
+                  _buildSubmitButton(size: size, ref: ref, context: context),
                 ],
               ),
-              const SizedBox(height: 20),
-              // 3. Optional anonymous toggle
-              _buildanonymousHide(report, ref),
-
-              const SizedBox(height: 20),
-
-              // 4. Submit button
-              _buildSubmitButton(
-                size: size,
-                isLoading: isLoading,
-                ref: ref,
-                context: context,
-              ),
-            ],
+            ),
           ),
-        ),
+          if (isLoading)
+            Positioned.fill(
+              child: Container(
+                color: AppColors.instance.black100.withOpacity(.4),
+                height: MediaQuery.sizeOf(context).height,
+                child: SizedBox(
+                  height: 30,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.instance.yellow500,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -161,20 +208,71 @@ double bottomPadding(BuildContext ctx) {
 
 Widget _buildSubmitButton({
   required Size size,
-  required bool isLoading,
+
   required WidgetRef ref,
   required BuildContext context,
 }) {
+  final valid = ref.watch(reportProvider);
+  final report = valid.report;
   return InkWell(
-    onTap: isLoading ? null : () => _submitReport(ref, context),
+    onTap: () {
+      if (report.category!.isEmpty) {
+        showCustomSuccessToast(
+          context: context,
+          message: "Please selecte category!",
+          color: AppColors.instance.grey200,
+          icon: Icons.error,
+          iconColors: AppColors.instance.black600,
+          positionNumber: 70,
+        );
+      } else if (report.description.isEmpty) {
+        showCustomSuccessToast(
+          context: context,
+          message: "Please add description!",
+          color: AppColors.instance.grey200,
+          icon: Icons.error,
+          iconColors: AppColors.instance.black600,
+          positionNumber: 70,
+        );
+      } else if (report.addressId!.isEmpty) {
+        showCustomSuccessToast(
+          context: context,
+          message: "please selected Addrees you wish to report!",
+          color: AppColors.instance.grey200,
+          icon: Icons.error,
+          iconColors: AppColors.instance.black600,
+          positionNumber: 70,
+        );
+      } else if (report.categoryID!.isEmpty) {
+        showCustomSuccessToast(
+          context: context,
+          message: "Please selecte category!",
+          color: AppColors.instance.grey200,
+          icon: Icons.error,
+          iconColors: AppColors.instance.black600,
+          positionNumber: 70,
+        );
+      }
+      if (report.files.isEmpty || report.imagePaths.isEmpty) {
+        showCustomSuccessToast(
+          context: context,
+          message: "at least one proof required!",
+          color: AppColors.instance.grey200,
+          icon: Icons.error,
+          iconColors: AppColors.instance.black600,
+          positionNumber: 70,
+        );
+      } else {
+        ref
+            .read(formProvider.notifier)
+            .createReport(context: context, ref: ref);
+      }
+    },
     child: Container(
       height: 50,
       width: size.width,
       decoration: BoxDecoration(
-        color:
-            isLoading
-                ? AppColors.instance.grey400
-                : AppColors.instance.black600,
+        color: AppColors.instance.black600,
 
         borderRadius: BorderRadius.circular(10),
       ),
@@ -194,48 +292,196 @@ Widget _buildSubmitButton({
   );
 }
 
-Widget _buildCategoryDropdown(WidgetRef ref, String currentValue) {
-  final categories = {
-    'Improper Parking': 'Vehicle parked in no-parking zone',
-    'Wrong Way Driving': 'Vehicle moving against traffic',
-    'Speeding': 'Vehicle exceeding speed limit',
-    'Other': 'Other traffic violation',
-  };
+Widget _buildCategoryDropdown(
+  WidgetRef ref,
+  String currentValue,
+  BuildContext context,
+) {
+  final categoryAsync = ref.watch(estatCategoryProvider);
+  log(currentValue);
 
-  return SizedBox(
-    child: DropdownButtonFormField<String>(
-      value: currentValue.isEmpty ? null : currentValue,
-      decoration: InputDecoration(
-        labelText: 'Category',
-        border: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.instance.black500),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.instance.black500),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.instance.black500),
-        ),
-        labelStyle: TextStyle(
-          fontFamily: FontFamilies.interDisplay,
-          color: AppColors.instance.black500,
-        ),
-      ),
-      items:
-          categories.entries.map((entry) {
-            return DropdownMenuItem(
-              value: entry.key,
-              child: Text(
-                entry.key,
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black600,
-                ),
-              ),
+  return categoryAsync.when(
+    data: (profile) {
+      try {
+        final user = profile?.data;
+        return user != null
+            ? CategoryDropdown(currentValue: currentValue, data: user)
+            : _buildEmptyState(
+              () => ref
+                  .read(estatCategoryProvider.notifier)
+                  .refreshCategory(context, ref),
             );
-          }).toList(),
-      onChanged:
-          (value) => ref.read(reportProvider.notifier).setCategory(value!),
+      } catch (e) {
+        return _buildErrorUI(
+          e.toString(),
+          ref,
+          context,
+          () => ref
+              .read(estatCategoryProvider.notifier)
+              .refreshCategory(context, ref),
+        );
+      }
+    },
+    loading: () {
+      try {
+        final cachedCategory = ref.read(estatCategoryProvider).value;
+        return cachedCategory != null
+            ? CategoryDropdown(
+              currentValue: currentValue,
+              data: cachedCategory.data,
+            )
+            : _buildLoadingState();
+      } catch (e) {
+        return _buildErrorUI(
+          e.toString(),
+          ref,
+          context,
+          () => ref
+              .read(estatCategoryProvider.notifier)
+              .refreshCategory(context, ref),
+        );
+      }
+    },
+    error: (error, stack) {
+      try {
+        // Handle session expiration
+        if (error.toString().contains("Unauthenticated")) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ref.read(authProvider.notifier).seassionExpire(context, ref);
+          });
+          return _buildSessionExpiredUI(
+            () => ref
+                .read(estatCategoryProvider.notifier)
+                .refreshCategory(context, ref),
+          );
+        }
+
+        // Try to show cached data
+        final cachedCategory = ref.read(estatCategoryProvider).value;
+        if (cachedCategory != null) {
+          return Column(
+            children: [
+              CategoryDropdown(
+                currentValue: currentValue,
+                data: cachedCategory.data,
+              ),
+              _buildNetworkWarningBanner(
+                error.toString(),
+                () => ref
+                    .read(estatCategoryProvider.notifier)
+                    .refreshCategory(context, ref),
+              ),
+            ],
+          );
+        }
+
+        // No cached data available
+        return _buildErrorUI(
+          error.toString(),
+          ref,
+          context,
+          () => ref
+              .read(estatCategoryProvider.notifier)
+              .refreshCategory(context, ref),
+        );
+      } catch (e) {
+        return _buildErrorUI(
+          e.toString(),
+          ref,
+          context,
+          () => ref
+              .read(estatCategoryProvider.notifier)
+              .refreshCategory(context, ref),
+        );
+      }
+    },
+  );
+}
+
+Widget _buildLoadingState() {
+  return Center(
+    child: CircularProgressIndicator(color: AppColors.instance.yellow500),
+  );
+}
+
+Widget _buildEmptyState(VoidCallback onRetry) {
+  return Center(
+    child: RichText(
+      text: TextSpan(
+        style: const TextStyle(color: Colors.black87),
+        children: [
+          const TextSpan(text: "No catetgory data available. "),
+          WidgetSpan(
+            child: TextButton(onPressed: onRetry, child:  Text("Retry",style: TextStyle(fontFamily: FontFamilies.interDisplay,color: AppColors.instance.black600),)),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget _buildSessionExpiredUI(VoidCallback onLogin) {
+  return Center(
+    child: RichText(
+      text: TextSpan(
+        style: const TextStyle(color: Colors.black87),
+        children: [
+          const TextSpan(text: "Your session has expired. "),
+          WidgetSpan(
+            child: TextButton(
+              onPressed: onLogin,
+              child:  Text("Login again",style: TextStyle(fontFamily: FontFamilies.interDisplay,color: AppColors.instance.black600)),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget _buildNetworkWarningBanner(String error, VoidCallback onRetry) {
+  return Container(
+    padding: const EdgeInsets.all(12),
+    color: Colors.orange[100],
+    child: RichText(
+      text: TextSpan(
+        style: const TextStyle(fontSize: 14, color: Colors.black87),
+        children: [
+          TextSpan(text: "Connection issue: ${error.split(':').first}. "),
+          WidgetSpan(
+            child: TextButton(onPressed: onRetry, child:  Text("Retry",style: TextStyle(fontFamily: FontFamilies.interDisplay,color: AppColors.instance.black600))),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget _buildErrorUI(
+  String error,
+  WidgetRef ref,
+  BuildContext context,
+  VoidCallback onRetry,
+) {
+  return Center(
+    child: RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        style: TextStyle(
+          fontFamily: FontFamilies.interDisplay,
+          fontSize: 16,
+          color: AppColors.instance.error600,
+        ),
+        children: [
+          const TextSpan(text: "Failed to load data. "),
+          WidgetSpan(
+            child: TextButton(
+              onPressed: onRetry,
+              child:  Text("Try Again",style: TextStyle(fontFamily: FontFamilies.interDisplay,color: AppColors.instance.black600)),
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -244,7 +490,7 @@ Widget _buildImagePicker(
   WidgetRef ref, {
   required int index,
   required Map<int, String> imagePaths,
-  required Map<int, ReportFile> files,
+  required Map<int, String> files,
 }) {
   final hasImage = imagePaths.containsKey(index);
   final hasFile = files.containsKey(index);
@@ -264,16 +510,19 @@ Widget _buildImagePicker(
         image:
             hasImage
                 ? DecorationImage(
-                  image: FileImage(File(imagePaths[index]!)),
+                  image: FileImage(File(imagePaths[index] ?? '')),
                   fit: BoxFit.cover,
                 )
-                : null,
+                : DecorationImage(
+                  image: FileImage(File(files[index] ?? '')),
+                  fit: BoxFit.cover,
+                ),
       ),
       child:
           hasImage
               ? null
               : hasFile
-              ? _buildFilePreview(files[index]!)
+              ? null
               : Icon(
                 Icons.add_circle,
                 size: 30,
@@ -281,75 +530,4 @@ Widget _buildImagePicker(
               ),
     ),
   );
-}
-
-Widget _buildFilePreview(ReportFile file) {
-  return Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          _getFileIcon(file.type),
-          size: 40,
-          color: AppColors.instance.black500,
-        ),
-        const SizedBox(height: 5),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: Text(
-            file.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontSize: 12,
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-IconData _getFileIcon(String type) {
-  switch (type) {
-    case 'pdf':
-      return Icons.picture_as_pdf;
-    case 'doc':
-    case 'docx':
-      return Icons.description;
-    case 'txt':
-      return Icons.text_snippet;
-    default:
-      return Icons.insert_drive_file;
-  }
-}
-
-Future<void> _submitReport(WidgetRef ref, BuildContext context) async {
-  final report = ref.read(reportProvider).report;
-
-  if (report.category.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please select a report category')),
-    );
-    return;
-  }
-
-  if (report.description.isEmpty) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Please enter a description')));
-    return;
-  }
-
-  try {
-    await ref.read(reportProvider.notifier).submitReport();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Report submitted successfully!')),
-    );
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Failed to submit report: ${e.toString()}')),
-    );
-  }
 }

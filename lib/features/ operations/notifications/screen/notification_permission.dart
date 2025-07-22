@@ -2,7 +2,7 @@ import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/%20operations/notifications/event/event.dart';
-import 'package:curnectgate/features/member_management/screen/membership_ID/memberIDScreen.dart';
+import 'package:curnectgate/features/member_management/membership_ID/mainScreen/memberIDScreen.dart';
 import 'package:flutter/material.dart';
 
 class NotificationPermissionScreen extends StatelessWidget {

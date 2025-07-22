@@ -69,10 +69,10 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
     final state = ref.watch(formProvider);
 
     return Scaffold(
-      appBar: state.isLoading ? null : _buildAppBar(),
-      bottomNavigationBar: state.isLoading ? null : _buildBottomAction(),
+      appBar: state.creatPassLoading ? null : _buildAppBar(),
+      bottomNavigationBar: state.creatPassLoading ? null : _buildBottomAction(),
       body:
-          state.isLoading
+          state.creatPassLoading
               ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)
               : _biuldbody(size),
     );

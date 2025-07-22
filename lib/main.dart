@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:curnectgate/core/navigation/app_rout.dart';
+import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/chat/data/chat_model/message_model.dart';
 import 'package:curnectgate/features/chat/data/chat_model/messages_Enum/M_enum.dart';
 import 'package:curnectgate/features/chat/data/hive_migration.dart';
@@ -53,7 +54,13 @@ class MyApp extends ConsumerWidget {
     final router = ref.watch(routerProvider); // Get the router
 
     return MaterialApp.router(
-      // theme: Theme.of(context).,
+      theme: ThemeData(
+        textSelectionTheme: TextSelectionThemeData(
+          selectionColor: AppColors.instance.teal400,
+          selectionHandleColor: AppColors.instance.teal400,
+          cursorColor: Colors.black,
+        ),
+      ),
       routerConfig: router, // GoRouter integration
       debugShowCheckedModeBanner: false,
       title: 'CurnectGate',

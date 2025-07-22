@@ -121,7 +121,7 @@ class ChangePasswordSheet extends ConsumerWidget {
                     }
                     : null,
             label:
-                formSate.isLoading
+                formSate.changProfilePassLoading
                     ? CircularProgressIndicator(
                       color: AppColors.instance.yellow500,
                     )

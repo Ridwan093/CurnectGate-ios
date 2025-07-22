@@ -8,7 +8,7 @@ import 'package:curnectgate/features/chat/presentation/chat_widget/displayFileCa
 import 'package:curnectgate/features/chat/presentation/chat_widget/displayimage.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/messagesBubbles.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
-import 'package:curnectgate/features/member_management/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';

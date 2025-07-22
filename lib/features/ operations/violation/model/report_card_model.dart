@@ -9,7 +9,18 @@ class Reports {
   final int size;
   final String type;
 
-  const Reports({ required   this.category, required this.description,required   this.files, required this.imagePaths,required   this.name, required this.isAnonymous,required   this.path, required this.size,required   this.type,});
+
+  const Reports({
+    required this.category,
+    required this.description,
+    required this.files,
+    required this.imagePaths,
+    required this.name,
+    required this.isAnonymous,
+    required this.path,
+    required this.size,
+    required this.type,
+  });
 
   Reports copyWith({
     String? category,

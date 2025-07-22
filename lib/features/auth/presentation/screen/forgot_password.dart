@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/auth/presentation/screen/passresetemailsent.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/screen/loading_screen/loading_page.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/estate_management/screen_managment.dart';
@@ -50,10 +49,10 @@ class _PasswordResetState extends ConsumerState<PasswordReset> {
     final state = ref.watch(formProvider);
 
     return Scaffold(
-      appBar: state.isLoading ? null : _buildAppBar(),
-      bottomNavigationBar: state.isLoading ? null : _buildBottomAction(),
+      appBar: state.forgetPaSsLoading ? null : _buildAppBar(),
+      bottomNavigationBar: state.forgetPaSsLoading ? null : _buildBottomAction(),
       body:
-          state.isLoading
+          state.forgetPaSsLoading
               ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)
               : _biuldbody(size),
     );

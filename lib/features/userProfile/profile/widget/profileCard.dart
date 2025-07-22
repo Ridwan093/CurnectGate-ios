@@ -70,7 +70,7 @@ class Profilecard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontFamily: FontFamilies.interDisplay,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontWeight: FontFamilies.bold,
                             color: AppColors.instance.black600,
                           ),

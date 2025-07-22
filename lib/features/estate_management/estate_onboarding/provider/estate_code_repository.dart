@@ -7,7 +7,7 @@ import 'package:curnectgate/core/%20utils/api/api_method.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/model/estate_code_validator_state.dart';
-import 'package:curnectgate/features/member_management/widget/customtoast.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,6 +52,14 @@ class EstateCodeSubmissionNotifier extends AutoDisposeAsyncNotifier<void> {
 
         if (context.mounted) {
           formNotifier.setApiError('');
+          showCustomSuccessToast(
+            context: context,
+            message: response["message"],
+            color: AppColors.instance.teal300,
+            icon: Icons.check_circle,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
           context.pushNamed(
             AppRoutes.confirmInfomation,
             extra: response['data'],
@@ -78,7 +86,7 @@ class EstateCodeSubmissionNotifier extends AutoDisposeAsyncNotifier<void> {
           message:
               "Network unavailable. Please check your internet connection.",
           color: AppColors.instance.error500,
-          icon: Icons.close,
+          icon: Icons.error,
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );

@@ -60,7 +60,7 @@ class Data {
     required this.preferredNotification,
     required this.emailVerifiedAt,
     required this.lastLoginAt,
-    required this.settings,
+   
     required this.createdAt,
     required this.updatedAt,
   });
@@ -81,7 +81,7 @@ class Data {
   final String? preferredNotification;
   final dynamic emailVerifiedAt;
   final dynamic lastLoginAt;
-  final Settings? settings;
+ 
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -102,7 +102,7 @@ class Data {
     String? preferredNotification,
     dynamic emailVerifiedAt,
     dynamic lastLoginAt,
-    Settings? settings,
+ 
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -124,7 +124,7 @@ class Data {
           preferredNotification ?? this.preferredNotification,
       emailVerifiedAt: emailVerifiedAt ?? this.emailVerifiedAt,
       lastLoginAt: lastLoginAt ?? this.lastLoginAt,
-      settings: settings ?? this.settings,
+
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -132,6 +132,7 @@ class Data {
 
   factory Data.fromJson(Map<String, dynamic> json) {
     return Data(
+
       id: json["id"],
       firstname: json["firstname"],
       lastname: json["lastname"],
@@ -148,8 +149,7 @@ class Data {
       preferredNotification: json["preferred_notification"],
       emailVerifiedAt: json["email_verified_at"],
       lastLoginAt: json["last_login_at"],
-      settings:
-          json["settings"] == null ? null : Settings.fromJson(json["settings"]),
+     
       createdAt: DateTime.tryParse(json["created_at"] ?? ""),
       updatedAt: DateTime.tryParse(json["updated_at"] ?? ""),
     );
@@ -172,96 +172,9 @@ class Data {
     "preferred_notification": preferredNotification,
     "email_verified_at": emailVerifiedAt,
     "last_login_at": lastLoginAt,
-    "settings": settings?.toJson(),
+
     "created_at": createdAt?.toIso8601String(),
     "updated_at": updatedAt?.toIso8601String(),
-  };
-}
-
-class Settings {
-  Settings({
-    required this.privacy,
-    required this.bankName,
-    required this.preferences,
-    required this.notifications,
-    required this.bankAccountName,
-    required this.bankAccountNumber,
-    required this.householdPermissions,
-    required this.preferredPaymentMethod,
-  });
-
-  final List<Notification> privacy;
-  final dynamic bankName;
-  final List<Preference> preferences;
-  final List<Notification> notifications;
-  final dynamic bankAccountName;
-  final dynamic bankAccountNumber;
-  final HouseholdPermissions? householdPermissions;
-  final String? preferredPaymentMethod;
-
-  Settings copyWith({
-    List<Notification>? privacy,
-    dynamic bankName,
-    List<Preference>? preferences,
-    List<Notification>? notifications,
-    dynamic bankAccountName,
-    dynamic bankAccountNumber,
-    HouseholdPermissions? householdPermissions,
-    String? preferredPaymentMethod,
-  }) {
-    return Settings(
-      privacy: privacy ?? this.privacy,
-      bankName: bankName ?? this.bankName,
-      preferences: preferences ?? this.preferences,
-      notifications: notifications ?? this.notifications,
-      bankAccountName: bankAccountName ?? this.bankAccountName,
-      bankAccountNumber: bankAccountNumber ?? this.bankAccountNumber,
-      householdPermissions: householdPermissions ?? this.householdPermissions,
-      preferredPaymentMethod:
-          preferredPaymentMethod ?? this.preferredPaymentMethod,
-    );
-  }
-
-  factory Settings.fromJson(Map<String, dynamic> json) {
-    return Settings(
-      privacy:
-          json["privacy"] == null
-              ? []
-              : List<Notification>.from(
-                json["privacy"]!.map((x) => Notification.fromJson(x)),
-              ),
-      bankName: json["bank_name"],
-      preferences:
-          json["preferences"] == null
-              ? []
-              : List<Preference>.from(
-                json["preferences"]!.map((x) => Preference.fromJson(x)),
-              ),
-      notifications:
-          json["notifications"] == null
-              ? []
-              : List<Notification>.from(
-                json["notifications"]!.map((x) => Notification.fromJson(x)),
-              ),
-      bankAccountName: json["bank_account_name"],
-      bankAccountNumber: json["bank_account_number"],
-      householdPermissions:
-          json["household_permissions"] == null
-              ? null
-              : HouseholdPermissions.fromJson(json["household_permissions"]),
-      preferredPaymentMethod: json["preferred_payment_method"],
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-    "privacy": privacy.map((x) => x.toJson()).toList(),
-    "bank_name": bankName,
-    "preferences": preferences.map((x) => x.toJson()).toList(),
-    "notifications": notifications.map((x) => x.toJson()).toList(),
-    "bank_account_name": bankAccountName,
-    "bank_account_number": bankAccountNumber,
-    "household_permissions": householdPermissions?.toJson(),
-    "preferred_payment_method": preferredPaymentMethod,
   };
 }
 

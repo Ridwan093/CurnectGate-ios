@@ -1,7 +1,7 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
-import 'package:curnectgate/features/member_management/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/payment/screen/Activites.dart';
 import 'package:curnectgate/features/payment/screen/payment_method_screen.dart';
 import 'package:curnectgate/features/payment/widget/custom_tab_view.dart';

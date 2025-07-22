@@ -39,7 +39,6 @@ class TimePickerTile extends ConsumerWidget {
               fontWeight: FontFamilies.bold,
             ),
           ),
-         
         ],
       ),
     );
@@ -83,7 +82,7 @@ class TimePickerTile extends ConsumerWidget {
 
     if (picked != null) {
       log(picked.toString());
-
+      log(picked.hourOfPeriod.toString());
       ref.read(generateNotifierProvider.notifier)
         ..setSelectedTime(picked)
         ..setValidityMinute(30);

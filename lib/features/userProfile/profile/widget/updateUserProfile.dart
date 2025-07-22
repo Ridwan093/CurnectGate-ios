@@ -1,4 +1,4 @@
-import 'dart:developer';
+
 
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
@@ -41,7 +41,7 @@ class _UpdateProfileDialogState extends ConsumerState<UpdateProfileDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Update your Name',
+                    'Update your info',
                     style: TextStyle(
                       fontSize: 18,
                       fontFamily: FontFamilies.interDisplay,
@@ -119,7 +119,7 @@ class _UpdateProfileDialogState extends ConsumerState<UpdateProfileDialog> {
                     }
                     : null,
             label:
-                formSate.isLoading
+                formSate.changProfileInfoLoading
                     ? CircularProgressIndicator(
                       color: AppColors.instance.yellow500,
                     )

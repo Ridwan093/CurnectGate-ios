@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:curnectgate/core/constants/asset_paths.dart';
-import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
@@ -14,7 +13,8 @@ class UpdateProfilePrompt extends ConsumerStatefulWidget {
   const UpdateProfilePrompt({super.key});
 
   @override
-  ConsumerState<UpdateProfilePrompt> createState() => _UpdateProfilePromptState();
+  ConsumerState<UpdateProfilePrompt> createState() =>
+      _UpdateProfilePromptState();
 }
 
 class _UpdateProfilePromptState extends ConsumerState<UpdateProfilePrompt> {
@@ -31,7 +31,7 @@ class _UpdateProfilePromptState extends ConsumerState<UpdateProfilePrompt> {
 
   @override
   Widget build(BuildContext context) {
-     final formprovider = ref.read(formProvider.notifier);
+    final formprovider = ref.read(formProvider.notifier);
     final formSate = ref.watch(formProvider);
     return SingleChildScrollView(
       child: Column(
@@ -71,47 +71,40 @@ class _UpdateProfilePromptState extends ConsumerState<UpdateProfilePrompt> {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 15,
-        
+
               fontFamily: FontFamilies.interDisplay,
               color: AppColors.instance.black500,
-              fontWeight: FontFamilies.light
+              fontWeight: FontFamilies.light,
             ),
           ),
           const SizedBox(height: 24),
 
           if (_selectedImage != null)
             ElevatedButton(
-              onPressed: ()async {
-                 final authData = await SharedPrefsService().getAuthData();
-              final data = authData?['user'];
-              if (authData != null) {
-                final gender = data?['gender'] as String?;
-                final notfypre = data?['preferred_notification'] as String?;
-
-                  formprovider.updateUserPix(
-                  
-                    context: context,
+              onPressed: () async {
+                formprovider.updateUserPix(
+                  context: context,
                   file: _selectedImage!,
-                    ref: ref,
-                  );
-                
-              }},
+                  ref: ref,
+                );
+              },
               style: ButtonStyle(
                 backgroundColor: WidgetStatePropertyAll(
                   AppColors.instance.black600,
                 ),
               ),
-              child:   formSate.isLoading
-                    ? CircularProgressIndicator(
-                      color: AppColors.instance.yellow500,
-                    )
-                    :Text(
-                "Submit",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.grey200,
-                ),
-              ),
+              child:
+                  formSate.changProfilePicLoading
+                      ? CircularProgressIndicator(
+                        color: AppColors.instance.yellow500,
+                      )
+                      : Text(
+                        "Submit",
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          color: AppColors.instance.grey200,
+                        ),
+                      ),
             ),
         ],
       ),

@@ -7,23 +7,29 @@ class GenerateState {
   final String? securitylevel;
   final String vehiclenumber;
   final String phoneNumber;
-  final bool isLoading;
+  final String? filter;
+  final String? historyfilter;
   final String? visitperiod;
+  final String? revorkActiveOTP;
+  final bool? isOtpValide;
   final DateTime? selectedDate;
   final TimeOfDay? selectedTime;
   final int? validityMinutes;
-  final bool isAdditionalInfo;
+  final bool? otpCodeError;
 
   final List<GenerateState> generatedList; // 30 or 90 minutes
 
   GenerateState({
+    this.historyfilter = "",
     this.purposeofVisit = '',
     this.visitperiod = '',
-    this.isLoading = false,
+    this.revorkActiveOTP = "",
+    this.isOtpValide = false,
+    this.filter = "",
     this.vistorName = '',
     this.vehiclenumber = '',
     this.securitylevel = '',
-    this.isAdditionalInfo = false,
+    this.otpCodeError = false,
     this.phoneNumber = '',
 
     this.selectedDate,
@@ -89,30 +95,48 @@ class GenerateState {
         "To: ${DateFormat('dd/MM/yyyy hh:mm a').format(endTime)}";
   }
 
+  bool get genrateValidation =>
+      vistorName.isNotEmpty &&
+      purposeofVisit.isNotEmpty &&
+      visitperiod!.isNotEmpty;
+  bool get schedulValid =>
+      vistorName.isNotEmpty &&
+      purposeofVisit.isNotEmpty &&
+      selectedDate.toString().isNotEmpty &&
+      selectedTime.toString().isNotEmpty;
+  bool get validrevorked => isOtpValide! && revorkActiveOTP!.length > 19;
   GenerateState copyWith({
+    String? filter,
     String? vistorName,
     String? purposeofVisit,
+    String? historyfilter,
     bool? isLoading,
     String? visitperiod,
     DateTime? selectedDate,
     TimeOfDay? selectedTime,
     int? validityMinutes,
     List<GenerateState>? generatedList,
-    bool? isAdditionalInfo,
+    bool? otpCodeError,
     String? securitylevel,
     String? vehiclenumber,
     String? phoneNumber,
+    bool? isInternal,
+    String? revorkActiveOTP,
+    bool? isOtpValide,
   }) {
     return GenerateState(
+      revorkActiveOTP: revorkActiveOTP ?? this.revorkActiveOTP,
+      isOtpValide: isOtpValide ?? this.isOtpValide,
+      historyfilter: historyfilter ?? this.historyfilter,
       visitperiod: visitperiod ?? this.visitperiod,
       vistorName: vistorName ?? this.vistorName,
       purposeofVisit: purposeofVisit ?? this.purposeofVisit,
-      isLoading: isLoading ?? this.isLoading,
+      filter: filter ?? this.filter,
       selectedDate: selectedDate ?? this.selectedDate,
       selectedTime: selectedTime ?? this.selectedTime,
       validityMinutes: validityMinutes ?? this.validityMinutes,
       generatedList: generatedList ?? this.generatedList,
-      isAdditionalInfo: isAdditionalInfo ?? this.isAdditionalInfo,
+      otpCodeError: otpCodeError ?? this.otpCodeError,
       vehiclenumber: vehiclenumber ?? this.vehiclenumber,
       phoneNumber: phoneNumber ?? this.phoneNumber,
 

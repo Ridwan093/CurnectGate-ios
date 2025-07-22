@@ -106,7 +106,7 @@ class DeactiveAccount extends ConsumerWidget {
                     }
                     : null,
             label:
-                formSate.isLoading
+                formSate.deActivatAccountLoading
                     ? CircularProgressIndicator(
                       color: AppColors.instance.yellow500,
                     )

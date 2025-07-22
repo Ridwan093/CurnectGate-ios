@@ -47,9 +47,9 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     final state = ref.watch(formProvider);
 
     return Scaffold(
-      appBar: state.isLoading ? null : _buildAppBar(),
+      appBar: state.otpVerifyLoading ? null : _buildAppBar(),
       bottomNavigationBar:
-          state.isLoading
+          state.otpVerifyLoading
               ? null
               : _buildVerifyButton(
                 widget.data!["email"] ?? "",
@@ -57,7 +57,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                 context,
               ),
       body:
-          state.isLoading
+          state.otpVerifyLoading
               ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)
               : _biuldbody(size),
     );

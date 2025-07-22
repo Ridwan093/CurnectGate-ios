@@ -11,9 +11,10 @@ class AppRoutes {
   static const String signIN = 'auth_signIn';
   static const String passForgot = 'auth_passForgot';
   static const String passReset = 'auth_resetPass';
+  static const String changeTemporarypass = 'auth_temp_pass';
   static const String oTPCode = 'auth_otpCode';
   static const String activateOTP = 'auth_activateOtp';
-    static const String passRestOtpVerify = 'pass_otp_verify';
+  static const String passRestOtpVerify = 'pass_otp_verify';
 
   // ------------------------------------------------------------------
   // Member Management (Your original names + slight grouping)
@@ -22,7 +23,7 @@ class AppRoutes {
   static const String memberPassCreated = 'pass_created';
   static const String selectedMemeber = 'member_selected';
   static const String filleMemberInfo = 'member_fillInfo';
-  static const String memeberPage = 'member_page';
+  // static const String memeberPage = 'member_page';
 
   // ------------------------------------------------------------------
   // Estate Operations (Keep your exact flat names)
@@ -30,11 +31,18 @@ class AppRoutes {
   static const String dashbord = 'dashboard';
   static const String securityguide = 'security';
   static const String eventSet = 'eventSet';
+  static const String userNotificationSetting = "notification_settings";
+  // static const String termsOfService = "termsOfservices";
+  static const String setPreferences = "setPreferencess";
+  static const String setPrivacy = "setPrivacy";
+  static const String notification = "notification";
 
   // ------------------------------------------------------------------
   // Digital Features
+    static const String digitalIDStarter = 'digitalID_starter';
   static const String digitalIDMember = 'digitalID';
   static const String digitalIDsuccessScreen = 'digitalID_success';
+
 
   // ------------------------------------------------------------------
   // Vendor/Visitor (Grouped)

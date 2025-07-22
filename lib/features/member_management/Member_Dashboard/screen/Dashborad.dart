@@ -2,10 +2,11 @@ import 'dart:math';
 
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
+import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/%20operations/OTP_Activation/provider/active_provider.dart';
-import 'package:curnectgate/features/%20operations/OTP_Activation/screen/Activate_Otp_screen.dart';
+import 'package:curnectgate/features/%20operations/notifications/activites-reminders/activites_log.dart';
 import 'package:curnectgate/features/%20operations/notifications/event/model/event_model.dart';
 import 'package:curnectgate/features/%20operations/notifications/provider/eventprovider.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/screen/viewAll.dart';
@@ -18,6 +19,7 @@ import 'package:curnectgate/features/member_management/Member_Dashboard/widget/v
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/visitorActiveCount.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class Dashborad extends ConsumerWidget {
   Dashborad({super.key});
@@ -28,7 +30,7 @@ class Dashborad extends ConsumerWidget {
     final size = MediaQuery.sizeOf(context);
 
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: SizedBox(
         height: size.height,
         width: size.width,
@@ -257,7 +259,7 @@ class Dashborad extends ConsumerWidget {
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       leadingWidth: 50,
       leading: Padding(
@@ -270,7 +272,7 @@ class Dashborad extends ConsumerWidget {
       actions: [
         Image.asset(AssetPaths.dashboardcalenderSetting, width: 20),
         SizedBox(width: 15),
-        _buildNotificationBell(1000),
+        _buildNotificationBell(1000, context),
       ],
     );
   }
@@ -379,7 +381,16 @@ class Dashborad extends ConsumerWidget {
           Dashbordrowcard(
             title: "Digital ID",
             icon: AssetPaths.dashboardIdVerification,
-            onTap: () {},
+            onTap: () async {
+              final authData = await SharedPrefsService().getAuthData();
+              bool status = authData?['user']?['digital_id_status'];
+
+              if (status) {
+                context.pushNamed(AppRoutes.digitalIDMember);
+              } else {
+                context.pushNamed(AppRoutes.digitalIDStarter);
+              }
+            },
           ),
           SizedBox(width: 10),
           Dashbordrowcard(
@@ -392,17 +403,16 @@ class Dashborad extends ConsumerWidget {
             title: "Visitor",
             icon: AssetPaths.dashboardVisitors,
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Otpactivation()),
-              );
+              context.pushNamed(AppRoutes.vendorLog);
             },
           ),
           SizedBox(width: 10),
           Dashbordrowcard(
             title: "Report",
             icon: AssetPaths.dashboardReports,
-            onTap: () {},
+            onTap: () {
+              context.pushNamed(AppRoutes.violation);
+            },
           ),
         ],
       ),
@@ -424,38 +434,57 @@ class Dashborad extends ConsumerWidget {
     );
   }
 
-  Widget _buildNotificationBell(int count) {
+  Widget _buildNotificationBell(int count, BuildContext context) {
     String displayCount = _formatCount(count);
 
     return Padding(
       padding: const EdgeInsets.only(right: 35),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Image.asset(AssetPaths.dashboardNotification, width: 25, height: 25),
-          if (count > 0)
-            Positioned(
-              top: -6,
-              right: count > 999 ? -20 : -10,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                decoration: BoxDecoration(
-                  color: AppColors.instance.yellow500,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
-                child: Text(
-                  displayCount,
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.instance.black600,
-                    fontFamily: FontFamilies.interDisplay,
+      child: InkWell(
+        onTap: () {
+          // context.pushNamed(AppRoutes.notification);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ActivityPage()),
+          );
+        },
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Image.asset(
+              AssetPaths.dashboardNotification,
+              width: 25,
+              height: 25,
+            ),
+            if (count > 0)
+              Positioned(
+                top: -6,
+                right: count > 999 ? -20 : -10,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 5,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.instance.yellow500,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 16,
+                    minHeight: 16,
+                  ),
+                  child: Text(
+                    displayCount,
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.instance.black600,
+                      fontFamily: FontFamilies.interDisplay,
+                    ),
                   ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

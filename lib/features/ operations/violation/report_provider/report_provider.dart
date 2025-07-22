@@ -1,10 +1,11 @@
 import 'dart:developer';
+import 'dart:io';
 
-
-import 'package:curnectgate/features/%20operations/violation/model/report_card_model.dart';
 import 'package:curnectgate/features/%20operations/violation/model/report_model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 
 final currentEditingIndexProvider = StateProvider<int?>((ref) => null);
 final reportProvider = StateNotifierProvider<ReportNotifier, ReportState>((
@@ -16,8 +17,14 @@ final reportProvider = StateNotifierProvider<ReportNotifier, ReportState>((
 class ReportNotifier extends StateNotifier<ReportState> {
   ReportNotifier() : super(ReportState(report: Report(), isLoading: false));
 
-  void setCategory(String category) {
-    state = state.copyWith(report: state.report.copyWith(category: category));
+  void setCategory(String category, String categoryID) {
+    state = state.copyWith(
+      report: state.report.copyWith(category: category, categoryID: categoryID),
+    );
+  }
+
+  void setReportFilter(String filter) {
+    state = state.copyWith(report: state.report.copyWith(reportfilter: filter));
   }
 
   void setDescription(String description) {
@@ -26,17 +33,87 @@ class ReportNotifier extends StateNotifier<ReportState> {
     );
   }
 
-  void addImage(String imagePath, int index) {
-    final newImagePaths = Map<int, String>.from(state.report.imagePaths);
-    newImagePaths[index] = imagePath;
+  void setId(int id) {
+    state = state.copyWith(report: state.report.copyWith(id: id));
+  }
 
-    // Remove any file that might be at this index
-    final newFiles = Map<int, ReportFile>.from(state.report.files);
-    newFiles.remove(index);
+  void setcomment(String comment) {
+    state = state.copyWith(report: state.report.copyWith(comment: comment));
+  }
 
+  void setCommentInternal(bool val) {
     state = state.copyWith(
-      report: state.report.copyWith(imagePaths: newImagePaths, files: newFiles),
+      report: state.report.copyWith(isCommentInternal: val),
     );
+  }
+
+  void updateErrorShow(bool value) {
+    state = state.copyWith(
+      report: state.report.copyWith(isErrorBodyShow: value),
+    );
+  }
+
+  void addImage(String? imagePath, int index) {
+    try {
+      // 1. Validate imagePath is not null
+      if (imagePath == null) {
+        throw Exception('Image path cannot be null');
+      }
+
+      // 2. Validate file exists
+      final file = File(imagePath);
+      if (!file.existsSync()) {
+        throw Exception('File does not exist at path: $imagePath');
+      }
+
+      // 3. Create new maps (immutable update pattern)
+      final newImagePaths = Map<int, String>.from(state.report.imagePaths);
+      final newFiles = Map<int, String>.from(state.report.files);
+
+      // 4. Update the maps
+      newImagePaths[index] = imagePath; // Now guaranteed non-null
+      newFiles.remove(index);
+
+      // 5. Update state
+      state = state.copyWith(
+        report: state.report.copyWith(
+          imagePaths: newImagePaths,
+          files: newFiles,
+        ),
+      );
+
+      log('Successfully added image at index $index: $imagePath');
+    } catch (e, stackTrace) {
+      log('Error adding image: $e');
+      log('Stack trace: $stackTrace');
+      state = state.copyWith(error: 'Failed to add image: ${e.toString()}');
+    }
+  }
+
+  void setEstateAddressID(String id, String address) {
+    state = state.copyWith(
+      report: state.report.copyWith(addressId: id, address: address),
+    );
+  }
+
+  void resetState() {
+    state = state.copyWith(
+      report: state.report.copyWith(
+        imagePaths: null,
+        category: "",
+        description: '',
+        isAnonymous: false,
+        addressId: '',
+        files: null,
+        comment: "",
+        categoryID: '',
+        address: "",
+        isCommentInternal: false,
+        id: 0,
+      ),
+    );
+    removeImageOrFile(1);
+    removeImageOrFile(0);
   }
 
   Future<void> addFile(int index) async {
@@ -44,25 +121,35 @@ class ReportNotifier extends StateNotifier<ReportState> {
 
     try {
       final result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['pdf', 'doc', 'docx', 'txt'],
+        type: FileType.image,
+        allowMultiple: false,
       );
 
       if (result != null && result.files.single.path != null) {
-        final file = result.files.single;
-        final extension = file.extension?.toLowerCase() ?? 'file';
+        final pickedFile = result.files.single;
+        final originalPath = pickedFile.path!;
 
-        final reportFile = ReportFile(
-          path: file.path!,
-          name: file.name,
-          size: file.size,
-          type: extension,
-        );
+        // 1. Create permanent storage directory
+        final appDir = await getApplicationDocumentsDirectory();
+        final permanentDir = Directory('${appDir.path}/user_files');
+        if (!await permanentDir.exists()) {
+          await permanentDir.create(recursive: true);
+        }
 
-        final newFiles = Map<int, ReportFile>.from(state.report.files);
-        newFiles[index] = reportFile;
+        // 2. Generate unique filename
+        final extension = p.extension(originalPath).toLowerCase();
+        final newFileName =
+            '${DateTime.now().millisecondsSinceEpoch}$extension';
+        final newPath = '${permanentDir.path}/$newFileName';
 
-        // Remove any image that might be at this index
+        // 3. Copy file to permanent location
+        final originalFile = File(originalPath);
+        final newFile = await originalFile.copy(newPath);
+
+        // 4. Store the permanent path
+        final newFiles = Map<int, String>.from(state.report.files);
+        newFiles[index] = newFile.path;
+
         final newImagePaths = Map<int, String>.from(state.report.imagePaths);
         newImagePaths.remove(index);
 
@@ -74,7 +161,8 @@ class ReportNotifier extends StateNotifier<ReportState> {
           fileOperationStatus: FileOperationStatus.success,
         );
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      log('File picker error: $e\n$stackTrace');
       state = state.copyWith(
         error: 'Failed to add file: ${e.toString()}',
         fileOperationStatus: FileOperationStatus.error,
@@ -84,7 +172,7 @@ class ReportNotifier extends StateNotifier<ReportState> {
 
   void removeImageOrFile(int index) {
     final newImagePaths = Map<int, String>.from(state.report.imagePaths);
-    final newFiles = Map<int, ReportFile>.from(state.report.files);
+    final newFiles = Map<int, String>.from(state.report.files);
 
     newImagePaths.remove(index);
     newFiles.remove(index);
@@ -107,44 +195,9 @@ class ReportNotifier extends StateNotifier<ReportState> {
   Future<void> submitReport() async {
     setLoading(true);
     try {
-      final currentReport = state.report;
-
       // Convert Map<int, ReportFile> to list of file maps
-      final fileList =
-          currentReport.files.entries.map((entry) {
-            final file = entry.value; // This is the ReportFile
-            return <String, dynamic>{
-              'id': entry.key, // Include the original index if needed
-              'path': file.path,
-              'name': file.name,
-              'size': file.size,
-              'type': file.type,
-            };
-          }).toList();
 
       // Prepare the complete report data
-      final reportData = <String, dynamic>{
-        'category': currentReport.category,
-        'description': currentReport.description,
-        'isAnonymous': currentReport.isAnonymous,
-        'images':
-            currentReport.imagePaths.values
-                .toList(), // Convert Map values to list
-        'files': fileList,
-      };
-      final reportlist = Reports(
-        type: fileList.first["type"],
-        name: fileList.first["name"],
-        size: fileList.first["size"],
-        path: fileList.first["path"],
-        files: fileList.first["file"],
-        category: currentReport.category,
-        description: currentReport.description,
-        isAnonymous: currentReport.isAnonymous,
-        imagePaths: currentReport.imagePaths.values.toString(),
-      );
-     log('Submitting222 report: $reportlist');
-      log('Submitting report: $reportData');
 
       // Simulate API call
       await Future.delayed(const Duration(seconds: 2));

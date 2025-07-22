@@ -1,9 +1,12 @@
+import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/%20operations/OTP_Activation/provider/active_provider.dart';
 import 'package:curnectgate/features/%20operations/OTP_Activation/widget/ScheduleTime_widget.dart';
+import 'package:curnectgate/features/%20operations/OTP_Activation/widget/additionalInfo.dart';
 import 'package:curnectgate/features/%20operations/OTP_Activation/widget/scheduleDate_widget.dart';
 import 'package:curnectgate/features/%20operations/OTP_Activation/widget/validation_message_box.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,8 +16,9 @@ class ScheduleOTPinAdvance extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final activation = ref.watch(generateNotifierProvider);
-
-    final isLoading = activation.isLoading;
+    final formProviders = ref.watch(formProvider);
+    final activationNotifer = ref.watch(generateNotifierProvider.notifier);
+    final isLoading = formProviders.schedulOtpLoading;
     final size = MediaQuery.sizeOf(context);
 
     return Padding(
@@ -54,7 +58,17 @@ class ScheduleOTPinAdvance extends ConsumerWidget {
           ),
           const SizedBox(height: 20),
           // 1. Category dropdown (no Expanded!)
-          _buildpurposeDropdown(ref, activation.purposeofVisit),
+          _buildPurposeDropdown(ref, activation.purposeofVisit),
+
+          const SizedBox(height: 20),
+          VisitorInfoSection(
+            onChanged1: (value) {
+              activationNotifer.setVehicleNume(value);
+            },
+            onChanged2: (value) {
+              activationNotifer.setPhoneNume(value);
+            },
+          ),
           const SizedBox(height: 25),
           DatePickerTile(),
           const SizedBox(height: 25),
@@ -66,7 +80,7 @@ class ScheduleOTPinAdvance extends ConsumerWidget {
           // 4. Submit button
           _buildSubmitButton(
             size: size,
-            isLoading: isLoading,
+            valid: activation.schedulValid,
             ref: ref,
             context: context,
           ),
@@ -81,25 +95,31 @@ class ScheduleOTPinAdvance extends ConsumerWidget {
 
 Widget _buildSubmitButton({
   required Size size,
-  required bool isLoading,
+  required bool valid,
   required WidgetRef ref,
   required BuildContext context,
 }) {
+  final form = ref.read(formProvider.notifier);
+  final realLoading = ref.watch(formProvider);
   return InkWell(
-    onTap: isLoading ? null : () => _submit(ref, context),
+    onTap:
+        valid
+            ? () => form.scheduleOtpWithValidation(context: context, ref: ref)
+            : () => _submit(ref, context),
     child: Container(
       height: 50,
       width: size.width,
       decoration: BoxDecoration(
-        color: AppColors.instance.black600,
+        color: valid ? AppColors.instance.black600 : AppColors.instance.grey500,
 
         borderRadius: BorderRadius.circular(10),
       ),
 
       child: Center(
         child:
-            !isLoading
-                ? Text(
+            realLoading.schedulOtpLoading
+                ? Loadingstates()
+                : Text(
                   "Generate OTP",
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
@@ -107,20 +127,28 @@ Widget _buildSubmitButton({
                     fontWeight: FontFamilies.medium,
                     color: AppColors.instance.grey200,
                   ),
-                )
-                : CircularProgressIndicator(),
+                ),
       ),
     ),
   );
 }
 
-Widget _buildpurposeDropdown(WidgetRef ref, String currentValue) {
+Widget _buildPurposeDropdown(WidgetRef ref, String currentValue) {
   final purpose = {
-    'Gust Visit': 'Vehicle parked in no-parking zone',
-    'work order': 'Vehicle moving against traffic',
-    'Delivery': 'Vehicle exceeding speed limit',
-    'Other': 'Other traffic violation',
+    'Business meeting': 'Business meeting with property owner',
+    'Property viewing': 'Viewing apartments or properties for rent/purchase',
+    'Site inspection': 'Inspecting property for potential purchase or lease',
+    'Lease discussion': 'Discussing lease terms or renewal',
+    'Maintenance issue': 'Addressing maintenance or repair issues',
+    'Family visit': 'Visiting family members residing in the property',
+    'Friend visit': 'Visiting friends residing in the property',
+    'Coworker visit': 'Meeting with coworkers residing in the property',
+    'Delivery/services': 'Granting access for delivery or service personnel',
+    'Property tour': 'Taking a tour of the property and its facilities',
   };
+
+  // Ensure currentValue is either null or a valid key from the purpose map
+  final validValue = purpose.containsKey(currentValue) ? currentValue : null;
 
   return SizedBox(
     child: DropdownButtonFormField<String>(
@@ -128,7 +156,7 @@ Widget _buildpurposeDropdown(WidgetRef ref, String currentValue) {
         Icons.keyboard_arrow_down_rounded,
         color: AppColors.instance.black600,
       ),
-      value: currentValue.isEmpty ? null : currentValue,
+      value: validValue,
       decoration: InputDecoration(
         labelText: 'Purpose of Visit',
         border: OutlineInputBorder(
@@ -145,22 +173,51 @@ Widget _buildpurposeDropdown(WidgetRef ref, String currentValue) {
           color: AppColors.instance.black500,
         ),
       ),
+      selectedItemBuilder: (BuildContext context) {
+        return purpose.keys.map((String key) {
+          return Text(
+            key,
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              color: AppColors.instance.black600,
+            ),
+          );
+        }).toList();
+      },
       items:
           purpose.entries.map((entry) {
-            return DropdownMenuItem(
+            return DropdownMenuItem<String>(
               value: entry.key,
-              child: Text(
-                entry.key,
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black600,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    entry.key,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      color: AppColors.instance.black600,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    entry.value,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      color: AppColors.instance.black500,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
               ),
             );
           }).toList(),
-      onChanged:
-          (value) =>
-              ref.read(generateNotifierProvider.notifier).setPurpose(value!),
+      onChanged: (value) {
+        if (value != null) {
+          ref.read(generateNotifierProvider.notifier).setPurpose(value);
+        }
+      },
     ),
   );
 }
@@ -178,7 +235,6 @@ Future<void> _submit(WidgetRef ref, BuildContext context) async {
   }
 
   if (visitor.vistorName.isEmpty) {
- 
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('Please enter a description')));

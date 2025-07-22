@@ -1,14 +1,14 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/%20operations/notifications/activites-reminders/widget/ActiveCard.dart';
+import 'package:curnectgate/features/%20operations/notifications/activites-reminders/widget/Activities_tab.dart';
 import 'package:curnectgate/features/%20operations/notifications/activites-reminders/widget/rember_tab.dart';
-import 'package:curnectgate/features/%20operations/notifications/activites-reminders/widget/tab.dart';
 import 'package:curnectgate/features/%20operations/notifications/event/model/activit_model.dart';
 import 'package:curnectgate/features/%20operations/notifications/provider/activity_provider.dart';
+import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-
 
 class ActivityPage extends ConsumerStatefulWidget {
   const ActivityPage({super.key});
@@ -37,6 +37,7 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
     final isSearching = ref.watch(isSearchingProvider);
     final tabIndex = ref.watch(tabIndexProvider);
     final searchQuery = ref.watch(searchQueryProvider);
+   
 
     return Scaffold(
       appBar: isSearching ? null : _buildNormalAppBar(context, tabIndex),
@@ -71,11 +72,19 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
         icon: const Icon(Icons.arrow_back_ios),
         onPressed: () => Navigator.pop(context),
       ),
-      title: const Text('Activity'),
+
       actions: [
         IconButton(
           icon: const Icon(Icons.filter_list_rounded),
-          onPressed: () {},
+          onPressed: () {
+            showUserBottomSheet(
+              context: context,
+              headertitle: "",
+              headersubtitle: "",
+              ref: ref,
+              bottom: BottomSheetView.notificationReminderFilter,
+            );
+          },
         ),
         IconButton(
           icon: const Icon(Icons.search),
@@ -86,7 +95,25 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
         ),
         IconButton(
           icon: Icon(tabIndex == 0 ? Icons.settings_outlined : Icons.add),
-          onPressed: () {},
+          onPressed: () {
+            if (tabIndex == 0) {
+              showUserBottomSheet(
+                context: context,
+                headertitle: "",
+                headersubtitle: "",
+                ref: ref,
+                bottom: BottomSheetView.notificationSetting,
+              );
+            } else {
+              showUserBottomSheet(
+                context: context,
+                headertitle: "",
+                headersubtitle: "",
+                ref: ref,
+                bottom: BottomSheetView.addReminder,
+              );
+            }
+          },
         ),
       ],
     );
@@ -298,52 +325,27 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
               ),
     );
   }
+List<NotificationItem> _filterActivities(String query) {
+  final notificationRead = ref.watch(getUserNotification).value;
 
-  List<ActivityItem> _filterActivities(String query) {
-    final allActivities = [
-      ActivityItem(
-        title: 'Access Granted to james at Gate B',
-        subtitle: 'Entry. Approved via OTP 787841',
-        time: '10:30 AM',
-        status: ActivityStatus.granted,
-        date: "mar 24",
-        actualDate: "Today",
-      ),
-      ActivityItem(
-        title: 'Access Granted to Blessing at Gate B',
-        subtitle: 'Entry. Approved via OTP 787841',
-        time: '10:30 AM',
-        status: ActivityStatus.granted,
-        date: "mar 24",
-        actualDate: "Today",
-      ),
-      ActivityItem(
-        title: 'Access Denied - Invalid OTP by Okon',
-        subtitle: 'Entry Approved via OTP. 789899',
-        time: '02:15 PM',
-        status: ActivityStatus.denied,
-        date: "mar 24",
-        actualDate: "Today",
-      ),
-      ActivityItem(
-        title: 'Access Granted to jamms at Gate B',
-        subtitle: 'Entry. Approved via OTP 787841',
-        time: '10:30 AM',
-        status: ActivityStatus.granted,
-        date: "mar 24",
-        actualDate: "May 2, 2025",
-      ),
-    ];
+  if (notificationRead?.status == true) {
+    final allActivities = notificationRead!.data?.notifications ?? [];
 
-    if (query.isEmpty) return allActivities;
-    return allActivities
-        .where(
-          (activity) =>
-              activity.title.toLowerCase().contains(query.toLowerCase()) ||
-              activity.subtitle.toLowerCase().contains(query.toLowerCase()),
-        )
-        .toList();
+    if (allActivities.isNotEmpty) {
+      if (query.isEmpty) return allActivities;
+
+      return allActivities
+          .where(
+            (activity) =>
+                activity.description?.toLowerCase().contains(query.toLowerCase()) == true ||
+                activity.estate?.address?.toLowerCase().contains(query.toLowerCase()) == true,
+          )
+          .toList();
+    }
   }
+
+  // Fallback: always return an empty list
+  return [];
 }
 
-
+}

@@ -40,14 +40,14 @@ class WorkOrderFormState {
     this.vendorName = '',
     this.vendorEmail = '',
     this.phoneNumber = '',
-    this.workType,
+    this.workType = '',
     this.workDescription = '',
     this.workerCount = 1,
     this.daysCount = 1,
     this.startDate,
     this.endDate,
     this.selectedTimeWindow,
-    
+
     // Validation defaults to false
     this.vendorNameValid = false,
     this.vendorEmailValid = false,
@@ -57,7 +57,7 @@ class WorkOrderFormState {
     this.startDateValid = false,
     this.endDateValid = false,
     this.timeWindowValid = false,
-    
+
     // Error messages
     this.vendorNameError,
     this.vendorEmailError,
@@ -65,7 +65,7 @@ class WorkOrderFormState {
     this.workDescriptionError,
     this.startDateError,
     this.endDateError,
-    
+
     // UI states
     this.isIncrementPressed = false,
     this.isDecrementPressed = false,
@@ -96,7 +96,7 @@ class WorkOrderFormState {
     DateTime? startDate,
     DateTime? endDate,
     String? selectedTimeWindow,
-    
+
     // Validation states
     bool? vendorNameValid,
     bool? vendorEmailValid,
@@ -106,7 +106,7 @@ class WorkOrderFormState {
     bool? startDateValid,
     bool? endDateValid,
     bool? timeWindowValid,
-    
+
     // Error messages
     String? vendorNameError,
     String? vendorEmailError,
@@ -114,7 +114,7 @@ class WorkOrderFormState {
     String? workDescriptionError,
     String? startDateError,
     String? endDateError,
-    
+
     // UI states
     bool? isIncrementPressed,
     bool? isDecrementPressed,
@@ -133,7 +133,7 @@ class WorkOrderFormState {
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       selectedTimeWindow: selectedTimeWindow ?? this.selectedTimeWindow,
-      
+
       // Validation
       vendorNameValid: vendorNameValid ?? this.vendorNameValid,
       vendorEmailValid: vendorEmailValid ?? this.vendorEmailValid,
@@ -143,7 +143,7 @@ class WorkOrderFormState {
       startDateValid: startDateValid ?? this.startDateValid,
       endDateValid: endDateValid ?? this.endDateValid,
       timeWindowValid: timeWindowValid ?? this.timeWindowValid,
-      
+
       // Errors
       vendorNameError: vendorNameError ?? this.vendorNameError,
       vendorEmailError: vendorEmailError ?? this.vendorEmailError,
@@ -151,12 +151,14 @@ class WorkOrderFormState {
       workDescriptionError: workDescriptionError ?? this.workDescriptionError,
       startDateError: startDateError ?? this.startDateError,
       endDateError: endDateError ?? this.endDateError,
-      
+
       // UI states
       isIncrementPressed: isIncrementPressed ?? this.isIncrementPressed,
       isDecrementPressed: isDecrementPressed ?? this.isDecrementPressed,
-      isIncrementPressedday: isIncrementPressedday ?? this.isIncrementPressedday,
-      isDecrementPressedday: isDecrementPressedday ?? this.isDecrementPressedday,
+      isIncrementPressedday:
+          isIncrementPressedday ?? this.isIncrementPressedday,
+      isDecrementPressedday:
+          isDecrementPressedday ?? this.isDecrementPressedday,
       isLoading: isLoading ?? this.isLoading,
     );
   }

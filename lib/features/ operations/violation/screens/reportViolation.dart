@@ -1,36 +1,54 @@
-import 'dart:developer';
-
-import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/%20operations/OTP_Activation/screen/Activate_Otp_screen.dart';
-import 'package:curnectgate/features/%20operations/violation/widget/report_card.dart';
-import 'package:curnectgate/features/estate_management/submit_works_order/model/venodrLod_model.dart';
+import 'package:curnectgate/features/%20operations/violation/report_provider/getReport_provider.dart';
+import 'package:curnectgate/features/%20operations/violation/report_provider/report_provider.dart';
+import 'package:curnectgate/features/%20operations/violation/widget/report_body.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/vendor_fileter.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
-import 'package:curnectgate/features/member_management/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ReportViolation extends ConsumerWidget {
-  ReportViolation({super.key});
+class ReportViolation extends ConsumerStatefulWidget {
+  const ReportViolation({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _ReportviolationState();
+}
+
+class _ReportviolationState extends ConsumerState<ReportViolation> {
+  @override
+  void initState() {
+    super.initState(); // Always call super.initState() first
+    // Your initialization code here
+  }
+
+  void restState() {
+    ref.read(reportProvider.notifier).resetState();
+  }
 
   final List<String> _statusOptions = [
     'All',
     'Pending',
-    'Active',
-    'In Progress',
-    'Completed',
-    'Cancelled',
+    'Investigating',
+    'Dismissed',
+    'Resolved',
   ];
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _buildAppBar(),
-      body: _buildBody(size, ref, context),
+      body: SizedBox(
+        height: size.height,
+
+        child: _buildBody(size, ref, context),
+      ),
     );
   }
 
@@ -47,7 +65,45 @@ class ReportViolation extends ConsumerWidget {
       children: [
         _buildAddMemberButton(size, context, ref),
         const SizedBox(height: 30),
-        Expanded(child: _buildContent(size, context, ref)),
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Otpactivation()),
+                );
+              },
+              child: Text(
+                "Report violation",
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  fontSize: 25,
+                  fontWeight: FontFamilies.bold,
+                  color: AppColors.instance.black600,
+                ),
+              ),
+            ),
+            CustomStatusDropdown(
+              statusOptions: _statusOptions,
+              initialStatus: 'All',
+              onStatusChanged: (newStatus) {
+                // log('Selected status: $newStatus');
+                // Handle status change
+                ref
+                    .read(reportProvider.notifier)
+                    .setReportFilter(newStatus.toLowerCase());
+                ref
+                    .read(userReportProvider.notifier)
+                    .refreshReports(context, ref);
+              },
+            ),
+          ],
+        ),
+        const SizedBox(height: 25),
+        Expanded(child: ReportBody()),
       ],
     );
   }
@@ -81,116 +137,6 @@ class ReportViolation extends ConsumerWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildContent(Size size, BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Otpactivation()),
-                    );
-                  },
-                  child: Text(
-                    "Report violation",
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      fontSize: 25,
-                      fontWeight: FontFamilies.bold,
-                      color: AppColors.instance.black600,
-                    ),
-                  ),
-                ),
-                CustomStatusDropdown(
-                  statusOptions: _statusOptions,
-                  initialStatus: 'Category',
-                  onStatusChanged: (newStatus) {
-                    log('Selected status: $newStatus');
-                    // Handle status change
-                  },
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 25),
-
-            ReportCard(),
-            // Expanded(
-            //   child:
-            //       report.isNotEmpty
-            //           ? ReportCard()
-            //           : _buildEmtyBody(),
-            // ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMemberList(WidgetRef ref, Size size) {
-    return ListView.builder(
-      physics: const BouncingScrollPhysics(),
-      itemCount: 3,
-      itemBuilder: (BuildContext context, int index) {
-        final report = vendorList[index];
-        return _buildListContent(report, context, ref, size);
-      },
-    );
-  }
-
-  Widget _buildListContent(
-    VendorLogModel vendor,
-    BuildContext context,
-    WidgetRef ref,
-    Size size,
-  ) {
-    return Container(
-      margin: EdgeInsets.only(top: 20),
-
-      width: size.width,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: AppColors.instance.grey300,
-      ),
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(15),
-        child: Column(
-          spacing: 10,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmtyBody() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(AssetPaths.dashboardWorkOrder, height: 100, width: 100),
-          SizedBox(height: 10),
-          Text(
-            "Your work detailes appears here",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.black300,
-              fontSize: 12,
-              fontWeight: FontFamilies.medium,
-            ),
-          ),
-        ],
       ),
     );
   }

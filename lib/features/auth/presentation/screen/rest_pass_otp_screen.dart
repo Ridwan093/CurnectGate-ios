@@ -46,11 +46,11 @@ class _OtpScreenState extends ConsumerState<ForgetPassOtpScreen> {
     final state = ref.watch(formProvider);
 
     return Scaffold(
-      appBar: state.isLoading ? null : _buildAppBar(),
+      appBar: state.otpVerifyLoading ? null : _buildAppBar(),
       bottomNavigationBar:
-          state.isLoading ? null : _buildVerifyButton(widget.data),
+          state.otpVerifyLoading ? null : _buildVerifyButton(widget.data),
       body:
-          state.isLoading
+          state.otpVerifyLoading
               ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)
               : _biuldbody(size),
     );

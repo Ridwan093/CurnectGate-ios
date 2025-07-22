@@ -2,7 +2,7 @@
 import 'dart:developer';
 
 import 'package:curnectgate/features/member_management/profile_form/provider%20/member_code%20_repo.dart';
-import 'package:curnectgate/features/member_management/screen/bottomSheet/validation_state.dart';
+import 'package:curnectgate/features/member_management/membership_ID/bottomSheet/validation_state.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -44,6 +44,9 @@ class _SignInState extends ConsumerState<SignIn> {
     ref
         .read(formProvider.notifier)
         .logIn(context: context, email: email, password: pass, ref: ref);
+
+    _emailController.clear();
+    _passwordController.clear();
   }
 
   @override
@@ -56,11 +59,18 @@ class _SignInState extends ConsumerState<SignIn> {
     final userName = await SharedPrefsService().getUserName();
     if (userName != null) {
       setState(() {
-      name = userName;
+        name = userName;
       });
 
       log(userName);
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
   }
 
   @override
@@ -70,16 +80,16 @@ class _SignInState extends ConsumerState<SignIn> {
 
     return BackButtonHandler(
       child: Scaffold(
-        appBar: state.isLoading ? null : _buildAppBar(),
+        appBar: state.loginLodaing ? null : _buildAppBar(),
         bottomNavigationBar:
-            state.isLoading
+            state.loginLodaing
                 ? null
                 : _buildBottomAction(
                   _emailController.text,
                   _passwordController.text,
                 ),
         body:
-            state.isLoading
+            state.loginLodaing
                 ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)
                 : _biuldbody(size),
       ),

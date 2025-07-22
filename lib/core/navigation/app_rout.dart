@@ -1,5 +1,10 @@
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
+import 'package:curnectgate/core/widgets/GetYourCode.dart';
+import 'package:curnectgate/features/%20operations/OTP_Activation/screen/Activate_Otp_screen.dart';
+import 'package:curnectgate/features/%20operations/notifications/activites-reminders/activites_log.dart';
+import 'package:curnectgate/features/%20operations/violation/screens/reportViolation.dart';
+import 'package:curnectgate/features/auth/presentation/screen/changeTemporaryPassword.dart';
 import 'package:curnectgate/features/auth/presentation/screen/creatnewpassword.dart';
 import 'package:curnectgate/features/auth/presentation/screen/forgot_password.dart';
 import 'package:curnectgate/features/auth/presentation/screen/memeber_getstarted.dart';
@@ -8,12 +13,19 @@ import 'package:curnectgate/features/auth/presentation/screen/sign_in.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/screen/estateconfirmation_screen.dart';
 import 'package:curnectgate/features/estate_management/estate_onboarding/screen/onboard_code_confirm.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/screen/Dashborad.dart';
-import 'package:curnectgate/features/member_management/screen/add_member.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/screen/add_member.dart';
+import 'package:curnectgate/features/member_management/membership_ID/mainScreen/continue_to_Digital.dart';
 import 'package:curnectgate/features/member_management/screen/main_navigation_screen.dart';
-import 'package:curnectgate/features/member_management/screen/memberIdchecker.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/screen/memberIdchecker.dart';
+import 'package:curnectgate/features/member_management/membership_ID/mainScreen/memberIDScreen.dart';
 import 'package:curnectgate/features/member_management/screen/otp_screen.dart';
 import 'package:curnectgate/features/member_management/screen/password_screen.dart';
-import 'package:curnectgate/features/member_management/screen/setuprofilledInfo.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/screen/setuprofilledInfo.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/screen/allmemberScreen.dart';
+import 'package:curnectgate/features/security/screen/sccurityTap_Screen.dart';
+import 'package:curnectgate/features/userProfile/Prefrence_setting/screen/SetPreference.dart';
+import 'package:curnectgate/features/userProfile/Privacy_setting/screen/privacy_screen.dart';
+import 'package:curnectgate/features/userProfile/notification_setting/screen/notificationSetting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -126,30 +138,47 @@ final routerProvider = Provider<GoRouter>((ref) {
           return ForgetPassOtpScreen(email);
         },
       ),
-   GoRoute(
-  path: '/auth_pass_reset',
-  name: AppRoutes.passReset,
-  builder: (context, state) {
-    // Safely cast the extra data
-    final extra = state.extra as Map<String, dynamic>? ?? {};
+      GoRoute(
+        path: '/auth_pass_reset',
+        name: AppRoutes.passReset,
+        builder: (context, state) {
+          // Safely cast the extra data
+          final extra = state.extra as Map<String, dynamic>? ?? {};
 
-    // Extract values with null checks
-    final token = extra['token'] as String? ?? '';
-    final email = extra['local_email'] as String? ?? '';
-    final originalData = extra; // All spread data is here
+          // Extract values with null checks
+          final token = extra['token'] as String? ?? '';
+          final email = extra['local_email'] as String? ?? '';
+          // All spread data is here
 
-    return NewPassword(
-      token: token,
-      localEmail: email,
+          return NewPassword(token: token, localEmail: email);
+        },
+      ),
+      GoRoute(
+        path: '/vendor_code',
+        name: AppRoutes.vendorAccessCode,
+        builder: (context, state) {
+          // Safely cast the extra data
+          final extra = state.extra as Map<String, dynamic>? ?? {};
 
-    );
-  },
-),
+          // Extract values with null checks
+          final title = extra['title'] as String? ?? '';
+          final share = extra['share'] as String? ?? '';
+          final accessCode = extra['code'] as String? ?? '';
+          // All spread data is here
+
+          return GetYourCodeScreen(
+            title: title,
+            accessCode: accessCode,
+            share: share,
+          );
+        },
+      ),
       GoRoute(
         path: '/addHous_co',
         name: AppRoutes.addHoused_CoOnwner,
         builder: (context, state) => const AddNewMember(),
       ),
+
       GoRoute(
         path: '/sign_In',
         name: AppRoutes.signIN,
@@ -161,24 +190,96 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder:
             (context, state) => MainNavigationScreen(mainPage: Dashborad()),
       ),
+      GoRoute(
+        path: '/notification_settings',
+        name: AppRoutes.userNotificationSetting,
+        builder: (context, state) => UserNotificationSettings(),
+      ),
+      GoRoute(
+        path: '/set_preference',
+        name: AppRoutes.setPreferences,
+        builder: (context, state) => PreferencesScreen(),
+      ),
+      GoRoute(
+        path: '/member_screen',
+        name: AppRoutes.getMemberInfo,
+        builder: (context, state) => AllMemberListScreen(),
+      ),
+      GoRoute(
+        path: '/set_privacy',
+        name: AppRoutes.setPrivacy,
+        builder: (context, state) => UserPrivacySettings(),
+      ),
+      GoRoute(
+        path: '/app_notification',
+        name: AppRoutes.notification,
+        builder: (context, state) => ActivityPage(),
+      ),
+
+      GoRoute(
+        path: '/violation_screen',
+        name: AppRoutes.violation,
+        builder: (context, state) => ReportViolation(),
+      ),
+      GoRoute(
+        path: '/visitor_screen',
+        name: AppRoutes.vendorLog,
+        builder: (context, state) => Otpactivation(),
+      ),
+
+      GoRoute(
+        path: '/security-dashboard',
+        name: AppRoutes.securityguide,
+        builder: (context, state) {
+          // final extra = state.extra as Map<String, dynamic>? ?? {};
+
+          // Extract values with null checks
+          // final token = extra['token'] as String? ?? '';
+
+          return SecurityTapScreen();
+        },
+      ),
+
+      GoRoute(
+        path: '/tempt_pass',
+        name: AppRoutes.changeTemporarypass,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>? ?? {};
+
+          // Extract values with null checks
+          final token = extra['token'] as String? ?? '';
+
+          return ChangeTemporaryPassword(token: token);
+        },
+      ),
+      GoRoute(
+        path: '/Digital_starter',
+        name: AppRoutes.digitalIDStarter,
+        builder: (context, state) {
+          // final extra = state.extra as Map<String, dynamic>? ?? {};
+
+          // Extract values with null checks
+          return MemberGetStart();
+        },
+      ),
+       GoRoute(
+        path: '/Digital_member_screen',
+        name: AppRoutes.digitalIDMember,
+        builder: (context, state) {
+          // final extra = state.extra as Map<String, dynamic>? ?? {};
+
+          // Extract values with null checks
+          return DigitalCardScreen();
+        },
+      ),
     ],
+
     redirect: (BuildContext context, GoRouterState state) async {
       final currentPath = state.matchedLocation;
       debugPrint('Current path: $currentPath');
 
-      // Define public paths
+      // Define public paths (unchanged from your original)
       const publicPaths = [
-        // - confirmInfomation
-        // - member_IdCheck
-        // - setup_info
-        // - member_pass
-        // - Otp
-        // - pass_reset
-        // - forget_pass_otp
-        // - auth_pass_reset
-        // - addHous_co
-        // - sign_In
-        // - dash_board
         '/',
         '/sign_In',
         '/pass_reset',
@@ -193,35 +294,66 @@ final routerProvider = Provider<GoRouter>((ref) {
         "/Otp",
         "/Onbord_info",
         '/member_pass',
+        "/tempt_pass",
+        "/security-dashboard",
       ];
 
-      // Skip redirect for these cases
+      // Skip redirect for error pages
       if (currentPath.startsWith('/error')) return null;
 
-      // Check auth status
+      // Get auth data from local storage
       final authData = await SharedPrefsService().getAuthData();
       final isAuthenticated = authData != null && authData.isNotEmpty;
       debugPrint('User authenticated: $isAuthenticated');
 
-      // Handle redirects
-      if (isAuthenticated) {
-        // If authenticated but trying to access public path, go to dashboard
-        if (publicPaths.contains(currentPath)) {
-          return '/dash_board';
-        }
-      } else {
-        // If not authenticated and trying to access protected path, go to onboarding
-        if (!publicPaths.contains(currentPath)) {
-          return '/';
-        }
+      if (!isAuthenticated) {
+        // If not authenticated and trying to access protected path
+        return !publicPaths.contains(currentPath) ? '/' : null;
       }
 
-      // No redirect needed
+      // Parse user role from saved auth data
+      final userRole = _parseUserRole(authData);
+      debugPrint('User role: $userRole');
+
+      // Role-specific dashboard paths
+      const roleDashboards = {
+        'landlord': '/dash_board',
+        'admin': '/dash_board',
+        'resident': '/dash_board',
+        'security_personnel': '/security-dashboard',
+      };
+
+      // If authenticated but trying to access public path
+      if (publicPaths.contains(currentPath)) {
+        return roleDashboards[userRole] ?? '/dash_board';
+      }
+
+      // Role-based route protection
+      if (currentPath.startsWith('/admin') && userRole != 'admin') {
+        return '/';
+      }
+
+      if (currentPath.startsWith('/landlord') && userRole != 'landlord') {
+        return '/';
+      }
+
+      if (currentPath.startsWith('/security') && userRole != 'security') {
+        return '/';
+      }
+
+      // Add other role-specific checks as needed...
+
       return null;
     },
-    errorBuilder: (context, state) {
-      debugPrint('Route error: ${state.error}');
-      return Scaffold(body: Center(child: Text('Route error: ${state.error}')));
-    },
   );
+
+  // Helper function to parse user role from auth data
 });
+String _parseUserRole(Map<String, dynamic> authData) {
+  try {
+    return authData['user']['role']?.toString().toLowerCase() ?? 'unknown';
+  } catch (e) {
+    debugPrint('Error parsing user role: $e');
+    return 'unknown';
+  }
+}

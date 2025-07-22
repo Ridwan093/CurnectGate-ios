@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -19,95 +21,100 @@ class ReportFileUplode extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      key: const ValueKey('userDetails'),
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Header section
-        Column(
-          children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.close),
+    return SingleChildScrollView(
+      child: Column(
+        key: const ValueKey('userDetails'),
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Header section
+          Column(
+            children: [
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(Icons.close),
+                ),
               ),
-            ),
-            Text(
-              title,
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontWeight: FontFamilies.bold,
-                fontSize: 20,
-                color: AppColors.instance.black600,
+              Text(
+                title,
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  fontWeight: FontFamilies.bold,
+                  fontSize: 20,
+                  color: AppColors.instance.black600,
+                ),
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              subtitle,
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontSize: 12,
-                color: AppColors.instance.black300,
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  fontSize: 12,
+                  color: AppColors.instance.black300,
+                ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 50),
-        _buildthirdaryOptionTile(
-          context: context,
-          onTap: () async {
-            final index = ref.read(currentEditingIndexProvider);
-            if (index != null) {
-              final image = await ImagePicker().pickImage(
-                source: ImageSource.camera,
-              );
-              if (image != null) {
-                ref.read(reportProvider.notifier).addImage(image.path, index);
+            ],
+          ),
+          const SizedBox(height: 50),
+          _buildthirdaryOptionTile(
+            context: context,
+            onTap: () async {
+              final index = ref.read(currentEditingIndexProvider);
+              if (index != null) {
+                final image = await ImagePicker().pickImage(
+                  source: ImageSource.camera,
+                );
+      
+                if (image != null) {
+                  ref.read(reportProvider.notifier).addImage(image.path, index);
+                  ref.read(bottomSheetStateProvider.notifier).state =
+                      BottomSheetView.userDetails;
+                }
+              }
+            },
+            title: "Take Photo",
+            leadingicon: AssetPaths.takephoto,
+          ),
+          // Primary option tile
+          const SizedBox(height: 5),
+          _buildthirdaryOptionTile(
+            context: context,
+            onTap: () async {
+              final index = ref.read(currentEditingIndexProvider);
+              log(index.toString());
+              if (index != null) {
+                final image = await ImagePicker().pickImage(
+                  source: ImageSource.gallery,
+                );
+                if (image != null) {
+                  log(image.path.toString());
+                  ref.read(reportProvider.notifier).addImage(image.path, index);
+                  ref.read(bottomSheetStateProvider.notifier).state =
+                      BottomSheetView.userDetails;
+                }
+              }
+            },
+            title: "Choose from Gallery",
+            leadingicon: AssetPaths.choosfromgallery,
+          ),
+          // Secondary option tile
+          const SizedBox(height: 5),
+          _buildthirdaryOptionTile(
+            context: context,
+            onTap: () async {
+              final index = ref.read(currentEditingIndexProvider);
+              if (index != null) {
+                await ref.read(reportProvider.notifier).addFile(index);
                 ref.read(bottomSheetStateProvider.notifier).state =
                     BottomSheetView.userDetails;
               }
-            }
-          },
-          title: "Take Photo",
-          leadingicon: AssetPaths.takephoto,
-        ),
-        // Primary option tile
-        const SizedBox(height: 5),
-        _buildthirdaryOptionTile(
-          context: context,
-          onTap: () async {
-            final index = ref.read(currentEditingIndexProvider);
-            if (index != null) {
-              final image = await ImagePicker().pickImage(
-                source: ImageSource.gallery,
-              );
-              if (image != null) {
-                ref.read(reportProvider.notifier).addImage(image.path, index);
-                ref.read(bottomSheetStateProvider.notifier).state =
-                    BottomSheetView.userDetails;
-              }
-            }
-          },
-          title: "Choose from Gallery",
-          leadingicon: AssetPaths.choosfromgallery,
-        ),
-        // Secondary option tile
-        const SizedBox(height: 5),
-        _buildthirdaryOptionTile(
-          context: context,
-          onTap: () async {
-            final index = ref.read(currentEditingIndexProvider);
-            if (index != null) {
-              await ref.read(reportProvider.notifier).addFile(index);
-              ref.read(bottomSheetStateProvider.notifier).state =
-                  BottomSheetView.userDetails;
-            }
-          },
-          title: "Choose file",
-          leadingicon: AssetPaths.chooseFile,
-        ),
-      ],
+            },
+            title: "Choose file",
+            leadingicon: AssetPaths.chooseFile,
+          ),
+        ],
+      ),
     );
   }
 
@@ -117,8 +124,6 @@ class ReportFileUplode extends ConsumerWidget {
     required String title,
     required String leadingicon,
   }) {
-  
-
     return Container(
       height: 100,
       color: AppColors.instance.grey300,

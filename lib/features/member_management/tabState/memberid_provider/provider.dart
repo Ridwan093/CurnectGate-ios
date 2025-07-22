@@ -6,8 +6,10 @@ final bottomSheetProvider = StateProvider<bool>((ref) => false);
 final cardStatusProvider = StateProvider<bool>((ref) => true);
 final accessCodeProvider = StateProvider<String>((ref) => '21GA2');
 
-enum BottomSheetType { settings, confirmation }
+enum BottomSheetType { settings, confirmation ,startGenerate }
 enum ConfirmationAction { regenerate, deactivate , activate}
 
 final bottomSheetTypeProvider = StateProvider<BottomSheetType?>((ref) => null);
 final confirmationActionProvider = StateProvider<ConfirmationAction?>((ref) => null);
+
+

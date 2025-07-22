@@ -1,8 +1,8 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/screen/bottomSheet/member_Digital_buttomSeet.dart';
+import 'package:curnectgate/features/member_management/membership_ID/bottomSheet/member_Digital_buttomSeet.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
-import 'package:curnectgate/features/member_management/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/security/provider/scanProvider.dart';
 import 'package:curnectgate/features/security/widget/Scan_code.dart';
 import 'package:flutter/material.dart';

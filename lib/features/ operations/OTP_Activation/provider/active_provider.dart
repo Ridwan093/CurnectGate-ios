@@ -4,13 +4,24 @@ import 'package:curnectgate/features/%20operations/OTP_Activation/model/generate
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+final additionalInfoProvider =
+    StateNotifierProvider<AdditionalInfoNotifier, bool>(
+      (ref) => AdditionalInfoNotifier(),
+    );
+
+class AdditionalInfoNotifier extends StateNotifier<bool> {
+  AdditionalInfoNotifier() : super(false);
+
+  void toggle() => state = !state;
+}
+
 final generateNotifierProvider =
     StateNotifierProvider<ReportNotifier, GenerateState>((ref) {
       return ReportNotifier();
     });
 
 class ReportNotifier extends StateNotifier<GenerateState> {
-  ReportNotifier() : super(GenerateState(isLoading: false));
+  ReportNotifier() : super(GenerateState());
 
   void setPurpose(String purpose) {
     state = state.copyWith(purposeofVisit: purpose);
@@ -45,7 +56,14 @@ class ReportNotifier extends StateNotifier<GenerateState> {
     log(level!);
     state = state.copyWith(securitylevel: level);
   }
-
+void setFilter(String? filter) {
+    log(filter!);
+    state = state.copyWith(filter: filter);
+  }
+  void setHistoryFilter(String? filter) {
+    log(filter!);
+    state = state.copyWith(historyfilter: filter);
+  }
   void setVehicleNume(String vehiclenumber) {
     state = state.copyWith(vehiclenumber: vehiclenumber);
   }
@@ -54,8 +72,8 @@ class ReportNotifier extends StateNotifier<GenerateState> {
     state = state.copyWith(phoneNumber: phoneNumber);
   }
 
-  void setAdditionalInfo(bool info) {
-    state = state.copyWith(isAdditionalInfo: info);
+  void updateActiveOtpErrorState(bool error) {
+    state = state.copyWith(otpCodeError: error);
   }
 
   void setVisitorName(String visitorName) {
@@ -64,6 +82,26 @@ class ReportNotifier extends StateNotifier<GenerateState> {
 
   void setLoading(bool loading) {
     state = state.copyWith(isLoading: loading);
+  }
+ void setRevorkReason(String reason) {
+    state = state.copyWith(revorkActiveOTP: reason,isOtpValide:reason.isNotEmpty);
+  }
+  void resetState() {
+    state = state.copyWith(
+      validityMinutes: 0,
+      vistorName: "",
+      purposeofVisit: "",
+      visitperiod: "",
+      selectedDate: null,
+      selectedTime: null,
+      otpCodeError: false,
+      vehiclenumber: '',
+      phoneNumber: "",
+      revorkActiveOTP: "",
+      isOtpValide: false
+
+      
+    );
   }
 
   Future<void> submit() async {

@@ -6,9 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class WorkDropDown extends ConsumerWidget {
   final List<String> workTypes;
+  final String label;
   final ValueChanged<String?>? onChanged;
 
-  const WorkDropDown({super.key, required this.workTypes, this.onChanged});
+  const WorkDropDown({super.key, required this.workTypes,this.label= "Work Type" ,this.onChanged});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,7 +24,7 @@ class WorkDropDown extends ConsumerWidget {
         fontSize: 15,
       ),
       decoration: InputDecoration(
-        labelText: 'Work Type',
+        labelText: label,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 14,
@@ -57,7 +58,7 @@ class WorkDropDown extends ConsumerWidget {
           fontSize: 13,
         ),
       ),
-      value: state.workType,
+      value: state.workType == "" ? null : state.workType,
       items:
           workTypes.map((String value) {
             return DropdownMenuItem<String>(value: value, child: Text(value));

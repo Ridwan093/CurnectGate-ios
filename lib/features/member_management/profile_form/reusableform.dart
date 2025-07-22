@@ -3,7 +3,7 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-enum FieldType { name, email, phone, oTpCode, general, password }
+enum FieldType { name, email, phone, oTpCode, general, password, reason }
 
 class ReusabelProfileForm extends StatefulWidget {
   final String? initialValue;
@@ -16,6 +16,7 @@ class ReusabelProfileForm extends StatefulWidget {
   final int? maxLines;
   final String fieldKey;
   final ValueChanged<({bool isValid, String? error})>? onValidationChanged;
+  final void Function(String)? onChanged;
   final bool showLockIcon; // New parameter for read-only fields
 
   const ReusabelProfileForm({
@@ -28,6 +29,7 @@ class ReusabelProfileForm extends StatefulWidget {
     this.controller,
     this.initialValue,
     this.onValidationChanged,
+    this.onChanged,
     this.maxLength,
     this.maxLines = 1,
     this.showLockIcon = false, // Default to false
@@ -87,8 +89,11 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
       obscureText:
           widget.fieldType == FieldType.password ? _obscureText : false,
       decoration: _buildInputDecoration(),
-      onChanged:
-      _validateField, // Skip validation if read-only
+      // onChanged: _validateField, // Skip validation if read-only
+      onChanged: (value) {
+        _validateField(value);
+        widget.onChanged!(value);
+      },
       keyboardType: _getKeyboardType(),
       inputFormatters: _getInputFormatters(),
       validator: (_) => _errorMessage,
@@ -100,14 +105,10 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
     return InputDecoration(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          color:colors.black300,
-        ),
+        borderSide: BorderSide(color: colors.black300),
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          color:  colors.black300,
-        ),
+        borderSide: BorderSide(color: colors.black300),
       ),
       errorBorder: OutlineInputBorder(
         borderSide: BorderSide(color: colors.error600),
@@ -161,7 +162,7 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
   void _validateField(String value) {
     String? error;
     bool isValid = false;
-
+    widget.onChanged;
     if (value.isEmpty) {
       error = '${widget.label} is required';
     } else {
@@ -187,6 +188,7 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
           break;
         case FieldType.password:
           // Password validation logic
+
           break;
         case FieldType.oTpCode:
           if (value.length < 6) {
@@ -198,6 +200,10 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
         case FieldType.general:
           if (value.length < 50) {
             error = '${widget.label} must be at least 50 characters';
+          }
+        case FieldType.reason:
+          if (value.length < 20) {
+            error = '${widget.label} must be at least 20 characters';
           }
           break;
       }

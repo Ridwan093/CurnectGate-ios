@@ -44,6 +44,8 @@ class AssetPaths {
   static const String preferences = '${_actions}preference.png';
   static const String generateOtpwithperiod = '${_actions}pin-code.png';
 
+  static const String employeeCad = '${_actions}EmployeeCard.png';
+
   // Auth Icons
   static const String checkId = '${_auth}checks_id.png';
   static const String clipboard = '${_auth}clipboard.png';

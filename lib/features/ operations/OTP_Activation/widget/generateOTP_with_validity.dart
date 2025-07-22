@@ -1,9 +1,11 @@
+import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/core/widgets/GetYourCode.dart';
 import 'package:curnectgate/features/%20operations/OTP_Activation/provider/active_provider.dart';
-import 'package:curnectgate/features/%20operations/OTP_Activation/widget/securuty_standard.dart';
+import 'package:curnectgate/features/%20operations/OTP_Activation/widget/additionalInfo.dart';
 import 'package:curnectgate/features/%20operations/OTP_Activation/widget/validity_period_drop_down.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,8 +15,8 @@ class GenerateOTPWithValidity extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final activation = ref.watch(generateNotifierProvider);
+    final activationNotifer = ref.watch(generateNotifierProvider.notifier);
 
-    final isLoading = activation.isLoading;
     final size = MediaQuery.sizeOf(context);
 
     return Padding(
@@ -57,8 +59,15 @@ class GenerateOTPWithValidity extends ConsumerWidget {
           // 1. Category dropdown (no Expanded!)
           _buildPurposeDropdown(ref, activation.purposeofVisit),
           const SizedBox(height: 20),
-          _buildSwitch(ref),
-          const SizedBox(height: 25),
+          VisitorInfoSection(
+            onChanged1: (value) {
+              activationNotifer.setVehicleNume(value);
+            },
+            onChanged2: (value) {
+              activationNotifer.setPhoneNume(value);
+            },
+          ),
+          const SizedBox(height: 20),
           ValidityPickerTile(
             selectedValue: activation.visitperiod,
 
@@ -67,20 +76,13 @@ class GenerateOTPWithValidity extends ConsumerWidget {
                     .read(generateNotifierProvider.notifier)
                     .setPeriod(value),
           ),
-          const SizedBox(height: 10),
-          SecuritiesStandrd(
-            selectedValue: activation.securitylevel,
-            onChanged:
-                (value) => ref
-                    .read(generateNotifierProvider.notifier)
-                    .setSecuriteLevel(value),
-          ),
+
           const SizedBox(height: 25),
 
           // 4. Submit button
           _buildSubmitButton(
             size: size,
-            isLoading: isLoading,
+            isLoading: activation.genrateValidation,
             ref: ref,
             context: context,
           ),
@@ -90,44 +92,36 @@ class GenerateOTPWithValidity extends ConsumerWidget {
   }
 }
 
-Widget _buildSwitch(WidgetRef ref) {
-  final activation = ref.watch(generateNotifierProvider);
-  final state = ref.watch(generateNotifierProvider.notifier);
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Text("Add More info about visitor"),
-      Switch(
-        value: activation.isAdditionalInfo,
-        onChanged: (value) {
-          state.setAdditionalInfo(value);
-        },
-      ),
-    ],
-  );
-}
-
 Widget _buildSubmitButton({
   required Size size,
   required bool isLoading,
   required WidgetRef ref,
   required BuildContext context,
 }) {
+  final form = ref.read(formProvider.notifier);
+  final realLoading = ref.watch(formProvider);
   return InkWell(
-    onTap: isLoading ? null : () => _submit(ref, context),
+    onTap:
+        isLoading
+            ? () => form.generateOtpWithValidity(context: context, ref: ref)
+            : null,
     child: Container(
       height: 50,
       width: size.width,
       decoration: BoxDecoration(
-        color: AppColors.instance.black600,
+        color:
+            isLoading
+                ? AppColors.instance.black600
+                : AppColors.instance.grey500,
 
         borderRadius: BorderRadius.circular(10),
       ),
 
-      child: Center(
-        child:
-            !isLoading
-                ? Text(
+      child:
+          realLoading.generateOtpWithValidatorLoading
+              ? Loadingstates()
+              : Center(
+                child: Text(
                   "Generate OTP",
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
@@ -135,9 +129,8 @@ Widget _buildSubmitButton({
                     fontWeight: FontFamilies.medium,
                     color: AppColors.instance.grey200,
                   ),
-                )
-                : CircularProgressIndicator(),
-      ),
+                ),
+              ),
     ),
   );
 }
