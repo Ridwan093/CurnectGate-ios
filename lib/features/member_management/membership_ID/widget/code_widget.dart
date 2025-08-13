@@ -1,6 +1,7 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/member_management/membership_ID/model/digital_member_id_data.dart';
 import 'package:curnectgate/features/member_management/membership_ID/model/getDigitalModel.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +41,7 @@ class CodeWidget extends StatelessWidget {
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      data.user.estateName.toUpperCase(),
+                      data.user?.estateName?.toUpperCase() ?? "",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontFamilies.bold,
@@ -66,7 +67,7 @@ class CodeWidget extends StatelessWidget {
                 InkWell(
                   onTap: () {
                     Clipboard.setData(
-                      ClipboardData(text: data.digitalId.digitalIdCode),
+                      ClipboardData(text: data.digitalId?.digitalIdCode ??""),
                     );
                     showCustomSuccessToast(
           context: context,
@@ -82,7 +83,7 @@ class CodeWidget extends StatelessWidget {
                     children: [
                       SizedBox(width: 15),
                       Text(
-                        data.digitalId.digitalIdCode.toUpperCase(),
+                        data.digitalId?.digitalIdCode?.toUpperCase() ?? "",
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontFamilies.medium,
@@ -141,7 +142,7 @@ class CodeWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  "${data.user.firstname.toUpperCase()} ${data.user.lastname.toUpperCase()}",
+                  "${data.user?.firstname?.toUpperCase()} ${data.user?.lastname?.toUpperCase()}",
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontFamilies.bold,
@@ -164,7 +165,7 @@ class CodeWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  data.user.role.toUpperCase(),
+                  data.user?.role?.toUpperCase() ?? "",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontFamilies.bold,
@@ -193,7 +194,7 @@ class CodeWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      data.digitalId.status.toUpperCase(),
+                      data.digitalId?.status?.toUpperCase() ?? "",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontFamilies.bold,
@@ -207,7 +208,7 @@ class CodeWidget extends StatelessWidget {
                     CircleAvatar(
                       radius: 3,
                       backgroundColor: _buildColor(
-                        data.digitalId.status.toLowerCase(),
+                        data.digitalId?.status?.toLowerCase() ?? "",
                       ),
                     ),
                   ],

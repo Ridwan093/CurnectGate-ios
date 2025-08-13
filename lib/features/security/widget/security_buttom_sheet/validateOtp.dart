@@ -55,6 +55,7 @@ class Validateotp extends ConsumerWidget {
             hintText: "(eg. #84758)",
             label: "Enter OTP",
             fieldKey: "oTpCode",
+                onChanged: (value) {},
             onValidationChanged: (validation) {
               ref
                   .read(oTpformProvider.notifier)

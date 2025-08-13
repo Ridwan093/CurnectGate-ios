@@ -1,7 +1,7 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/%20operations/violation/screens/reportViolation.dart';
+import 'package:curnectgate/features/operations/violation/screens/reportViolation.dart';
 import 'package:curnectgate/features/chat/data/chat_model/message_state.dart';
 import 'package:curnectgate/features/chat/data/provider/chat_provier.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/displayFileCard.dart';

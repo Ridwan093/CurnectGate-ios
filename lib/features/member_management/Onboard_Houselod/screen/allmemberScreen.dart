@@ -1,13 +1,13 @@
-import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/%20operations/notifications/screen/notification_permission.dart';
-import 'package:curnectgate/features/member_management/medel/member_model.dart';
+import 'package:curnectgate/features/operations/notifications/screen/notification_permission.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/getHouseHold_provider.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/screen/add_member.dart';
-import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/BuildHouseHold_Data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class AllMemberListScreen extends ConsumerWidget {
   const AllMemberListScreen({super.key});
@@ -17,16 +17,21 @@ class AllMemberListScreen extends ConsumerWidget {
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: _buildBody(size, ref, context),
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       centerTitle: true,
       backgroundColor: Colors.transparent,
-      leading: const Icon(Icons.arrow_back_ios_new),
+      leading: InkWell(
+        onTap: () {
+          context.goNamed(AppRoutes.dashbord);
+        },
+        child: const Icon(Icons.arrow_back_ios_new),
+      ),
       title: Text(
         "Add a member",
         style: TextStyle(
@@ -40,12 +45,18 @@ class AllMemberListScreen extends ConsumerWidget {
   }
 
   Widget _buildBody(Size size, WidgetRef ref, BuildContext context) {
-    return Column(
-      children: [
-        _buildAddMemberButton(size, context),
-        const SizedBox(height: 30),
-        Expanded(child: _buildContent(size, context, ref)),
-      ],
+    return WillPopScope(
+      onWillPop: () async {
+        context.goNamed(AppRoutes.dashbord);
+        return false; // Prevent default back behavior
+      },
+      child: Column(
+        children: [
+          _buildAddMemberButton(size, context),
+          const SizedBox(height: 30),
+          Expanded(child: _buildContent(size, context, ref)),
+        ],
+      ),
     );
   }
 
@@ -105,18 +116,17 @@ class AllMemberListScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 23),
-          _buildListHeader(context),
+          _buildListHeader(context, ref),
           const SizedBox(height: 10),
-          Expanded(
-            child:
-                memebers.isNotEmpty ? _buildMemberList(ref) : _buildEmtyBody(),
-          ),
+          Expanded(child: HouseholdDatas()),
         ],
       ),
     );
   }
 
-  Widget _buildListHeader(BuildContext context) {
+  Widget _buildListHeader(BuildContext context, WidgetRef ref) {
+    final householdData = ref.watch(houseProvider);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -148,96 +158,83 @@ class AllMemberListScreen extends ConsumerWidget {
             children: [
               const Icon(Icons.person_2_outlined, size: 16),
               const SizedBox(width: 5),
-              Text(
-                "4",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  fontSize: 10,
-                  fontWeight: FontFamilies.bold,
-                  color: AppColors.instance.black500,
-                ),
+              householdData.when(
+                data: (data) {
+                  if (data?.data?.householdMembers != null) {
+                    return Text(
+                      "${data?.data?.householdMembers?.length.toString() ?? 0}",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        fontSize: 10,
+                        fontWeight: FontFamilies.bold,
+                        color: AppColors.instance.black500,
+                      ),
+                    );
+                  } else {
+                    return Text(
+                      "0",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        fontSize: 10,
+                        fontWeight: FontFamilies.bold,
+                        color: AppColors.instance.black500,
+                      ),
+                    );
+                  }
+                },
+                error: (error, stack) {
+                  Text(
+                    "0",
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontSize: 10,
+                      fontWeight: FontFamilies.bold,
+                      color: AppColors.instance.black500,
+                    ),
+                  );
+                  final householdData = ref.read(houseProvider).value;
+                  final data = householdData?.data;
+
+                  // Try to show cached data
+
+                  if (data!.householdMembers!.isNotEmpty) {
+                    return Text(
+                      data.householdMembers!.length.toString(),
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        fontSize: 10,
+                        fontWeight: FontFamilies.bold,
+                        color: AppColors.instance.black500,
+                      ),
+                    );
+                  } else {
+                    return Text(
+                      "0",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        fontSize: 10,
+                        fontWeight: FontFamilies.bold,
+                        color: AppColors.instance.black500,
+                      ),
+                    );
+                  }
+                },
+                loading: () {
+                  return Text(
+                    "0",
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontSize: 10,
+                      fontWeight: FontFamilies.bold,
+                      color: AppColors.instance.black500,
+                    ),
+                  );
+                },
               ),
             ],
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildMemberList(WidgetRef ref) {
-    return ListView.builder(
-      physics: const BouncingScrollPhysics(),
-      itemCount: memebers.length,
-      itemBuilder: (BuildContext context, int index) {
-        final userinfo = memebers[index];
-        return _buildListContent(userinfo, context, ref);
-      },
-    );
-  }
-
-  Widget _buildListContent(
-    MemberModel userinfo,
-    BuildContext context,
-    WidgetRef ref,
-  ) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 7),
-      color: AppColors.instance.grey300,
-      child: ListTile(
-        onTap:
-            () => showUserBottomSheet(
-              context: context,
-              headertitle: userinfo.userfirstName,
-              headersubtitle: userinfo.userRole,
-              ref: ref,
-              bottom: BottomSheetView.permissions,
-            ),
-        leading: CircleAvatar(backgroundImage: AssetImage(userinfo.userpix)),
-        title: Text(
-          "${userinfo.userfirstName} ${userinfo.userlaseName}",
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontSize: 15,
-            fontWeight: FontFamilies.bold,
-            color: AppColors.instance.black600,
-          ),
-        ),
-        trailing: Icon(
-          Icons.arrow_forward_ios,
-          color: AppColors.instance.black600,
-          size: 16,
-        ),
-        subtitle: Text(
-          userinfo.userRole,
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontSize: 12,
-            fontWeight: FontFamilies.medium,
-            color: AppColors.instance.black300,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmtyBody() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(AssetPaths.addMember, height: 100, width: 100),
-          SizedBox(height: 10),
-          Text(
-            "Members added to your profile appears here",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.black300,
-              fontSize: 12,
-              fontWeight: FontFamilies.medium,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

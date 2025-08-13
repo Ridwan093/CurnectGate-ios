@@ -1,7 +1,7 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/estate_button.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_screen/vendor_log.dart';
 import 'package:curnectgate/features/member_management/screen/main_navigation_screen.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';

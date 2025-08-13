@@ -8,14 +8,20 @@ import 'package:curnectgate/core/%20utils/api/api_method.dart';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
-import 'package:curnectgate/features/%20operations/OTP_Activation/provider/active_provider.dart';
-import 'package:curnectgate/features/%20operations/violation/report_provider/comment_provider.dart';
-import 'package:curnectgate/features/%20operations/violation/report_provider/report_provider.dart';
 import 'package:curnectgate/features/auth/widget/tmporarypassword_dialog.dart';
-import 'package:curnectgate/features/member_management/Member_Dashboard/state_model/infoFilled_model.dart';
-import 'package:curnectgate/features/member_management/profile_form/validator/password_validator.dart';
+import 'package:curnectgate/features/member_management/Member_Dashboard/state_model/general_state.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/getHouseHold_provider.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/getPermission_status_provider.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/getpermissionStatic_provider.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/multi_select_provider.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/permission_loading_provider.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/provider.dart';
 import 'package:curnectgate/features/member_management/membership_ID/provider/getDigitalIDProvider.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
+import 'package:curnectgate/features/member_management/profile_form/validator/password_validator.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/provider/active_provider.dart';
+import 'package:curnectgate/features/operations/violation/report_provider/comment_provider.dart';
+import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/provider/prefrence_provider.dart';
 import 'package:curnectgate/features/userProfile/Privacy_setting/provider/privacy_provider.dart';
@@ -64,11 +70,149 @@ class FormNotifier extends StateNotifier<FormStates> {
         break;
       case 'password':
         state = state.copyWith(passValid: isValid, phoneError: errorMessage);
+      case "emergency_contact_name":
+        state = state.copyWith(
+          emenergencyNameValid: isValid,
+          phoneError: errorMessage,
+        );
+      case "emergency_contact_phone":
+        state = state.copyWith(
+          emergencyContactValid: isValid,
+          phoneError: errorMessage,
+        );
+      case "years_of_experience":
+        state = state.copyWith(
+          yearofExpirenceValid: isValid,
+          lastNameError: errorMessage,
+        );
+      case "desgination":
+        state = state.copyWith(
+          desginationValid: isValid,
+          lastNameError: errorMessage,
+        );
+      case "rental_frequency":
+        state = state.copyWith(
+          rentalfrequencyValid: isValid,
+          lastNameError: errorMessage,
+        );
+      case "security_deposit":
+        state = state.copyWith(
+          securityFeesValid: isValid,
+          lastNameError: errorMessage,
+        );
+      case "agent_fee":
+        state = state.copyWith(
+          agentFeeValid: isValid,
+          lastNameError: errorMessage,
+        );
+      case "occupation":
+        state = state.copyWith(
+          ocupationValid: isValid,
+          lastNameError: errorMessage,
+        );
+      case "employer":
+        state = state.copyWith(
+          employerValid: isValid,
+          lastNameError: errorMessage,
+        );
+      case "monthly_income":
+        state = state.copyWith(
+          montlyIconValid: isValid,
+          lastNameError: errorMessage,
+        );
     }
+  }
+
+  void updateMonthlyIcom(String value) {
+    state = state.copyWith(
+      montlyIconValid: value.isNotEmpty,
+      montlyIcom: value,
+    );
+  }
+
+  void updateEmergencyRole(String value) {
+    state = state.copyWith(
+      emenergencyRoleValid: value.isNotEmpty,
+      emenergencyRole: value,
+    );
+  }
+
+  void updateOcupation(String value) {
+    state = state.copyWith(ocupationValid: value.isNotEmpty, ocupation: value);
+  }
+
+  void updateEmplyer(String value) {
+    state = state.copyWith(employerValid: value.isNotEmpty, employer: value);
+  }
+
+  void updateRentFrequency(String value) {
+    state = state.copyWith(
+      rentalfrequencyValid: value.isNotEmpty,
+      rentalfrequency: value,
+    );
+  }
+
+  void updateAgentFees(String value) {
+    state = state.copyWith(agentFeeValid: value.isNotEmpty, agentFee: value);
+  }
+
+  void updateSecurityFees(String value) {
+    state = state.copyWith(
+      securityFeesValid: value.isNotEmpty,
+      securityFees: value,
+    );
   }
 
   void updateGender(String? gender) {
     state = state.copyWith(gender: gender);
+  }
+
+  void updateyearExperece(String? value) {
+    state = state.copyWith(
+      yearofExperecnandeducation: value,
+      yearofExpirenceValid: value?.isNotEmpty,
+    );
+  }
+
+  void updateEducationLevel(String? value) {
+    state = state.copyWith(
+      educationLevel: value,
+      educationlevelValid: value?.isNotEmpty,
+    );
+  }
+
+  void updatemutle(String key, List<String>? value) {
+    switch (key) {
+      case 'Specializations':
+        updateSpecializations(value);
+        break;
+      case 'Certifications':
+        updateCertifications(value);
+        break;
+      default:
+        // Optionally handle unknown keys
+        break;
+    }
+  }
+
+  void updateSpecializations(List<String>? value) {
+    log(value.toString());
+    state = state.copyWith(
+      specializations: value,
+      specializeValid: value?.isNotEmpty,
+    );
+  }
+
+  void updateCertifications(List<String>? value) {
+    log(value.toString());
+    state = state.copyWith(
+      certifications: value,
+      certificatteValid: value?.isNotEmpty,
+    );
+  }
+
+  void updatestartDate(String? value) {
+    state = state.copyWith(startdate: value, timeStateValid: value?.isNotEmpty);
   }
 
   void updateAgreement(bool? agreed) {
@@ -213,6 +357,66 @@ class FormNotifier extends StateNotifier<FormStates> {
     state = state.copyWith(generateMemberIdLoading: isLoading);
   }
 
+  void updateAddHouseHoldLoading(bool isLoading) {
+    ///loading state if (optioner)
+    log(isLoading.toString());
+    state = state.copyWith(addHouseHoldLoading: isLoading);
+  }
+
+  void updateGranFacilityPermissionLoading(bool isLoading) {
+    ///loading state if (optioner)
+    log(isLoading.toString());
+    state = state.copyWith(facilityLoading: isLoading);
+  }
+
+  void updateGrantCurfewPermissionLoading(bool isLoading) {
+    ///loading state if (optioner)
+    log(isLoading.toString());
+    state = state.copyWith(curfewLoading: isLoading);
+  }
+
+  void updateGrantGatePermissionLoading(bool isLoading) {
+    ///loading state if (optioner)
+    log(isLoading.toString());
+    state = state.copyWith(gateAccessLoading: isLoading);
+  }
+
+  void updateGrantCommunityPermissionLoading(bool isLoading) {
+    ///loading state if (optioner)
+    log(isLoading.toString());
+    state = state.copyWith(communityAccessLoading: isLoading);
+  }
+
+  void updateGrantNightPermissionLoading(bool isLoading) {
+    ///loading state if (optioner)
+    log(isLoading.toString());
+    state = state.copyWith(nightAccessLoading: isLoading);
+  }
+
+  void updateGrantParkingPermissionLoading(bool isLoading) {
+    ///loading state if (optioner)
+    log(isLoading.toString());
+    state = state.copyWith(parkingAccessLoading: isLoading);
+  }
+
+  void updateGrantVisitorPermissionLoading(bool isLoading) {
+    ///loading state if (optioner)
+    log(isLoading.toString());
+    state = state.copyWith(visitorAccessLoading: isLoading);
+  }
+
+  void updateBasicPermissionLoading(bool isLoading) {
+    ///loading state if (optioner)
+    log(isLoading.toString());
+    state = state.copyWith(basicPermissionLoading: isLoading);
+  }
+
+  void updateRemovedHouseHoldLoading(bool isLoading) {
+    ///loading state if (optioner)
+    log(isLoading.toString());
+    state = state.copyWith(removedHouseHoldLoading: isLoading);
+  }
+
   void updateOtp(String otp, bool isComplete) {
     log("FormStateOTP:$otp");
     state = state.copyWith(otp: otp, isOtpComplete: isComplete);
@@ -240,8 +444,71 @@ class FormNotifier extends StateNotifier<FormStates> {
     state = state.copyWith(digiterReason: value);
   }
 
+  void updateRestrictionValue(bool value) {
+    state = state.copyWith(restrictionValue: value);
+  }
+
+  void updateRestrictionReason(String value) {
+    state = state.copyWith(restrictionReasion: value);
+  }
+
+  void updateRestrictionHours(String value) {
+    state = state.copyWith(restrictionHours: value);
+  }
+
+  void updateRestrictiondays(String value) {
+    state = state.copyWith(restrictionDays: value);
+  }
+
   void resteRasion() {
     state = state.copyWith(digiterReason: "");
+  }
+
+  void setProperty(String property, String properyID) {
+    state = state.copyWith(property: property, propertyId: properyID);
+  }
+
+  void restaddMemberFillds() {
+    state = state.copyWith(
+      firstNameError: "",
+      firstNameValid: false,
+      lastNameError: "",
+      lastNameValid: false,
+      emailError: "",
+      emailValid: false,
+      phoneError: '',
+      phoneValid: false,
+      emenergencyNameValid: false,
+      emergencyContactValid: false,
+      yearofExpirenceValid: false,
+      desginationValid: false,
+      educationlevelValid: false,
+      specializeValid: false,
+      certificatteValid: false,
+      timeStateValid: false,
+      yearofExperecnandeducation: "",
+      educationLevel: '',
+      certifications: null,
+      startdate: '',
+      specializations: null,
+      ocupation: "",
+      ocupationValid: false,
+      property: "",
+      propertyId: "",
+      emenergencyRoleValid: false,
+      montlyIconValid: false,
+      employerValid: false,
+      rentalfrequencyValid: false,
+      agentFeeValid: false,
+      securityFeesValid: false,
+
+      emenergencyRole: "",
+      montlyIcom: "",
+      employer: "",
+      agentFee: "",
+      securityFees: "",
+      rentalfrequency: "",
+    );
   }
 
   void resettemptChange() {
@@ -1509,11 +1776,14 @@ class FormNotifier extends StateNotifier<FormStates> {
     required BuildContext context,
     required String key,
     required bool value,
+    required String slug,
     required WidgetRef ref,
   }) async {
     log("START------->");
     updateNotificationSettingLoading(false);
+    final notifiers = ref.read(permissionLoadingProvider(slug).notifier);
 
+    notifiers.setLoading(true);
     try {
       final token = await ref.watch(accessTokenProvider.future);
       final response = await ref
@@ -1529,6 +1799,8 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (response['status'] == true) {
         updateNotificationSettingLoading(false);
+
+        notifiers.setLoading(false);
         log("TRUE------->");
         // showCustomSuccessToast(
         //   context: context,
@@ -1546,6 +1818,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         updateNotificationSettingLoading(false);
+        notifiers.setLoading(false);
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
@@ -1566,6 +1839,7 @@ class FormNotifier extends StateNotifier<FormStates> {
     } on DioException catch (e) {
       if (!context.mounted) return;
       updateNotificationSettingLoading(false);
+      notifiers.setLoading(false);
       if (e.error is SocketException) {
         showCustomSuccessToast(
           context: context,
@@ -1581,6 +1855,7 @@ class FormNotifier extends StateNotifier<FormStates> {
     } catch (e) {
       if (!context.mounted) return;
       updateNotificationSettingLoading(false);
+      notifiers.setLoading(false);
       log("E-ERROR-MESSAGE------->");
       log(e.toString());
       showCustomSuccessToast(
@@ -1593,6 +1868,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       );
     } finally {
       updateNotificationSettingLoading(false);
+      notifiers.setLoading(false);
       updateOtp('', false);
       log("END------->");
     }
@@ -1603,10 +1879,13 @@ class FormNotifier extends StateNotifier<FormStates> {
     required String key,
     required bool value,
     required WidgetRef ref,
+    required String slug,
   }) async {
     log("START------->");
     updatePrivacyLoading(true);
-
+    updateNotificationSettingLoading(false);
+    final notifiers = ref.read(permissionLoadingProvider(slug).notifier);
+    notifiers.setLoading(true);
     try {
       final token = await ref.watch(accessTokenProvider.future);
       final response = await ref
@@ -1622,21 +1901,16 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (response['status'] == true) {
         updatePrivacyLoading(false);
+        notifiers.setLoading(false);
         log("TRUE------->");
-        // showCustomSuccessToast(
-        //   context: context,
-        //   message: response["message"],
-        //   color: AppColors.instance.teal300,
-        //   icon: Icons.check_circle,
-        //   iconColors: AppColors.instance.grey200,
-        //   positionNumber: 70,
-        // );
+
         ref.read(userPrivacyprovider.notifier).refreshSettings(context, ref);
 
         // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
         //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         updatePrivacyLoading(false);
+        notifiers.setLoading(false);
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
@@ -1656,10 +1930,12 @@ class FormNotifier extends StateNotifier<FormStates> {
       }
     } on DioException catch (e) {
       updatePrivacyLoading(false);
+      notifiers.setLoading(false);
       if (!context.mounted) return;
 
       if (e.error is SocketException) {
         updatePrivacyLoading(false);
+        notifiers.setLoading(false);
         log(e.error.toString());
         showCustomSuccessToast(
           context: context,
@@ -1674,6 +1950,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       log(e.toString());
     } catch (e) {
       updatePrivacyLoading(false);
+      notifiers.setLoading(false);
       if (!context.mounted) return;
       log("E-ERROR-MESSAGE------->");
       log(e.toString());
@@ -1687,6 +1964,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       );
     } finally {
       updatePrivacyLoading(false);
+      notifiers.setLoading(false);
       updateOtp('', false);
       log("END------->");
     }
@@ -2923,6 +3201,1670 @@ class FormNotifier extends StateNotifier<FormStates> {
     } finally {
       resteRasion();
       updateGenrateMemberIdLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> addHouseHoold({
+    required BuildContext context,
+    required String firstname,
+    required String lastname,
+    required String email,
+    required String phonenumber,
+    required int propertyId,
+    required String role,
+
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+    updateAddHouseHoldLoading(true);
+
+    try {
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .addHouseHold(
+            token: token ?? "",
+            firstname: firstname,
+            lastname: lastname,
+            email: email,
+            phonenumber: phonenumber,
+            propertyId: propertyId,
+            role: role,
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        restaddMemberFillds();
+        updateAddHouseHoldLoading(false);
+
+        log("TRUE------->");
+
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+        context.goNamed(AppRoutes.getMemberInfo);
+
+        ref.read(houseProvider.notifier).refreshHuseHold(context, ref);
+
+        // ref.read(commentProvider.notifier).refreshComment(context, ref);
+
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+      } else {
+        updateAddHouseHoldLoading(false);
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          restaddMemberFillds();
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      updateAddHouseHoldLoading(false);
+      restaddMemberFillds();
+      final reportStatess = ref.watch(reportProvider.notifier);
+
+      if (!context.mounted) return;
+      reportStatess.resetState();
+
+      if (e.error is SocketException) {
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      restaddMemberFillds();
+      updateAddHouseHoldLoading(false);
+      final visitor = ref.watch(generateNotifierProvider.notifier);
+      visitor.resetState();
+      if (!context.mounted) return;
+      context.pop();
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      restaddMemberFillds();
+      updateAddHouseHoldLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> removedHouseHoold({
+    required BuildContext context,
+
+    required int id,
+
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+    updateRemovedHouseHoldLoading(true);
+
+    try {
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .removedHouseHold(token: token ?? "", id: id, context: context);
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        resteRasion();
+        updateRemovedHouseHoldLoading(false);
+
+        log("TRUE------->");
+
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+
+        ref.read(houseProvider.notifier).refreshHuseHold(context, ref);
+        context.pop();
+
+        // ref.read(commentProvider.notifier).refreshComment(context, ref);
+
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+      } else {
+        updateRemovedHouseHoldLoading(false);
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          //  final error = response['errors']?['comment']?.first;
+          resteRasion();
+          showCustomSuccessToast(
+            context: context,
+            message: response["message"],
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      updateRemovedHouseHoldLoading(false);
+      resteRasion();
+      final reportStatess = ref.watch(reportProvider.notifier);
+
+      if (!context.mounted) return;
+      reportStatess.resetState();
+
+      if (e.error is SocketException) {
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      resteRasion();
+      updateRemovedHouseHoldLoading(false);
+      final visitor = ref.watch(generateNotifierProvider.notifier);
+      visitor.resetState();
+      if (!context.mounted) return;
+      context.pop();
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      resteRasion();
+      updateRemovedHouseHoldLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> addHousepropertyManager({
+    required BuildContext context,
+    required String firstname,
+    required String lastname,
+    required String email,
+    required String phonenumber,
+    required int propertyId,
+    required String role,
+    required String desgination,
+
+    required String emergencycontactname,
+    required String emergencycontactphone,
+
+    required List<String> specializations,
+    required List<String> certifications,
+
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+    updateAddHouseHoldLoading(true);
+
+    try {
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .addHousepropertymanagement(
+            specializations: specializations,
+            certifications: certifications,
+            educationlevel: state.educationLevel ?? "",
+            emergencycontactname: emergencycontactname,
+            emergencycontactphone: emergencycontactphone,
+            yearsofexperience: state.yearofExperecnandeducation ?? "",
+            startDate: state.startdate ?? "",
+            desgination: desgination,
+            token: token ?? "",
+            firstname: firstname,
+            lastname: lastname,
+            email: email,
+            phonenumber: phonenumber,
+            propertyId: propertyId,
+            role: role,
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        updateAddHouseHoldLoading(false);
+
+        log("TRUE------->");
+
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+        context.goNamed(AppRoutes.getMemberInfo);
+
+        ref.read(houseProvider.notifier).refreshHuseHold(context, ref);
+
+        // ref.read(commentProvider.notifier).refreshComment(context, ref);
+
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+        restaddMemberFillds();
+        ref.read(multiSelectProvider('Certifications').notifier).clearAll();
+        ref.read(multiSelectProvider('Specializations').notifier).clearAll();
+      } else {
+        updateAddHouseHoldLoading(false);
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          restaddMemberFillds();
+          ref.read(multiSelectProvider('Certifications').notifier).clearAll();
+          ref.read(multiSelectProvider('Specializations').notifier).clearAll();
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      updateAddHouseHoldLoading(false);
+      restaddMemberFillds();
+      ref.read(multiSelectProvider('Certifications').notifier).clearAll();
+      ref.read(multiSelectProvider('Specializations').notifier).clearAll();
+
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      restaddMemberFillds();
+      ref.read(multiSelectProvider('Certifications').notifier).clearAll();
+      ref.read(multiSelectProvider('Specializations').notifier).clearAll();
+      updateAddHouseHoldLoading(false);
+
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      restaddMemberFillds();
+      ref.read(multiSelectProvider('Certifications').notifier).clearAll();
+      ref.read(multiSelectProvider('Specializations').notifier).clearAll();
+      updateAddHouseHoldLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> addHouseTenant({
+    required BuildContext context,
+    required String firstname,
+    required String lastname,
+    required String email,
+    required String phonenumber,
+    required int propertyId,
+    required String role,
+
+    required String emergencycontactname,
+    required String emergencycontactphone,
+
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+    updateAddHouseHoldLoading(true);
+
+    try {
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .addtenant(
+            educationlevel: state.educationLevel ?? "",
+            emergencycontactname: emergencycontactname,
+            emergencycontactphone: emergencycontactphone,
+
+            startDate: state.startdate ?? "",
+
+            token: token ?? "",
+            firstname: firstname,
+            lastname: lastname,
+            email: email,
+            phonenumber: phonenumber,
+            propertyId: propertyId,
+            role: role,
+            context: context,
+            rentfrequency: state.rentalfrequency ?? "",
+            status: 'Active',
+            agentFees: int.parse(state.agentFee ?? ""),
+            securitydeposit: int.parse(state.securityFees ?? ""),
+            emergencyContactrelationshipRole: state.emenergencyRole ?? "",
+            employee: state.employer ?? "",
+            occupation: state.ocupation ?? "",
+            monthlyincome: int.parse(state.montlyIcom ?? ""),
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        updateAddHouseHoldLoading(false);
+
+        log("TRUE------->");
+
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+        context.goNamed(AppRoutes.getMemberInfo);
+
+        ref.read(houseProvider.notifier).refreshHuseHold(context, ref);
+
+        // ref.read(commentProvider.notifier).refreshComment(context, ref);
+
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+        restaddMemberFillds();
+        ref.read(multiSelectProvider('Certifications').notifier).clearAll();
+        ref.read(multiSelectProvider('Specializations').notifier).clearAll();
+      } else {
+        updateAddHouseHoldLoading(false);
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          restaddMemberFillds();
+          ref.read(multiSelectProvider('Certifications').notifier).clearAll();
+          ref.read(multiSelectProvider('Specializations').notifier).clearAll();
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      updateAddHouseHoldLoading(false);
+      restaddMemberFillds();
+      ref.read(multiSelectProvider('Certifications').notifier).clearAll();
+      ref.read(multiSelectProvider('Specializations').notifier).clearAll();
+
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      restaddMemberFillds();
+      ref.read(multiSelectProvider('Certifications').notifier).clearAll();
+      ref.read(multiSelectProvider('Specializations').notifier).clearAll();
+      updateAddHouseHoldLoading(false);
+
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      restaddMemberFillds();
+      ref.read(multiSelectProvider('Certifications').notifier).clearAll();
+      ref.read(multiSelectProvider('Specializations').notifier).clearAll();
+      updateAddHouseHoldLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> setFacilityPermission({
+    required BuildContext context,
+    required int id,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+    updateGranFacilityPermissionLoading(true);
+
+    try {
+      final token = await ref.watch(accessTokenProvider.future);
+      final state = ref.watch(notificationProviders); // WATCH not READ!
+      final notifier = ref.read(notificationProviders.notifier);
+      bool? isFacilityEnabled = state.isFacilityEnabled;
+      final facilities = state.facilityConditions?.facilities;
+      final reason = state.facilityReason;
+
+      final tr = state.facilityConditions?.timeRestrictions ?? {};
+      String getS(String d) => tr[d]?.startTime ?? '00:00';
+      String getE(String d) => tr[d]?.endTime ?? '00:00';
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .grantFacilitieAccess(
+            reason: reason ?? '',
+            token: token!,
+            mondaystart: getS('monday'),
+            mondayEnd: getE('monday'),
+            tusdayStart: getS('tuesday'),
+            tusdayEnd: getE('tuesday'),
+            wednesdaystart: getS('wednesday'),
+            wednesdayEnd: getE('wednesday'),
+            thursdayStart: getS('thursday'),
+            thursdayEnd: getE('thursday'),
+            fridayStart: getS('friday'),
+            fridayEnd: getE('friday'),
+            saturdayStart: getS('saturday'),
+            saturdayEnd: getE('saturday'),
+            sundayStart: getS('sunday'),
+            sundayEnd: getE('sunday'),
+
+            id: id,
+
+            permissionSlug: "facility_access",
+            isEnabale: isFacilityEnabled ?? false,
+            facilities: facilities ?? [],
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        updateGranFacilityPermissionLoading(false);
+        notifier.resetForm();
+        log("TRUE------->");
+
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+
+        ref.read(statisticProvider.notifier).refreshPermission(context, ref);
+
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+      } else {
+        notifier.resetForm();
+        updateGranFacilityPermissionLoading(false);
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          notifier.resetForm();
+        } else {
+          notifier.resetForm();
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+      updateGranFacilityPermissionLoading(false);
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifier.resetForm();
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+      notifier.resetForm();
+      updateGranFacilityPermissionLoading(false);
+
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      updateGranFacilityPermissionLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> setGatePermission({
+    required BuildContext context,
+    required int id,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+    updateGrantGatePermissionLoading(true);
+
+    try {
+      final token = await ref.watch(accessTokenProvider.future);
+      final state = ref.watch(notificationProviders); // WATCH not READ!
+      final notifier = ref.read(notificationProviders.notifier);
+      bool? isGateEnabled = state.isGateEnabled;
+      final expired = state.expiredDay;
+      final reason = state.gateReason;
+
+      final tr = state.gateConditions?.timeRestrictions ?? {};
+      String getS(String d) => tr[d]?.startTime ?? '00:00';
+      String getE(String d) => tr[d]?.endTime ?? '00:00';
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .grantGateAccess(
+            reason: reason ?? '',
+            token: token!,
+            mondaystart: getS('monday'),
+            mondayEnd: getE('monday'),
+            tusdayStart: getS('tuesday'),
+            tusdayEnd: getE('tuesday'),
+            wednesdaystart: getS('wednesday'),
+            wednesdayEnd: getE('wednesday'),
+            thursdayStart: getS('thursday'),
+            thursdayEnd: getE('thursday'),
+            fridayStart: getS('friday'),
+            fridayEnd: getE('friday'),
+            saturdayStart: getS('saturday'),
+            saturdayEnd: getE('saturday'),
+            sundayStart: getS('sunday'),
+            sundayEnd: getE('sunday'),
+
+            id: id,
+
+            expiredDay: int.parse(expired),
+            isEnabale: isGateEnabled ?? false,
+
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        notifier.resetForm();
+        updateGrantGatePermissionLoading(false);
+
+        log("TRUE------->");
+
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+
+        ref.read(statisticProvider.notifier).refreshPermission(context, ref);
+
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+      } else {
+        notifier.resetForm();
+        updateGrantGatePermissionLoading(false);
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifier.resetForm();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+      updateGrantGatePermissionLoading(false);
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifier.resetForm();
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+      notifier.resetForm();
+      updateGrantGatePermissionLoading(false);
+
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(notificationProviders.notifier);
+      notifier.resetForm();
+      updateGrantGatePermissionLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> setvisitorPermission({
+    required BuildContext context,
+    required int id,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+    updateGrantVisitorPermissionLoading(true);
+
+    try {
+      final token = await ref.watch(accessTokenProvider.future);
+      final state = ref.watch(notificationProviders); // WATCH not READ!
+      final notifier = ref.read(notificationProviders.notifier);
+      bool? iscommunityEnabled = state.isCommunityEnabel;
+      bool? moderated = state.moderated;
+      final max = state.totalComment;
+      final max2 = state.totalPost;
+
+      final reason = state.otherReason;
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .communityforum(
+            id: id,
+            isEnabale: iscommunityEnabled ?? false,
+            token: token ?? "",
+            moderated: moderated ?? false,
+            reason: reason ?? "",
+            commentLimit: max ?? 0,
+            postLimit: max2 ?? 0,
+            context: context,
+          );
+
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        notifier.resetForm();
+        updateGrantVisitorPermissionLoading(false);
+
+        log("TRUE------->");
+
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+
+        ref.read(statisticProvider.notifier).refreshPermission(context, ref);
+
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+      } else {
+        notifier.resetForm();
+        updateGrantVisitorPermissionLoading(false);
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifier.resetForm();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+      updateGrantVisitorPermissionLoading(false);
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifier.resetForm();
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+      notifier.resetForm();
+      updateGrantVisitorPermissionLoading(false);
+
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(notificationProviders.notifier);
+      notifier.resetForm();
+      updateGrantVisitorPermissionLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> setcommnunityForumPermission({
+    required BuildContext context,
+    required int id,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+    updateGrantCommunityPermissionLoading(true);
+
+    try {
+      final token = await ref.watch(accessTokenProvider.future);
+      final state = ref.watch(notificationProviders); // WATCH not READ!
+      final notifier = ref.read(notificationProviders.notifier);
+      bool? isGateEnabled = state.enableVisitorInvitation;
+      bool? requiredApproval = state.requiresApproval;
+      final max = state.maxVisitorsPerDay;
+
+      final reason = state.visitorReason;
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .grantvisitorAccess(
+            id: id,
+            isEnabale: isGateEnabled,
+            token: token ?? "",
+            requiredApproval: requiredApproval,
+            reason: reason ?? "",
+            maxvisitorsperday: max,
+            context: context,
+          );
+
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        notifier.resetForm();
+        updateGrantCommunityPermissionLoading(false);
+
+        log("TRUE------->");
+
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+
+        ref.read(statisticProvider.notifier).refreshPermission(context, ref);
+
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+      } else {
+        notifier.resetForm();
+        updateGrantCommunityPermissionLoading(false);
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifier.resetForm();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+      updateGrantCommunityPermissionLoading(false);
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifier.resetForm();
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+      notifier.resetForm();
+      updateGrantCommunityPermissionLoading(false);
+
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(notificationProviders.notifier);
+      notifier.resetForm();
+      updateGrantCommunityPermissionLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> setNightAccesspermission({
+    required BuildContext context,
+    required int id,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+    updateGrantNightPermissionLoading(true);
+
+    try {
+      final token = await ref.watch(accessTokenProvider.future);
+      final state = ref.watch(notificationProviders); // WATCH not READ!
+      final notifier = ref.read(notificationProviders.notifier);
+      bool? isNigteEnabled = state.isNightEnable;
+      final reason = state.otherReason;
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .nightAccess(
+            id: id,
+            isEnabale: isNigteEnabled ?? false,
+            token: token ?? "",
+            reason: reason ?? "",
+            context: context,
+          );
+
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        notifier.resetForm();
+        updateGrantNightPermissionLoading(false);
+
+        log("TRUE------->");
+
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+
+        ref.read(statisticProvider.notifier).refreshPermission(context, ref);
+
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+      } else {
+        notifier.resetForm();
+        updateGrantNightPermissionLoading(false);
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifier.resetForm();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+      updateGrantNightPermissionLoading(false);
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifier.resetForm();
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+      notifier.resetForm();
+      updateGrantNightPermissionLoading(false);
+
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(notificationProviders.notifier);
+      notifier.resetForm();
+      updateGrantNightPermissionLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> setPackAccess({
+    required BuildContext context,
+    required int id,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+    updateGrantParkingPermissionLoading(true);
+
+    try {
+      final token = await ref.watch(accessTokenProvider.future);
+      final state = ref.watch(notificationProviders); // WATCH not READ!
+      final notifier = ref.read(notificationProviders.notifier);
+      bool? isGateEnabled = state.ispackingEnabled;
+
+      final reason = state.otherReason;
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .packAccess(
+            id: id,
+            isEnabale: isGateEnabled ?? false,
+            token: token ?? "",
+
+            reason: reason ?? "",
+
+            context: context,
+          );
+
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        notifier.resetForm();
+        updateGrantParkingPermissionLoading(false);
+
+        log("TRUE------->");
+
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+
+        ref.read(statisticProvider.notifier).refreshPermission(context, ref);
+
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+      } else {
+        notifier.resetForm();
+        updateGrantParkingPermissionLoading(false);
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifier.resetForm();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+      updateGrantParkingPermissionLoading(false);
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifier.resetForm();
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+      notifier.resetForm();
+      updateGrantParkingPermissionLoading(false);
+
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(notificationProviders.notifier);
+      notifier.resetForm();
+      updateGrantParkingPermissionLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> setbasicePermission({
+    required BuildContext context,
+    required int id,
+    required WidgetRef ref,
+    required String slug,
+    required bool value,
+  }) async {
+    log("START------->");
+
+    try {
+      final notifiers = ref.read(permissionLoadingProvider(slug).notifier);
+      notifiers.setLoading(true);
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final notifier = ref.read(notificationProviders.notifier);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .grantpermission(
+            token: token ?? "",
+            permissionslug: slug,
+            isEnabale: value,
+            id: id,
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        notifier.resetForm();
+
+        notifiers.setLoading(false);
+
+        log("TRUE------->");
+
+        // showCustomSuccessToast(
+        //   context: context,
+        //   message: response["message"],
+        //   color: AppColors.instance.teal300,
+        //   icon: Icons.check_circle,
+        //   iconColors: AppColors.instance.grey200,
+        //   positionNumber: 70,
+        // );
+
+        ref
+            .read(permissionStatusProvider.notifier)
+            .refreshPermissionstatus(context, ref);
+
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+      } else {
+        notifier.resetForm();
+
+        notifiers.setLoading(false);
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifier.resetForm();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+      final notifiers = ref.read(permissionLoadingProvider(slug).notifier);
+
+      notifiers.setLoading(false);
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifier.resetForm();
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+      final notifiers = ref.read(permissionLoadingProvider(slug).notifier);
+      notifier.resetForm();
+      notifiers.setLoading(false);
+
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifiers = ref.read(permissionLoadingProvider(slug).notifier);
+      notifiers.setLoading(false);
+      final notifier = ref.read(notificationProviders.notifier);
+      notifier.resetForm();
+      updateBasicPermissionLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> landlordRestrictions({
+    required BuildContext context,
+    required int id,
+    required WidgetRef ref,
+
+    required bool value,
+  }) async {
+    log("START------->");
+
+    updateBasicPermissionLoading(true);
+
+    try {
+      // final notifiers = ref.read(permissionLoadingProvider(slug).notifier);
+
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final notifier = ref.read(notificationProviders.notifier);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .landLoardRestriction(
+            token: token ?? "",
+            reason: state.restrictionReasion ?? "",
+            isEnabale: value,
+            id: id,
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        notifier.resetForm();
+        updateBasicPermissionLoading(false);
+
+        log("TRUE------->");
+
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+
+        ref
+            .read(permissionStatusProvider.notifier)
+            .refreshPermissionstatus(context, ref);
+
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+      } else {
+        notifier.resetForm();
+        updateBasicPermissionLoading(false);
+
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifier.resetForm();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+
+      updateBasicPermissionLoading(false);
+
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifier.resetForm();
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+
+      notifier.resetForm();
+
+      updateBasicPermissionLoading(false);
+
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(notificationProviders.notifier);
+      notifier.resetForm();
+      updateBasicPermissionLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> landlordRemoveRestrictions({
+    required BuildContext context,
+    required int id,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+
+    updateBasicPermissionLoading(true);
+
+    try {
+      // final notifiers = ref.read(permissionLoadingProvider(slug).notifier);
+
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final notifier = ref.read(notificationProviders.notifier);
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .landLoardRemoveRestriction(
+            token: token ?? "",
+
+            id: id,
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        notifier.resetForm();
+        updateBasicPermissionLoading(false);
+
+        log("TRUE------->");
+
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+
+        ref
+            .read(permissionStatusProvider.notifier)
+            .refreshPermissionstatus(context, ref);
+
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+      } else {
+        notifier.resetForm();
+        updateBasicPermissionLoading(false);
+
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifier.resetForm();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+
+      updateBasicPermissionLoading(false);
+
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifier.resetForm();
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+
+      notifier.resetForm();
+
+      updateBasicPermissionLoading(false);
+
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(notificationProviders.notifier);
+      notifier.resetForm();
+      updateBasicPermissionLoading(false);
       updateOtp('', false);
       log("END------->");
     }

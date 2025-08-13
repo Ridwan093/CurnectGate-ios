@@ -2,18 +2,24 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:curnectgate/features/%20operations/OTP_Activation/model/model.dart';
-import 'package:curnectgate/features/%20operations/notifications/event/model/activit_model.dart';
-import 'package:curnectgate/features/%20operations/violation/model/GetReport_history_model.dart';
-import 'package:curnectgate/features/%20operations/violation/model/comment_model.dart';
-import 'package:curnectgate/features/%20operations/violation/model/estate_address_model.dart';
-import 'package:curnectgate/features/%20operations/violation/model/getCategory_model.dart';
-import 'package:curnectgate/features/%20operations/violation/model/reportList_model.dart';
-import 'package:curnectgate/features/member_management/membership_ID/model/getDigitalModel.dart';
-import 'package:curnectgate/features/userProfile/Prefrence_setting/model/model.dart';
-import 'package:curnectgate/features/userProfile/Privacy_setting/model/model.dart';
-import 'package:curnectgate/features/userProfile/notification_setting/model/userNotification_setting_model.dart';
-import 'package:curnectgate/features/userProfile/profile/model/profile_model.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/model/household_members_response.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_slug_model/permissions_response_model.dart'
+    as slug_model;
+import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_status_model.dart/permissions_response_model.dart'
+    as status_model;
+import 'package:curnectgate/features/member_management/Onboard_Houselod/model/property_model/property_response.dart';
+import 'package:curnectgate/features/member_management/membership_ID/model/digital_member_id_response.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/model/otp_response_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/activit_model.dart';
+import 'package:curnectgate/features/operations/violation/model/GetReport_history_model.dart';
+import 'package:curnectgate/features/operations/violation/model/comment_model.dart';
+import 'package:curnectgate/features/operations/violation/model/estate_address_model.dart';
+import 'package:curnectgate/features/operations/violation/model/getCategory_model.dart';
+import 'package:curnectgate/features/operations/violation/model/report_models/violation_response.dart';
+import 'package:curnectgate/features/userProfile/Prefrence_setting/model/get_user_notifications.dart';
+import 'package:curnectgate/features/userProfile/Privacy_setting/model/get_user_privacy_settings.dart';
+import 'package:curnectgate/features/userProfile/notification_setting/model/get_user_notification_settings.dart';
+import 'package:curnectgate/features/userProfile/profile/model/get_user_profile_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -53,7 +59,11 @@ class SharedPrefsService {
   static const String _activeOtpKey = "Active_otp";
   static const String _activeOtpHistoryKey = "active_history";
   static const String _getDigitalIdKey = "Digital_id";
+  static const String _householdGetKey = "house_hold";
+  static const String _propertyIDKey = "property_ID";
 
+  static const String _permissionStatusKey = "perm_status";
+  static const String _permissionStaticKey = "perm_static";
   static Future<void> saveNotificationSettings(
     GetUserNotificationSettings notification,
   ) async {
@@ -75,7 +85,7 @@ class SharedPrefsService {
     final prefs = await SharedPreferences.getInstance();
     final data = prefs.getString(_getUserPrivacy);
     if (data != null) {
-      return GetUserPrivacySettings.fromJson(jsonDecode(data));
+      return GetUserPrivacySettings.safeFromJson(jsonDecode(data));
     }
     return null;
   }
@@ -90,7 +100,7 @@ class SharedPrefsService {
     final prefs = await SharedPreferences.getInstance();
     final data = prefs.getString(_getDigitalIdKey);
     if (data != null) {
-      return DigitalMemberIdResponse.fromJson(jsonDecode(data));
+      return DigitalMemberIdResponse.safeFromJson(jsonDecode(data));
     }
     return null;
   }
@@ -167,7 +177,7 @@ class SharedPrefsService {
     final prefs = await SharedPreferences.getInstance();
     final data = prefs.getString(_reportListKey);
     if (data != null) {
-      return ViolationResponse.fromJson(jsonDecode(data));
+      return ViolationResponse.safeFromJson(jsonDecode(data));
     }
     return null;
   }
@@ -199,7 +209,7 @@ class SharedPrefsService {
     final prefs = await SharedPreferences.getInstance();
     final data = prefs.getString(_activeOtpKey);
     if (data != null) {
-      return OtpResponseModel.fromJson(jsonDecode(data));
+      return OtpResponseModel.fromSafeJson(jsonDecode(data));
     }
     return null;
   }
@@ -216,7 +226,75 @@ class SharedPrefsService {
     final prefs = await SharedPreferences.getInstance();
     final data = prefs.getString(_activeOtpHistoryKey);
     if (data != null) {
-      return OtpResponseModel.fromJson(jsonDecode(data));
+      return OtpResponseModel.fromSafeJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  // HOUSEHOLD/SETTING PERMISSION/
+  static Future<void> saveHouseHold(HouseholdMembersResponse preference) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_householdGetKey, jsonEncode(preference.toJson()));
+  }
+
+  static Future<HouseholdMembersResponse?> getHouseHold() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_householdGetKey);
+    if (data != null) {
+      return HouseholdMembersResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> saveProperty(PropertyResponse preference) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_propertyIDKey, jsonEncode(preference.toJson()));
+  }
+
+  static Future<PropertyResponse?> getProperty() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_propertyIDKey);
+    if (data != null) {
+      return PropertyResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> savePermissionStatistic(
+    slug_model.PermissionsResponse preference,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _permissionStaticKey,
+      jsonEncode(preference.toJson()),
+    );
+  }
+
+  static Future<slug_model.PermissionsResponse?>
+  getPermissionStatistic() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_permissionStaticKey);
+    if (data != null) {
+      return slug_model.PermissionsResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> savePermissionStatus(
+    status_model.PermissionsResponse preference,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _permissionStatusKey,
+      jsonEncode(preference.toJson()),
+    );
+  }
+
+  static Future<status_model.PermissionsResponse?> getPermissionStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_permissionStatusKey);
+    if (data != null) {
+      return status_model.PermissionsResponse.safeFromJson(jsonDecode(data));
     }
     return null;
   }
@@ -233,7 +311,7 @@ class SharedPrefsService {
     final prefs = await SharedPreferences.getInstance();
     final data = prefs.getString(_preferencesKey);
     if (data != null) {
-      return GetuserNotifications.fromJson(jsonDecode(data));
+      return GetuserNotifications.safeFromJson(jsonDecode(data));
     }
     return null;
   }
@@ -242,7 +320,7 @@ class SharedPrefsService {
     final prefs = await SharedPreferences.getInstance();
     final data = prefs.getString(_userNotificationsettingKey);
     if (data != null) {
-      return GetUserNotificationSettings.fromJson(jsonDecode(data));
+      return GetUserNotificationSettings.safeFromJson(jsonDecode(data));
     }
     return null;
   }
@@ -256,7 +334,7 @@ class SharedPrefsService {
     final prefs = await SharedPreferences.getInstance();
     final data = prefs.getString(_profileKey);
     if (data != null) {
-      return GetUserProfile.fromJson(jsonDecode(data));
+      return GetUserProfile.fromSafeJson(jsonDecode(data));
     }
     return null;
   }
@@ -316,9 +394,29 @@ class SharedPrefsService {
     await prefs.remove(_activeOtpHistoryKey);
   }
 
+  static Future<void> clearHouseHoldData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_householdGetKey);
+  }
+
+  static Future<void> clearPropery() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_propertyIDKey);
+  }
+
   static Future<void> clearDigitalIDdata() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_getDigitalIdKey);
+  }
+
+  static Future<void> clearPermissionStatc() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_permissionStaticKey);
+  }
+
+  static Future<void> clearPermissionstatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_permissionStatusKey);
   }
 
   Future<void> saveAuthData(Map<String, dynamic> data) async {
@@ -359,6 +457,10 @@ class SharedPrefsService {
     clearActiveOtpHistory();
     clearActiveOtp();
     clearDigitalIDdata();
+    clearHouseHoldData();
+    clearPropery();
+    clearPermissionstatus();
+    clearPermissionStatc();
 
     await prefs.remove(_keyAuthData);
   }

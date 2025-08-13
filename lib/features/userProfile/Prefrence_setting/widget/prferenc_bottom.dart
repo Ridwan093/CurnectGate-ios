@@ -3,7 +3,8 @@ import 'dart:developer';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
-import 'package:curnectgate/features/userProfile/Prefrence_setting/model/model.dart';
+
+import 'package:curnectgate/features/userProfile/Prefrence_setting/model/option.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

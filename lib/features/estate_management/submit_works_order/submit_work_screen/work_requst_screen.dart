@@ -199,6 +199,7 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
               fieldType: FieldType.name,
               hintText: 'Enter vendor name',
               label: 'Vendor name',
+                    onChanged: (value) {},
               onValidationChanged: (value) {
                 notifier.updateVendorName(_vendorNameController.text);
               },
@@ -212,6 +213,7 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
               fieldType: FieldType.email,
               hintText: 'Enter email',
               label: 'Email',
+                    onChanged: (value) {},
               onValidationChanged: (value) {
                 notifier.updateVendorEmail(_vendoremailController.text);
               },
@@ -225,6 +227,7 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
               fieldType: FieldType.phone,
               hintText: 'Enter phone number',
               label: 'Phone number',
+                    onChanged: (value) {},
               onValidationChanged: (value) {
                 notifier.updatePhoneNumber(_vendorphoneController.text);
               },
@@ -249,6 +252,7 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
               label: 'Description',
               maxLength: 100,
               maxLines: 5,
+                    onChanged: (value) {},
               onValidationChanged: (value) {
                 notifier.updateWorkDescription(_discriptionController.text);
               },

@@ -2,9 +2,9 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/screen/loading_screen/loading_page.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/estate_button.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/widget/stepcount.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/loading_screen/loading_page.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/stepcount.dart';
 import 'package:curnectgate/features/estate_management/screen_managment.dart'
     show BaseVerificationScreen;
 import 'package:curnectgate/features/member_management/profile_form/otp_form.dart';

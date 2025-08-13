@@ -1,6 +1,6 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/%20operations/notifications/event/model/event_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

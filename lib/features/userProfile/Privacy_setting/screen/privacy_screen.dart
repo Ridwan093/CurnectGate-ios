@@ -7,7 +7,6 @@ import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:curnectgate/features/userProfile/Privacy_setting/provider/privacy_provider.dart';
 import 'package:curnectgate/features/userProfile/notification_setting/widget/reusabTile.dart';
@@ -44,14 +43,7 @@ class UserPrivacySettings extends ConsumerWidget {
                 color: AppColors.instance.black600,
               ),
             ),
-            if (state.privacyLoading)
-              SizedBox(
-                height: 35,
-                width: 35,
-                child: CircularProgressIndicator(
-                  color: AppColors.instance.yellow500,
-                ),
-              ),
+           
           ],
         ),
       ),
@@ -91,7 +83,7 @@ class UserPrivacySettings extends ConsumerWidget {
   Widget _buildBody(WidgetRef ref, BuildContext context) {
     final privacyAsync = ref.watch(userPrivacyprovider);
     final formProviders = ref.read(formProvider.notifier);
-    final isError = ref.watch(formProvider).privacysettingerror;
+    
 
     return RefreshIndicator(
       color: AppColors.instance.yellow500,
@@ -99,282 +91,262 @@ class UserPrivacySettings extends ConsumerWidget {
           () => ref
               .read(userPrivacyprovider.notifier)
               .refreshSettings(context, ref),
-      child:
-          SingleChildScrollView(
-                padding: EdgeInsets.only(left: 10, right: 10),
-                child: Column(
-                  spacing: 10,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 20),
-                    _buildAppbarBottom(ref),
-                    SizedBox(height: 10),
+      child: SingleChildScrollView(
+        padding: EdgeInsets.only(left: 10, right: 10),
+        child: Column(
+          spacing: 10,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 20),
+            _buildAppbarBottom(ref),
+            SizedBox(height: 10),
 
-                    privacyAsync.when(
-                      data: (privacy) {
-                        try {
-                          final user = privacy?.data;
-                          final privacys = user!.privacy;
-                          // ignore: unnecessary_null_comparison
-                          return user != null
-                              ? Column(
-                                children: [
-                                  BuildListTile(
-                                    ref: ref,
-                                    context: context,
-                                    dec:
-                                        privacys
-                                            ?.profileVisibility
-                                            ?.description ??
-                                        "",
-                                    title:
-                                        privacys?.profileVisibility?.name ?? "",
-                                    isEnabled:
-                                        privacys?.profileVisibility?.value ??
-                                        false,
-                                    onChanged: (value) async {
-                                      formProviders.updateAppPrivacy(
-                                        context: context,
-                                        key: "profile_visibility",
-                                        value: value,
-                                        ref: ref,
-                                      );
-                                    },
-                                  ),
-                                  BuildListTile(
-                                    ref: ref,
-                                    context: context,
-                                    dec: privacys?.showEmail?.description ?? "",
-                                    title: privacys?.showEmail?.name ?? "",
-                                    isEnabled:
-                                        privacys?.showEmail?.value ?? false,
-                                    onChanged: (value) async {
-                                      formProviders.updateAppPrivacy(
-                                        context: context,
-                                        key: "show_email",
-                                        value: value,
-                                        ref: ref,
-                                      );
-                                    },
-                                  ),
-                                  BuildListTile(
-                                    ref: ref,
-                                    context: context,
-                                    dec: privacys?.showPhone?.description ?? "",
-                                    title: privacys?.showPhone?.name ?? "",
-                                    isEnabled:
-                                        privacys?.showPhone?.value ?? false,
-                                    onChanged: (value) async {
-                                      formProviders.updateAppPrivacy(
-                                        context: context,
-                                        key: "show_phone",
-                                        value: value,
-                                        ref: ref,
-                                      );
-                                    },
-                                  ),
-                                ],
-                              )
-                              : EmptyBodys(message: "No Privacy Settings?");
-                        } catch (e) {
-                          return Builderroul(
-                            error: e.toString(),
-                            onTap:
-                                () => ref
-                                    .read(userPrivacyprovider.notifier)
-                                    .refreshSettings(context, ref),
-                            firstMessae: "Faile to load Privacy Settings?",
-                          );
-                        }
-                      },
-                      loading: () {
-                        try {
-                          final privacy = ref.read(userPrivacyprovider).value;
-                          final privacys = privacy?.data?.privacy;
-                          return privacy != null && privacys != null
-                              ? SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    BuildListTile(
-                                      ref: ref,
-                                      context: context,
-                                      dec:
-                                          privacys
-                                              .profileVisibility
-                                              ?.description ??
-                                          "",
-                                      title:
-                                          privacys.profileVisibility?.name ??
-                                          "",
-                                      isEnabled:
-                                          privacys.profileVisibility?.value ??
-                                          false,
-                                      onChanged: (value) async {
-                                        formProviders.updateAppPrivacy(
-                                          context: context,
-                                          key: "profile_visibility",
-                                          value: value,
-                                          ref: ref,
-                                        );
-                                      },
-                                    ),
-                                    BuildListTile(
-                                      ref: ref,
-                                      context: context,
-                                      dec:
-                                          privacys.showEmail?.description ?? "",
-                                      title: privacys.showEmail?.name ?? "",
-                                      isEnabled:
-                                          privacys.showEmail?.value ?? false,
-                                      onChanged: (value) async {
-                                        formProviders.updateAppPrivacy(
-                                          context: context,
-                                          key: "show_email",
-                                          value: value,
-                                          ref: ref,
-                                        );
-                                      },
-                                    ),
-                                    BuildListTile(
-                                      ref: ref,
-                                      context: context,
-                                      dec:
-                                          privacys.showPhone?.description ?? "",
-                                      title: privacys.showPhone?.name ?? "",
-                                      isEnabled:
-                                          privacys.showPhone?.value ?? false,
-                                      onChanged: (value) async {
-                                        formProviders.updateAppPrivacy(
-                                          context: context,
-                                          key: "show_phone",
-                                          value: value,
-                                          ref: ref,
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              )
-                              : Loadingstates();
-                        } catch (e) {
-                          return Builderroul(
-                            error: e.toString(),
-                            onTap:
-                                () => ref
-                                    .read(userPrivacyprovider.notifier)
-                                    .refreshSettings(context, ref),
-                            firstMessae: "Faile to load Privacy Settings?",
-                          );
-                        }
-                      },
-                      error: (error, stack) {
-                        try {
-                          // Handle session expiration
-                          if (error.toString().contains("Unauthenticated")) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              ref
-                                  .read(authProvider.notifier)
-                                  .seassionExpire(context, ref);
-                            });
-                            return Expiresessionbody();
-                          }
+            privacyAsync.when(
+              data: (privacy) {
+                try {
+                  final user = privacy?.data;
+                  final privacys = user!.privacy;
+                  // ignore: unnecessary_null_comparison
+                  return user != null
+                      ? Column(
+                        children: [
+                          BuildListTile(
+                            ref: ref,
+                            context: context,
+                            dec: privacys?.profileVisibility?.description ?? "",
+                            title: privacys?.profileVisibility?.name ?? "",
+                            isEnabled:
+                                privacys?.profileVisibility?.value ?? false,
+                            onChanged: (value) async {
+                              formProviders.updateAppPrivacy(
+                                slug: privacys?.profileVisibility?.name ?? "",
+                                context: context,
+                                key: "profile_visibility",
+                                value: value,
+                                ref: ref,
+                              );
+                            },
+                          ),
+                          BuildListTile(
+                            ref: ref,
+                            context: context,
+                            dec: privacys?.showEmail?.description ?? "",
+                            title: privacys?.showEmail?.name ?? "",
+                            isEnabled: privacys?.showEmail?.value ?? false,
+                            onChanged: (value) async {
+                              formProviders.updateAppPrivacy(
+                                slug: privacys?.showEmail?.name ?? "",
+                                context: context,
+                                key: "show_email",
+                                value: value,
+                                ref: ref,
+                              );
+                            },
+                          ),
+                          BuildListTile(
+                            ref: ref,
+                            context: context,
+                            dec: privacys?.showPhone?.description ?? "",
+                            title: privacys?.showPhone?.name ?? "",
+                            isEnabled: privacys?.showPhone?.value ?? false,
+                            onChanged: (value) async {
+                              formProviders.updateAppPrivacy(
+                                slug: privacys?.showPhone?.name ?? "",
+                                context: context,
+                                key: "show_phone",
+                                value: value,
+                                ref: ref,
+                              );
+                            },
+                          ),
+                        ],
+                      )
+                      : EmptyBodys(message: "No Privacy Settings?");
+                } catch (e) {
+                  return Builderroul(
+                    error: e.toString(),
+                    onTap:
+                        () => ref
+                            .read(userPrivacyprovider.notifier)
+                            .refreshSettings(context, ref),
+                    firstMessae: "Faile to load Privacy Settings?",
+                  );
+                }
+              },
+              loading: () {
+                try {
+                  final privacy = ref.read(userPrivacyprovider).value;
+                  final privacys = privacy?.data?.privacy;
+                  return privacy != null && privacys != null
+                      ? SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            BuildListTile(
+                              ref: ref,
+                              context: context,
+                              dec:
+                                  privacys.profileVisibility?.description ?? "",
+                              title: privacys.profileVisibility?.name ?? "",
+                              isEnabled:
+                                  privacys.profileVisibility?.value ?? false,
+                              onChanged: (value) async {
+                                formProviders.updateAppPrivacy(
+                                  slug: privacys.profileVisibility?.name ?? "",
+                                  context: context,
+                                  key: "profile_visibility",
+                                  value: value,
+                                  ref: ref,
+                                );
+                              },
+                            ),
+                            BuildListTile(
+                              ref: ref,
+                              context: context,
+                              dec: privacys.showEmail?.description ?? "",
+                              title: privacys.showEmail?.name ?? "",
+                              isEnabled: privacys.showEmail?.value ?? false,
+                              onChanged: (value) async {
+                                formProviders.updateAppPrivacy(
+                                  slug: privacys.showEmail?.name ?? "",
+                                  context: context,
+                                  key: "show_email",
+                                  value: value,
+                                  ref: ref,
+                                );
+                              },
+                            ),
+                            BuildListTile(
+                              ref: ref,
+                              context: context,
+                              dec: privacys.showPhone?.description ?? "",
+                              title: privacys.showPhone?.name ?? "",
+                              isEnabled: privacys.showPhone?.value ?? false,
+                              onChanged: (value) async {
+                                formProviders.updateAppPrivacy(
+                                  slug: privacys.showPhone?.name ?? "",
+                                  context: context,
+                                  key: "show_phone",
+                                  value: value,
+                                  ref: ref,
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      )
+                      : Loadingstates();
+                } catch (e) {
+                  return Builderroul(
+                    error: e.toString(),
+                    onTap:
+                        () => ref
+                            .read(userPrivacyprovider.notifier)
+                            .refreshSettings(context, ref),
+                    firstMessae: "Faile to load Privacy Settings?",
+                  );
+                }
+              },
+              error: (error, stack) {
+                try {
+                  // Handle session expiration
+                  if (error.toString().contains("Unauthenticated")) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ref
+                          .read(authProvider.notifier)
+                          .seassionExpire(context, ref);
+                    });
+                    return Expiresessionbody();
+                  }
 
-                          // Try to show cached data
-                          // Show cached data while loading if available
-                          final privacy = ref.read(userPrivacyprovider).value;
+                  // Try to show cached data
+                  // Show cached data while loading if available
+                  final privacy = ref.read(userPrivacyprovider).value;
 
-                          final user = privacy?.data;
-                          final privacys = user!.privacy;
-                          if (privacy != null && privacy.data != null) {
-                            return SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  BuildListTile(
-                                    ref: ref,
-                                    context: context,
-                                    dec:
-                                        privacys
-                                            ?.profileVisibility
-                                            ?.description ??
-                                        "",
-                                    title:
-                                        privacys?.profileVisibility?.name ?? "",
-                                    isEnabled:
-                                        privacys?.profileVisibility?.value ??
-                                        false,
-                                    onChanged: (value) async {
-                                      formProviders.updateAppPrivacy(
-                                        context: context,
-                                        key: "profile_visibility",
-                                        value: value,
-                                        ref: ref,
-                                      );
-                                    },
-                                  ),
-                                  BuildListTile(
-                                    ref: ref,
-                                    context: context,
-                                    dec: privacys?.showEmail?.description ?? "",
-                                    title: privacys?.showEmail?.name ?? "",
-                                    isEnabled:
-                                        privacys?.showEmail?.value ?? false,
-                                    onChanged: (value) async {
-                                      formProviders.updateAppPrivacy(
-                                        context: context,
-                                        key: "show_email",
-                                        value: value,
-                                        ref: ref,
-                                      );
-                                    },
-                                  ),
-                                  BuildListTile(
-                                    ref: ref,
-                                    context: context,
-                                    dec: privacys?.showPhone?.description ?? "",
-                                    title: privacys?.showPhone?.name ?? "",
-                                    isEnabled:
-                                        privacys?.showPhone?.value ?? false,
-                                    onChanged: (value) async {
-                                      formProviders.updateAppPrivacy(
-                                        context: context,
-                                        key: "show_phone",
-                                        value: value,
-                                        ref: ref,
-                                      );
-                                    },
-                                  ),
-                                  Emmergencybody(error: error.toString()),
-                                ],
-                              ),
-                            );
-                          }
+                  final user = privacy?.data;
+                  final privacys = user!.privacy;
+                  if (privacy != null && privacy.data != null) {
+                    return SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          BuildListTile(
+                            ref: ref,
+                            context: context,
+                            dec: privacys?.profileVisibility?.description ?? "",
+                            title: privacys?.profileVisibility?.name ?? "",
+                            isEnabled:
+                                privacys?.profileVisibility?.value ?? false,
+                            onChanged: (value) async {
+                              formProviders.updateAppPrivacy(
+                                slug: privacys?.profileVisibility?.name ?? "",
+                                context: context,
+                                key: "profile_visibility",
+                                value: value,
+                                ref: ref,
+                              );
+                            },
+                          ),
+                          BuildListTile(
+                            ref: ref,
+                            context: context,
+                            dec: privacys?.showEmail?.description ?? "",
+                            title: privacys?.showEmail?.name ?? "",
+                            isEnabled: privacys?.showEmail?.value ?? false,
+                            onChanged: (value) async {
+                              formProviders.updateAppPrivacy(
+                                slug: privacys?.showEmail?.name ?? "",
+                                context: context,
+                                key: "show_email",
+                                value: value,
+                                ref: ref,
+                              );
+                            },
+                          ),
+                          BuildListTile(
+                            ref: ref,
+                            context: context,
+                            dec: privacys?.showPhone?.description ?? "",
+                            title: privacys?.showPhone?.name ?? "",
+                            isEnabled: privacys?.showPhone?.value ?? false,
+                            onChanged: (value) async {
+                              formProviders.updateAppPrivacy(
+                                slug: privacys?.showPhone?.name ?? "",
+                                context: context,
+                                key: "show_phone",
+                                value: value,
+                                ref: ref,
+                              );
+                            },
+                          ),
+                          Emmergencybody(error: error.toString()),
+                        ],
+                      ),
+                    );
+                  }
 
-                          // No cached data available
-                          return Builderroul(
-                            error: error.toString(),
-                            onTap:
-                                () => ref
-                                    .read(userPrivacyprovider.notifier)
-                                    .refreshSettings(context, ref),
-                            firstMessae: "Faile to load Privacy Settings?",
-                          );
-                        } catch (e) {
-                          return Builderroul(
-                            error: e.toString(),
-                            onTap:
-                                () => ref
-                                    .read(userPrivacyprovider.notifier)
-                                    .refreshSettings(context, ref),
-                            firstMessae: "Faile to load Privacy Settings?",
-                          );
-                        }
-                      },
-                    ),
-
-                 
-                  ],
-                ),
-              ),
+                  // No cached data available
+                  return Builderroul(
+                    error: error.toString(),
+                    onTap:
+                        () => ref
+                            .read(userPrivacyprovider.notifier)
+                            .refreshSettings(context, ref),
+                    firstMessae: "Faile to load Privacy Settings?",
+                  );
+                } catch (e) {
+                  return Builderroul(
+                    error: e.toString(),
+                    onTap:
+                        () => ref
+                            .read(userPrivacyprovider.notifier)
+                            .refreshSettings(context, ref),
+                    firstMessae: "Faile to load Privacy Settings?",
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

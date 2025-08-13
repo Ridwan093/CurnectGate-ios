@@ -1,13 +1,13 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/model/estate_code_validator_state.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/estate_button.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/widget/code_check_widget/buildnotifymessage.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/widget/code_check_widget/codeformfield.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/widget/progresscontainer.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/widget/stepcount.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/model/estate_code_validator_state.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/code_check_widget/buildnotifymessage.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/code_check_widget/codeformfield.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/progresscontainer.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/stepcount.dart';
 import 'package:curnectgate/features/estate_management/screen_managment.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/member_code%20_repo.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/provider/member_code%20_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

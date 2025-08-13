@@ -3,7 +3,7 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-enum FieldType { name, email, phone, oTpCode, general, password, reason }
+enum FieldType { name, email, phone, oTpCode, general, password, reason, year }
 
 class ReusabelProfileForm extends StatefulWidget {
   final String? initialValue;
@@ -105,10 +105,10 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
     return InputDecoration(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: colors.black300),
+        borderSide: BorderSide(color: colors.black400),
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: colors.black300),
+        borderSide: BorderSide(color: colors.black400),
       ),
       errorBorder: OutlineInputBorder(
         borderSide: BorderSide(color: colors.error600),
@@ -185,6 +185,12 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
           } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
             error = 'Only numbers allowed';
           }
+        case FieldType.year:
+          if (value.isEmpty) {
+            error = 'Phone number must be at least 1 digits';
+          } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+            error = 'Only numbers allowed';
+          }
           break;
         case FieldType.password:
           // Password validation logic
@@ -222,6 +228,8 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
       case FieldType.email:
         return TextInputType.emailAddress;
       case FieldType.phone:
+        return TextInputType.phone;
+      case FieldType.year:
         return TextInputType.phone;
       default:
         return TextInputType.text;

@@ -1,14 +1,16 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/%20operations/OTP_Activation/provider/active_provider.dart';
-import 'package:curnectgate/features/%20operations/OTP_Activation/widget/custom_validity.dart';
-import 'package:curnectgate/features/%20operations/OTP_Activation/widget/generateOTP_with_validity.dart';
-import 'package:curnectgate/features/%20operations/OTP_Activation/widget/scheduleOTPS.dart';
-import 'package:curnectgate/features/%20operations/violation/widget/report_file_uplode.dart';
-import 'package:curnectgate/features/%20operations/violation/widget/violation_form_bottom_sheet.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/venodrLod_model.dart';
-import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/basic_permission.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/removeConfirmation_sheet.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/bottomsheet_details.dart';
+import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/provider/active_provider.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/widget/custom_validity.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/widget/generateOTP_with_validity.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/widget/scheduleOTPS.dart';
+import 'package:curnectgate/features/operations/violation/widget/report_file_uplode.dart';
+import 'package:curnectgate/features/operations/violation/widget/violation_form_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -35,7 +37,11 @@ void showUserBottomSheet({
         builder: (context, ref, wid) {
           final currentView = ref.watch(bottomSheetStateProvider);
           return Container(
-            padding: EdgeInsets.all(20),
+            padding:
+                bottom == BottomSheetView.securityViolationTrack ||
+                        bottom == BottomSheetView.mentainLog
+                    ? null
+                    : EdgeInsets.all(20),
             margin: EdgeInsets.only(
               bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
@@ -84,15 +90,129 @@ Widget _buildCurrentView(
         id: id,
       );
     case BottomSheetView.permissions:
-      return _buildPermissionsView(context, ref);
+      return BasicPermission(id: id ?? 0);
+
     case BottomSheetView.deleteConfirmation:
-      return _buildDeleteConfirmationView(context, ref, userName);
+      return RemoveconfirmationSheet(id: id, userName: userName);
     case BottomSheetView.vendorLog:
-      return _buildDeleteConfirmationView(context, ref, userName);
+      return RemoveconfirmationSheet(id: id, userName: userName);
     case BottomSheetView.revokevendorconfirm:
       return _buildVendorDeleteConfirmationView(context, ref);
     case BottomSheetView.revorkActiveOtpConfirmation:
       return _buildrevokActiveOtp(context, ref);
+    case BottomSheetView.setCofew:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.addRestrictions:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.setRestrictions:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.removedRestrictions:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.facility:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.mentainLog:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.parking:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+
+    case BottomSheetView.securitydismissViolation:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.securityCommentMaker:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.securityViolationTrack:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.gateAccess:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.communty:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.nightAccess:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.visitorIvitaion:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.setbasicpermission:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.setPermission:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
     // start conversation buttom sheet
     case BottomSheetView.revorkActiveOtp:
       return BottomsheetDetails(
@@ -323,147 +443,6 @@ Widget _buildCurrentView(
     //     onSelected: onSelected,
     //   );
   }
-}
-
-Widget _buildPermissionsView(BuildContext context, WidgetRef ref) {
-  final permissionData = [
-    {
-      'type': PermissionType.managePayments,
-      'title': 'Manage Payments',
-      'subtitle': 'Let this user manage payment',
-    },
-    {
-      'type': PermissionType.accessAllNotifications,
-      'title': 'Access All Notifications',
-      'subtitle': 'Let this user manage notification',
-    },
-    {
-      'type': PermissionType.createManageVisitors,
-      'title': 'Create and Manage Visitors',
-      'subtitle': 'Can schedule, edit, or delete visitor entries.',
-    },
-    {
-      'type': PermissionType.deactivatePass,
-      'title': 'Deactivate pass',
-      'subtitle': 'Remove access to the digital pass',
-    },
-  ];
-
-  return Column(
-    key: const ValueKey('permissions'),
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      // Header with back button
-      Text(
-        'Set Permission',
-        style: TextStyle(
-          fontFamily: FontFamilies.interDisplay,
-          fontSize: 15,
-          fontWeight: FontFamilies.bold,
-          color: AppColors.instance.black600,
-        ),
-      ),
-      const SizedBox(height: 20),
-      Container(
-        decoration: BoxDecoration(
-          color: AppColors.instance.grey300,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          children:
-              permissionData
-                  .map(
-                    (permission) => SwitchListTile(
-                      thumbColor: WidgetStateProperty.resolveWith<Color>((
-                        states,
-                      ) {
-                        if (states.contains(WidgetState.selected)) {
-                          return AppColors.instance.grey200;
-                        }
-                        return AppColors.instance.grey200;
-                      }),
-                      activeTrackColor: AppColors.instance.black500,
-                      inactiveTrackColor: AppColors.instance.grey300,
-
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      title: Text(
-                        permission['title'].toString(),
-                        style: TextStyle(
-                          fontFamily: FontFamilies.interDisplay,
-                          fontSize: 13,
-                          fontWeight: FontFamilies.bold,
-                          color: AppColors.instance.black600,
-                        ),
-                      ),
-                      subtitle: Text(
-                        permission['subtitle'].toString(),
-                        style: TextStyle(
-                          fontFamily: FontFamilies.interDisplay,
-                          fontSize: 10,
-                          fontWeight: FontFamilies.medium,
-                          color: AppColors.instance.black300,
-                        ),
-                      ),
-                      value: ref
-                          .watch(permissionsProvider)
-                          .contains(permission['type'] as PermissionType),
-                      onChanged:
-                          (value) => ref
-                              .read(permissionsProvider.notifier)
-                              .toggle(permission['type'] as PermissionType),
-                    ),
-                  )
-                  .toList(),
-        ),
-      ),
-      const SizedBox(height: 20),
-      _button(
-        onPressed: () => Navigator.of(context).pop(),
-        buttiontitle: "Close",
-      ),
-    ],
-  );
-}
-
-Widget _buildDeleteConfirmationView(
-  BuildContext context,
-  WidgetRef ref,
-  String userName,
-) {
-  return Column(
-    key: const ValueKey('deleteConfirmation'),
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Align(
-        alignment: Alignment.topRight,
-        child: IconButton(
-          onPressed:
-              () =>
-                  ref.read(bottomSheetStateProvider.notifier).state =
-                      BottomSheetView.userDetails,
-          icon: Icon(Icons.close, color: AppColors.instance.black600),
-        ),
-      ),
-      const SizedBox(height: 16),
-      Text(
-        'Are you sure you want to remove\n $userName?',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontFamily: FontFamilies.interDisplay,
-          fontWeight: FontFamilies.bold,
-          color: AppColors.instance.black600,
-        ),
-      ),
-      const SizedBox(height: 70),
-      _button(
-        onPressed: () {
-          // Add your delete logic here
-          Navigator.of(context).pop();
-        },
-        buttiontitle: "Yes, Continue",
-      ),
-    ],
-  );
 }
 
 //  vendor log revoke confirmation------------->

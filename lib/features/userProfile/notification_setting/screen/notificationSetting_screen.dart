@@ -12,6 +12,7 @@ import 'package:curnectgate/features/userProfile/notification_setting/provider/N
 import 'package:curnectgate/features/userProfile/notification_setting/widget/reusabTile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class UserNotificationSettings extends ConsumerWidget {
   const UserNotificationSettings({super.key});
@@ -67,7 +68,9 @@ class UserNotificationSettings extends ConsumerWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       leading: IconButton(
-        onPressed: () {},
+        onPressed: () {
+          context.pop();
+        },
         icon: Icon(
           Icons.arrow_back_ios,
           color: AppColors.instance.black600,
@@ -123,6 +126,7 @@ class UserNotificationSettings extends ConsumerWidget {
                             isEnabled: notification?.email?.value ?? false,
                             onChanged: (value) async {
                               formProviders.updateAppNotification(
+                                slug: notification?.email?.name ?? "Email",
                                 context: context,
                                 key: "email",
                                 value: value,
@@ -138,6 +142,7 @@ class UserNotificationSettings extends ConsumerWidget {
                             isEnabled: notification?.sms?.value ?? false,
                             onChanged: (value) async {
                               formProviders.updateAppNotification(
+                                slug: notification?.sms?.name ?? "SMS",
                                 context: context,
                                 key: "sms",
                                 value: value,
@@ -156,6 +161,9 @@ class UserNotificationSettings extends ConsumerWidget {
                                 notification?.maintenance?.value ?? false,
                             onChanged: (value) async {
                               formProviders.updateAppNotification(
+                                slug:
+                                    notification?.maintenance?.name ??
+                                    "Maintenance",
                                 context: context,
                                 key: "maintenance",
                                 value: value,
@@ -176,6 +184,9 @@ class UserNotificationSettings extends ConsumerWidget {
                                 notification?.maintenanceAlerts?.value ?? false,
                             onChanged: (value) async {
                               formProviders.updateAppNotification(
+                                slug:
+                                    notification?.maintenanceAlerts?.name ??
+                                    "Maintenance Alerts",
                                 context: context,
                                 key:
                                     notification?.maintenanceAlerts?.key ??
@@ -198,6 +209,9 @@ class UserNotificationSettings extends ConsumerWidget {
                                 notification?.paymentReminders?.value ?? false,
                             onChanged: (value) async {
                               formProviders.updateAppNotification(
+                                slug:
+                                    notification?.paymentReminders?.name ??
+                                    "Payment Reminders",
                                 context: context,
                                 key: "payment_reminders",
                                 value: value,
@@ -213,6 +227,8 @@ class UserNotificationSettings extends ConsumerWidget {
                             isEnabled: notification?.payments?.value ?? false,
                             onChanged: (value) async {
                               formProviders.updateAppNotification(
+                                slug:
+                                    notification?.payments?.name ?? "Payments",
                                 context: context,
                                 key: "payments",
                                 value: value,
@@ -228,6 +244,9 @@ class UserNotificationSettings extends ConsumerWidget {
                             isEnabled: notification?.community?.value ?? false,
                             onChanged: (value) async {
                               formProviders.updateAppNotification(
+                                slug:
+                                    notification?.community?.name ??
+                                    "Community",
                                 context: context,
                                 key: "community",
                                 value: value,
@@ -248,6 +267,9 @@ class UserNotificationSettings extends ConsumerWidget {
                                 notification?.communityUpdates?.value ?? false,
                             onChanged: (value) async {
                               formProviders.updateAppNotification(
+                                slug:
+                                    notification?.communityUpdates?.name ??
+                                    "Community Updates",
                                 context: context,
                                 key: "community_updates",
                                 value: value,
@@ -263,6 +285,7 @@ class UserNotificationSettings extends ConsumerWidget {
                             isEnabled: notification?.push?.value ?? false,
                             onChanged: (value) async {
                               formProviders.updateAppNotification(
+                                slug: notification?.push?.name ?? "Push",
                                 context: context,
                                 key: "push",
                                 value: value,
@@ -278,6 +301,8 @@ class UserNotificationSettings extends ConsumerWidget {
                             isEnabled: notification?.security?.value ?? false,
                             onChanged: (value) async {
                               formProviders.updateAppNotification(
+                                slug:
+                                    notification?.security?.name ?? "Security",
                                 context: context,
                                 key: "security",
                                 value: value,
@@ -318,7 +343,9 @@ class UserNotificationSettings extends ConsumerWidget {
                               isEnabled: notification.email?.value ?? false,
                               onChanged: (value) async {
                                 formProviders.updateAppNotification(
+                                  slug: notification.email?.name ?? "Email",
                                   context: context,
+
                                   key: "email",
                                   value: value,
                                   ref: ref,
@@ -333,6 +360,7 @@ class UserNotificationSettings extends ConsumerWidget {
                               isEnabled: notification.sms?.value ?? false,
                               onChanged: (value) async {
                                 formProviders.updateAppNotification(
+                                  slug: notification.sms?.name ?? "SMS",
                                   context: context,
                                   key: "sms",
                                   value: value,
@@ -351,6 +379,9 @@ class UserNotificationSettings extends ConsumerWidget {
                                   notification.maintenance?.value ?? false,
                               onChanged: (value) async {
                                 formProviders.updateAppNotification(
+                                  slug:
+                                      notification.maintenance?.name ??
+                                      "Maintenance",
                                   context: context,
                                   key: "maintenance",
                                   value: value,
@@ -372,6 +403,9 @@ class UserNotificationSettings extends ConsumerWidget {
                                   false,
                               onChanged: (value) async {
                                 formProviders.updateAppNotification(
+                                  slug:
+                                      notification.maintenanceAlerts?.name ??
+                                      "Maintenance Alerts",
                                   context: context,
                                   key:
                                       notification.maintenanceAlerts?.key ??
@@ -394,6 +428,9 @@ class UserNotificationSettings extends ConsumerWidget {
                                   notification.paymentReminders?.value ?? false,
                               onChanged: (value) async {
                                 formProviders.updateAppNotification(
+                                  slug:
+                                      notification.paymentReminders?.name ??
+                                      "Payment Reminders",
                                   context: context,
                                   key: "payment_reminders",
                                   value: value,
@@ -409,6 +446,8 @@ class UserNotificationSettings extends ConsumerWidget {
                               isEnabled: notification.payments?.value ?? false,
                               onChanged: (value) async {
                                 formProviders.updateAppNotification(
+                                  slug:
+                                      notification.payments?.name ?? "Payments",
                                   context: context,
                                   key: "payments",
                                   value: value,
@@ -425,6 +464,9 @@ class UserNotificationSettings extends ConsumerWidget {
                               isEnabled: notification.community?.value ?? false,
                               onChanged: (value) async {
                                 formProviders.updateAppNotification(
+                                  slug:
+                                      notification.community?.name ??
+                                      "Community",
                                   context: context,
                                   key: "community",
                                   value: value,
@@ -445,6 +487,9 @@ class UserNotificationSettings extends ConsumerWidget {
                                   notification.communityUpdates?.value ?? false,
                               onChanged: (value) async {
                                 formProviders.updateAppNotification(
+                                  slug:
+                                      notification.communityUpdates?.name ??
+                                      "Community Updates",
                                   context: context,
                                   key: "community_updates",
                                   value: value,
@@ -460,6 +505,7 @@ class UserNotificationSettings extends ConsumerWidget {
                               isEnabled: notification.push?.value ?? false,
                               onChanged: (value) async {
                                 formProviders.updateAppNotification(
+                                  slug: notification.push?.name ?? "Push",
                                   context: context,
                                   key: "push",
                                   value: value,
@@ -475,6 +521,8 @@ class UserNotificationSettings extends ConsumerWidget {
                               isEnabled: notification.security?.value ?? false,
                               onChanged: (value) async {
                                 formProviders.updateAppNotification(
+                                  slug:
+                                      notification.security?.name ?? "Security",
                                   context: context,
                                   key: "security",
                                   value: value,
@@ -528,6 +576,7 @@ class UserNotificationSettings extends ConsumerWidget {
                             isEnabled: notification.email!.value!,
                             onChanged: (value) async {
                               formProviders.updateAppNotification(
+                                slug: notification.email!.name!,
                                 context: context,
                                 key: "email",
                                 value: value,
@@ -544,6 +593,7 @@ class UserNotificationSettings extends ConsumerWidget {
                             isEnabled: notification.sms!.value!,
                             onChanged: (value) async {
                               formProviders.updateAppNotification(
+                                slug: notification.sms!.name!,
                                 context: context,
                                 key: "sms",
                                 value: value,
@@ -559,6 +609,7 @@ class UserNotificationSettings extends ConsumerWidget {
                             isEnabled: notification.maintenance!.value!,
                             onChanged: (value) async {
                               formProviders.updateAppNotification(
+                                slug: notification.maintenance!.name!,
                                 context: context,
                                 key: "maintenance",
                                 value: value,
@@ -573,6 +624,7 @@ class UserNotificationSettings extends ConsumerWidget {
                             isEnabled: notification.maintenanceAlerts!.value!,
                             onChanged: (value) async {
                               formProviders.updateAppNotification(
+                                slug: notification.maintenanceAlerts!.name!,
                                 context: context,
                                 key: notification.maintenanceAlerts!.key!,
                                 value: value,
@@ -589,6 +641,7 @@ class UserNotificationSettings extends ConsumerWidget {
                             isEnabled: notification.paymentReminders!.value!,
                             onChanged: (value) async {
                               formProviders.updateAppNotification(
+                                slug: notification.paymentReminders!.name!,
                                 context: context,
                                 key: "payment_reminders",
                                 value: value,
@@ -604,6 +657,7 @@ class UserNotificationSettings extends ConsumerWidget {
                             isEnabled: notification.payments!.value!,
                             onChanged: (value) async {
                               formProviders.updateAppNotification(
+                                slug: notification.payments!.name!,
                                 context: context,
                                 key: "payments",
                                 value: value,
@@ -619,6 +673,7 @@ class UserNotificationSettings extends ConsumerWidget {
                             isEnabled: notification.push!.value!,
                             onChanged: (value) async {
                               formProviders.updateAppNotification(
+                                slug: notification.push!.name!,
                                 context: context,
                                 key: "push",
                                 value: value,
@@ -634,6 +689,7 @@ class UserNotificationSettings extends ConsumerWidget {
                             isEnabled: notification.security!.value!,
                             onChanged: (value) async {
                               formProviders.updateAppNotification(
+                                slug: notification.security!.name!,
                                 context: context,
                                 key: "security",
                                 value: value,

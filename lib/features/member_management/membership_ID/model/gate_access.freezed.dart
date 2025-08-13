@@ -1,0 +1,164 @@
+// coverage:ignore-file
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
+
+part of 'gate_access.dart';
+
+// **************************************************************************
+// FreezedGenerator
+// **************************************************************************
+
+T _$identity<T>(T value) => value;
+
+final _privateConstructorUsedError = UnsupportedError(
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+
+GateAccess _$GateAccessFromJson(Map<String, dynamic> json) {
+  return _GateAccess.fromJson(json);
+}
+
+/// @nodoc
+mixin _$GateAccess {
+  bool get enabled => throw _privateConstructorUsedError;
+
+  /// Serializes this GateAccess to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of GateAccess
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $GateAccessCopyWith<GateAccess> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $GateAccessCopyWith<$Res> {
+  factory $GateAccessCopyWith(
+          GateAccess value, $Res Function(GateAccess) then) =
+      _$GateAccessCopyWithImpl<$Res, GateAccess>;
+  @useResult
+  $Res call({bool enabled});
+}
+
+/// @nodoc
+class _$GateAccessCopyWithImpl<$Res, $Val extends GateAccess>
+    implements $GateAccessCopyWith<$Res> {
+  _$GateAccessCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of GateAccess
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? enabled = null,
+  }) {
+    return _then(_value.copyWith(
+      enabled: null == enabled
+          ? _value.enabled
+          : enabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$GateAccessImplCopyWith<$Res>
+    implements $GateAccessCopyWith<$Res> {
+  factory _$$GateAccessImplCopyWith(
+          _$GateAccessImpl value, $Res Function(_$GateAccessImpl) then) =
+      __$$GateAccessImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({bool enabled});
+}
+
+/// @nodoc
+class __$$GateAccessImplCopyWithImpl<$Res>
+    extends _$GateAccessCopyWithImpl<$Res, _$GateAccessImpl>
+    implements _$$GateAccessImplCopyWith<$Res> {
+  __$$GateAccessImplCopyWithImpl(
+      _$GateAccessImpl _value, $Res Function(_$GateAccessImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of GateAccess
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? enabled = null,
+  }) {
+    return _then(_$GateAccessImpl(
+      enabled: null == enabled
+          ? _value.enabled
+          : enabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$GateAccessImpl implements _GateAccess {
+  const _$GateAccessImpl({required this.enabled});
+
+  factory _$GateAccessImpl.fromJson(Map<String, dynamic> json) =>
+      _$$GateAccessImplFromJson(json);
+
+  @override
+  final bool enabled;
+
+  @override
+  String toString() {
+    return 'GateAccess(enabled: $enabled)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$GateAccessImpl &&
+            (identical(other.enabled, enabled) || other.enabled == enabled));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, enabled);
+
+  /// Create a copy of GateAccess
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$GateAccessImplCopyWith<_$GateAccessImpl> get copyWith =>
+      __$$GateAccessImplCopyWithImpl<_$GateAccessImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$GateAccessImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _GateAccess implements GateAccess {
+  const factory _GateAccess({required final bool enabled}) = _$GateAccessImpl;
+
+  factory _GateAccess.fromJson(Map<String, dynamic> json) =
+      _$GateAccessImpl.fromJson;
+
+  @override
+  bool get enabled;
+
+  /// Create a copy of GateAccess
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$GateAccessImplCopyWith<_$GateAccessImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}

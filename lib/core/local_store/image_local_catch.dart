@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:curnectgate/core/local_store/model/imageCatch_model.dart';
@@ -37,52 +40,95 @@ class _CachedImageState extends State<CachedImage> {
   }
 
   Future<Uint8List?> _loadImage() async {
-    // 1. Try to get cached image
-    final cachedImage = await ImageCacheService.getCachedImageBytes(
-      widget.imageUrl,
-    );
-    if (cachedImage != null) return cachedImage;
-
-    // 2. If no cache, download and save
     try {
-      final response = await http.get(Uri.parse(widget.imageUrl));
-      if (response.statusCode == 200) {
-        final bytes = response.bodyBytes;
-        await ImageCacheService.saveImage(widget.imageUrl);
-        return bytes;
+      // 1. Validate URL first
+      final url = widget.imageUrl.replaceAll(RegExp(r'/v\d+/'), '/');
+final uri = Uri.parse(url);
+
+   
+      if (uri == null || !uri.isAbsolute) {
+        throw Exception('Invalid image URL');
       }
-    } catch (e) {
-      print('Image download failed: $e');
+
+      // 2. Check cache
+      final cachedImage = await ImageCacheService.getCachedImageBytes(
+        widget.imageUrl,
+      );
+      if (cachedImage != null) return cachedImage;
+
+      // 3. Download with timeout and headers
+      final response = await http
+          .get(uri, headers: {'Accept': 'image/*'})
+          .timeout(const Duration(seconds: 10));
+
+      // 4. Validate response
+      if (response.statusCode != 200) {
+        throw HttpException('HTTP ${response.statusCode}', uri: uri);
+      }
+
+      // 5. Validate image data
+      final bytes = response.bodyBytes;
+      if (bytes.isEmpty) throw Exception('Empty image data');
+
+      // 6. Cache in background (don't await)
+      unawaited(
+        ImageCacheService.saveImage(
+          widget.imageUrl,
+          bytes,
+        ).catchError((e) => log('Cache save failed: $e')),
+      );
+
+      return bytes;
+    } on http.ClientException catch (e) {
+      log('Network error: ${e.message}');
+    } on TimeoutException {
+      log('Download timed out');
+    } catch (e, stack) {
+      log('Image load failed', error: e, stackTrace: stack);
     }
     return null;
   }
 
   @override
   Widget build(BuildContext context) {
+    log(widget.imageUrl);
     return FutureBuilder<Uint8List?>(
       future: _imageFuture,
       builder: (context, snapshot) {
+        // Loading state
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return widget.placeholder ??
-              Center(
-                child: CircularProgressIndicator(
-                  color: AppColors.instance.yellow500,
-                ),
-              );
+          return widget.placeholder ?? _buildDefaultPlaceholder();
         }
 
+        // Error/empty state
         if (snapshot.hasError || snapshot.data == null) {
-          return widget.errorWidget ??
-              Icon(Icons.broken_image, size: widget.width);
+          return widget.errorWidget ?? _buildDefaultError();
         }
 
+        // Success state
         return Image.memory(
           snapshot.data!,
           width: widget.width,
           height: widget.height,
-          fit: widget.fit,
+          fit: widget.fit ?? BoxFit.cover,
+          errorBuilder:
+              (_, __, ___) => widget.errorWidget ?? _buildDefaultError(),
         );
       },
+    );
+  }
+
+  Widget _buildDefaultPlaceholder() {
+    return Center(
+      child: CircularProgressIndicator(color: AppColors.instance.yellow500),
+    );
+  }
+
+  Widget _buildDefaultError() {
+    return Icon(
+      Icons.broken_image,
+      size: widget.width != null ? widget.width! / 2 : 24,
+      color: Colors.grey[400],
     );
   }
 }

@@ -1,4 +1,4 @@
-
+import 'package:curnectgate/core/style/colors.dart';
 import 'package:flutter/material.dart';
 
 class OldSchoolSwitch extends StatelessWidget {
@@ -62,7 +62,9 @@ class OldSchoolSwitch extends StatelessWidget {
                             padding: const EdgeInsets.all(6.0),
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation(Colors.grey),
+                              valueColor: AlwaysStoppedAnimation(
+                                AppColors.instance.yellow500,
+                              ),
                             ),
                           )
                           : null,

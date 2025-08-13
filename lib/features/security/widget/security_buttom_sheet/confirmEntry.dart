@@ -5,8 +5,19 @@ import 'package:curnectgate/features/security/widget/security_buttom_sheet/custo
 import 'package:flutter/material.dart';
 
 class Confirmentry extends StatelessWidget {
-  
-  const Confirmentry({super.key});
+  final String name;
+  final String type;
+  final String houseAddress;
+  final String userprofilePc;
+
+  const Confirmentry({
+    super.key,
+
+    required this.name,
+    required this.type,
+    required this.houseAddress,
+    required this.userprofilePc,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +74,7 @@ class Confirmentry extends StatelessWidget {
             ),
           ),
           SizedBox(height: 20),
-          _buildText(title: "Name", subtitle: "Mr. John Benjamin"),
+          _buildText(title: "Name", subtitle: type),
           SizedBox(height: 20),
           _buildText(title: "Type", subtitle: "Co-Owner"),
           SizedBox(height: 20),

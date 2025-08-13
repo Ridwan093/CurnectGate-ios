@@ -5,7 +5,7 @@ import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
-import 'package:curnectgate/features/userProfile/profile/model/profile_model.dart';
+import 'package:curnectgate/features/userProfile/profile/model/get_user_profile_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -65,7 +65,7 @@ class UserProfileNotifier extends AutoDisposeAsyncNotifier<GetUserProfile?> {
         final token = await ref.watch(accessTokenProvider.future);
         final freshProfile = await ref
             .read(getApiServiceProvider)
-            .getUserProfile(bearerToken: token!);
+            .getUserProfile(bearerToken: token ?? "");
         await SharedPrefsService.saveProfile(freshProfile);
         return freshProfile;
       } catch (e) {

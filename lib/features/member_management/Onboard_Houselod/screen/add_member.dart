@@ -1,7 +1,7 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/onboard_button.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/onboard_button.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/screen/RoleSelection.dart';
 import 'package:flutter/material.dart';
 

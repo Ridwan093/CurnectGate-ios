@@ -1,5 +1,6 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/permission_loading_provider.dart';
 import 'package:curnectgate/features/userProfile/notification_setting/widget/oldSchoolSwcth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,6 +24,7 @@ class BuildListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+     final isLoading = ref.watch(permissionLoadingProvider(title));
     return Container(
       margin: EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
@@ -48,6 +50,7 @@ class BuildListTile extends ConsumerWidget {
           ),
         ),
         trailing: OldSchoolSwitch(
+          isLoading: isLoading,
           value: isEnabled,
           onChanged: (value) async {
             if (onChanged != null) {

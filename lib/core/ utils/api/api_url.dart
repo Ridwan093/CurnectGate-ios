@@ -41,6 +41,16 @@ const String updateuserPicture =
 const String updateUserpassWord =
     "/api/v1/estates/general/profile/change-password";
 const String accountDetactive = "/api/v1/estates/general/profile/deactivate";
+// ADDHOUSEHOLD//SET PERMMISION/SET CURFEW/POST
+const String addhousedHol =
+    "/api/v1/estates/owner-portal/households/onboarding";
+
+const String grantAccessPermission =
+    "/api/v1/estates/owner-portal/households/members/permission/9/grant";
+const String grantbuilkpermission =
+    "/api/v1/estates/owner-portal/households/members/permission/9/bulk";
+const String permissionRevoked =
+    "/api/v1/estates/owner-portal/households/members/permission/9/revoke";
 //MEMEBERID POST URL
 
 const String generateMemberid =
@@ -57,6 +67,29 @@ const String reActiveMemberID =
 const String generateOtpWithValidator =
     "/api/v1/estates/general/visitor-otps/generate";
 const String schedulOtp = "/api/v1/estates/general/visitor-otps/generate";
+
+//SECURITY POST API URL
+
+const String addviolationComment =
+    "/api/v1/estates/general/violations/2/comments";
+const String dismissedViolation =
+    "/api/v1/estates/security/violations/1/dismiss";
+const String validateOtpByManual =
+    "/api/v1/estates/security/validations/validate-otp-manual";
+const String validateOtpBybarcode =
+    "/api/v1/estates/security/validations/validate-otp-barcode";
+const String validateOtpByQr =
+    "/api/v1/estates/security/validations/validate-otp-qr";
+const String checkOutValidatorOtpBymanual =
+    "/api/v1/estates/security/validations/checkout-with-otp";
+const String checkOutValidatorwithOtpbymanual =
+    "/api/v1/estates/security/validations/5/checkout";
+const String approveEntry = "/api/v1/estates/security/validations/5/approve";
+const String denyEntry = "/api/v1/estates/security/validations/5/deny";
+const String validateDigitaIDbyManul =
+    "/api/v1/estates/security/digital-member-id/validate/manual";
+const String validateDigitalIdByQrcode =
+    "/api/v1/estates/security/digital-member-id/validate/qr-code";
 
 /////. ALL GET APURL
 ///  /// SETTING/PROFILE GET API
@@ -95,3 +128,31 @@ const String getVisitorDetail = "/api/v1/estates/general/visitor-otps/1";
 
 const String getDigitalIDCode =
     "/api/v1/estates/general/digital-member-id/printable";
+// ADDHOUSEHOLD//SET PERMMISION/SET CURFEW/GET
+const String getHouseHold = "/api/v1/estates/owner-portal/households/members";
+const String getPropertya =
+    "/api/v1/estates/owner-portal/households/properties";
+const String getPropeertyUser =
+    "/api/v1/estates/owner-portal/households/property-users";
+const String getmemberpermission =
+    "/api/v1/estates/owner-portal/households/memebers/permission/9";
+const String getstatisticStatus =
+    "/api/v1/estates/owner-portal/households/members/permission/8/status";
+const String getstatistic =
+    "/api/v1/estates/owner-portal/households/members/permission/8/status";
+
+/// REMOVE HOUSEOLD DELETE
+
+/// REMOVE HOUSEOLD DELETE
+const String removeHouseHold =
+    "/api/v1/estates/owner-portal/households/members/23";
+
+//// SECURITY GET API URL
+const String getCheckInVisitor =
+    "/api/v1/estates/security/validations/checked-in";
+const String getPendingValidator =
+    "/api/v1/estates/security/validations/pending";
+const String getValidatorHistory =
+    "/api/v1/estates/security/validations/history";
+const String getAllviolation = "/api/v1/estates/general/violations";
+const String deleteViolation = "/api/v1/estates/violations/4";

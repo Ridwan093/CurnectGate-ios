@@ -26,6 +26,8 @@ class AssetPaths {
   static const String navMessageactive = '${_nav}message_active.png';
   static const String navProfileActive = '${_nav}profile_active.png';
   static const String navProfileInactive = '${_nav}profile_inactive.png';
+  static const String navVisitorLog = '${_nav}visitorLogTab.png';
+  static const String navVisitorLogFilled = '${_nav}visitorLogTabFilled.png';
 
   // Action Icons
   static const String addMember = '${_actions}add_member.png';
@@ -45,7 +47,21 @@ class AssetPaths {
   static const String generateOtpwithperiod = '${_actions}pin-code.png';
 
   static const String employeeCad = '${_actions}EmployeeCard.png';
+  static const String setCurfew = '${_actions}door.png';
+  static const String visitorivite = '${_actions}user-full-view.png';
+  static const String facility = '${_actions}equipment.png';
+  static const String parkingaccess = '${_actions}car-parking.png';
+  static const String forum = '${_actions}comment.png';
 
+  static const String communutys = '${_actions}message-multiple.png';
+  static const String setCurfeSetting = '${_actions}clock.png';
+  static const String setRestrictions = '${_actions}unavailable.png';
+  static const String removedrestriction = '${_actions}removedrestriction.png';
+  static const String visitorLo = '${_actions}message-multiple.png';
+  static const String discussion = '${_actions}discussion.png';
+  static const String verifiedCard = '${_actions}VerifiedCard.png';
+  static const String vaolationIcon = '${_actions}violationIcon.png';
+  static const String emgencySecurity = '${_actions}emgencySecurity.png';
   // Auth Icons
   static const String checkId = '${_auth}checks_id.png';
   static const String clipboard = '${_auth}clipboard.png';

@@ -3,7 +3,8 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
-import 'package:curnectgate/features/member_management/membership_ID/model/getDigitalModel.dart';
+import 'package:curnectgate/features/member_management/membership_ID/model/digital_member_id_response.dart';
+
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';

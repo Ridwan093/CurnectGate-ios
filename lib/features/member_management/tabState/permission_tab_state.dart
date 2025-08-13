@@ -12,6 +12,19 @@ enum BottomSheetView {
   userDetails,
   permissions,
   deleteConfirmation,
+  setCofew,
+  setPermission,
+  facility,
+  parking,
+  gateAccess,
+
+  communty,
+  nightAccess,
+  setRestrictions,
+  addRestrictions,
+  removedRestrictions,
+  setbasicpermission,
+  visitorIvitaion,
   vendorLog,
   revokevendorconfirm,
   startConversation,
@@ -36,7 +49,7 @@ enum BottomSheetView {
   accesGranted,
   specifyNumberofGust,
   workEmgencyContacts,
-   residentEmgencyContacts,
+  residentEmgencyContacts,
   notificationReminderFilter,
   notificationSetting,
   addReminder,
@@ -45,11 +58,10 @@ enum BottomSheetView {
   profilePiceUpdate,
   deactivateAccount,
   changePassword,
-  
-
-
-  
-  
+  securityViolationTrack,
+  securityCommentMaker,
+  securitydismissViolation,
+  mentainLog
 }
 
 // State notifier for permissions

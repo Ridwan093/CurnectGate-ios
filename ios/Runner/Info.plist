@@ -52,8 +52,42 @@
             <string>sound</string>
         </array>
     </dict>
+    <key>NSAppTransportSecurity</key>
+<dict>
+    <key>NSExceptionDomains</key>
+    <dict>
+        <key>res.cloudinary.com</key>
+        <dict>
+            <key>NSIncludesSubdomains</key>
+            <true/>
+            <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+            <true/>
+            <key>NSTemporaryExceptionMinimumTLSVersion</key>
+            <string>TLSv1.2</string>
+        </dict>
+    </dict>
+</dict>
+   <key>NSPhotoLibraryUsageDescription</key>
+    <string>We need access to your photos to let you upload profile pictures</string>
     
-  
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>We save processed images back to your gallery</string>
+    
+    <key>NSCameraUsageDescription</key>
+    <string>We need camera access to capture new photos</string>
+    
+    <!-- Only include if using video recording -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>We need microphone access for video recording</string>
+
+    <!-- ===== 3. QR CODE SCANNING ===== -->
+    <key>NSCameraUsageDescription</key>
+    <string>We need camera access to scan QR codes</string>
+    
+    <!-- For iOS 14+ clipboard detection -->
+    <key>NSUserTrackingUsageDescription</key>
+    <string>We check clipboard for QR codes when app opens</string>
+</dict>
     <key>UISupportedInterfaceOrientations</key>
     <array>
         <string>UIInterfaceOrientationPortrait</string>

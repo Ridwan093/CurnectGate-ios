@@ -42,7 +42,7 @@ class DigitCodeTab extends ConsumerWidget {
           try {
             final digitalcode = ref.read(digitMemberIDprovider).value;
             final digit = digitalcode?.data;
-            return digit!.digitalId.digitalIdCode.isNotEmpty
+            return digit!.digitalId!.digitalIdCode!.isNotEmpty
                 ? CodeWidget(data: digit)
                 : Loadingstates();
           } catch (e) {
@@ -62,7 +62,7 @@ class DigitCodeTab extends ConsumerWidget {
 
             // Try to show cached data
 
-            if (digit!.data.digitalId.digitalIdCode.isNotEmpty) {
+            if (digit!.data.digitalId!.digitalIdCode!.isNotEmpty) {
               return SingleChildScrollView(
                 child: Column(
                   children: [

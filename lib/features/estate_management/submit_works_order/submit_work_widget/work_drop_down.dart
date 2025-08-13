@@ -9,7 +9,12 @@ class WorkDropDown extends ConsumerWidget {
   final String label;
   final ValueChanged<String?>? onChanged;
 
-  const WorkDropDown({super.key, required this.workTypes,this.label= "Work Type" ,this.onChanged});
+  const WorkDropDown({
+    super.key,
+    required this.workTypes,
+    this.label = "Work type",
+    this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -17,6 +22,7 @@ class WorkDropDown extends ConsumerWidget {
     final notifier = ref.read(workOrderFormProvider.notifier);
 
     return DropdownButtonFormField<String>(
+      dropdownColor: Colors.white,
       icon: Icon(Icons.keyboard_arrow_down),
       style: TextStyle(
         fontFamily: FontFamilies.interDisplay,
@@ -69,7 +75,7 @@ class WorkDropDown extends ConsumerWidget {
         // Update form validation
       },
       hint: Text(
-        'Select work type',
+        label,
         style: TextStyle(
           fontFamily: FontFamilies.interDisplay,
           color: AppColors.instance.black300,

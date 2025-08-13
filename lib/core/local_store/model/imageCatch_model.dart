@@ -4,17 +4,12 @@ import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
 class ImageCacheService {
-  static Future<void> saveImage(String url) async {
+  static Future<void> saveImage(String url, Uint8List bytes) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final response = await http.get(Uri.parse(url));
-      
-      if (response.statusCode == 200) {
-        await prefs.setString(url, base64Encode(response.bodyBytes));
-        log('Image saved to cache: $url');
-      }
+      await prefs.setString(url, base64Encode(bytes));
+      log('Image saved to cache: $url');
     } catch (e) {
       log('Error saving image: $e');
     }

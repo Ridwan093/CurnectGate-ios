@@ -6,7 +6,8 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
-import 'package:curnectgate/features/userProfile/notification_setting/model/userNotification_setting_model.dart';
+import 'package:curnectgate/features/userProfile/notification_setting/model/get_user_notification_settings.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

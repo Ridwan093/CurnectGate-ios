@@ -1,9 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:curnectgate/core/local_store/image_local_catch.dart';
 import 'package:curnectgate/core/local_store/model/imageCatch_model.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/membership_ID/model/getDigitalModel.dart';
+import 'package:curnectgate/features/member_management/membership_ID/model/digital_member_id_data.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class QrWidget extends StatefulWidget {
   final DigitalMemberIdData data;
@@ -22,8 +25,21 @@ class _QrWidgetState extends State<QrWidget> {
   }
 
   void preCacheImages() {
-    ImageCacheService.saveImage(widget.data.digitalId.qrCodeUrl);
-    ImageCacheService.saveImage(widget.data.user.mediaUrl);
+    // Fire-and-forget for both images
+    _cacheImage(widget.data.digitalId?.qrCodeUrl);
+  }
+
+  Future<void> _cacheImage(String? url) async {
+    if (url == null || url.isEmpty) return;
+
+    try {
+      final bytes = await http.get(Uri.parse(url)).then((r) => r.bodyBytes);
+      if (bytes.isNotEmpty) {
+        await ImageCacheService.saveImage(url, bytes);
+      }
+    } catch (e) {
+      debugPrint('Cache failed for $url: $e');
+    }
   }
 
   @override
@@ -56,7 +72,7 @@ class _QrWidgetState extends State<QrWidget> {
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      widget.data.user.estateName.toUpperCase(),
+                      widget.data.user?.estateName?.toUpperCase() ?? "",
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 16,
@@ -67,15 +83,20 @@ class _QrWidgetState extends State<QrWidget> {
                     ),
                   ],
                 ),
+
                 CachedImage(
-                  imageUrl: widget.data.digitalId.qrCodeUrl,
+                  imageUrl: widget.data.digitalId?.qrCodeUrl ?? "",
                   width: 200,
                   height: 200,
                   placeholder: Container(
                     width: 200,
                     height: 200,
                     color: Colors.grey[200],
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.instance.yellow500,
+                      ),
+                    ),
                   ),
                   errorWidget: Container(
                     width: 200,
@@ -128,7 +149,7 @@ class _QrWidgetState extends State<QrWidget> {
             ),
             const SizedBox(height: 3),
             Text(
-              "${widget.data.user.firstname.toUpperCase()} ${widget.data.user.lastname.toUpperCase()}",
+              "${widget.data.user?.firstname?.toUpperCase()} ${widget.data.user?.lastname?.toUpperCase()}",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontFamilies.bold,
@@ -151,7 +172,7 @@ class _QrWidgetState extends State<QrWidget> {
             ),
             const SizedBox(height: 3),
             Text(
-              widget.data.user.role.toUpperCase(),
+              widget.data.user?.role?.toUpperCase() ?? "",
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontFamilies.bold,
@@ -180,7 +201,7 @@ class _QrWidgetState extends State<QrWidget> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  widget.data.digitalId.status.toUpperCase(),
+                  widget.data.digitalId?.status?.toUpperCase() ?? "",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontFamilies.bold,
@@ -194,7 +215,7 @@ class _QrWidgetState extends State<QrWidget> {
                 CircleAvatar(
                   radius: 3,
                   backgroundColor: _buildColor(
-                    widget.data.digitalId.status.toLowerCase(),
+                    widget.data.digitalId?.status?.toLowerCase() ?? "",
                   ),
                 ),
               ],
@@ -215,5 +236,65 @@ class _QrWidgetState extends State<QrWidget> {
       default:
         return AppColors.instance.grey500;
     }
+  }
+}
+
+Future<Uint8List?> fetchImageWithHeaders(String imageUrl) async {
+  try {
+    final response = await http.get(
+      Uri.parse(imageUrl),
+      headers: {
+        'Accept': 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115 Safari/537.36',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return response.bodyBytes;
+    } else {
+      debugPrint('Image failed to load: ${response.statusCode}');
+      return null;
+    }
+  } catch (e) {
+    debugPrint('Image fetch error: $e');
+    return null;
+  }
+}
+
+class NetworkImageWithHeaders extends StatelessWidget {
+  final String imageUrl;
+  final double? width;
+  final double? height;
+  final BoxFit? fit;
+
+  const NetworkImageWithHeaders({
+    super.key,
+    required this.imageUrl,
+    this.width,
+    this.height,
+    this.fit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Uint8List?>(
+      future: fetchImageWithHeaders(imageUrl),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError || snapshot.data == null) {
+          return const Icon(Icons.broken_image, color: Colors.red);
+        } else {
+          return Image.memory(
+            snapshot.data!,
+            width: width,
+            height: height,
+            fit: fit ?? BoxFit.cover,
+          );
+        }
+      },
+    );
   }
 }

@@ -1,9 +1,9 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/estate_button.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/member_management/membership_ID/bottomSheet/member_Digital_buttomSeet.dart';
-import 'package:curnectgate/features/member_management/tabState/memberid_provider/provider.dart';
+import 'package:curnectgate/features/member_management/membership_ID/provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

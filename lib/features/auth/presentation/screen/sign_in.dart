@@ -6,10 +6,10 @@ import 'package:curnectgate/core/navigation/back_manageent/back_widget/back_navi
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/screen/loading_screen/loading_page.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/screen/onboard_code_confirm.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/estate_management/screen_managment.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/loading_screen/loading_page.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/onboard_code_confirm.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:flutter/material.dart';
@@ -176,6 +176,7 @@ class _SignInState extends ConsumerState<SignIn> {
             fieldType: FieldType.email,
             hintText: 'Enter email address',
             label: 'Email',
+            onChanged: (value) {},
             onValidationChanged: (validation) {
               ref
                   .read(formProvider.notifier)
@@ -193,6 +194,7 @@ class _SignInState extends ConsumerState<SignIn> {
             label: 'Password',
             fieldKey: 'password',
             fieldType: FieldType.password,
+            onChanged: (value) {},
             onValidationChanged: (validation) {
               // Handle validation changes
               // setState(() {

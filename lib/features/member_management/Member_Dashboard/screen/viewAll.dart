@@ -1,7 +1,7 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/%20operations/OTP_Activation/model/generate_model.dart';
-import 'package:curnectgate/features/%20operations/OTP_Activation/provider/active_provider.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/model/generate_model.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/provider/active_provider.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/reusable_vistor_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

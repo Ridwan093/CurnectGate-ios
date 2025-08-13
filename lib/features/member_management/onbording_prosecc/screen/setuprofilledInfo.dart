@@ -2,11 +2,11 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/screen/loading_screen/loading_page.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/widget/button/estate_button.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/widget/progresscontainer.dart';
-import 'package:curnectgate/features/estate_management/estate_onboarding/widget/stepcount.dart';
 import 'package:curnectgate/features/estate_management/screen_managment.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/loading_screen/loading_page.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/progresscontainer.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/stepcount.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:curnectgate/features/member_management/profile_form/termsTogender_widget.dart';
@@ -167,6 +167,7 @@ class _SetUppRofiledState extends ConsumerState<SetUppRofiled> {
             fieldType: FieldType.name,
             hintText: 'Enter first name',
             label: 'First Name',
+            onChanged: (value) {},
             onValidationChanged: (validation) {
               ref
                   .read(formProvider.notifier)
@@ -185,6 +186,7 @@ class _SetUppRofiledState extends ConsumerState<SetUppRofiled> {
             fieldType: FieldType.name,
             hintText: 'Enter last name',
             label: 'Last Name',
+            onChanged: (value) {},
             onValidationChanged: (validation) {
               ref
                   .read(formProvider.notifier)
@@ -205,6 +207,7 @@ class _SetUppRofiledState extends ConsumerState<SetUppRofiled> {
             fieldType: FieldType.email,
             hintText: 'Enter email address',
             label: 'Email',
+            onChanged: (value) {},
             onValidationChanged: (validation) {
               ref
                   .read(formProvider.notifier)
@@ -225,6 +228,7 @@ class _SetUppRofiledState extends ConsumerState<SetUppRofiled> {
             fieldType: FieldType.phone,
             hintText: 'Enter phone number',
             label: 'Phone',
+            onChanged: (value) {},
             onValidationChanged: (validation) {
               ref
                   .read(formProvider.notifier)
@@ -249,7 +253,9 @@ class _SetUppRofiledState extends ConsumerState<SetUppRofiled> {
     return ActionButton(
       label: 'Continue',
       onPressed:
-          formState.allValid && !formState.creatPassLoading ? _submitForm : null,
+          formState.allValid && !formState.creatPassLoading
+              ? _submitForm
+              : null,
     );
   }
 }

@@ -2,19 +2,26 @@
 import 'dart:developer';
 
 import 'package:curnectgate/core/%20utils/api/api_url.dart';
-import 'package:curnectgate/features/%20operations/OTP_Activation/model/model.dart';
-import 'package:curnectgate/features/%20operations/notifications/event/model/activit_model.dart';
-import 'package:curnectgate/features/%20operations/violation/model/GetReport_history_model.dart';
-import 'package:curnectgate/features/%20operations/violation/model/comment_model.dart';
-import 'package:curnectgate/features/%20operations/violation/model/estate_address_model.dart';
-import 'package:curnectgate/features/%20operations/violation/model/getCategory_model.dart';
-import 'package:curnectgate/features/%20operations/violation/model/reportList_model.dart';
-import 'package:curnectgate/features/member_management/membership_ID/model/getDigitalModel.dart';
-import 'package:curnectgate/features/userProfile/Prefrence_setting/model/model.dart';
-import 'package:curnectgate/features/userProfile/Privacy_setting/model/model.dart';
-import 'package:curnectgate/features/userProfile/notification_setting/model/userNotification_setting_model.dart';
-import 'package:curnectgate/features/userProfile/profile/model/profile_model.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/model/household_members_response.dart';
+
+import 'package:curnectgate/features/member_management/Onboard_Houselod/model/property_model/property_response.dart';
+import 'package:curnectgate/features/member_management/membership_ID/model/digital_member_id_response.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/model/otp_response_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/activit_model.dart';
+import 'package:curnectgate/features/operations/violation/model/GetReport_history_model.dart';
+import 'package:curnectgate/features/operations/violation/model/comment_model.dart';
+import 'package:curnectgate/features/operations/violation/model/estate_address_model.dart';
+import 'package:curnectgate/features/operations/violation/model/getCategory_model.dart';
+import 'package:curnectgate/features/operations/violation/model/report_models/violation_response.dart';
+import 'package:curnectgate/features/userProfile/Prefrence_setting/model/get_user_notifications.dart';
+import 'package:curnectgate/features/userProfile/Privacy_setting/model/get_user_privacy_settings.dart';
+import 'package:curnectgate/features/userProfile/notification_setting/model/get_user_notification_settings.dart';
+import 'package:curnectgate/features/userProfile/profile/model/get_user_profile_model.dart';
 import 'package:dio/dio.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_slug_model/permissions_response_model.dart'
+    as slug_model;
+import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_status_model.dart/permissions_response_model.dart'
+    as status_model;
 
 class GetApiService {
   final Dio _dio;
@@ -34,7 +41,7 @@ class GetApiService {
         ),
       );
 
-      return GetUserProfile.fromJson(response.data);
+      return GetUserProfile.fromSafeJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);
@@ -56,7 +63,7 @@ class GetApiService {
         ),
       );
 
-      return GetUserNotificationSettings.fromJson(response.data);
+      return GetUserNotificationSettings.safeFromJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);
@@ -78,7 +85,7 @@ class GetApiService {
         ),
       );
 
-      return GetUserPrivacySettings.fromJson(response.data);
+      return GetUserPrivacySettings.safeFromJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);
@@ -116,7 +123,7 @@ class GetApiService {
       );
       log(response.data.toString());
 
-      return GetuserNotifications.fromJson(response.data);
+      return GetuserNotifications.safeFromJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);
@@ -192,11 +199,26 @@ class GetApiService {
     }
   }
 
-  Future<ViolationResponse> getreport({required String bearerToken, required String filter}) async {
+  Map<String, dynamic> requestData(String status) {
+    switch (status) {
+      case "all":
+        return {"filter": status};
+
+      default:
+        return {"status": status};
+    }
+  }
+
+  Future<ViolationResponse> getreport({
+    required String bearerToken,
+    required String filter,
+  }) async {
     try {
-        final Map<String, dynamic> requestData = {"status": filter};
+      final Map<String, dynamic> requestDatas = requestData(filter.toLowerCase());
+      log(requestDatas.toString());
+
       final response = await _dio.get(
-        data:requestData,
+        data: requestDatas,
         listOfViolation, // Update with your actual endpoint
         options: Options(
           headers: {
@@ -208,7 +230,7 @@ class GetApiService {
       );
       log(response.data.toString());
 
-      return ViolationResponse.fromJson(response.data);
+      return ViolationResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);
@@ -217,13 +239,13 @@ class GetApiService {
 
   Future<StatusHistoryResponse> getreportHistor({
     required String bearerToken,
-    required int id 
+    required int id,
   }) async {
     try {
       final response = await _dio.get(
-        getViolationHistotyStatus,
-        
-         // Update with your actual endpoint
+        "/api/v1/estates/general/violations/$id/history",
+
+        // Update with your actual endpoint
         options: Options(
           headers: {
             'Accept': 'application/json',
@@ -285,7 +307,7 @@ class GetApiService {
       );
       log(response.data.toString());
 
-      return OtpResponseModel.fromJson(response.data);
+      return OtpResponseModel.fromSafeJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);
@@ -308,7 +330,99 @@ class GetApiService {
       );
       log(response.data.toString());
 
-      return DigitalMemberIdResponse.fromJson(response.data);
+      return DigitalMemberIdResponse.safeFromJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<HouseholdMembersResponse> getHouseHolds({
+    required String bearerToken,
+  }) async {
+    try {
+      final response = await _dio.get(
+        getHouseHold, // Update with your actual endpoint
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $bearerToken',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        ),
+      );
+      log(response.data.toString());
+
+      return HouseholdMembersResponse.safeFromJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<PropertyResponse> getProperty({required String bearerToken}) async {
+    try {
+      final response = await _dio.get(
+        getPropertya, // Update with your actual endpoint
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $bearerToken',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        ),
+      );
+      log(response.data.toString());
+
+      return PropertyResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<status_model.PermissionsResponse> getPermissionStatus({
+    required String bearerToken,
+    required String id,
+  }) async {
+    try {
+      final response = await _dio.get(
+        "/api/v1/estates/owner-portal/households/members/permission/$id/status", // Update with your actual endpoint
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $bearerToken',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        ),
+      );
+      log(response.data.toString());
+
+      return status_model.PermissionsResponse.safeFromJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<slug_model.PermissionsResponse> getPermissionStatisic({
+    required String bearerToken,
+    required String id,
+  }) async {
+    try {
+      final response = await _dio.get(
+        "/api/v1/estates/owner-portal/households/members/permission/$id/specific", // Update with your actual endpoint
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $bearerToken',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        ),
+      );
+      log(response.data.toString());
+
+      return slug_model.PermissionsResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);

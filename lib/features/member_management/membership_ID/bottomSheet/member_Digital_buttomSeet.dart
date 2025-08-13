@@ -4,7 +4,7 @@ import 'package:curnectgate/features/member_management/membership_ID/bottomSheet
 import 'package:curnectgate/features/member_management/membership_ID/bottomSheet/reActivatePass.dart';
 import 'package:curnectgate/features/member_management/membership_ID/bottomSheet/setting_sheet.dart';
 import 'package:curnectgate/features/member_management/membership_ID/provider/getDigitalIDProvider.dart';
-import 'package:curnectgate/features/member_management/tabState/memberid_provider/provider.dart';
+import 'package:curnectgate/features/member_management/membership_ID/provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,7 +23,7 @@ void showBottomSheets(BuildContext context, WidgetRef ref) {
             final sheetType = ref.watch(bottomSheetTypeProvider);
             final digit = ref.watch(digitMemberIDprovider).value;
             final isCardActive =
-                digit?.data.digitalId.status == "active" ? true : false;
+                digit?.data.digitalId?.status == "active" ? true : false;
 
             switch (sheetType) {
               case BottomSheetType.settings:
