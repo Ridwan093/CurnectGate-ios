@@ -23,6 +23,7 @@ class AppRoutes {
   static const String memberPassCreated = 'pass_created';
   static const String selectedMemeber = 'member_selected';
   static const String filleMemberInfo = 'member_fillInfo';
+    static const String residentDirectory = 'resident';
   // static const String memeberPage = 'member_page';
 
   // ------------------------------------------------------------------

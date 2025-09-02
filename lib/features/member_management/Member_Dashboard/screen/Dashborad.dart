@@ -99,7 +99,12 @@ class Dashborad extends ConsumerWidget {
               _otherLinks(title: "ACCOUNT SETTINGS", onTap: () {}),
               Divider(color: AppColors.instance.grey400),
               SizedBox(height: 5),
-              _otherLinks(title: "VISITORS LOG", onTap: () {}),
+              _otherLinks(
+                title: "RESIDENT DIRECTORY",
+                onTap: () {
+                  context.pushNamed(AppRoutes.residentDirectory);
+                },
+              ),
               SizedBox(height: 20),
               Text(
                 "NEED SAFETY HELP?",

@@ -1,7 +1,6 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/security/widget/custom_tabbar.dart';
-import 'package:curnectgate/features/security/widget/security_buttom_sheet/bottom_tap/violation_track_tab/Resolved.dart';
 import 'package:curnectgate/features/security/widget/tap_screen/CheckIn.dart';
 import 'package:curnectgate/features/security/widget/tap_screen/CheckOut.dart';
 import 'package:flutter/material.dart';

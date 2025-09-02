@@ -28,6 +28,14 @@ class ResidentCard extends StatelessWidget {
     this.colortype = true,
   });
 
+  String _getInitials(String fullName) {
+    if (fullName.trim().isEmpty) return '';
+    final parts = fullName.trim().split(RegExp(r'\s+'));
+    final first = parts.first[0].toUpperCase();
+    final last = parts.length > 1 ? parts.last[0].toUpperCase() : '';
+    return '$first$last';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -41,7 +49,7 @@ class ResidentCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildCardHeader(context),
+            _buildCardHeader(context, userName),
             const SizedBox(height: 10),
             _buildDetailRow(title: "Block", value: block),
             _buildDetailRow(title: "Address", value: adrress!),
@@ -51,7 +59,7 @@ class ResidentCard extends StatelessWidget {
     );
   }
 
-  Widget _buildCardHeader(BuildContext context) {
+  Widget _buildCardHeader(BuildContext context, String userName) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -62,7 +70,7 @@ class ResidentCard extends StatelessWidget {
               backgroundColor: AppColors.instance.teal100,
               child: Center(
                 child: Text(
-                  "BS",
+                  _getInitials(userName),
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     color: AppColors.instance.black600,
@@ -100,12 +108,7 @@ class ResidentCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailRow({
-    required String title,
-    required String value,
-
-   
-  }) {
+  Widget _buildDetailRow({required String title, required String value}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(

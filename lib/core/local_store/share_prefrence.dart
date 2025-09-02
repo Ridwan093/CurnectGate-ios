@@ -2,6 +2,8 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:curnectgate/features/ResidentDirectory/model/comittee_model/committees_response_model.dart';
+import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resident_directory_respond.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/household_members_response.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_slug_model/permissions_response_model.dart'
     as slug_model;
@@ -83,6 +85,9 @@ class SharedPrefsService {
   static const String _permissionStaticKey = "perm_static";
   static const String _checkOutKey = "check_out";
   static const String _checkInKey = "check_in";
+  static const String _resident = "resident";
+  static const String _committee = "committee";
+
   static Future<void> saveNotificationSettings(
     GetUserNotificationSettings notification,
   ) async {
@@ -201,6 +206,36 @@ class SharedPrefsService {
     return null;
   }
 
+  ///RESIDENT/COMMITTEE
+  ///ResidentDirectoryResponse
+
+  static Future<void> saveResident(ResidentDirectoryResponse preference) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_resident, jsonEncode(preference.toJson()));
+  }
+
+  static Future<ResidentDirectoryResponse?> getResident() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_resident);
+    if (data != null) {
+      return ResidentDirectoryResponse.fromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> saveCommittee(CommitteesResponse preference) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_committee, jsonEncode(preference.toJson()));
+  }
+
+  static Future<CommitteesResponse?> getCommittee() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_committee);
+    if (data != null) {
+      return CommitteesResponse.fromJson(jsonDecode(data));
+    }
+    return null;
+  }
   //USERNOTIFICATION/REMINDER
 
   static Future<void> saveUserNotification(
@@ -626,6 +661,16 @@ class SharedPrefsService {
     await prefs.remove(_calenderKey);
   }
 
+  static Future<void> clearResident() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_resident);
+  }
+
+  static Future<void> clearCommitte() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_committee);
+  }
+
   Future<void> saveAuthData(Map<String, dynamic> data) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_keyAuthData, jsonEncode(data));
@@ -675,6 +720,8 @@ class SharedPrefsService {
     clearReminder();
     clearEvent();
     clearcalender();
+    clearCommitte();
+    clearResident();
 
     await prefs.remove(_keyAuthData);
   }

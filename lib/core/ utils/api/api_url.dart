@@ -164,3 +164,8 @@ const String getValidatorHistory =
     "/api/v1/estates/security/validations/history";
 const String getAllviolation = "/api/v1/estates/general/violations";
 const String deleteViolation = "/api/v1/estates/violations/4";
+
+/// RESINDE/COMMITTEE
+/// /api/v1/estates/general/committees
+const String getCommitt = "/api/v1/estates/general/committees";
+const String getResinde = "/api/v1/estates/general/directory";

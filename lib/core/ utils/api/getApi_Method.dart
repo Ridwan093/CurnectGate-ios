@@ -2,6 +2,8 @@
 import 'dart:developer';
 
 import 'package:curnectgate/core/%20utils/api/api_url.dart';
+import 'package:curnectgate/features/ResidentDirectory/model/comittee_model/committees_response_model.dart';
+import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resident_directory_respond.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/household_members_response.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_slug_model/permissions_response_model.dart'
     as slug_model;
@@ -565,6 +567,53 @@ class GetApiService {
       log(response.data.toString());
 
       return CalendarEventsResponse.fromSafeJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<ResidentDirectoryResponse> getResident({
+    required String bearerToken,
+
+  }) async {
+    try {
+      final response = await _dio.get(
+getResinde, // Update with your actual endpoint
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $bearerToken',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        ),
+      );
+      log(response.data.toString());
+
+      return ResidentDirectoryResponse.fromSafeJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+  Future<CommitteesResponse> getCommittees({
+    required String bearerToken,
+   
+  }) async {
+    try {
+      final response = await _dio.get(
+getCommitt, // Update with your actual endpoint
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $bearerToken',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        ),
+      );
+      log(response.data.toString());
+
+      return CommitteesResponse.fromSafeJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);

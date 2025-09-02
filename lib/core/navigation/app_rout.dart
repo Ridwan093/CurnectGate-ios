@@ -1,6 +1,7 @@
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/widgets/GetYourCode.dart';
+import 'package:curnectgate/features/ResidentDirectory/Screen/ResidentTab.dart';
 import 'package:curnectgate/features/auth/presentation/screen/changeTemporaryPassword.dart';
 import 'package:curnectgate/features/auth/presentation/screen/creatnewpassword.dart';
 import 'package:curnectgate/features/auth/presentation/screen/forgot_password.dart';
@@ -274,6 +275,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           return DigitalCardScreen();
         },
       ),
+
       GoRoute(
         path: '/sec_violations',
         name: AppRoutes.securityViolationDeatails,
@@ -282,6 +284,16 @@ final routerProvider = Provider<GoRouter>((ref) {
 
           // Extract values with null checks
           return ViolationDetailScreen(violationId: "2");
+        },
+      ),
+      GoRoute(
+        path: '/directory_address',
+        name: AppRoutes.residentDirectory,
+        builder: (context, state) {
+          // final extra = state.extra as Violation;
+
+          // Extract values with null checks
+          return ResidentTab();
         },
       ),
     ],

@@ -9,6 +9,7 @@ import 'package:curnectgate/features/operations/notifications/provider/eventprov
 import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class EventsBottomSheet extends ConsumerWidget {
   const EventsBottomSheet({super.key});
@@ -18,28 +19,37 @@ class EventsBottomSheet extends ConsumerWidget {
     final state = ref.watch(reminderProvider);
     final notifier = ref.read(eventsProvider.notifier);
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      height: MediaQuery.of(context).size.height * 0.9,
-      child: Stack(
-        children: [
-          Column(
-            children: [
-              _buildHeader(notifier, context),
-              const SizedBox(height: 30),
-              _buildTitleSection(),
-              const SizedBox(height: 16),
-              CalenderData(),
-              const SizedBox(height: 16),
-              _buildTabBar(ref),
-              const SizedBox(height: 16),
-          
-              Expanded(child: _buildContent(ref, context)),
-            ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          child: IntrinsicHeight(
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              child: Stack(
+                children: [
+                  Column(
+                    children: [
+                      _buildHeader(notifier, context),
+                      const SizedBox(height: 30),
+                      _buildTitleSection(),
+                      const SizedBox(height: 16),
+                      CalenderData(),
+                      const SizedBox(height: 16),
+                      _buildTabBar(ref),
+                      const SizedBox(height: 16),
+
+                      Expanded(child: _buildContent(ref, context)),
+                    ],
+                  ),
+                  if (state.isLoading)
+                    Positioned.fill(child: _buildLoadingOverlay()),
+                ],
+              ),
+            ),
           ),
-            if (state.isLoading) Positioned.fill(child: _buildcontainer()),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -47,17 +57,20 @@ class EventsBottomSheet extends ConsumerWidget {
   // 3. Widget Building Methods
   // =============================================
 
-  Widget _buildcontainer() {
+  Widget _buildLoadingOverlay() {
     return Container(
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
       child: Center(child: Loadingstates()),
     );
   }
+
   Widget _buildHeader(EventsNotifier notifier, BuildContext context) {
     return Align(
       alignment: Alignment.topRight,
       child: InkWell(
-        onTap: () => notifier.closeDetails(context),
+        onTap: () {
+          context.pop();
+        },
         child: Text(
           "Close",
           style: TextStyle(
