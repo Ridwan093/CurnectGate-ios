@@ -49,11 +49,10 @@ class Profilecard extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: AppColors.instance.teal300,
                       image: DecorationImage(
-                        image: NetworkImage(
-                          userProfileUrl.isEmpty
-                              ? AssetPaths.userAvatar1
-                              : userProfileUrl,
-                        ),
+                        image:
+                            userProfileUrl.isNotEmpty
+                                ? NetworkImage(userProfileUrl)
+                                : AssetImage(AssetPaths.navProfileActive),
                         fit: BoxFit.cover,
                       ),
                       borderRadius: BorderRadius.circular(10),

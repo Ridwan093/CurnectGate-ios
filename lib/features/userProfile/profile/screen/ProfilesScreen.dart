@@ -4,14 +4,13 @@ import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
 import 'package:curnectgate/core/appErrorBody/emmergencyBody.dart';
 import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
-import 'package:curnectgate/features/operations/notifications/activites-reminders/activites_log.dart';
+import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
-import 'package:curnectgate/features/userProfile/Privacy_setting/screen/privacy_screen.dart';
-import 'package:curnectgate/features/userProfile/profile/model/get_user_profile_model.dart';
 import 'package:curnectgate/features/userProfile/profile/provider/profile_provider.dart';
 import 'package:curnectgate/features/userProfile/profile/widget/account_dropdown_menu.dart';
 import 'package:curnectgate/features/userProfile/profile/widget/listTile.dart';
@@ -45,6 +44,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
   @override
   Widget build(BuildContext context) {
     final profileAsync = ref.watch(userProfileProvider);
+    final role = ref.watch(userRoleProvider);
 
     return Scaffold(
       appBar: _buildAppBar(ref: ref, context: context),
@@ -66,11 +66,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                     final user = profile?.data;
                     return user != null
                         ? Profilecard(
-                          userProfileUrl: user.mediaUrl ?? "",
-                          role: user.role ?? "",
-                          username: user.fullName ?? "",
-                          estateName: user.estateName ?? "",
-                          memberId: user.memberCode ?? "",
+                          userProfileUrl: user.mediaUrl,
+                          role: user.role,
+                          username: user.fullName,
+                          estateName: user.estateName,
+                          memberId: user.memberCode,
                         )
                         : EmptyBodys(message: "No profile data?");
                   } catch (e) {
@@ -90,7 +90,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                     return cachedProfile != null
                         ? Profilecard(
                           userProfileUrl: cachedProfile.data.mediaUrl,
-                          role: cachedProfile.data.role ,
+                          role: cachedProfile.data.role,
                           username: cachedProfile.data.fullName,
                           estateName: cachedProfile.data.estateName,
                           memberId: cachedProfile.data.memberCode,
@@ -125,11 +125,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                       return Column(
                         children: [
                           Profilecard(
-                            userProfileUrl: cachedProfile.data.mediaUrl ?? "",
+                            userProfileUrl: cachedProfile.data.mediaUrl,
                             role: cachedProfile.data.role,
                             username: cachedProfile.data.fullName,
-                            estateName: cachedProfile.data.estateName ?? "",
-                            memberId: cachedProfile.data.memberCode ?? "",
+                            estateName: cachedProfile.data.estateName,
+                            memberId: cachedProfile.data.memberCode,
                           ),
                           Emmergencybody(error: error.toString()),
                         ],
@@ -190,19 +190,44 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                 title: "Manage Notifications",
                 iconPath: AssetPaths.dashboardNotification,
               ),
-              Divider(color: AppColors.instance.grey300),
-              BuildListTile(
-                onTap: () {
-                  context.pushNamed(AppRoutes.getMemberInfo);
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => AllMemberListScreen(),
-                  //   ),
-                  // );
+
+              role.when(
+                data: (data) {
+                  if (data.isNotEmpty) {
+                    if (data.toLowerCase().contains("security") ||
+                        data.toLowerCase().contains("tenate")) {
+                      return SizedBox();
+                    } else {
+                      return Column(
+                        children: [
+                          Divider(color: AppColors.instance.grey300),
+
+                          BuildListTile(
+                            onTap: () {
+                              context.pushNamed(AppRoutes.getMemberInfo);
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => AllMemberListScreen(),
+                              //   ),
+                              // );
+                            },
+                            title: "Manage Member",
+                            iconPath: AssetPaths.userStar,
+                          ),
+                        ],
+                      );
+                    }
+                  } else {
+                    return SizedBox();
+                  }
                 },
-                title: "Manage Member",
-                iconPath: AssetPaths.userStar,
+                error: (e, s) {
+                  return SizedBox();
+                },
+                loading: () {
+                  return SizedBox();
+                },
               ),
               Divider(color: AppColors.instance.grey300),
               BuildListTile(
@@ -221,13 +246,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
               Divider(color: AppColors.instance.grey300),
               BuildListTile(
                 onTap: () {
-                  // context.pushNamed(AppRoutes.setPrivacy);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UserPrivacySettings(),
-                    ),
-                  );
+                  context.pushNamed(AppRoutes.setPrivacy);
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => UserPrivacySettings(),
+                  //   ),
+                  // );
                 },
                 title: "Set Privacy",
                 iconPath: AssetPaths.setCurfew,
@@ -249,15 +274,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
     );
   }
 
-  Widget _buildProfileCard(GetUserProfile? user) {
-    return Profilecard(
-      userProfileUrl: user?.data.mediaUrl ?? "",
-      role: user?.data.role ?? "",
-      username: user?.data.fullName ?? "",
-      estateName: user?.data.estateName ?? "",
-      memberId: user?.data.memberCode ?? "",
-    );
-  }
+  // Widget _buildProfileCard(GetUserProfile? user) {
+  //   return Profilecard(
+  //     userProfileUrl: user?.data.mediaUrl ?? "",
+  //     role: user?.data.role ?? "",
+  //     username: user?.data.fullName ?? "",
+  //     estateName: user?.data.estateName ?? "",
+  //     memberId: user?.data.memberCode ?? "",
+  //   );
+  // }
 
   PreferredSizeWidget _buildAppBar({
     required WidgetRef ref,
@@ -281,21 +306,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
       ),
 
       actions: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: InkWell(
-            onTap: () async {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ActivityPage()),
-              );
-            },
-            child: Image.asset(
-              AssetPaths.dashboardNotification,
-              width: 25,
-              height: 25,
-            ),
-          ),
+        NotificationCount(
+          width: 10,
+          onTap: () {
+            context.pushNamed(AppRoutes.notification);
+          },
         ),
         AccountDropdownMenu(),
         SizedBox(width: 12),

@@ -42,13 +42,6 @@ class _ScanWidgetState extends ConsumerState<ScanWidget> {
     final scanAreaSize = MediaQuery.of(context).size.width * 0.7;
     final torchEnabled = ref.watch(torchStateProvider);
 
-    // final mobileScannerController = MobileScannerController(
-    //   torchEnabled: torchEnabled,
-    //   detectionSpeed: DetectionSpeed.normal,
-    //   facing: CameraFacing.back,
-    // );
-    // Scanner Overlay Widget
-
     return Stack(
       children: [
         // Dark Background
@@ -88,7 +81,19 @@ class _ScanWidgetState extends ConsumerState<ScanWidget> {
                     onDetect: (capture) {
                       final barcode = capture.barcodes.firstOrNull;
                       if (barcode?.rawValue != null) {
-                        // ref.read(qrScanProvider.notifier).state = false;
+                        final decodedString = utf8.decode(
+                          base64.decode(barcode?.rawValue ?? ""),
+                        );
+                        log('🔓 DECODED STRING: $decodedString');
+
+                        // 3. Parse and log JSON
+                        final jsonData = json.decode(decodedString);
+                        log('📦 JSON STRUCTURE: ${jsonData.toString()}');
+                        log('🆔 Digital ID: ${jsonData['digital_id_code']}');
+                        log('🏠 Estate ID: ${jsonData['estate_id']}');
+                        log('👤 User ID: ${jsonData['user_id']}');
+                        log('⏰ Generated At: ${jsonData['generated_at']}');
+                        ref.read(qrScanProvider.notifier).state = false;
                         // _showScanResult(context, barcode!.rawValue!);
                         ///hey is the place to get the scan inf
                         ///'ormation and send it to view
@@ -96,60 +101,17 @@ class _ScanWidgetState extends ConsumerState<ScanWidget> {
                         showUserBottomSheet(
                           context: context,
                           headertitle: barcode?.rawValue ?? "",
-                          headersubtitle: barcode?.type.name ?? "",
+                          headersubtitle: jsonData['type'],
                           ref: ref,
-                          bottom: BottomSheetView.confirmEntry,
+                          bottom: BottomSheetView.additionForScan,
                         );
-                        try {
-                          // 1. Log raw QR data
-                          debugPrint('🎯 RAW QR DATA: ${barcode!.rawValue!}');
-
-                          // 2. Decode and log base64
-                          final decodedString = utf8.decode(
-                            base64.decode(barcode.rawValue!),
-                          );
-                          debugPrint('🔓 DECODED STRING: $decodedString');
-
-                          // 3. Parse and log JSON
-                          final jsonData = json.decode(decodedString);
-                          debugPrint(
-                            '📦 JSON STRUCTURE: ${jsonData.toString()}',
-                          );
-                          debugPrint(
-                            '🆔 Digital ID: ${jsonData['digital_id_code']}',
-                          );
-                          debugPrint('🏠 Estate ID: ${jsonData['estate_id']}');
-                          debugPrint('👤 User ID: ${jsonData['user_id']}');
-                          debugPrint(
-                            '⏰ Generated At: ${jsonData['generated_at']}',
-                          );
-
-                          // 4. Convert timestamp to readable date
-                          final date = DateTime.fromMillisecondsSinceEpoch(
-                            jsonData['generated_at'] * 1000,
-                          );
-                          debugPrint(
-                            '📅 Generated Date: ${date.toIso8601String()}',
-                          );
-
-                          // 5. Verify data completeness
-                          if (jsonData['type'] == null) {
-                            debugPrint('⚠️ Missing type field in QR data');
-                          }
-
-                          // 6. Pretty-print the full structure
-                          final prettyString = JsonEncoder.withIndent(
-                            '  ',
-                          ).convert(jsonData);
-                          debugPrint(
-                            '🌈 FULL QR DATA STRUCTURE:\n$prettyString',
-                          );
-
-                          // Continue with your API call...
-                        } catch (e) {
-                          debugPrint('❌ DECODING ERROR: ${e.toString()}');
-                         
-                        }
+                        // providers.scanQRCode(
+                        //   context: context,
+                        //   qrCodeData: barcode?.rawValue ?? "",
+                        //   accessType: jsonData['type'],
+                        //   location: "location",
+                        //   ref: ref,
+                        // );
                       }
                     },
                   ),

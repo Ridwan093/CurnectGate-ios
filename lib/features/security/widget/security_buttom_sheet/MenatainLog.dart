@@ -1,9 +1,9 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/security/widget/custom_tabbar.dart';
-import 'package:curnectgate/features/security/widget/security_buttom_sheet/bottom_tap/violation_track_tab/dismissing_tap.dart';
-import 'package:curnectgate/features/security/widget/security_buttom_sheet/bottom_tap/violation_track_tab/investigation.dart';
-import 'package:curnectgate/features/security/widget/tap_screen/guset.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/bottom_tap/violation_track_tab/Resolved.dart';
+import 'package:curnectgate/features/security/widget/tap_screen/CheckIn.dart';
+import 'package:curnectgate/features/security/widget/tap_screen/CheckOut.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -24,7 +24,7 @@ class _ViolationtrackState extends ConsumerState<MatainLog>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -79,11 +79,7 @@ class _ViolationtrackState extends ConsumerState<MatainLog>
           const SizedBox(height: 20),
           MyCustomTabBar(
             controller: _tabController,
-            tabs: [
-              Tab(child: Text('Guest')),
-              Tab(text: 'Vendor'),
-              Tab(text: 'Owner'),
-            ],
+            tabs: [Tab(child: Text('CheckIn')), Tab(text: 'CheckOut')],
             labelColor: Colors.grey.shade300,
             unselectedLabelColor: AppColors.instance.black300,
             labelStyle: TextStyle(
@@ -105,7 +101,7 @@ class _ViolationtrackState extends ConsumerState<MatainLog>
             child: TabBarView(
               physics: NeverScrollableScrollPhysics(),
               controller: _tabController,
-              children: [Guset(), Investigation(), Dismissing()],
+              children: [Guset(), Checkouts()],
             ),
           ),
         ],

@@ -1,12 +1,20 @@
+import 'dart:developer';
+
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/ActiveCard.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/Activities_tab.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/rember_tab.dart';
-import 'package:curnectgate/features/operations/notifications/event/model/activit_model.dart';
+import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/reminder_card.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_item.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/remider/reminder_model.dart';
 import 'package:curnectgate/features/operations/notifications/provider/activity_provider.dart';
-import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/operations/notifications/provider/notification_Count_provider.dart';
+import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
+import 'package:curnectgate/features/operations/notifications/provider/reminder_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,10 +28,37 @@ class ActivityPage extends ConsumerStatefulWidget {
 class _ActivityPageState extends ConsumerState<ActivityPage> {
   late TextEditingController _searchController;
 
+  Future<void> fetchData() async {
+    log("------------>");
+    final notificationRead = ref.watch(getNotificationCount).value;
+
+    final allUnread = notificationRead!.data?.unreadOnly ?? false;
+    log(notificationRead.data?.count.toString() ?? "");
+
+    // Check if ALL statuses are 'unread'
+
+    if (allUnread) {
+      // Call your API here if all are unread
+      log("THE NOTIFICATION WAS UNREAD LET READ SOME");
+      ref
+          .read(formProvider.notifier)
+          .updateNotificationRead(context: context, ref: ref);
+    } else {
+      log("THE NOTIFICATION WAS READ  NOTHING NEW");
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController();
+    // Don't call fetchData here
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    fetchData();
   }
 
   @override
@@ -37,7 +72,6 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
     final isSearching = ref.watch(isSearchingProvider);
     final tabIndex = ref.watch(tabIndexProvider);
     final searchQuery = ref.watch(searchQueryProvider);
-   
 
     return Scaffold(
       appBar: isSearching ? null : _buildNormalAppBar(context, tabIndex),
@@ -49,6 +83,7 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
           // Search overlay
           if (isSearching) ...[
             ModalBarrier(
+              // ignore: deprecated_member_use
               color: Colors.black.withOpacity(0.5),
               dismissible: true,
               onDismiss: () {
@@ -57,9 +92,15 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
                 _searchController.clear();
               },
             ),
+            if (tabIndex == 0) ...[
+              _buildSearchAppBar(context),
+              _buildSearchBody(searchQuery),
+            ],
 
-            _buildSearchAppBar(context),
-            _buildSearchBody(searchQuery),
+            if (tabIndex == 1) ...[
+              _buildSearchAppBar(context),
+              _buildSearchBodyReminder(searchQuery),
+            ],
           ],
         ],
       ),
@@ -74,18 +115,19 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
       ),
 
       actions: [
-        IconButton(
-          icon: const Icon(Icons.filter_list_rounded),
-          onPressed: () {
-            showUserBottomSheet(
-              context: context,
-              headertitle: "",
-              headersubtitle: "",
-              ref: ref,
-              bottom: BottomSheetView.notificationReminderFilter,
-            );
-          },
-        ),
+        if (tabIndex == 1)
+          IconButton(
+            icon: const Icon(Icons.filter_list_rounded),
+            onPressed: () {
+              showUserBottomSheet(
+                context: context,
+                headertitle: "",
+                headersubtitle: "",
+                ref: ref,
+                bottom: BottomSheetView.notificationReminderFilter,
+              );
+            },
+          ),
         IconButton(
           icon: const Icon(Icons.search),
           onPressed: () {
@@ -105,6 +147,7 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
                 bottom: BottomSheetView.notificationSetting,
               );
             } else {
+              ref.watch(reminderProvider.notifier).resetAll();
               showUserBottomSheet(
                 context: context,
                 headertitle: "",
@@ -325,27 +368,103 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
               ),
     );
   }
-List<NotificationItem> _filterActivities(String query) {
-  final notificationRead = ref.watch(getUserNotification).value;
 
-  if (notificationRead?.status == true) {
-    final allActivities = notificationRead!.data?.notifications ?? [];
+  List<NotificationItem> _filterActivities(String query) {
+    final notificationRead = ref.watch(getUserNotification).value;
 
-    if (allActivities.isNotEmpty) {
-      if (query.isEmpty) return allActivities;
+    if (notificationRead?.status == true) {
+      final allActivities = notificationRead!.data?.notifications ?? [];
 
-      return allActivities
-          .where(
-            (activity) =>
-                activity.description?.toLowerCase().contains(query.toLowerCase()) == true ||
-                activity.estate?.address?.toLowerCase().contains(query.toLowerCase()) == true,
-          )
-          .toList();
+      if (allActivities.isNotEmpty) {
+        if (query.isEmpty) return allActivities;
+
+        return allActivities
+            .where(
+              (activity) =>
+                  activity.description?.toLowerCase().contains(
+                        query.toLowerCase(),
+                      ) ==
+                      true ||
+                  activity.estate?.address?.toLowerCase().contains(
+                        query.toLowerCase(),
+                      ) ==
+                      true,
+            )
+            .toList();
+      }
     }
+
+    // Fallback: always return an empty list
+    return [];
   }
 
-  // Fallback: always return an empty list
-  return [];
-}
+  Widget _buildSearchBodyReminder(String searchQuery) {
+    final activities = _filterActivitiesreminder(searchQuery);
 
+    return Container(
+      margin: EdgeInsets.fromLTRB(10, 90, 10, 0),
+      width: MediaQuery.sizeOf(context).width,
+
+      height: activities.isEmpty ? 150 : null,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child:
+          activities.isEmpty
+              ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 100),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'No results found for "$searchQuery"',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: FontFamilies.interDisplay,
+                        fontWeight: FontFamilies.bold,
+                        color: AppColors.instance.black300,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+              : ListView.builder(
+                itemCount: activities.length,
+                itemBuilder: (context, index) {
+                  final activity = activities[index];
+                  return ReminderCard(activity: activity);
+                },
+              ),
+    );
+  }
+
+  List<ReminderModel> _filterActivitiesreminder(String query) {
+    final notificationRead = ref.watch(getReminderProvider).value;
+
+    if (notificationRead?.status == true) {
+      final allActivities = notificationRead!.data?.reminders ?? [];
+
+      if (allActivities.isNotEmpty) {
+        if (query.isEmpty) return allActivities;
+
+        return allActivities
+            .where(
+              (activity) =>
+                  activity.title?.toLowerCase().contains(query.toLowerCase()) ==
+                      true ||
+                  activity.description?.toLowerCase().contains(
+                        query.toLowerCase(),
+                      ) ==
+                      true,
+            )
+            .toList();
+      }
+    }
+
+    // Fallback: always return an empty list
+    return [];
+  }
 }

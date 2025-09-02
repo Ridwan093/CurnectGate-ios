@@ -1,26 +1,30 @@
-import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'dart:convert';
+
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/customPath.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-class Confirmentry extends StatelessWidget {
+import '../../../member_management/tabState/permission_tab_state.dart';
+
+class Confirmentry extends ConsumerWidget {
   final String name;
   final String type;
-  final String houseAddress;
-  final String userprofilePc;
-
-  const Confirmentry({
+  final int id;
+  Confirmentry({
     super.key,
-
     required this.name,
     required this.type,
-    required this.houseAddress,
-    required this.userprofilePc,
+    required this.id,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final Map<String, dynamic> extractedData = json.decode(type);
+    final Map<String, dynamic> data = json.decode(name);
     final size = MediaQuery.sizeOf(context);
     return SingleChildScrollView(
       child: Column(
@@ -45,15 +49,62 @@ class Confirmentry extends StatelessWidget {
             ),
           ),
           SizedBox(height: 30),
-          _buildUserInfoBox(size: size),
+          _buildUserInfoBox(
+            size: size,
+            extractedData: extractedData,
+            data: data,
+          ),
           SizedBox(height: 30),
-          _buildFeatureButton(onTap: () {}),
+          Row(
+            children: [
+              Expanded(
+                child: _buildFeatureButton(
+                  onTap: () {
+                    context.pop();
+                    showUserBottomSheet(
+                      id: id,
+                      context: context,
+                      headertitle: "",
+                      headersubtitle: extractedData['id'].toString(),
+                      ref: ref,
+                      bottom: BottomSheetView.denyEntry,
+                    );
+                  },
+                  title: "Deny Access",
+                  color: AppColors.instance.grey500,
+                ),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: _buildFeatureButton(
+                  onTap: () {
+                    context.pop();
+                    showUserBottomSheet(
+                      id: id,
+                      context: context,
+                      headertitle: data["visitor_name"] ?? "N/A",
+
+                      headersubtitle: "",
+                      ref: ref,
+                      bottom: BottomSheetView.specifyNumberofGust,
+                    );
+                  },
+                  title: "Grant Access",
+                  color: AppColors.instance.black600,
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildUserInfoBox({required Size size}) {
+  Widget _buildUserInfoBox({
+    required Size size,
+    required Map<String, dynamic> extractedData,
+    required Map<String, dynamic> data,
+  }) {
     return Container(
       padding: EdgeInsets.only(top: 10, bottom: 10),
       width: size.width,
@@ -70,18 +121,32 @@ class Confirmentry extends StatelessWidget {
             color: AppColors.instance.teal400,
 
             child: Center(
-              child: Image.asset(AssetPaths.userAvatar2, fit: BoxFit.cover),
+              child:
+                  extractedData['media_url'] == null
+                      ? Icon(
+                        Icons.person_3_sharp,
+                        color: AppColors.instance.grey200,
+                        size: 26,
+                      )
+                      : Image.network(
+                        extractedData['media_url'] ?? "N/A",
+                        fit: BoxFit.cover,
+                      ),
             ),
           ),
           SizedBox(height: 20),
-          _buildText(title: "Name", subtitle: type),
-          SizedBox(height: 20),
-          _buildText(title: "Type", subtitle: "Co-Owner"),
+          _buildText(
+            title: "Name",
+            subtitle:
+                "${extractedData['firstname'].toString().toUpperCase()}  ${extractedData['lastname'].toString().toUpperCase()}",
+          ),
           SizedBox(height: 20),
           _buildText(
-            title: "House Address",
-            subtitle: "Greeville Estate Block C",
+            title: "Type",
+            subtitle: extractedData['role'].toString().toUpperCase(),
           ),
+          SizedBox(height: 20),
+          _buildText(title: "House Address", subtitle: extractedData["estate_name"]?? "N/A"),
         ],
       ),
     );
@@ -113,18 +178,22 @@ class Confirmentry extends StatelessWidget {
     );
   }
 
-  Widget _buildFeatureButton({required VoidCallback onTap}) {
+  Widget _buildFeatureButton({
+    required VoidCallback onTap,
+    required String title,
+    required Color color,
+  }) {
     return InkWell(
       onTap: onTap,
       child: Container(
         height: 50,
         decoration: BoxDecoration(
-          color: AppColors.instance.black600,
+          color: color,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(
           child: Text(
-            "Grant Access",
+            title,
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               fontWeight: FontFamilies.bold,

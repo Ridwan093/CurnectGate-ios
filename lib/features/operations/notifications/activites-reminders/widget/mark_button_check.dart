@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final selectedmarkProvider = StateProvider<List<String>>((ref) => []);
+final selectedmarkProvider = StateProvider<String?>((ref) => null);
 
 class MarkButtonCheck extends ConsumerWidget {
   final String title;
@@ -12,24 +15,31 @@ class MarkButtonCheck extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedFilters = ref.watch(selectedmarkProvider);
-    final isSelected = selectedFilters.contains(title);
-
+    final filter = ref.read(reminderProvider.notifier);
+    final selectedFilter = ref.watch(selectedmarkProvider);
+    final isSelected = selectedFilter == title;
     final size = MediaQuery.sizeOf(context);
 
     return InkWell(
       onTap: () {
-        final notifier = ref.read(selectedmarkProvider.notifier);
-        if (isSelected) {
-          // Remove item from selected list
-          notifier.state = [...selectedFilters]..remove(title);
-        } else {
-          // Add item to selected list
-          notifier.state = [...selectedFilters, title];
-        }
+        // Defer state update to avoid recursive build
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final notifier = ref.read(selectedmarkProvider.notifier);
+          if (isSelected) {
+            // Deselect if already selected
+            notifier.state = null;
+            log('Deselected: $title');
+            filter.updateSeletedFilter(notifier.state ?? "");
+          } else {
+            // Select this item (single selection)
+            notifier.state = title;
+            filter.updateSeletedFilter(notifier.state ?? "");
+            log('Selected: $title');
+          }
+        });
       },
       child: Container(
-        margin: EdgeInsets.only(bottom: 4),
+        margin: const EdgeInsets.only(bottom: 4),
         height: 60,
         color: AppColors.instance.grey300,
         width: size.width,
@@ -45,7 +55,6 @@ class MarkButtonCheck extends ConsumerWidget {
           leading: Container(
             height: 25,
             width: 25,
-
             decoration: BoxDecoration(
               color:
                   isSelected

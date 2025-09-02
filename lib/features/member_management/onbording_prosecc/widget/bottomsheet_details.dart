@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -8,8 +6,6 @@ import 'package:curnectgate/features/chat/data/provider/chat_provier.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/chat_setting_widget.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/emergency_widget.dart';
 import 'package:curnectgate/features/chat/presentation/screens/messagbody.dart';
-import 'package:curnectgate/features/estate_management/submit_works_order/model/venodrLod_model.dart';
-import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_screen/work_requst_screen.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/Set_restrictions.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/add_restrictions.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/basic_permission.dart';
@@ -27,9 +23,14 @@ import 'package:curnectgate/features/member_management/tabState/permission_tab_s
 import 'package:curnectgate/features/operations/OTP_Activation/widget/Active_history.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/revokedOTP.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/all_bottom_widget/addReminder.dart';
+import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/all_bottom_widget/deleteConfirmation.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/all_bottom_widget/filter.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/all_bottom_widget/mars_reminder.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/all_bottom_widget/notyeSettings.dart';
+import 'package:curnectgate/features/operations/notifications/event/event.dart';
+import 'package:curnectgate/features/operations/notifications/event/event_widget/event_detaile.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_event_model.dart';
+import 'package:curnectgate/features/operations/violation/widget/comment_view.dart';
 import 'package:curnectgate/features/operations/violation/widget/report_form.dart';
 import 'package:curnectgate/features/operations/violation/widget/resulationTime.dart';
 import 'package:curnectgate/features/operations/violation/widget/violation_form_bottom_sheet.dart';
@@ -38,10 +39,18 @@ import 'package:curnectgate/features/payment/widget/buttom_sheet_widget/payOutst
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/MenatainLog.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/accessGranted.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/addComment.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/additionalInfoQrScan.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/checoutConfirm.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/confirmEntry.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/dismissing_report.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/specifyNumberofGuest.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validateOtp.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validate_workOrdr_Otp.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/denyEntry.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/denyEntryConfirm.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/optionforCodeValidation.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/scanoption.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/validation_option.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validatorComfirmEntry.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/violationTrack.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/workEmergency.dart';
@@ -57,7 +66,7 @@ class BottomsheetDetails extends ConsumerWidget {
   final String headertitle;
   final String headersubtitle;
   final BottomSheetView bottom;
-  VendorLogModel? vendor;
+  CalendarEvent? eventData;
   int? id;
 
   BottomsheetDetails({
@@ -65,7 +74,7 @@ class BottomsheetDetails extends ConsumerWidget {
     required this.headertitle,
     required this.headersubtitle,
     required this.bottom,
-    this.vendor,
+    this.eventData,
     this.id,
   });
 
@@ -94,19 +103,21 @@ class BottomsheetDetails extends ConsumerWidget {
         return PayOutstanding(headertitle: headertitle);
       case BottomSheetView.confirmEntry:
         return Confirmentry(
-          userprofilePc: "",
-          name: headertitle,
-          type: headersubtitle,
-          houseAddress: "",
+          name: headersubtitle,
+          type: headertitle,
+          id: id ?? 0,
         );
       case BottomSheetView.validatedOTP:
         return Validateotp();
       case BottomSheetView.valdationConfrm:
         return ValidateConfirmEntry();
       case BottomSheetView.accesGranted:
-        return Accessgranted();
+        return Accessgranted(
+          isGrated: headersubtitle.isNotEmpty,
+          jsonData: headertitle,
+        );
       case BottomSheetView.specifyNumberofGust:
-        return SpecifyumberOfGuest();
+        return SpecifyumberOfGuest(extractData: headertitle, id: id.toString());
       case BottomSheetView.workEmgencyContacts:
         return WorkEmergency();
       case BottomSheetView.residentEmgencyContacts:
@@ -125,9 +136,18 @@ class BottomsheetDetails extends ConsumerWidget {
       case BottomSheetView.notificationSetting:
         return SetCustomAlert();
       case BottomSheetView.addReminder:
-        return AddReminder();
+        return AddReminder(
+          isUpdate: headertitle,
+          title: headertitle,
+          subtitle: headersubtitle,
+          id: id ?? 0,
+        );
       case BottomSheetView.remidermarks:
-        return MarksReminder(title: headertitle, subtitle: headersubtitle);
+        return MarksReminder(
+          title: headertitle,
+          subtitle: headersubtitle,
+          id: id ?? 0,
+        );
 
       case BottomSheetView.revorkActiveOtp:
         return Revokedotp(
@@ -181,6 +201,36 @@ class BottomsheetDetails extends ConsumerWidget {
         );
       case BottomSheetView.mentainLog:
         return MatainLog(title: headertitle, subtitle: headersubtitle);
+      case BottomSheetView.additionForScan:
+        return AddLocationAndAccesType(
+          qrCodeToken: headertitle,
+          accessType: headersubtitle,
+        );
+      case BottomSheetView.optionForAll:
+        return OptionForCodes();
+      case BottomSheetView.optionForIdAndCode:
+        return ValidationTypeSelector();
+      case BottomSheetView.optionForScan:
+        return ScanOptions();
+      case BottomSheetView.denyEntry:
+        return DenyEntry(id: id.toString());
+      case BottomSheetView.workOdervalidation:
+        return ValidateWorkOrderOtp(validateType: "work");
+      case BottomSheetView.visitorValidation:
+        return ValidateWorkOrderOtp(validateType: "otpValidation");
+      case BottomSheetView.acceptCheckOut:
+        return CheckoutInfo(jsonData: headertitle);
+
+      case BottomSheetView.denyEntryConfirmation:
+        return DenyEntryConfirmation(jsonData: headertitle);
+      case BottomSheetView.removedReminder:
+        return Deleteconfirmation(title: headertitle, id: id ?? 0);
+      case BottomSheetView.commentvew:
+        return CommentView(id: id ?? 0);
+      case BottomSheetView.events:
+        return EventsBottomSheet();
+      case BottomSheetView.eventsDetails:
+        return EventDetaile(data: eventData!);
 
       default:
         return SingleChildScrollView(
@@ -258,13 +308,13 @@ class BottomsheetDetails extends ConsumerWidget {
     switch (bottom) {
       case BottomSheetView.vendorLog:
         onTap = () {
-          log(vendor!.vendorName);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SubmitWorkOrderPage(vendor: vendor),
-            ),
-          );
+          // log(eventData!.vendorName);
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => SubmitWorkOrderPage(vendor: ),
+          //   ),
+          // );
         };
         leading = CircleAvatar(
           backgroundColor: AppColors.instance.grey400,

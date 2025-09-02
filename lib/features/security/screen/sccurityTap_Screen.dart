@@ -4,7 +4,7 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/image_tab.dart';
 import 'package:curnectgate/features/member_management/tabState/tab_state.dart';
 import 'package:curnectgate/features/security/provider/scanProvider.dart';
-import 'package:curnectgate/features/security/screen/TestSecurityAdminScreen.dart';
+import 'package:curnectgate/features/security/screen/SecurityAdminScreen.dart';
 import 'package:curnectgate/features/security/screen/securitymainScreen.dart';
 import 'package:curnectgate/features/userProfile/profile/screen/ProfilesScreen.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +20,8 @@ class SecurityTapScreen extends ConsumerWidget {
     final isScanning = ref.watch(qrScanProvider);
 
     final List<Widget> screens = [
-      const Securitymainscreen(),
       SecurityDashboard(),
+      const Securitymainscreen(),
 
       const ProfileScreen(),
     ];

@@ -55,186 +55,23 @@ class Buildcommentlist extends ConsumerWidget {
           }
 
           // No cached data available
-          return _buildErrorUI(error.toString(), ref, context);
+          return _buildErrorUI(
+            error.toString().toLowerCase().contains("connection")
+                ? "Connection failed. Please check your network"
+                : "Failed to load reports",
+            ref,
+            context,
+          );
         } catch (e) {
-          final comment = ref.read(commentProvider).value;
-          if (comment != null) {
-            return CommentBody(comment.data);
-          }
+          // final comment = ref.read(commentProvider).value;
+          // if (comment != null) {
+          //   return CommentBody(comment.data);
+          // }
 
           return _buildErrorUI(e.toString(), ref, context);
         }
       },
     );
-    // return reportAsync.when(
-    //   data: (comment) {
-    //     // Success case - show fresh data
-    //     final comments = comment?.data;
-    //     if (comments?.comments != null) {
-    //       return CommentBody(comment!.data);
-    //     } else {
-    //       return _buildEmtyBody();
-    //     }
-    //   },
-    //   loading: () {
-    //     // Show cached data while loading if available
-    //     final comment = ref.read(commentProvider).value;
-    //     if (comment != null) {
-    //       return CommentBody(comment.data);
-    //     }
-    //     return Center(
-    //       child: CircularProgressIndicator(color: AppColors.instance.yellow500),
-    //     );
-    //   },
-    //   error: (err, stack) {
-    //     // Handle specific error cases
-    //     if (err.toString().contains("The connection errored")) {
-    //       WidgetsBinding.instance.addPostFrameCallback((_) {
-    //         showCustomSuccessToast(
-    //           context: context,
-    //           message: 'Connection failed. Please check your network',
-    //           color: AppColors.instance.error500,
-    //           icon: Icons.error,
-    //           iconColors: AppColors.instance.grey300,
-    //           positionNumber: 72,
-    //         );
-    //       });
-
-    //        final comment = ref.read(commentProvider).value;
-    //     if (comment != null) {
-    //       return CommentBody(comment.data);
-    //     }else{
-    //       return SizedBox(
-    //         // ← Forces full screen coverage
-    //         child: Center(
-    //           child: Column(
-    //             mainAxisAlignment: MainAxisAlignment.center,
-    //             mainAxisSize:
-    //                 MainAxisSize
-    //                     .min, // ← Makes Column only as big as its children
-    //             children: [
-    //               SizedBox(height: 120),
-    //               Text(
-    //                 'Connection failed. Please check your network',
-    //                 style: TextStyle(
-    //                   fontFamily: FontFamilies.interDisplay,
-    //                   color: AppColors.instance.black600,
-    //                 ),
-    //               ),
-    //               const SizedBox(height: 16), // ← Adds spacing
-    //               ElevatedButton(
-    //                 style: ButtonStyle(
-    //                   backgroundColor: WidgetStatePropertyAll(
-    //                     AppColors.instance.grey200,
-    //                   ),
-    //                 ),
-    //                 onPressed:
-    //                     () => ref
-    //                         .read(commentProvider.notifier)
-    //                         .refreshComment(context, ref),
-    //                 child: Text(
-    //                   "Refresh",
-    //                   style: TextStyle(
-    //                     fontFamily: FontFamilies.interDisplay,
-    //                     color: AppColors.instance.black600,
-    //                   ),
-    //                 ),
-    //               ),
-    //             ],
-    //           ),
-    //         ),
-    //       );
-    //     }
-
-    //     } else if (err.toString().contains(
-    //       "Unauthenticated. Please login to continue.",
-    //     )) {
-    //       WidgetsBinding.instance.addPostFrameCallback((_) {
-    //         ref.read(authProvider.notifier).seassionExpire(context, ref);
-    //       });
-    //       return Center(
-    //         child: Column(
-    //           mainAxisSize:
-    //               MainAxisSize
-    //                   .min, // ← Makes Column only as big as its children
-    //           children: [
-    //             SizedBox(height: 120),
-    //             Text(
-    //               'Unknow error please try again ',
-    //               style: TextStyle(
-    //                 fontFamily: FontFamilies.interDisplay,
-    //                 color: AppColors.instance.black600,
-    //               ),
-    //             ),
-    //             const SizedBox(height: 16), // ← Adds spacing
-    //             ElevatedButton(
-    //               style: ButtonStyle(
-    //                 backgroundColor: WidgetStatePropertyAll(
-    //                   AppColors.instance.grey200,
-    //                 ),
-    //               ),
-    //               onPressed:
-    //                   () => ref
-    //                       .read(commentProvider.notifier)
-    //                       .refreshComment(context, ref),
-    //               child: Text(
-    //                 "Refresh",
-    //                 style: TextStyle(
-    //                   fontFamily: FontFamilies.interDisplay,
-    //                   color: AppColors.instance.black600,
-    //                 ),
-    //               ),
-    //             ),
-    //           ],
-    //         ),
-    //       );
-    //     } else {
-    //       final comment = ref.read(commentProvider).value;
-    //       if (comment != null) {
-    //         return CommentBody(comment.data);
-    //       } else {
-    //         return Center(
-    //           child: Column(
-    //             mainAxisSize:
-    //                 MainAxisSize
-    //                     .min, // ← Makes Column only as big as its children
-    //             children: [
-    //               SizedBox(height: 120),
-    //               Text(
-    //                 'Unknow error please try again ',
-    //                 style: TextStyle(
-    //                   fontFamily: FontFamilies.interDisplay,
-    //                   color: AppColors.instance.black600,
-    //                 ),
-    //               ),
-    //               const SizedBox(height: 16), // ← Adds spacing
-    //               ElevatedButton(
-    //                 style: ButtonStyle(
-    //                   backgroundColor: WidgetStatePropertyAll(
-    //                     AppColors.instance.grey200,
-    //                   ),
-    //                 ),
-    //                 onPressed:
-    //                     () => ref
-    //                         .read(commentProvider.notifier)
-    //                         .refreshComment(context, ref),
-    //                 child: Text(
-    //                   "Refresh",
-    //                   style: TextStyle(
-    //                     fontFamily: FontFamilies.interDisplay,
-    //                     color: AppColors.instance.black600,
-    //                   ),
-    //                 ),
-    //               ),
-    //             ],
-    //           ),
-    //         );
-    //       }
-    //     }
-
-    //     // Always try to show cached data if available
-    //   },
-    // );
   }
 
   // Helper Widgets
@@ -271,24 +108,6 @@ class Buildcommentlist extends ConsumerWidget {
     );
   }
 
-  Widget _buildNetworkWarningBanner(String error) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      color: Colors.orange[100],
-      child: Row(
-        children: [
-          const Icon(Icons.warning_amber_rounded, color: Colors.orange),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              "Connection issue: ${error.split(':').first}",
-              style: const TextStyle(color: Colors.black87),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildErrorUI(String error, WidgetRef ref, BuildContext context) {
     return Center(

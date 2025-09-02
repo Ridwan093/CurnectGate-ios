@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final selectedFiltersProvider = StateProvider<List<String>>((ref) => []);
+final selectedFiltersProvider = StateProvider<String?>((ref) => null);
 
 class FilterButtonCheck extends ConsumerWidget {
   final String title;
@@ -13,7 +16,8 @@ class FilterButtonCheck extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedFilters = ref.watch(selectedFiltersProvider);
-    final isSelected = selectedFilters.contains(title);
+    final isSelected = selectedFilters == title;
+    final filter = ref.read(reminderProvider.notifier);
 
     final size = MediaQuery.sizeOf(context);
 
@@ -21,11 +25,19 @@ class FilterButtonCheck extends ConsumerWidget {
       onTap: () {
         final notifier = ref.read(selectedFiltersProvider.notifier);
         if (isSelected) {
-          // Remove item from selected list
-          notifier.state = [...selectedFilters]..remove(title);
+          // Deselect if already selected
+          notifier.state = null;
+          log('Deselected: $title');
+          // filter.updateSeletedFilter(notifier.state ?? "");
         } else {
-          // Add item to selected list
-          notifier.state = [...selectedFilters, title];
+          // Select this item (single selection)
+          notifier.state = title;
+          filter.updateSeletedFilter(
+            notifier.state!.contains("Bill Payment")
+                ? "bill_payment"
+                : notifier.state ?? "",
+          );
+          log('Selected: $title');
         }
       },
       child: Container(

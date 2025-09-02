@@ -24,6 +24,7 @@ class ReportNotifier extends StateNotifier<ReportState> {
   }
 
   void setReportFilter(String filter) {
+    log("i log the old $filter");
     state = state.copyWith(report: state.report.copyWith(reportfilter: filter));
   }
 

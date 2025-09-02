@@ -1,10 +1,10 @@
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/operations/notifications/screen/notification_permission.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/getHouseHold_provider.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/screen/add_member.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/BuildHouseHold_Data.dart';
+import 'package:curnectgate/features/operations/notifications/screen/notification_permission.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -45,6 +45,7 @@ class AllMemberListScreen extends ConsumerWidget {
   }
 
   Widget _buildBody(Size size, WidgetRef ref, BuildContext context) {
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         context.goNamed(AppRoutes.dashbord);
@@ -183,7 +184,11 @@ class AllMemberListScreen extends ConsumerWidget {
                   }
                 },
                 error: (error, stack) {
-                  Text(
+                  // final householdData = ref.read(houseProvider).value;
+                  // final data = householdData?.data;
+
+                  // Try to show cached data
+ return Text(
                     "0",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
@@ -192,32 +197,6 @@ class AllMemberListScreen extends ConsumerWidget {
                       color: AppColors.instance.black500,
                     ),
                   );
-                  final householdData = ref.read(houseProvider).value;
-                  final data = householdData?.data;
-
-                  // Try to show cached data
-
-                  if (data!.householdMembers!.isNotEmpty) {
-                    return Text(
-                      data.householdMembers!.length.toString(),
-                      style: TextStyle(
-                        fontFamily: FontFamilies.interDisplay,
-                        fontSize: 10,
-                        fontWeight: FontFamilies.bold,
-                        color: AppColors.instance.black500,
-                      ),
-                    );
-                  } else {
-                    return Text(
-                      "0",
-                      style: TextStyle(
-                        fontFamily: FontFamilies.interDisplay,
-                        fontSize: 10,
-                        fontWeight: FontFamilies.bold,
-                        color: AppColors.instance.black500,
-                      ),
-                    );
-                  }
                 },
                 loading: () {
                   return Text(

@@ -82,8 +82,8 @@ const String validateOtpByQr =
     "/api/v1/estates/security/validations/validate-otp-qr";
 const String checkOutValidatorOtpBymanual =
     "/api/v1/estates/security/validations/checkout-with-otp";
-const String checkOutValidatorwithOtpbymanual =
-    "/api/v1/estates/security/validations/5/checkout";
+const String checkInValidatorwithOtpbymanual =
+    "/api/v1/estates/security/validations/validate-otp-manual";
 const String approveEntry = "/api/v1/estates/security/validations/5/approve";
 const String denyEntry = "/api/v1/estates/security/validations/5/deny";
 const String validateDigitaIDbyManul =
@@ -141,6 +141,12 @@ const String getstatisticStatus =
 const String getstatistic =
     "/api/v1/estates/owner-portal/households/members/permission/8/status";
 
+/// NOTIFICATION/REMINDER/EVENT
+const String createReminder = "/api/v1/estates/general/reminders";
+
+const String notificationCount = "/api/v1/estates/general/notifications/count";
+const String getCalenders = "/api/v1/estates/general/events/calendar";
+
 /// REMOVE HOUSEOLD DELETE
 
 /// REMOVE HOUSEOLD DELETE
@@ -150,6 +156,8 @@ const String removeHouseHold =
 //// SECURITY GET API URL
 const String getCheckInVisitor =
     "/api/v1/estates/security/validations/checked-in";
+const String getCheckOutVisitor =
+    "/api/v1/estates/security/validations/checked-out";
 const String getPendingValidator =
     "/api/v1/estates/security/validations/pending";
 const String getValidatorHistory =

@@ -10,7 +10,7 @@ class SegmentedTabScreen extends StatefulWidget {
 
 class _SegmentedTabScreenState extends State<SegmentedTabScreen>
     with SingleTickerProviderStateMixin {
-  String _selectedTab = 'Pending';
+
   late TabController _tabController;
 
   @override

@@ -111,7 +111,7 @@ class ParkingViolationCard extends StatelessWidget {
                         Flexible(
                           child: _buildinvestigationButton(
                             onTap: onDismiss,
-                            buttonText: "Mark as done",
+                            buttonText: "Resolved ",
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -119,7 +119,7 @@ class ParkingViolationCard extends StatelessWidget {
                           child: InkWell(
                             onTap: onAccept,
                             child: Text(
-                              "Reply",
+                              "Comment",
                               style: TextStyle(
                                 fontFamily: FontFamilies.interDisplay,
                                 fontSize: 13,
@@ -245,6 +245,7 @@ class ParkingViolationCard extends StatelessWidget {
         width: 100,
         height: 40,
         decoration: BoxDecoration(
+          color: AppColors.instance.teal300,
           border: Border.all(
             style: BorderStyle.solid,
             color: AppColors.instance.black600,

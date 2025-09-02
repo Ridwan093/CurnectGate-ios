@@ -1,12 +1,21 @@
+import 'dart:convert';
+
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:flutter/material.dart';
 
 class Accessgranted extends StatelessWidget {
-  const Accessgranted({super.key});
+  final String jsonData;
+  final bool isGrated;
+  const Accessgranted({
+    super.key,
+    required this.jsonData,
+    required this.isGrated,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic> extractedData = jsonDecode(jsonData);
     final size = MediaQuery.sizeOf(context);
     return SingleChildScrollView(
       child: Column(
@@ -20,9 +29,32 @@ class Accessgranted extends StatelessWidget {
               child: Icon(Icons.close, color: AppColors.instance.black600),
             ),
           ),
-
           SizedBox(height: 30),
-          _buildUserInfoBox(size: size),
+          _buildUserInfoBox(
+            size: size,
+            userName:
+                isGrated
+                    ? (extractedData['data']['visitor']['name'])
+                    : (extractedData['data']['validation']['security_notes']
+                            ?.split('\n')
+                            ?.firstWhere(
+                              (line) => line.contains('👤 Visitor:'),
+                              orElse: () => '',
+                            )
+                            ?.replaceAll('👤 Visitor: ', '') ??
+                        "N/A"),
+            isgranted: isGrated,
+            denialReason:
+                isGrated
+                    ? null
+                    : extractedData['data']['validation']['denial_reason'] ??
+                        "N/A",
+            securityNotes:
+                isGrated
+                    ? null
+                    : extractedData['data']['validation']['security_notes'] ??
+                        "N/A",
+          ),
           SizedBox(height: 30),
           _buildFeatureButton(
             onTap: () {
@@ -34,17 +66,39 @@ class Accessgranted extends StatelessWidget {
     );
   }
 
-  Widget _buildUserInfoBox({required Size size}) {
+  Widget _buildUserInfoBox({
+    required Size size,
+    required String userName,
+    required bool isgranted,
+    String? denialReason,
+    String? securityNotes,
+  }) {
     return Column(
       children: [
-        Icon(Icons.check_circle, size: 60, color: AppColors.instance.teal500),
-
-        SizedBox(height: 30),
-        _buildText(
-          title: "Access granted",
-          subtitle: "You granted access to ",
-          userName: "Speed Derlington",
+        Icon(
+          isgranted ? Icons.check_circle : Icons.close_rounded,
+          size: 60,
+          color:
+              isgranted
+                  ? AppColors.instance.teal500
+                  : AppColors.instance.error500,
         ),
+        SizedBox(height: 30),
+        if (isgranted) ...[
+          _buildText(
+            title: "Access granted",
+            subtitle: "You granted access to ",
+            userName: userName,
+          ),
+        ] else ...[
+          _buildText(
+            title: "Access denied",
+            subtitle: "You denied access to ",
+            userName: userName,
+            denialReason: denialReason,
+            securityNotes: securityNotes,
+          ),
+        ],
       ],
     );
   }
@@ -53,6 +107,8 @@ class Accessgranted extends StatelessWidget {
     required String title,
     required String subtitle,
     required String userName,
+    String? denialReason,
+    String? securityNotes,
   }) {
     return Column(
       children: [
@@ -76,7 +132,6 @@ class Accessgranted extends StatelessWidget {
                   fontSize: 12,
                   color: AppColors.instance.black300,
                 ),
-
                 text: subtitle,
               ),
               TextSpan(
@@ -86,12 +141,33 @@ class Accessgranted extends StatelessWidget {
                   fontSize: 12,
                   color: AppColors.instance.black600,
                 ),
-
                 text: userName,
               ),
             ],
           ),
         ),
+        if (!isGrated && denialReason != null) ...[
+          SizedBox(height: 10),
+          Text(
+            "Reason: $denialReason",
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              fontSize: 12,
+              color: AppColors.instance.black300,
+            ),
+          ),
+        ],
+        if (!isGrated && securityNotes != null) ...[
+          SizedBox(height: 10),
+          Text(
+            "Notes: $securityNotes",
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              fontSize: 12,
+              color: AppColors.instance.black300,
+            ),
+          ),
+        ],
       ],
     );
   }

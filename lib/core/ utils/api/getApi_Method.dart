@@ -3,25 +3,30 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/%20utils/api/api_url.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/household_members_response.dart';
-
+import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_slug_model/permissions_response_model.dart'
+    as slug_model;
+import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_status_model.dart/permissions_response_model.dart'
+    as status_model;
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/property_model/property_response.dart';
 import 'package:curnectgate/features/member_management/membership_ID/model/digital_member_id_response.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/model/otp_response_model.dart';
-import 'package:curnectgate/features/operations/notifications/event/model/activit_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_events_response_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/Event/events_response_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_count/notification_count_response_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_response.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/remider/reminders_response_model.dart';
 import 'package:curnectgate/features/operations/violation/model/GetReport_history_model.dart';
 import 'package:curnectgate/features/operations/violation/model/comment_model.dart';
 import 'package:curnectgate/features/operations/violation/model/estate_address_model.dart';
 import 'package:curnectgate/features/operations/violation/model/getCategory_model.dart';
 import 'package:curnectgate/features/operations/violation/model/report_models/violation_response.dart';
+import 'package:curnectgate/features/security/model/checkIn_ceckOut_model/api_response_model.dart';
+import 'package:curnectgate/features/security/model/checkIn_ceckOut_model/checkOut/checkout_history_response_model.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/model/get_user_notifications.dart';
 import 'package:curnectgate/features/userProfile/Privacy_setting/model/get_user_privacy_settings.dart';
 import 'package:curnectgate/features/userProfile/notification_setting/model/get_user_notification_settings.dart';
 import 'package:curnectgate/features/userProfile/profile/model/get_user_profile_model.dart';
 import 'package:dio/dio.dart';
-import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_slug_model/permissions_response_model.dart'
-    as slug_model;
-import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_status_model.dart/permissions_response_model.dart'
-    as status_model;
 
 class GetApiService {
   final Dio _dio;
@@ -144,9 +149,31 @@ class GetApiService {
           },
         ),
       );
+      return NotificationResponse.safeFromJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<RemindersResponseModel> getAllReminder({
+    required String bearerToken,
+    required String category,
+  }) async {
+    try {
+      final response = await _dio.get(
+        "/api/v1/estates/general/reminders?category=$category", // Update with your actual endpoint
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $bearerToken',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        ),
+      );
       log(response.data.toString());
 
-      return NotificationResponse.fromJson(response.data);
+      return RemindersResponseModel.fromSafeJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);
@@ -214,7 +241,9 @@ class GetApiService {
     required String filter,
   }) async {
     try {
-      final Map<String, dynamic> requestDatas = requestData(filter.toLowerCase());
+      final Map<String, dynamic> requestDatas = requestData(
+        filter.toLowerCase(),
+      );
       log(requestDatas.toString());
 
       final response = await _dio.get(
@@ -266,10 +295,11 @@ class GetApiService {
 
   Future<CommentResponse> getreportComment({
     required String bearerToken,
+    required String id,
   }) async {
     try {
       final response = await _dio.get(
-        getViolationComment, // Update with your actual endpoint
+        "/api/v1/estates/general/violations/$id/comments", // Update with your actual endpoint
         options: Options(
           headers: {
             'Accept': 'application/json',
@@ -423,6 +453,118 @@ class GetApiService {
       log(response.data.toString());
 
       return slug_model.PermissionsResponse.safeFromJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<CheckoutHistoryResponseModel> getCheckOut({
+    required String bearerToken,
+  }) async {
+    try {
+      final response = await _dio.get(
+        getCheckOutVisitor, // Update with your actual endpoint
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $bearerToken',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        ),
+      );
+      log(response.data.toString());
+
+      return CheckoutHistoryResponseModel.fromSafeJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<ApiResponseModel> getCheckIn({required String bearerToken}) async {
+    try {
+      final response = await _dio.get(
+        getCheckInVisitor, // Update with your actual endpoint
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $bearerToken',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        ),
+      );
+      log(response.data.toString());
+
+      return ApiResponseModel.fromSafeJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<NotificationCountResponse> getNotificationCount({
+    required String bearerToken,
+  }) async {
+    try {
+      final response = await _dio.get(
+        notificationCount, // Update with your actual endpoint
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $bearerToken',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        ),
+      );
+      log(response.data.toString());
+
+      return NotificationCountResponse.fromSafeJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<EventsResponse> getCalender({required String bearerToken}) async {
+    try {
+      final response = await _dio.get(
+        "/api/v1/estates/general/events/calendar?start_date=2025-09-30&end_date=2025-10-01", // Update with your actual endpoint
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $bearerToken',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        ),
+      );
+      log(response.data.toString());
+
+      return EventsResponse.fromSafeJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<CalendarEventsResponse> getEvent({
+    required String bearerToken,
+    required String limit,
+  }) async {
+    try {
+      final response = await _dio.get(
+        "/api/v1/estates/general/events?status=active&type=&upcoming=1&limit=$limit", // Update with your actual endpoint
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $bearerToken',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        ),
+      );
+      log(response.data.toString());
+
+      return CalendarEventsResponse.fromSafeJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);

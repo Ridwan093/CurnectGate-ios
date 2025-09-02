@@ -29,20 +29,23 @@ class AppRoutes {
   // Estate Operations (Keep your exact flat names)
   static const String addHoused_CoOnwner = 'addMembers';
   static const String dashbord = 'dashboard';
-  static const String securityguide = 'security';
+
   static const String eventSet = 'eventSet';
   static const String userNotificationSetting = "notification_settings";
   // static const String termsOfService = "termsOfservices";
   static const String setPreferences = "setPreferencess";
   static const String setPrivacy = "setPrivacy";
   static const String notification = "notification";
+  // ------------------------------------------------------------------
 
+  //SECUTIY PATH
+  static const String securityguide = 'security';
+  static const String securityViolationDeatails = "violation_details_s";
   // ------------------------------------------------------------------
   // Digital Features
-    static const String digitalIDStarter = 'digitalID_starter';
+  static const String digitalIDStarter = 'digitalID_starter';
   static const String digitalIDMember = 'digitalID';
   static const String digitalIDsuccessScreen = 'digitalID_success';
-
 
   // ------------------------------------------------------------------
   // Vendor/Visitor (Grouped)

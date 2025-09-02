@@ -57,7 +57,7 @@ class AssetPaths {
   static const String setCurfeSetting = '${_actions}clock.png';
   static const String setRestrictions = '${_actions}unavailable.png';
   static const String removedrestriction = '${_actions}removedrestriction.png';
-  static const String visitorLo = '${_actions}message-multiple.png';
+  static const String visitorLo = '${_actions}mentanacelog.png';
   static const String discussion = '${_actions}discussion.png';
   static const String verifiedCard = '${_actions}VerifiedCard.png';
   static const String vaolationIcon = '${_actions}violationIcon.png';

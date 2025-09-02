@@ -1,6 +1,5 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/estate_management/submit_works_order/model/venodrLod_model.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/basic_permission.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/removeConfirmation_sheet.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/bottomsheet_details.dart';
@@ -9,6 +8,7 @@ import 'package:curnectgate/features/operations/OTP_Activation/provider/active_p
 import 'package:curnectgate/features/operations/OTP_Activation/widget/custom_validity.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/generateOTP_with_validity.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/scheduleOTPS.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_event_model.dart';
 import 'package:curnectgate/features/operations/violation/widget/report_file_uplode.dart';
 import 'package:curnectgate/features/operations/violation/widget/violation_form_bottom_sheet.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,7 @@ void showUserBottomSheet({
   required String headersubtitle,
   required WidgetRef ref,
   required BottomSheetView bottom,
-  VendorLogModel? vendor,
+  CalendarEvent? event,
   int? id,
 }) {
   ref.read(bottomSheetStateProvider.notifier).state =
@@ -39,7 +39,12 @@ void showUserBottomSheet({
           return Container(
             padding:
                 bottom == BottomSheetView.securityViolationTrack ||
-                        bottom == BottomSheetView.mentainLog
+                        bottom == BottomSheetView.mentainLog ||
+                        bottom == BottomSheetView.optionForIdAndCode ||
+                        bottom == BottomSheetView.optionForAll ||
+                        bottom == BottomSheetView.optionForScan ||
+                        bottom == BottomSheetView.events ||
+                        bottom == BottomSheetView.eventsDetails
                     ? null
                     : EdgeInsets.all(20),
             margin: EdgeInsets.only(
@@ -58,7 +63,7 @@ void showUserBottomSheet({
                 headertitle,
                 headersubtitle,
                 bottom,
-                vendor,
+                event,
                 id,
               ),
             ),
@@ -76,13 +81,13 @@ Widget _buildCurrentView(
   String userName,
   String userRole,
   BottomSheetView bottom,
-  VendorLogModel? vendor,
+  CalendarEvent? vendor,
   int? id,
 ) {
   switch (view) {
     case BottomSheetView.userDetails:
       return BottomsheetDetails(
-        vendor: vendor,
+        eventData: vendor,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
@@ -135,6 +140,20 @@ Widget _buildCurrentView(
         headersubtitle: userRole,
         bottom: bottom,
       );
+    case BottomSheetView.events:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.eventsDetails:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
     case BottomSheetView.mentainLog:
       return BottomsheetDetails(
         id: id,
@@ -151,6 +170,42 @@ Widget _buildCurrentView(
       );
 
     case BottomSheetView.securitydismissViolation:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.additionForScan:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.denyEntry:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+
+    case BottomSheetView.additionForDissmissedEntry:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.optionForAll:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.optionForIdAndCode:
       return BottomsheetDetails(
         id: id,
         headertitle: userName,
@@ -199,6 +254,48 @@ Widget _buildCurrentView(
         headersubtitle: userRole,
         bottom: bottom,
       );
+    case BottomSheetView.acceptCheckOut:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.commentvew:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.denyEntryConfirmation:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.workOdervalidation:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.visitorValidation:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.optionForScan:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
     case BottomSheetView.setbasicpermission:
       return BottomsheetDetails(
         id: id,
@@ -222,6 +319,12 @@ Widget _buildCurrentView(
         bottom: bottom,
       );
     case BottomSheetView.startConversation:
+      return BottomsheetDetails(
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.removedReminder:
       return BottomsheetDetails(
         headertitle: userName,
         headersubtitle: userRole,
@@ -309,14 +412,14 @@ Widget _buildCurrentView(
       );
     case BottomSheetView.fundingWithbankTransfer:
       return BottomsheetDetails(
-        vendor: vendor,
+        eventData: vendor,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
     case BottomSheetView.confirmEntry:
       return BottomsheetDetails(
-        vendor: vendor,
+        eventData: vendor,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
@@ -358,77 +461,77 @@ Widget _buildCurrentView(
       );
     case BottomSheetView.accesGranted:
       return BottomsheetDetails(
-        vendor: vendor,
+        eventData: vendor,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
     case BottomSheetView.workEmgencyContacts:
       return BottomsheetDetails(
-        vendor: vendor,
+        eventData: vendor,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
     case BottomSheetView.residentEmgencyContacts:
       return BottomsheetDetails(
-        vendor: vendor,
+        eventData: vendor,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
     case BottomSheetView.notificationReminderFilter:
       return BottomsheetDetails(
-        vendor: vendor,
+        eventData: vendor,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
     case BottomSheetView.addReminder:
       return BottomsheetDetails(
-        vendor: vendor,
+        eventData: vendor,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
     case BottomSheetView.notificationSetting:
       return BottomsheetDetails(
-        vendor: vendor,
+        eventData: vendor,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
     case BottomSheetView.remidermarks:
       return BottomsheetDetails(
-        vendor: vendor,
+        eventData: vendor,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
     case BottomSheetView.profileUpdat:
       return BottomsheetDetails(
-        vendor: vendor,
+        eventData: vendor,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
     case BottomSheetView.profilePiceUpdate:
       return BottomsheetDetails(
-        vendor: vendor,
+        eventData: vendor,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
     case BottomSheetView.deactivateAccount:
       return BottomsheetDetails(
-        vendor: vendor,
+        eventData: vendor,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
     case BottomSheetView.changePassword:
       return BottomsheetDetails(
-        vendor: vendor,
+        eventData: vendor,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,

@@ -30,6 +30,8 @@ mixin _$NotificationItem {
   String? get mediaUrl => throw _privateConstructorUsedError;
   @JsonKey(name: 'media_key')
   String? get mediaKey => throw _privateConstructorUsedError;
+  @JsonKey(name: 'status_type')
+  String? get statusType => throw _privateConstructorUsedError;
   @JsonKey(name: 'type')
   String? get type => throw _privateConstructorUsedError;
   @JsonKey(name: 'description')
@@ -65,6 +67,7 @@ abstract class $NotificationItemCopyWith<$Res> {
       @JsonKey(name: 'estate_id') int? estateId,
       @JsonKey(name: 'media_url') String? mediaUrl,
       @JsonKey(name: 'media_key') String? mediaKey,
+      @JsonKey(name: 'status_type') String? statusType,
       @JsonKey(name: 'type') String? type,
       @JsonKey(name: 'description') String? description,
       @JsonKey(name: 'status') String? status,
@@ -95,6 +98,7 @@ class _$NotificationItemCopyWithImpl<$Res, $Val extends NotificationItem>
     Object? estateId = freezed,
     Object? mediaUrl = freezed,
     Object? mediaKey = freezed,
+    Object? statusType = freezed,
     Object? type = freezed,
     Object? description = freezed,
     Object? status = freezed,
@@ -122,6 +126,10 @@ class _$NotificationItemCopyWithImpl<$Res, $Val extends NotificationItem>
       mediaKey: freezed == mediaKey
           ? _value.mediaKey
           : mediaKey // ignore: cast_nullable_to_non_nullable
+              as String?,
+      statusType: freezed == statusType
+          ? _value.statusType
+          : statusType // ignore: cast_nullable_to_non_nullable
               as String?,
       type: freezed == type
           ? _value.type
@@ -179,6 +187,7 @@ abstract class _$$NotificationItemImplCopyWith<$Res>
       @JsonKey(name: 'estate_id') int? estateId,
       @JsonKey(name: 'media_url') String? mediaUrl,
       @JsonKey(name: 'media_key') String? mediaKey,
+      @JsonKey(name: 'status_type') String? statusType,
       @JsonKey(name: 'type') String? type,
       @JsonKey(name: 'description') String? description,
       @JsonKey(name: 'status') String? status,
@@ -208,6 +217,7 @@ class __$$NotificationItemImplCopyWithImpl<$Res>
     Object? estateId = freezed,
     Object? mediaUrl = freezed,
     Object? mediaKey = freezed,
+    Object? statusType = freezed,
     Object? type = freezed,
     Object? description = freezed,
     Object? status = freezed,
@@ -235,6 +245,10 @@ class __$$NotificationItemImplCopyWithImpl<$Res>
       mediaKey: freezed == mediaKey
           ? _value.mediaKey
           : mediaKey // ignore: cast_nullable_to_non_nullable
+              as String?,
+      statusType: freezed == statusType
+          ? _value.statusType
+          : statusType // ignore: cast_nullable_to_non_nullable
               as String?,
       type: freezed == type
           ? _value.type
@@ -274,6 +288,7 @@ class _$NotificationItemImpl implements _NotificationItem {
       @JsonKey(name: 'estate_id') required this.estateId,
       @JsonKey(name: 'media_url') required this.mediaUrl,
       @JsonKey(name: 'media_key') required this.mediaKey,
+      @JsonKey(name: 'status_type') required this.statusType,
       @JsonKey(name: 'type') required this.type,
       @JsonKey(name: 'description') required this.description,
       @JsonKey(name: 'status') required this.status,
@@ -300,6 +315,9 @@ class _$NotificationItemImpl implements _NotificationItem {
   @JsonKey(name: 'media_key')
   final String? mediaKey;
   @override
+  @JsonKey(name: 'status_type')
+  final String? statusType;
+  @override
   @JsonKey(name: 'type')
   final String? type;
   @override
@@ -320,7 +338,7 @@ class _$NotificationItemImpl implements _NotificationItem {
 
   @override
   String toString() {
-    return 'NotificationItem(id: $id, userId: $userId, estateId: $estateId, mediaUrl: $mediaUrl, mediaKey: $mediaKey, type: $type, description: $description, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, estate: $estate)';
+    return 'NotificationItem(id: $id, userId: $userId, estateId: $estateId, mediaUrl: $mediaUrl, mediaKey: $mediaKey, statusType: $statusType, type: $type, description: $description, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, estate: $estate)';
   }
 
   @override
@@ -336,6 +354,8 @@ class _$NotificationItemImpl implements _NotificationItem {
                 other.mediaUrl == mediaUrl) &&
             (identical(other.mediaKey, mediaKey) ||
                 other.mediaKey == mediaKey) &&
+            (identical(other.statusType, statusType) ||
+                other.statusType == statusType) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -349,8 +369,20 @@ class _$NotificationItemImpl implements _NotificationItem {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, userId, estateId, mediaUrl,
-      mediaKey, type, description, status, createdAt, updatedAt, estate);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      userId,
+      estateId,
+      mediaUrl,
+      mediaKey,
+      statusType,
+      type,
+      description,
+      status,
+      createdAt,
+      updatedAt,
+      estate);
 
   /// Create a copy of NotificationItem
   /// with the given fields replaced by the non-null parameter values.
@@ -376,6 +408,7 @@ abstract class _NotificationItem implements NotificationItem {
           @JsonKey(name: 'estate_id') required final int? estateId,
           @JsonKey(name: 'media_url') required final String? mediaUrl,
           @JsonKey(name: 'media_key') required final String? mediaKey,
+          @JsonKey(name: 'status_type') required final String? statusType,
           @JsonKey(name: 'type') required final String? type,
           @JsonKey(name: 'description') required final String? description,
           @JsonKey(name: 'status') required final String? status,
@@ -402,6 +435,9 @@ abstract class _NotificationItem implements NotificationItem {
   @override
   @JsonKey(name: 'media_key')
   String? get mediaKey;
+  @override
+  @JsonKey(name: 'status_type')
+  String? get statusType;
   @override
   @JsonKey(name: 'type')
   String? get type;

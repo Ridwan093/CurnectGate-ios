@@ -61,7 +61,22 @@ enum BottomSheetView {
   securityViolationTrack,
   securityCommentMaker,
   securitydismissViolation,
-  mentainLog
+  mentainLog,
+  additionForScan,
+  additionForDissmissedEntry,
+  optionForIdAndCode,
+  optionForAll,
+  optionForScan,
+  denyEntry,
+  workOdervalidation,
+  visitorValidation,
+  acceptCheckOut,
+  denyEntryConfirmation,
+  commentvew,
+  removedReminder,
+  events,
+  eventsDetails,
+
 }
 
 // State notifier for permissions

@@ -68,6 +68,7 @@ class HouseholdMember with _$HouseholdMember {
     }
     if (data is Map<String, dynamic>) {
       final grant = PermissionGrant.safeFromJson(data);
+      // ignore: unnecessary_null_comparison
       return grant != null ? [grant] : null;
     }
     return null;

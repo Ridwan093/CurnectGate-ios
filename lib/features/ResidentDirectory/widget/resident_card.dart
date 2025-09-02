@@ -104,7 +104,7 @@ class ResidentCard extends StatelessWidget {
     required String title,
     required String value,
 
-    bool showExpiry = true,
+   
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),

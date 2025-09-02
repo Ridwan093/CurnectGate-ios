@@ -1,19 +1,37 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AddReminderForms extends ConsumerWidget {
+  final FocusNode? focusNode;
+  final String label;
   final TextEditingController controller;
-  const AddReminderForms(this.controller, {super.key});
+  final void Function(String)? onChanged;
+  final TextInputType textInputType;
+  final List<TextInputFormatter>? textInputFormatter;
+  
+  const AddReminderForms(
+    this.controller, {
+    super.key,
+    required this.label,
+    this.onChanged,
+    this.focusNode,
+    required this.textInputType,
+    this.textInputFormatter
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = AppColors.instance;
     return TextField(
+      keyboardType: textInputType,
+      inputFormatters: textInputFormatter,
       controller: controller,
+      focusNode: focusNode,
       decoration: InputDecoration(
-        labelText: "Reminder title ",
+        labelText: label,
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: colors.black400),
         ),
@@ -37,6 +55,7 @@ class AddReminderForms extends ConsumerWidget {
           fontSize: 13,
         ),
       ),
+      onChanged: onChanged,
     );
   }
 }

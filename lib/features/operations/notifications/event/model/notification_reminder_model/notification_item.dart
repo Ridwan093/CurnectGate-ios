@@ -1,5 +1,6 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/model/nullSafty_model.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'estate.dart';
 
 part 'notification_item.freezed.dart';
@@ -7,16 +8,14 @@ part 'notification_item.g.dart';
 
 @freezed
 class NotificationItem with _$NotificationItem {
-  @JsonSerializable(
-    explicitToJson: true,
-    fieldRename: FieldRename.snake,
-  )
+  @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
   const factory NotificationItem({
     @JsonKey(name: 'id') required int? id,
     @JsonKey(name: 'user_id') required int? userId,
     @JsonKey(name: 'estate_id') required int? estateId,
     @JsonKey(name: 'media_url') required String? mediaUrl,
     @JsonKey(name: 'media_key') required String? mediaKey,
+    @JsonKey(name: 'status_type') required String? statusType,
     @JsonKey(name: 'type') required String? type,
     @JsonKey(name: 'description') required String? description,
     @JsonKey(name: 'status') required String? status,
@@ -42,12 +41,14 @@ class NotificationItem with _$NotificationItem {
         createdAt: null,
         updatedAt: null,
         estate: null,
+        statusType: null,
       );
     }
     return NotificationItem(
       id: NullSafetyHelper.safeInt(json['id']),
       userId: NullSafetyHelper.safeInt(json['user_id']),
       estateId: NullSafetyHelper.safeInt(json['estate_id']),
+      statusType: json['status_type'] as String?,
       mediaUrl: json['media_url'] as String?,
       mediaKey: json['media_key'] as String?,
       type: json['type'] as String?,

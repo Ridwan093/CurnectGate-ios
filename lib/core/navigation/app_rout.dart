@@ -1,28 +1,29 @@
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/widgets/GetYourCode.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/screen/Activate_Otp_screen.dart';
-import 'package:curnectgate/features/operations/notifications/activites-reminders/activites_log.dart';
-import 'package:curnectgate/features/operations/violation/screens/reportViolation.dart';
 import 'package:curnectgate/features/auth/presentation/screen/changeTemporaryPassword.dart';
 import 'package:curnectgate/features/auth/presentation/screen/creatnewpassword.dart';
 import 'package:curnectgate/features/auth/presentation/screen/forgot_password.dart';
 import 'package:curnectgate/features/auth/presentation/screen/memeber_getstarted.dart';
 import 'package:curnectgate/features/auth/presentation/screen/rest_pass_otp_screen.dart';
 import 'package:curnectgate/features/auth/presentation/screen/sign_in.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/estateconfirmation_screen.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/onboard_code_confirm.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/screen/Dashborad.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/screen/add_member.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/screen/allmemberScreen.dart';
 import 'package:curnectgate/features/member_management/membership_ID/mainScreen/continue_to_Digital.dart';
-import 'package:curnectgate/features/member_management/screen/main_navigation_screen.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/screen/memberIdchecker.dart';
 import 'package:curnectgate/features/member_management/membership_ID/mainScreen/memberIDScreen.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/estateconfirmation_screen.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/onboard_code_confirm.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/screen/memberIdchecker.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/screen/setuprofilledInfo.dart';
+import 'package:curnectgate/features/member_management/screen/main_navigation_screen.dart';
 import 'package:curnectgate/features/member_management/screen/otp_screen.dart';
 import 'package:curnectgate/features/member_management/screen/password_screen.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/screen/setuprofilledInfo.dart';
-import 'package:curnectgate/features/member_management/Onboard_Houselod/screen/allmemberScreen.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/screen/Activate_Otp_screen.dart';
+import 'package:curnectgate/features/operations/notifications/activites-reminders/activites_log.dart';
+import 'package:curnectgate/features/operations/violation/screens/reportViolation.dart';
 import 'package:curnectgate/features/security/screen/sccurityTap_Screen.dart';
+import 'package:curnectgate/features/security/screen/violation_details.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/screen/SetPreference.dart';
 import 'package:curnectgate/features/userProfile/Privacy_setting/screen/privacy_screen.dart';
 import 'package:curnectgate/features/userProfile/notification_setting/screen/notificationSetting_screen.dart';
@@ -262,7 +263,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           return MemberGetStart();
         },
       ),
-       GoRoute(
+
+      GoRoute(
         path: '/Digital_member_screen',
         name: AppRoutes.digitalIDMember,
         builder: (context, state) {
@@ -270,6 +272,16 @@ final routerProvider = Provider<GoRouter>((ref) {
 
           // Extract values with null checks
           return DigitalCardScreen();
+        },
+      ),
+      GoRoute(
+        path: '/sec_violations',
+        name: AppRoutes.securityViolationDeatails,
+        builder: (context, state) {
+          // final extra = state.extra as Violation;
+
+          // Extract values with null checks
+          return ViolationDetailScreen(violationId: "2");
         },
       ),
     ],

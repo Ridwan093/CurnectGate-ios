@@ -1,12 +1,18 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/local_store/share_prefrence.dart';
+import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
+import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:curnectgate/features/security/provider/scanProvider.dart';
 import 'package:curnectgate/features/security/widget/Scan_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class SecurityDashboard extends ConsumerStatefulWidget {
   @override
@@ -35,10 +41,18 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
     super.dispose();
   }
 
+  String getFormattedDate() {
+    final now = DateTime.now();
+    final formatter = DateFormat('E, MMM, d');
+    return formatter.format(now);
+  }
+
   @override
   Widget build(BuildContext context) {
     // final selectedTab = ref.watch(selectedTabProvider);
+    final state = ref.read(oTpformProvider.notifier);
     final isScanning = ref.watch(qrScanProvider);
+
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -47,7 +61,10 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
           isScanning
               ? null
               : InkWell(
-                onTap: () => ref.read(qrScanProvider.notifier).state = true,
+                onTap: () {
+                  ref.read(qrScanProvider.notifier).state = true;
+                  state.resetForm();
+                },
                 child: Container(
                   height: 35,
                   width: 120,
@@ -87,14 +104,14 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
               ),
       body: Stack(
         children: [
-          if (!isScanning) _buildBody(size),
+          if (!isScanning) _buildBody(size, ref),
           if (isScanning) ScanWidget(),
         ],
       ),
     );
   }
 
-  Widget _buildBody(Size size) {
+  Widget _buildBody(Size size, WidgetRef ref) {
     return SizedBox(
       height: size.height,
       child: Stack(
@@ -109,7 +126,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
                 padding: EdgeInsets.only(top: 30, left: 10, right: 10),
                 child: Align(
                   alignment: Alignment.topCenter,
-                  child: _buildHeader(),
+                  child: _buildHeader(ref),
                 ),
               ),
               // Bottom amber container
@@ -145,7 +162,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(WidgetRef ref) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -160,10 +177,10 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
         ),
         Row(
           children: [
-            Image.asset(
-              AssetPaths.dashboardNotification,
-              color: Colors.white,
-              width: 25,
+            NotificationCount(
+              onTap: () {
+                context.pushNamed(AppRoutes.notification);
+              },
             ),
             SizedBox(width: 10),
             Image.asset(
@@ -178,6 +195,9 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
   }
 
   Widget _buildWelcomeCard(Size size) {
+    final getusername = ref.watch(firstnameProvider);
+    final getmemberid = ref.watch(memberIdProvider);
+
     return SizedBox(
       width: size.width,
       child: Card(
@@ -193,21 +213,52 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Welcome, Johny',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: FontFamilies.interDisplay,
-                      fontWeight: FontFamilies.bold,
-                      color: AppColors.instance.black600,
-                    ),
+                  getusername.when(
+                    data: (data) {
+                      final name = data;
+                      if (name.isNotEmpty) {
+                        return Text(
+                          'Welcome, $name',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: FontFamilies.interDisplay,
+                            fontWeight: FontFamilies.bold,
+                            color: AppColors.instance.black600,
+                          ),
+                        );
+                      } else {
+                        return Text("");
+                      }
+                    },
+                    error: (e, StackTrace s) {
+                      return Text("");
+                    },
+                    loading: () {
+                      return Text("");
+                    },
                   ),
-                  _securityID(),
+
+                  getmemberid.when(
+                    data: (data) {
+                      final name = data;
+                      if (name.isNotEmpty) {
+                        return _securityID(name);
+                      } else {
+                        return Text("");
+                      }
+                    },
+                    error: (e, StackTrace s) {
+                      return Text("");
+                    },
+                    loading: () {
+                      return Text("");
+                    },
+                  ),
                 ],
               ),
 
               Text(
-                'Thur, May 15',
+                getFormattedDate(),
                 style: TextStyle(
                   fontSize: 12,
                   fontFamily: FontFamilies.interDisplay,
@@ -274,7 +325,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
     );
   }
 
-  Widget _securityID() {
+  Widget _securityID(String memberId) {
     return Container(
       padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
       decoration: BoxDecoration(
@@ -287,7 +338,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
       ),
       child: Center(
         child: Text(
-          "#34758",
+          memberId,
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,
             fontSize: 11,
@@ -425,6 +476,8 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
   }
 
   Widget _buildOTPAccessCard(BuildContext context, WidgetRef ref) {
+    final state = ref.read(oTpformProvider.notifier);
+
     return Column(
       children: [
         const SizedBox(height: 10),
@@ -434,15 +487,18 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
           children: [
             Expanded(
               child: _buildFeatureButton(
-                AssetPaths.verifiedCard,
-                "Check IDs",
+                // AssetPaths.verifiedCard,
+                // "Check IDs",
+                AssetPaths.maintenanceLog,
+                "Validate  Entry",
                 () {
+                  state.resetForm();
                   showUserBottomSheet(
                     context: context,
                     headertitle: "",
                     headersubtitle: "",
                     ref: ref,
-                    bottom: BottomSheetView.validatedOTP,
+                    bottom: BottomSheetView.optionForIdAndCode,
                   );
                 },
               ),

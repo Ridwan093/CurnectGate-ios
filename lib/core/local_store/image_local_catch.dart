@@ -46,7 +46,7 @@ class _CachedImageState extends State<CachedImage> {
 final uri = Uri.parse(url);
 
    
-      if (uri == null || !uri.isAbsolute) {
+      if (!uri.isAbsolute) {
         throw Exception('Invalid image URL');
       }
 

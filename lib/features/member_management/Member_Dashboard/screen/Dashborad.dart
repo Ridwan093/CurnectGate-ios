@@ -5,18 +5,21 @@ import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/provider/active_provider.dart';
-import 'package:curnectgate/features/operations/notifications/activites-reminders/activites_log.dart';
-import 'package:curnectgate/features/operations/notifications/event/model/event_model.dart';
-import 'package:curnectgate/features/operations/notifications/provider/eventprovider.dart';
-import 'package:curnectgate/features/member_management/Member_Dashboard/screen/viewAll.dart';
-import 'package:curnectgate/features/member_management/Member_Dashboard/widget/dasboardEventCard.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/dashBordRowcard.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/empty_body.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/headCard.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/reusable_vistor_card.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/vewMoreButton.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/visitorActiveCount.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/provider/active_provider.dart';
+import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
+import 'package:curnectgate/features/operations/notifications/event/event_widget/data_event_card.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_event_model.dart';
+import 'package:curnectgate/features/operations/notifications/provider/eventprovider.dart';
+import 'package:curnectgate/features/operations/notifications/provider/getevent_provider.dart';
+import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -30,7 +33,7 @@ class Dashborad extends ConsumerWidget {
     final size = MediaQuery.sizeOf(context);
 
     return Scaffold(
-      appBar: _buildAppBar(context),
+      appBar: _buildAppBar(context, ref),
       body: SizedBox(
         height: size.height,
         width: size.width,
@@ -201,33 +204,32 @@ class Dashborad extends ConsumerWidget {
   }
 
   Widget _buildEventContent(WidgetRef ref, BuildContext context, Size size) {
-    final state = ref.watch(eventsProvider);
+    final state = ref.watch(getEventProvider).value;
+    final reminderprovider = ref.read(reminderProvider.notifier);
 
     return Column(
       children: [
-        if (state.events.isNotEmpty) ...[
+        if (state?.data?.events != null) ...[
           SizedBox(
             width: size.width,
             height: 300,
-            child: _buildEventList(state.events, true, false, ref, context),
+            child: _buildEventList(
+              state?.data?.events ?? [],
+              true,
+              false,
+              ref,
+              context,
+            ),
           ),
           ViewMoreButton(
             buttontext: "All events",
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ViewAllPage()),
-              );
+              reminderprovider.resetAll();
             },
           ),
         ] else
           EmptyBody(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ViewAllPage()),
-              );
-            },
+            onTap: () {},
             imagepath: AssetPaths.dashboardEvents,
             emptyMessag: "Your visitor activity will appear here",
             buttonTexe: "View all",
@@ -237,7 +239,7 @@ class Dashborad extends ConsumerWidget {
   }
 
   Widget _buildEventList(
-    List<Event> events,
+    List<CalendarEvent> events,
     bool showActions,
     bool isCancel,
     WidgetRef ref,
@@ -249,17 +251,17 @@ class Dashborad extends ConsumerWidget {
       controller: PrimaryScrollController.of(context),
       itemCount: events.length,
       itemBuilder:
-          (context, index) => DasboardEventcard(
-            iscancle: isCancel,
+          (context, index) => DataEventCard(
             event: events[index],
-            showActions: showActions,
+
             onGoing: notifier.toggleEventAttendance,
-            onTap: () => notifier.selectEvent(events[index]),
+            onTap: () {},
           ),
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
+  PreferredSizeWidget _buildAppBar(BuildContext context, WidgetRef ref) {
+    final reminderprovider = ref.read(reminderProvider.notifier);
     return AppBar(
       leadingWidth: 50,
       leading: Padding(
@@ -270,9 +272,26 @@ class Dashborad extends ConsumerWidget {
         ),
       ),
       actions: [
-        Image.asset(AssetPaths.dashboardcalenderSetting, width: 20),
+        InkWell(
+          onTap: () {
+            reminderprovider.resetAll();
+
+            showUserBottomSheet(
+              context: context,
+              headertitle: "",
+              headersubtitle: "",
+              ref: ref,
+              bottom: BottomSheetView.events,
+            );
+          },
+          child: Image.asset(AssetPaths.dashboardcalenderSetting, width: 20),
+        ),
         SizedBox(width: 15),
-        _buildNotificationBell(1000, context),
+        NotificationCount(
+          onTap: () {
+            context.pushNamed(AppRoutes.notification);
+          },
+        ),
       ],
     );
   }
@@ -286,23 +305,10 @@ class Dashborad extends ConsumerWidget {
       children: [
         if (generatedList.isNotEmpty) ...[
           SizedBox(height: 200, child: _buildMemberList(ref, size)),
-          ViewMoreButton(
-            buttontext: "View all",
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ViewAllPage()),
-              );
-            },
-          ),
+          ViewMoreButton(buttontext: "View all", onTap: () {}),
         ] else
           EmptyBody(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ViewAllPage()),
-              );
-            },
+            onTap: () {},
             imagepath: AssetPaths.dashboardActivities,
             emptyMessag: "Your visitor activity will appear here",
             buttonTexe: "View all",
@@ -432,71 +438,5 @@ class Dashborad extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  Widget _buildNotificationBell(int count, BuildContext context) {
-    String displayCount = _formatCount(count);
-
-    return Padding(
-      padding: const EdgeInsets.only(right: 35),
-      child: InkWell(
-        onTap: () {
-          // context.pushNamed(AppRoutes.notification);
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ActivityPage()),
-          );
-        },
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Image.asset(
-              AssetPaths.dashboardNotification,
-              width: 25,
-              height: 25,
-            ),
-            if (count > 0)
-              Positioned(
-                top: -6,
-                right: count > 999 ? -20 : -10,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 5,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.instance.yellow500,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  constraints: const BoxConstraints(
-                    minWidth: 16,
-                    minHeight: 16,
-                  ),
-                  child: Text(
-                    displayCount,
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.instance.black600,
-                      fontFamily: FontFamilies.interDisplay,
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Format number into compact form (e.g., 1k, 1.2M)
-  String _formatCount(int count) {
-    if (count >= 1000000) {
-      return "${(count / 1000000).toStringAsFixed(1)}M";
-    } else if (count >= 1000) {
-      return "${(count / 1000).toStringAsFixed(1)}k";
-    } else {
-      return count.toString();
-    }
   }
 }

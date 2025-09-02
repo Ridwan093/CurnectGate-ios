@@ -8,17 +8,15 @@ import 'package:curnectgate/features/estate_management/submit_works_order/model/
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_screen/work_requst_screen.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/status_progress_widget.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/vendor_fileter.dart';
-import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 class VendorLog extends ConsumerWidget {
-   VendorLog({super.key});
-
-
+  VendorLog({super.key});
 
   final List<String> _statusOptions = [
     'All',
@@ -104,8 +102,6 @@ class VendorLog extends ConsumerWidget {
               Text(
                 "Vendor Log",
                 style: TextStyle(
-
-                  
                   fontFamily: FontFamilies.interDisplay,
                   fontSize: 20,
                   fontWeight: FontFamilies.bold,
@@ -113,7 +109,6 @@ class VendorLog extends ConsumerWidget {
                 ),
               ),
               CustomStatusDropdown(
-
                 statusOptions: _statusOptions,
                 initialStatus: 'Pending',
                 onStatusChanged: (newStatus) {
@@ -331,7 +326,6 @@ class VendorLog extends ConsumerWidget {
     BuildContext context,
     VendorLogModel vendor,
   ) {
-   
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -349,7 +343,6 @@ class VendorLog extends ConsumerWidget {
                 headersubtitle: "Manag ${vendor.worktype} Service",
                 ref: ref,
                 bottom: BottomSheetView.vendorLog,
-                vendor: vendor,
               ),
           child: Text(
             "Change",

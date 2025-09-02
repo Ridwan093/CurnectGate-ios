@@ -1,6 +1,6 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/operations/notifications/event/model/activit_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -38,27 +38,55 @@ class ActivityCard extends ConsumerWidget {
     IconData icon = Icons.info; // default icon
     Color skinColors = Colors.grey.shade200; // default color
     Color iconColors = Colors.grey;
-
-    switch (activity.status) {
-      case "unread":
-        icon = Icons.file_download;
+    switch (activity.statusType) {
+      case "validated":
+        icon = Icons.verified;
         skinColors = AppColors.instance.teal100;
-        iconColors = AppColors.instance.teal300;
+        iconColors = AppColors.instance.teal500;
         break;
-      case "reject":
-        icon = Icons.close;
+      case "denied":
+        icon = Icons.block;
         skinColors = AppColors.instance.error100;
-        iconColors = AppColors.instance.error500;
+        iconColors = AppColors.instance.error600;
         break;
-      case "active":
-        icon = Icons.check_circle;
+      case "created":
+        icon = Icons.add;
+        skinColors = AppColors.instance.grey200;
+        iconColors = AppColors.instance.black600;
+        break;
+      case "dismissed":
+        icon = Icons.cancel;
         skinColors = AppColors.instance.grey300;
-        iconColors = AppColors.instance.teal400;
+        iconColors = AppColors.instance.grey500;
         break;
-      case "decline":
-        icon = Icons.hourglass_empty;
-        skinColors = Colors.orange;
-        iconColors = AppColors.instance.teal300;
+      case "commented":
+        icon = Icons.chat_bubble;
+        skinColors = AppColors.instance.blue200;
+        iconColors = AppColors.instance.blue300;
+        break;
+      case "assigned":
+        icon = Icons.assignment_turned_in;
+        skinColors = AppColors.instance.yellow200;
+        iconColors = AppColors.instance.yellow500;
+        break;
+      case "resolved":
+        icon = Icons.mark_chat_read;
+        // ignore: deprecated_member_use
+        skinColors = AppColors.instance.teal300.withOpacity(.6);
+        ;
+        iconColors = AppColors.instance.teal500;
+        break;
+      case "investigating":
+        icon = Icons.saved_search;
+        // ignore: deprecated_member_use
+        skinColors = AppColors.instance.grey500.withOpacity(.6);
+        ;
+        iconColors = AppColors.instance.black600;
+        break;
+      default:
+        icon = Icons.help_outline;
+        skinColors = AppColors.instance.black200;
+        iconColors = AppColors.instance.grey400;
         break;
     }
     final result = splitByFirstPeriod(activity.description ?? "");

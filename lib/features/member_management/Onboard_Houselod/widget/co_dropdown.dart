@@ -21,6 +21,7 @@ class CoDropdown extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DropdownButtonFormField<String>(
+      dropdownColor: Colors.white,
       value: value,
       icon: Icon(Icons.keyboard_arrow_down, size: 20), // Reduced icon size
       isExpanded: true,

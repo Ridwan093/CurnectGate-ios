@@ -1,12 +1,13 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/customSwitch.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class Commentinput extends ConsumerWidget {
+  final int id;
   final Animation<Offset> slideAnimation2;
   final Animation<double> fadeAnimation2;
   final AnimationController animationController2;
@@ -15,6 +16,7 @@ class Commentinput extends ConsumerWidget {
     required this.animationController2,
     required this.fadeAnimation2,
     required this.slideAnimation2,
+    required this.id,
   });
   final TextEditingController _commentController = TextEditingController();
 
@@ -96,10 +98,13 @@ class Commentinput extends ConsumerWidget {
                       ? IconButton(
                         icon: const Icon(Icons.send),
                         onPressed: () async {
-                   formproviders
-                              .makeACommentonReport(context: context, ref: ref);
+                          formproviders.makeACommentonReport(
+                            id: id.toString(),
+                            context: context,
+                            ref: ref,
+                          );
                           _commentController.clear();
-                                                },
+                        },
                       )
                       : null,
             ),

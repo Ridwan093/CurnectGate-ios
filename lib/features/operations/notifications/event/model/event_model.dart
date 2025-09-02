@@ -10,6 +10,7 @@ class EventsState {
   final List<Event> cancelledEvents;
   final Event? selectedEvent;
   final bool showDetails;
+  final bool hasUserRsvp;
 
   EventsState({
     required this.currentTab,
@@ -20,6 +21,7 @@ class EventsState {
     required this.cancelledEvents,
     this.selectedEvent,
     required this.showDetails,
+    this.hasUserRsvp = false,
   });
 
   EventsState copyWith({
@@ -31,8 +33,10 @@ class EventsState {
     List<Event>? cancelledEvents,
     Event? selectedEvent,
     bool? showDetails,
+    bool? hasUserRsvp,
   }) {
     return EventsState(
+      hasUserRsvp: hasUserRsvp ?? this.hasUserRsvp,
       currentTab: currentTab ?? this.currentTab,
       calendarFormat: calendarFormat ?? this.calendarFormat,
       focusedDay: focusedDay ?? this.focusedDay,
@@ -52,6 +56,7 @@ class Event {
   final String description;
   final String location;
   final String imagepath;
+   final bool hasUserRsvp;
 
   Event(
     this.title,
@@ -60,5 +65,6 @@ class Event {
     this.description,
     this.location,
     this.imagepath,
+    this.hasUserRsvp
   );
 }

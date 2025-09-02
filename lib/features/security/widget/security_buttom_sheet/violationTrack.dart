@@ -1,9 +1,9 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/security/widget/custom_tabbar.dart';
-import 'package:curnectgate/features/security/widget/security_buttom_sheet/bottom_tap/violation_track_tab/Pending_Widget.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/bottom_tap/violation_track_tab/Investigating.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/bottom_tap/violation_track_tab/Resolved.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/bottom_tap/violation_track_tab/dismissing_tap.dart';
-import 'package:curnectgate/features/security/widget/security_buttom_sheet/bottom_tap/violation_track_tab/investigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -84,8 +84,8 @@ class _ViolationtrackState extends ConsumerState<Violationtrack>
           MyCustomTabBar(
             controller: _tabController,
             tabs: [
-              Tab(child: Text('Pending')),
-              Tab(text: 'Investigation'),
+              Tab(child: Text('Investigating')),
+              Tab(text: 'Resolved'),
               Tab(text: 'Dismissed'),
             ],
             labelColor: Colors.grey.shade300,
@@ -109,7 +109,7 @@ class _ViolationtrackState extends ConsumerState<Violationtrack>
             child: TabBarView(
               physics: NeverScrollableScrollPhysics(),
               controller: _tabController,
-              children: [PendingWidget(), Investigation(), Dismissing()],
+              children: [PendingWidget(), Resolved(), Dismissing()],
             ),
           ),
         ],

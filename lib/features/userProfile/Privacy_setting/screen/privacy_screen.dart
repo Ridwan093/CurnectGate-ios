@@ -4,9 +4,11 @@ import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
 import 'package:curnectgate/core/appErrorBody/emmergencyBody.dart';
 import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:curnectgate/features/userProfile/Privacy_setting/provider/privacy_provider.dart';
 import 'package:curnectgate/features/userProfile/notification_setting/widget/reusabTile.dart';
@@ -26,7 +28,7 @@ class UserPrivacySettings extends ConsumerWidget {
   }
 
   Widget _buildAppbarBottom(WidgetRef ref) {
-    final state = ref.watch(formProvider);
+   
     return PreferredSize(
       preferredSize: Size.fromHeight(50),
       child: Padding(
@@ -72,10 +74,9 @@ class UserPrivacySettings extends ConsumerWidget {
       ),
 
       actions: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Image.asset(AssetPaths.dashboardNotification, width: 30),
-        ),
+        NotificationCount(onTap: (){
+          context.pushNamed(AppRoutes.notification);
+       },),
       ],
     );
   }

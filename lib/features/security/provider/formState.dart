@@ -1,36 +1,39 @@
 // features/member_management/provider/form_provider.dart
+import 'dart:developer';
+
+import 'package:curnectgate/features/security/model/security_state_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class OtpFormState {
-  final bool oTpCodevalid;
-
-  final bool isLoading;
-  final String? oTpCodeError;
-
-  const OtpFormState({
-    this.isLoading = false,
-    this.oTpCodevalid = false,
-    this.oTpCodeError,
-  });
-
-  bool get allValid => oTpCodevalid;
-
-  OtpFormState copyWith({
-    bool? oTpCodevalid,
-    bool? isLoading,
-    String? oTpCodeError,
-  }) {
-    return OtpFormState(
-      oTpCodeError: oTpCodeError ?? this.oTpCodeError,
-      oTpCodevalid: oTpCodevalid ?? this.oTpCodevalid,
-
-      isLoading: isLoading ?? this.isLoading,
-    );
+class FormNotifier extends StateNotifier<SecurityStateModel> {
+  FormNotifier() : super(const SecurityStateModel());
+  void updateOtpCode(String value) {
+    state = state.copyWith(otpCode: value);
   }
-}
 
-class FormNotifier extends StateNotifier<OtpFormState> {
-  FormNotifier() : super(const OtpFormState());
+  void updateAccesType(String value) {
+    state = state.copyWith(accessType: value);
+  }
+
+  void updateLocation(String value) {
+    log(value);
+    state = state.copyWith(locationAccess: value);
+  }
+
+  void updateLodaing(bool value) {
+    state = state.copyWith(isLoading: value);
+  }
+
+  void updateRequiredEscort(bool value) {
+    state = state.copyWith(requiredEscort: value);
+  }
+
+  void updateSecurityNote(String value) {
+    state = state.copyWith(securityNoted: value);
+  }
+
+  void updateReason(String value) {
+    state = state.copyWith(reason: value, reasonvalid: value.isNotEmpty);
+  }
 
   void updateOTPCodeField({
     required String field,
@@ -43,7 +46,52 @@ class FormNotifier extends StateNotifier<OtpFormState> {
           oTpCodevalid: isValid,
           oTpCodeError: errorMessage,
         );
+      case 'Access':
+        state = state.copyWith(
+          accessTypevalid: isValid,
+          accessTypeError: errorMessage,
+        );
+      case 'Location':
+        state = state.copyWith(
+          locationGatevalid: isValid,
+          locationGateError: errorMessage,
+        );
+      case 'Security note':
+        state = state.copyWith(
+          securityNotedvalid: isValid,
+          securityNotedError: errorMessage,
+        );
+      case 'Reason':
+        state = state.copyWith(reasonvalid: isValid, reasonError: errorMessage);
     }
+  }
+
+  void updateValidationType(String value) {
+    log(value);
+    state = state.copyWith(selectedValidationType: value);
+  }
+
+  void resetForm() {
+    state = state.copyWith(
+      locationAccess: "",
+      accessType: "",
+      otpCode: "",
+      oTpCodevalid: false,
+      accessTypeError: "",
+      oTpCodeError: "",
+      accessTypevalid: false,
+      locationGateError: "",
+      locationGatevalid: false,
+      reason: "",
+      reasonError: "",
+      reasonvalid: false,
+      securityNoted: "",
+      securityNotedError: "",
+      securityNotedvalid: false,
+      isLoading: false,
+      selectedValidationType: '',
+      requiredEscort: false,
+    );
   }
 
   void updateLoading(bool isLoading) {
@@ -52,6 +100,8 @@ class FormNotifier extends StateNotifier<OtpFormState> {
   }
 }
 
-final oTpformProvider = StateNotifierProvider<FormNotifier, OtpFormState>((ref) {
-  return FormNotifier();
-});
+final oTpformProvider = StateNotifierProvider<FormNotifier, SecurityStateModel>(
+  (ref) {
+    return FormNotifier();
+  },
+);

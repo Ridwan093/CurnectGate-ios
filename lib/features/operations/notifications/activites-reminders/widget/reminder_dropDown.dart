@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ReminderDropDown extends ConsumerWidget {
   final String? selectedValue;
+  final String label;
   final String title;
   final List<String> items;
   final Function(String) onChanged;
@@ -14,7 +15,8 @@ class ReminderDropDown extends ConsumerWidget {
     required this.selectedValue,
     required this.onChanged,
     required this.items,
-    required this.title
+    required this.title,
+    required this.label,
   });
 
   @override
@@ -25,7 +27,7 @@ class ReminderDropDown extends ConsumerWidget {
       child: Row(
         children: [
           Text(
-           title,
+            title,
             style: TextStyle(
               fontWeight: FontFamilies.medium,
               fontFamily: FontFamilies.interDisplay,
@@ -36,7 +38,7 @@ class ReminderDropDown extends ConsumerWidget {
           ),
           const Spacer(),
           Text(
-            selectedValue!.isEmpty ? "Level" : selectedValue!,
+            selectedValue!.isEmpty ? label : selectedValue!,
             style: TextStyle(
               fontSize: 14,
               fontFamily: FontFamilies.interDisplay,

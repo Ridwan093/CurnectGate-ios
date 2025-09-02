@@ -4,8 +4,10 @@ import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
 import 'package:curnectgate/core/appErrorBody/emmergencyBody.dart';
 import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/model/option.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/provider/prefrence_provider.dart';
@@ -14,6 +16,7 @@ import 'package:curnectgate/features/userProfile/Prefrence_setting/widget/prfere
 import 'package:curnectgate/features/userProfile/Prefrence_setting/widget/time_zone_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class PreferencesScreen extends ConsumerWidget {
   const PreferencesScreen({super.key});
@@ -339,7 +342,9 @@ class PreferencesScreen extends ConsumerWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       leading: IconButton(
-        onPressed: () {},
+        onPressed: () {
+          context.pop();
+        },
         icon: Icon(
           Icons.arrow_back_ios,
           color: AppColors.instance.black600,
@@ -348,9 +353,10 @@ class PreferencesScreen extends ConsumerWidget {
       ),
 
       actions: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Image.asset(AssetPaths.dashboardNotification, width: 30),
+        NotificationCount(
+          onTap: () {
+            context.pushNamed(AppRoutes.notification);
+          },
         ),
       ],
     );

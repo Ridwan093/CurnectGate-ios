@@ -1,48 +1,48 @@
-import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
-class Guset extends StatelessWidget {
-  const Guset({super.key});
+class Logcard extends ConsumerWidget {
+  final String userName;
+  final String entrytitle;
+  final String? entrypath;
+  final String entryType;
+  final String entryTime;
+  final String isAllow;
 
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
-    return SingleChildScrollView(
-      padding: EdgeInsets.only(top: 10, left: 10, right: 10),
-      child: Column(
-        children: [
-          _buildContainer(
-            size: size,
-            entrypath: AssetPaths.userAvatar1,
-            entrytitle: "Allowed entry",
-          ),
-          _buildContainer(
-            size: size,
-            entrypath: AssetPaths.userAvatar2,
-            entrytitle: "Denied entry",
-          ),
-          _buildContainer(
-            size: size,
-            entrypath: AssetPaths.userAvatar1,
-            entrytitle: "Allowed entry",
-          ),
-          _buildContainer(
-            size: size,
-            entrypath: AssetPaths.userAvatar2,
-            entrytitle: "Denied entry",
-          ),
-        ],
-      ),
-    );
+  Logcard({
+    super.key,
+    required this.entrytitle,
+    required this.entryTime,
+    required this.entryType,
+    required this.entrypath,
+    required this.userName,
+    required this.isAllow,
+  });
+  String formatDateTime(String dateString, {String? timeZone}) {
+    // Parse the ISO 8601 date string (UTC)
+    DateTime dateTime = DateTime.parse(dateString);
+
+    // Adjust for WAT (UTC+1) if specified
+    if (timeZone == 'WAT') {
+      dateTime = dateTime.add(const Duration(hours: 1));
+    }
+
+    // Create a DateFormat instance for date and time (e.g., Aug 19, 2025, 5:04 AM)
+    final DateFormat formatter = DateFormat('MMM d, yyyy, h:mm a');
+
+    // Format the date and time
+    return formatter.format(dateTime);
   }
 
-  Widget _buildContainer({
-    required Size size,
-    required String entrytitle,
-    required String entrypath,
-  }) {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final size = MediaQuery.sizeOf(context);
+    String avatarUrl =
+        'https://ui-avatars.com/api/?name=${Uri.encodeComponent(userName)}&background=8EC0C9&color=ffffff&size=128';
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Material(
@@ -65,7 +65,7 @@ class Guset extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 14,
-                      backgroundImage: AssetImage(entrypath),
+                      backgroundImage: NetworkImage(avatarUrl),
                     ),
                     SizedBox(width: 12),
                     Container(
@@ -77,14 +77,14 @@ class Guset extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         border:
-                            entrytitle.contains("Allowed")
+                            entrytitle.toLowerCase().contains(isAllow)
                                 ? null
                                 : Border.all(
                                   color: AppColors.instance.error600,
                                 ),
                         borderRadius: BorderRadius.circular(10),
                         color:
-                            entrytitle.contains("Allowed")
+                            entrytitle.toLowerCase().contains(isAllow)
                                 ? AppColors.instance.teal100
                                 : AppColors.instance.error200,
                       ),
@@ -95,7 +95,7 @@ class Guset extends StatelessWidget {
                             fontFamily: FontFamilies.interDisplay,
                             fontSize: 10,
                             color:
-                                entrytitle.contains("Allowed")
+                                entrytitle.toLowerCase().contains(isAllow)
                                     ? AppColors.instance.teal400
                                     : AppColors.instance.error600,
                           ),
@@ -107,9 +107,12 @@ class Guset extends StatelessWidget {
               ),
               SizedBox(height: 10),
 
-              _buildDetailRow(title: "Name", value: "Mr. john benjamin"),
-              _buildDetailRow(title: "Type", value: "Guest"),
-              _buildDetailRow(title: "Time of Entry", value: "3:43 PM"),
+              _buildDetailRow(title: "Name", value: userName),
+              _buildDetailRow(title: "Type", value: entryType),
+              _buildDetailRow(
+                title: "Time of Entry",
+                value: formatDateTime(entryTime),
+              ),
             ],
           ),
         ),

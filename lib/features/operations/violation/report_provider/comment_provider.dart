@@ -3,8 +3,9 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
-import 'package:curnectgate/features/operations/violation/model/comment_model.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
+import 'package:curnectgate/features/operations/violation/model/comment_model.dart';
+import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,10 +28,10 @@ class CommentNotifer extends AutoDisposeAsyncNotifier<CommentResponse?> {
       if (token == null || token.isEmpty) {
         throw Exception("Unauthenticated");
       }
-
+      final id = ref.watch(reportProvider).report.id.toString();
       final freshComment = await ref
           .read(getApiServiceProvider)
-          .getreportComment(bearerToken: token);
+          .getreportComment(bearerToken: token, id: id);
 
       // Only update local storage if data is different
       if (localComment?.toJson() != freshComment.toJson()) {
@@ -63,18 +64,19 @@ class CommentNotifer extends AutoDisposeAsyncNotifier<CommentResponse?> {
     state = await AsyncValue.guard(() async {
       try {
         final token = await ref.watch(accessTokenProvider.future);
+        final id = ref.watch(reportProvider).report.id.toString();
         final freshComment = await ref
             .read(getApiServiceProvider)
-            .getreportComment(bearerToken: token!);
+            .getreportComment(bearerToken: token!, id: id);
         await SharedPrefsService.saveReportComment(freshComment);
         return freshComment;
       } catch (e) {
         if (e.toString().contains(
-              "Unauthenticated. Please login to continue.",
-            ) ) {
+          "Unauthenticated. Please login to continue.",
+        )) {
           log(e.toString());
           ref.read(authProvider.notifier).seassionExpire(context, ref);
-        } else if (e.toString().contains("The connection errored")||
+        } else if (e.toString().contains("The connection errored") ||
             e.toString().contains("The request connection took longer than")) {
           log(e.toString());
           showCustomSuccessToast(

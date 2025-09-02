@@ -1,6 +1,8 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/event_model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 /// Provider for managing events state
@@ -15,17 +17,19 @@ class EventsNotifier extends StateNotifier<EventsState> {
   EventsNotifier()
     : super(
         EventsState(
+          focusedDay: _getValidFocusedDay(DateTime.now()),
           currentTab: 0,
           calendarFormat: CalendarFormat.month,
-          focusedDay: DateTime.now(),
+
           events: [
             Event(
               "Community Meetup",
               "Akeem Ojo",
-              DateTime.now().add(const Duration(days: 17)),
+              DateTime.now().add(const Duration(days: 4)),
               "Hosted by",
               "Greendoor Estate",
               AssetPaths.commiteteal,
+              false,
             ),
             Event(
               "Discussion with committee",
@@ -34,14 +38,34 @@ class EventsNotifier extends StateNotifier<EventsState> {
               "Hosted by",
               "Estate Clubhouse",
               AssetPaths.commiteyellow,
+              false,
+            ),
+            Event(
+              "Discussion with committee",
+              "John ose",
+              DateTime.now().add(const Duration(days: 5)),
+              "Hosted by",
+              "Estate Clubhouse",
+              AssetPaths.commiteyellow,
+              false,
+            ),
+            Event(
+              "Discussion with committee",
+              "John ose",
+              DateTime.now().add(const Duration(days: 6)),
+              "Hosted by",
+              "Estate Clubhouse",
+              AssetPaths.commiteyellow,
+              false,
             ),
             Event(
               "Estate Meeting",
               "Meddal Won",
-              DateTime.now().add(const Duration(days: 90)),
+              DateTime.now().add(const Duration(days: 3)),
               "Hosted by",
               "Estate Clubhouse",
               AssetPaths.commiteteal,
+              true,
             ),
           ],
           goingEvents: [],
@@ -50,6 +74,14 @@ class EventsNotifier extends StateNotifier<EventsState> {
           showDetails: false,
         ),
       );
+  static DateTime _getValidFocusedDay(DateTime day) {
+    final firstDay = DateTime.now().subtract(const Duration(days: 365));
+    final lastDay = DateTime.now().add(const Duration(days: 365));
+
+    if (day.isBefore(firstDay)) return firstDay;
+    if (day.isAfter(lastDay)) return lastDay;
+    return day;
+  }
 
   void changeTab(int index) {
     state = state.copyWith(currentTab: index);
@@ -91,7 +123,8 @@ class EventsNotifier extends StateNotifier<EventsState> {
     );
   }
 
-  void closeDetails() {
-    state = state.copyWith(showDetails: false);
+  void closeDetails(BuildContext context) {
+    context.pop();
+    // state = state.copyWith(showDetails: false);
   }
 }

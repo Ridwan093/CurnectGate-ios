@@ -71,7 +71,7 @@ class GetReportNotifer extends AutoDisposeAsyncNotifier<ViolationResponse?> {
           "Unauthenticated. Please login to continue.",
         )) {
           ref.read(authProvider.notifier).seassionExpire(context, ref);
-        } else if (e.toString().contains("The connection errored")) {
+        } else if (e.toString().contains("connection")) {
           showCustomSuccessToast(
             context: context,
             message: 'Connection failed. Please check your network',

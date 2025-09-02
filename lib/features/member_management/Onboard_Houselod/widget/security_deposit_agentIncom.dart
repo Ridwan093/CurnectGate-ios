@@ -16,7 +16,7 @@ class _ExperienceEducationRowState
   @override
   Widget build(BuildContext context) {
     final provider = ref.read(formProvider.notifier);
-    final state = ref.watch(formProvider);
+
     return Row(
       children: [
         // Years of Experience Field
