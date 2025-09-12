@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
@@ -49,7 +51,6 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
 
   @override
   Widget build(BuildContext context) {
-    // final selectedTab = ref.watch(selectedTabProvider);
     final state = ref.read(oTpformProvider.notifier);
     final isScanning = ref.watch(qrScanProvider);
 
@@ -121,40 +122,60 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
             children: [
               // Top teal container
               Container(
+                width: size.width,
                 height: size.height * .2,
                 color: AppColors.instance.teal400,
-                padding: EdgeInsets.only(top: 30, left: 10, right: 10),
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: _buildHeader(ref),
-                ),
+                child: SizedBox(),
               ),
-              // Bottom amber container
-              Expanded(child: Container()),
+              // Bottom grey container
+              Expanded(child: Container(color: Colors.grey[100])),
             ],
           ),
 
-          // Scrollable content
-          Positioned.fill(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.only(
-                top:
-                    size.height * .2 -
-                    60, // Position welcome card between containers
-                bottom: 20,
-                left: 10,
-                right: 10,
-              ),
-              child: Column(
-                children: [
-                  _buildWelcomeCard(size),
-                  SizedBox(height: 20),
-                  _buildViolationsCard(),
-                  SizedBox(height: 15),
-                  _buildQuickActions(ref),
-                  SizedBox(height: 20), // Extra space at bottom
-                ],
-              ),
+          // Header positioned at top of teal container
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 16,
+            left: 16,
+            right: 16,
+            child: Text(""),
+          ),
+
+          // Scrollable content - FIXED: Ensure non-negative padding
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                // Calculate safe top padding that won't be negative
+                final topContainerHeight = size.height * 0.0;
+                final desiredOverlap = 60.0;
+                final safeTopPadding = (topContainerHeight - desiredOverlap)
+                    .clamp(16.0, double.infinity);
+
+                return SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    top: safeTopPadding,
+
+                    left: 16,
+                    right: 16,
+                  ),
+                  child: Column(
+                    children: [
+                      _buildHeader(ref),
+
+                      SizedBox(height: 20),
+                      _buildWelcomeCard(size),
+                      SizedBox(height: 20),
+                      _buildViolationsCard(),
+                      SizedBox(height: 15),
+                      _buildQuickActions(ref),
+                      SizedBox(height: 80), // Extra space for FAB
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ],
@@ -178,15 +199,21 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
         Row(
           children: [
             NotificationCount(
+              color: AppColors.instance.grey200,
               onTap: () {
-                context.pushNamed(AppRoutes.notification);
+                context.pushNamed(AppRoutes.securitynotification);
               },
             ),
             SizedBox(width: 10),
-            Image.asset(
-              AssetPaths.navProfileInactive,
-              color: Colors.white,
-              width: 25,
+            InkWell(
+              onTap: () {
+                log("HELL NAH");
+              },
+              child: Image.asset(
+                AssetPaths.navProfileInactive,
+                color: Colors.white,
+                width: 25,
+              ),
             ),
           ],
         ),
@@ -198,22 +225,20 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
     final getusername = ref.watch(firstnameProvider);
     final getmemberid = ref.watch(memberIdProvider);
 
-    return SizedBox(
-      width: size.width,
-      child: Card(
-        color: Colors.white,
-
-        elevation: 5,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  getusername.when(
+    return Card(
+      color: Colors.white,
+      elevation: 5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: getusername.when(
                     data: (data) {
                       final name = data;
                       if (name.isNotEmpty) {
@@ -225,53 +250,47 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
                             fontWeight: FontFamilies.bold,
                             color: AppColors.instance.black600,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         );
                       } else {
-                        return Text("");
+                        return SizedBox();
                       }
                     },
-                    error: (e, StackTrace s) {
-                      return Text("");
-                    },
-                    loading: () {
-                      return Text("");
-                    },
+                    error: (e, StackTrace s) => SizedBox(),
+                    loading: () => SizedBox(),
                   ),
-
-                  getmemberid.when(
-                    data: (data) {
-                      final name = data;
-                      if (name.isNotEmpty) {
-                        return _securityID(name);
-                      } else {
-                        return Text("");
-                      }
-                    },
-                    error: (e, StackTrace s) {
-                      return Text("");
-                    },
-                    loading: () {
-                      return Text("");
-                    },
-                  ),
-                ],
-              ),
-
-              Text(
-                getFormattedDate(),
-                style: TextStyle(
-                  fontSize: 12,
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black500,
-                  fontWeight: FontFamilies.bold,
                 ),
+                SizedBox(width: 10),
+                getmemberid.when(
+                  data: (data) {
+                    final name = data;
+                    if (name.isNotEmpty) {
+                      return _securityID(name);
+                    } else {
+                      return SizedBox();
+                    }
+                  },
+                  error: (e, StackTrace s) => SizedBox(),
+                  loading: () => SizedBox(),
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
+            Text(
+              getFormattedDate(),
+              style: TextStyle(
+                fontSize: 12,
+                fontFamily: FontFamilies.interDisplay,
+                color: AppColors.instance.black500,
+                fontWeight: FontFamilies.bold,
               ),
-              SizedBox(height: 8),
-              Divider(color: AppColors.instance.grey400),
-              SizedBox(height: 8),
-              _violationTrack(),
-            ],
-          ),
+            ),
+            SizedBox(height: 8),
+            Divider(color: AppColors.instance.grey400),
+            SizedBox(height: 8),
+            _violationTrack(),
+          ],
         ),
       ),
     );
@@ -305,21 +324,19 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
   }
 
   Widget _countContainer() {
-    return Card(
-      color: AppColors.instance.teal300,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 4, right: 4),
-        child: Center(
-          child: Text(
-            "2",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.teal400,
-              fontWeight: FontFamilies.bold,
-              fontSize: 10,
-            ),
-          ),
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: AppColors.instance.teal300,
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: Text(
+        "2",
+        style: TextStyle(
+          fontFamily: FontFamilies.interDisplay,
+          color: AppColors.instance.teal400,
+          fontWeight: FontFamilies.bold,
+          fontSize: 10,
         ),
       ),
     );
@@ -327,24 +344,18 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
 
   Widget _securityID(String memberId) {
     return Container(
-      padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        border: Border.all(
-          style: BorderStyle.solid,
-          width: 1,
-          color: AppColors.instance.black600,
-        ),
+        border: Border.all(color: AppColors.instance.black600, width: 1),
         borderRadius: BorderRadius.circular(14),
       ),
-      child: Center(
-        child: Text(
-          memberId,
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontSize: 11,
-            color: AppColors.instance.black600,
-            fontWeight: FontFamilies.bold,
-          ),
+      child: Text(
+        memberId,
+        style: TextStyle(
+          fontFamily: FontFamilies.interDisplay,
+          fontSize: 11,
+          color: AppColors.instance.black600,
+          fontWeight: FontFamilies.bold,
         ),
       ),
     );
@@ -385,9 +396,9 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
               AssetPaths.vaolationIcon,
               "2",
             ),
-            SizedBox(height: 6),
+            SizedBox(height: 12),
             Divider(color: AppColors.instance.grey400),
-            SizedBox(height: 6),
+            SizedBox(height: 12),
             _buildViolationItem(
               () {},
               'You have new updates',
@@ -413,42 +424,51 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Image.asset(icon, width: 25),
-              SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+          Expanded(
+            child: Row(
+              children: [
+                Image.asset(icon, width: 25, height: 25),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Row(
+                        children: [
+                          Text(
+                            title,
+                            style: TextStyle(
+                              fontFamily: FontFamilies.interDisplay,
+                              color: AppColors.instance.black400,
+                              fontWeight: FontFamilies.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          _countContainer(),
+                        ],
+                      ),
+                      SizedBox(height: 4),
                       Text(
-                        title,
+                        description,
                         style: TextStyle(
                           fontFamily: FontFamilies.interDisplay,
-                          color: AppColors.instance.black400,
+                          color: AppColors.instance.black600,
                           fontWeight: FontFamilies.bold,
-                          fontSize: 12,
+                          fontSize: 11,
                         ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      _countContainer(),
                     ],
                   ),
-                  Text(
-                    description,
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      color: AppColors.instance.black600,
-                      fontWeight: FontFamilies.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
           Icon(
             Icons.arrow_forward_ios,
-            size: 10,
+            size: 12,
             color: AppColors.instance.black600,
           ),
         ],
@@ -469,7 +489,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
             fontFamily: FontFamilies.interDisplay,
           ),
         ),
-
+        SizedBox(height: 12),
         _buildOTPAccessCard(context, ref),
       ],
     );
@@ -480,17 +500,14 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
 
     return Column(
       children: [
-        const SizedBox(height: 10),
-
+        SizedBox(height: 10),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
               child: _buildFeatureButton(
-                // AssetPaths.verifiedCard,
-                // "Check IDs",
                 AssetPaths.maintenanceLog,
-                "Validate  Entry",
+                "Validate Entry",
                 () {
                   state.resetForm();
                   showUserBottomSheet(
@@ -503,7 +520,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
                 },
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10),
             Expanded(
               child: _buildFeatureButton(
                 AssetPaths.vaolationIcon,
@@ -521,9 +538,9 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
               child: _buildFeatureButton(
@@ -540,7 +557,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
                 },
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10),
             Expanded(
               child: _buildFeatureButton(
                 AssetPaths.emgencySecurity,
@@ -558,7 +575,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
             ),
           ],
         ),
-        const SizedBox(height: 28),
+        SizedBox(height: 28),
       ],
     );
   }
@@ -566,32 +583,40 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
   Widget _buildFeatureButton(String icon, String label, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
-      child: Material(
-        borderRadius: BorderRadius.circular(12),
-        elevation: 1,
-        child: Container(
-          height: 100,
-          width: 200,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(icon, width: 30, height: 30, cacheWidth: 40),
-              const SizedBox(height: 8),
-              Text(
+      child: Container(
+        height: 100,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(icon, width: 30, height: 30),
+            SizedBox(height: 8),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
                 label,
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontFamilies.bold,
                   fontFamily: FontFamilies.interDisplay,
                   color: AppColors.instance.black600,
                 ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -1,7 +1,6 @@
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/appErrorBody/buildEmptyBody.dart';
 import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
-import 'package:curnectgate/core/appErrorBody/emmergencyBody.dart';
 import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
@@ -131,7 +130,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                             estateName: cachedProfile.data.estateName,
                             memberId: cachedProfile.data.memberCode,
                           ),
-                          Emmergencybody(error: error.toString()),
+                          // Emmergencybody(error: error.toString()),
                         ],
                       );
                     }
@@ -309,7 +308,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
         NotificationCount(
           width: 10,
           onTap: () {
-            context.pushNamed(AppRoutes.notification);
+            final role = ref.watch(userRoleProvider).value;
+            if (role != null && role.contains("security")) {
+              context.pushNamed(AppRoutes.securitynotification);
+            } else if (role != null) {
+              context.pushNamed(AppRoutes.notification);
+            }
           },
         ),
         AccountDropdownMenu(),

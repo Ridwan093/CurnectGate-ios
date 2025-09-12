@@ -1,11 +1,13 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/ResidentDirectory/Screen/tab_screen/commintte.dart';
 import 'package:curnectgate/features/ResidentDirectory/Screen/tab_screen/resident.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/security/widget/custom_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class ResidentTab extends ConsumerStatefulWidget {
   ResidentTab({super.key});
@@ -68,7 +70,7 @@ class _ResidentState extends ConsumerState<ResidentTab>
               child: TabBarView(
                 physics: NeverScrollableScrollPhysics(),
                 controller: _tabController,
-                children: [Residentss(), Text("Committe")],
+                children: [Residentss(), Committee()],
               ),
             ),
           ],
@@ -80,7 +82,9 @@ class _ResidentState extends ConsumerState<ResidentTab>
   PreferredSizeWidget _buildAppBar(WidgetRef ref, BuildContext context) {
     return AppBar(
       leading: IconButton(
-        onPressed: () {},
+        onPressed: () {
+          context.pop();
+        },
         icon: Icon(
           Icons.arrow_back_ios,
           color: AppColors.instance.black600,

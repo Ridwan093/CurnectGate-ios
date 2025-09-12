@@ -15,10 +15,7 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/widget/
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/active_provider.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
-import 'package:curnectgate/features/operations/notifications/event/event_widget/data_event_card.dart';
-import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_event_model.dart';
-import 'package:curnectgate/features/operations/notifications/provider/eventprovider.dart';
-import 'package:curnectgate/features/operations/notifications/provider/getevent_provider.dart';
+import 'package:curnectgate/features/operations/notifications/event/event_widget/event_limit_data.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -92,7 +89,7 @@ class Dashborad extends ConsumerWidget {
               _otherLinks(
                 title: "ADD FAMILY",
                 onTap: () async {
-                  SharedPrefsService().clearAuthData();
+                  context.pushNamed(AppRoutes.getMemberInfo);
                 },
               ),
               Divider(color: AppColors.instance.grey400),
@@ -209,59 +206,25 @@ class Dashborad extends ConsumerWidget {
   }
 
   Widget _buildEventContent(WidgetRef ref, BuildContext context, Size size) {
-    final state = ref.watch(getEventProvider).value;
     final reminderprovider = ref.read(reminderProvider.notifier);
 
     return Column(
       children: [
-        if (state?.data?.events != null) ...[
-          SizedBox(
-            width: size.width,
-            height: 300,
-            child: _buildEventList(
-              state?.data?.events ?? [],
-              true,
-              false,
-              ref,
-              context,
-            ),
-          ),
-          ViewMoreButton(
-            buttontext: "All events",
-            onTap: () {
-              reminderprovider.resetAll();
-            },
-          ),
-        ] else
-          EmptyBody(
-            onTap: () {},
-            imagepath: AssetPaths.dashboardEvents,
-            emptyMessag: "Your visitor activity will appear here",
-            buttonTexe: "View all",
-          ),
+        SizedBox(height: 200, child: EventLimitData()),
+        ViewMoreButton(
+          buttontext: "All events",
+          onTap: () {
+            reminderprovider.resetAll();
+            showUserBottomSheet(
+              context: context,
+              headertitle: "",
+              headersubtitle: "",
+              ref: ref,
+              bottom: BottomSheetView.events,
+            );
+          },
+        ),
       ],
-    );
-  }
-
-  Widget _buildEventList(
-    List<CalendarEvent> events,
-    bool showActions,
-    bool isCancel,
-    WidgetRef ref,
-    BuildContext context,
-  ) {
-    final notifier = ref.read(eventsProvider.notifier);
-
-    return ListView.builder(
-      controller: PrimaryScrollController.of(context),
-      itemCount: events.length,
-      itemBuilder:
-          (context, index) => DataEventCard(
-            event: events[index],
-
-            onGoing: notifier.toggleEventAttendance,
-            onTap: () {},
-          ),
     );
   }
 

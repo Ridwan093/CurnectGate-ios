@@ -66,7 +66,7 @@ class ActivityCard extends ConsumerWidget {
         break;
       case "assigned":
         icon = Icons.assignment_turned_in;
-        skinColors = AppColors.instance.yellow200;
+        skinColors = AppColors.instance.yellow100;
         iconColors = AppColors.instance.yellow500;
         break;
       case "resolved":
@@ -145,7 +145,7 @@ class ActivityCard extends ConsumerWidget {
           const SizedBox(width: 8),
           // Time
           Text(
-            formatToShortMonthDay(activity.createdAt ?? ""),
+            formatToShortMonthDay(activity.updatedAt ?? ""),
             style: const TextStyle(color: Colors.grey, fontSize: 12),
           ),
         ],

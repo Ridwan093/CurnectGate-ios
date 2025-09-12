@@ -147,52 +147,6 @@ class Securitymainscreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildNotificationBell(int count) {
-    String displayCount = _formatCount(count);
-
-    return Padding(
-      padding: const EdgeInsets.only(right: 35),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Image.asset(AssetPaths.dashboardNotification, width: 25, height: 25),
-          if (count > 0)
-            Positioned(
-              top: -6,
-              right: count > 999 ? -20 : -10,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                decoration: BoxDecoration(
-                  color: AppColors.instance.yellow500,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
-                child: Text(
-                  displayCount,
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.instance.black600,
-                    fontFamily: FontFamilies.interDisplay,
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  // Format number into compact form (e.g., 1k, 1.2M)
-  String _formatCount(int count) {
-    if (count >= 1000000) {
-      return "${(count / 1000000).toStringAsFixed(1)}M";
-    } else if (count >= 1000) {
-      return "${(count / 1000).toStringAsFixed(1)}k";
-    } else {
-      return count.toString();
-    }
-  }
 
   Widget _buildAccessLogSection(
     BuildContext context,

@@ -51,7 +51,7 @@ class ResidentCard extends StatelessWidget {
           children: [
             _buildCardHeader(context, userName),
             const SizedBox(height: 10),
-            _buildDetailRow(title: "Block", value: block),
+            _buildDetailRow(title: "Member ID", value: block),
             _buildDetailRow(title: "Address", value: adrress!),
           ],
         ),
@@ -93,14 +93,17 @@ class ResidentCard extends StatelessWidget {
           ],
         ),
         if (onChangePressed != null)
-          CircleAvatar(
-            backgroundColor: AppColors.instance.teal300,
-            radius: 18,
-            child: Center(
-              child: Icon(
-                Icons.call,
-                size: 14,
-                color: AppColors.instance.black600,
+          InkWell(
+            onTap: onChangePressed,
+            child: CircleAvatar(
+              backgroundColor: AppColors.instance.teal300,
+              radius: 18,
+              child: Center(
+                child: Icon(
+                  Icons.call,
+                  size: 14,
+                  color: AppColors.instance.black600,
+                ),
               ),
             ),
           ),

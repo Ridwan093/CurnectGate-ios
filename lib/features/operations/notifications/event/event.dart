@@ -21,32 +21,33 @@ class EventsBottomSheet extends ConsumerWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        return ConstrainedBox(
-          constraints: BoxConstraints(minHeight: constraints.maxHeight),
-          child: IntrinsicHeight(
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              child: Stack(
+        return Container(
+          padding: const EdgeInsets.all(16),
+          child: Stack(
+            children: [
+              Column(
                 children: [
-                  Column(
-                    children: [
-                      _buildHeader(notifier, context),
-                      const SizedBox(height: 30),
-                      _buildTitleSection(),
-                      const SizedBox(height: 16),
-                      CalenderData(),
-                      const SizedBox(height: 16),
-                      _buildTabBar(ref),
-                      const SizedBox(height: 16),
-
-                      Expanded(child: _buildContent(ref, context)),
-                    ],
+                  _buildHeader(notifier, context),
+                  const SizedBox(height: 16), // Reduced spacing
+                  _buildTitleSection(),
+                  const SizedBox(height: 12), // Reduced spacing
+                  // Calendar with fixed height
+                  Container(
+                    color: Colors.green,
+                    // height: MediaQuery.of(context).size.height * 0.45,
+                    child: CalenderData(),
                   ),
-                  if (state.isLoading)
-                    Positioned.fill(child: _buildLoadingOverlay()),
+
+                  const SizedBox(height: 12), // Reduced spacing
+                  _buildTabBar(ref),
+                  const SizedBox(height: 12), // Reduced spacing
+                  // Content area - THIS IS THE KEY FIX
+                  Expanded(child: _buildContent(ref, context)),
                 ],
               ),
-            ),
+              if (state.isLoading)
+                Positioned.fill(child: _buildLoadingOverlay()),
+            ],
           ),
         );
       },
@@ -172,17 +173,19 @@ class EventsBottomSheet extends ConsumerWidget {
   ) {
     final notifier = ref.read(eventsProvider.notifier);
 
-    return ListView.builder(
-      controller: PrimaryScrollController.of(context),
-      itemCount: events.length,
-      itemBuilder:
-          (context, index) => EventCard(
-            iscancle: isCancel,
-            event: events[index],
-            showActions: showActions,
-            onGoing: notifier.toggleEventAttendance,
-            onTap: () => notifier.selectEvent(events[index]),
-          ),
-    );
+    return events.isEmpty
+        ? Center(child: Text("No events found"))
+        : ListView.builder(
+          // REMOVE PrimaryScrollController - this was causing the issue
+          itemCount: events.length,
+          itemBuilder:
+              (context, index) => EventCard(
+                iscancle: isCancel,
+                event: events[index],
+                showActions: showActions,
+                onGoing: notifier.toggleEventAttendance,
+                onTap: () => notifier.selectEvent(events[index]),
+              ),
+        );
   }
 }

@@ -8,7 +8,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class NotificationCount extends ConsumerWidget {
   final VoidCallback onTap;
   final double width;
-  const NotificationCount({super.key, required this.onTap, this.width = 0});
+  final Color color;
+  NotificationCount({
+    super.key,
+    required this.onTap,
+    this.width = 0,
+    this.color = Colors.black,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,10 +30,11 @@ class NotificationCount extends ConsumerWidget {
                 context,
                 onTap,
                 width,
+                color,
               )
-              : _buildNotificationBell(0, context, onTap, width);
+              : _buildNotificationBell(0, context, onTap, width, color);
         } catch (e) {
-          return _buildNotificationBell(0, context, onTap, width);
+          return _buildNotificationBell(0, context, onTap, width, color);
         }
       },
       loading: () {
@@ -39,10 +46,11 @@ class NotificationCount extends ConsumerWidget {
                 context,
                 onTap,
                 width,
+                color,
               )
-              : _buildNotificationBell(0, context, onTap, width);
+              : _buildNotificationBell(0, context, onTap, width, color);
         } catch (e) {
-          return _buildNotificationBell(0, context, onTap, width);
+          return _buildNotificationBell(0, context, onTap, width, color);
         }
       },
       error: (error, stack) {
@@ -57,13 +65,14 @@ class NotificationCount extends ConsumerWidget {
               context,
               onTap,
               width,
+              color,
             );
           }
 
           // No cached data available
-          return _buildNotificationBell(0, context, onTap, width);
+          return _buildNotificationBell(0, context, onTap, width, color);
         } catch (e) {
-          return _buildNotificationBell(0, context, onTap, width);
+          return _buildNotificationBell(0, context, onTap, width, color);
           // final comment = ref.read(commentProvider).value;
           // if (comment != null) {
           //   return CommentBody(comment.data);
@@ -78,6 +87,7 @@ class NotificationCount extends ConsumerWidget {
     BuildContext context,
     VoidCallback onTap,
     double width,
+    Color color,
   ) {
     String displayCount = _formatCount(count);
 
@@ -92,6 +102,7 @@ class NotificationCount extends ConsumerWidget {
               AssetPaths.dashboardNotification,
               width: 25,
               height: 25,
+              color: color,
             ),
             if (count > 0)
               Positioned(

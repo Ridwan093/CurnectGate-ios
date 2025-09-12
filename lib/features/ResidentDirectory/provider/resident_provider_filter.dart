@@ -1,6 +1,4 @@
-// resident_search_provider.dart
-import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resident_directory_respond.dart';
-import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resident_model.dart';
+import 'package:curnectgate/features/ResidentDirectory/model/state_model.dart';
 import 'package:curnectgate/features/ResidentDirectory/provider/getResidentProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,42 +8,16 @@ final residentSearchProvider =
       return ResidentSearchNotifier(ref);
     });
 
-class ResidentSearchState {
-  final String searchQuery;
-  final List<Resident> filteredResidents;
-  final String? errorMessage;
-  final AsyncValue<ResidentDirectoryResponse?> residentData;
-
-  ResidentSearchState({
-    this.searchQuery = '',
-    required this.filteredResidents,
-    this.errorMessage,
-    required this.residentData,
-  });
-
-  ResidentSearchState copyWith({
-    String? searchQuery,
-    List<Resident>? filteredResidents,
-    String? errorMessage,
-    AsyncValue<ResidentDirectoryResponse?>? residentData,
-  }) {
-    return ResidentSearchState(
-      searchQuery: searchQuery ?? this.searchQuery,
-      filteredResidents: filteredResidents ?? this.filteredResidents,
-      errorMessage: errorMessage ?? this.errorMessage,
-      residentData: residentData ?? this.residentData,
-    );
-  }
-}
-
 class ResidentSearchNotifier extends StateNotifier<ResidentSearchState> {
   final Ref ref;
 
   ResidentSearchNotifier(this.ref)
     : super(
         ResidentSearchState(
+          committeeFilteredResidents: [],
           filteredResidents: [],
           residentData: const AsyncValue.loading(),
+          committeeData: const AsyncValue.loading(),
         ),
       ) {
     _init();
@@ -59,22 +31,34 @@ class ResidentSearchNotifier extends StateNotifier<ResidentSearchState> {
       data: (data) {
         if (data != null) {
           state = state.copyWith(
-            filteredResidents: data.data?.residents?.data,
+            filteredResidents: data.data?.residents?.data ?? [],
             errorMessage:
-                data.data?.residents?.data == null
+                data.data?.residents?.data == null ||
+                        data.data!.residents!.data.isEmpty
                     ? 'No residents found.'
+                    : null,
+            errorType:
+                data.data?.residents?.data == null ||
+                        data.data!.residents!.data.isEmpty
+                    ? 'no_results'
                     : null,
           );
         }
       },
-      error: (error, _) {
+      error: (error, stackTrace) {
+        // API errors are handled in the widget, so clear search/filter state
         state = state.copyWith(
           filteredResidents: [],
-          errorMessage: 'Failed to load residents: $error',
+          errorMessage: null,
+          errorType: null,
         );
       },
       loading: () {
-        state = state.copyWith(filteredResidents: [], errorMessage: null);
+        state = state.copyWith(
+          filteredResidents: [],
+          errorMessage: null,
+          errorType: null,
+        );
       },
     );
   }
@@ -91,6 +75,10 @@ class ResidentSearchNotifier extends StateNotifier<ResidentSearchState> {
             residentData.valueOrNull?.data?.residents?.data.isEmpty ?? true
                 ? 'No residents found.'
                 : '',
+        errorType:
+            residentData.valueOrNull?.data?.residents?.data.isEmpty ?? true
+                ? 'no_results'
+                : '',
       );
       return;
     }
@@ -106,8 +94,9 @@ class ResidentSearchNotifier extends StateNotifier<ResidentSearchState> {
       filteredResidents: filtered,
       errorMessage:
           filtered.isEmpty
-              ? 'No profile found, try adjusting your search'
+              ? 'No profile found, try adjusting your search.'
               : null,
+      errorType: filtered.isEmpty ? 'no_results' : null,
     );
   }
 
@@ -121,6 +110,10 @@ class ResidentSearchNotifier extends StateNotifier<ResidentSearchState> {
         errorMessage:
             residentData.valueOrNull?.data?.residents?.data.isEmpty ?? true
                 ? 'No residents found.'
+                : null,
+        errorType:
+            residentData.valueOrNull?.data?.residents?.data.isEmpty ?? true
+                ? 'no_results'
                 : null,
       );
       return;
@@ -136,11 +129,12 @@ class ResidentSearchNotifier extends StateNotifier<ResidentSearchState> {
       filteredResidents: filtered,
       errorMessage:
           filtered.isEmpty ? 'No residents with status: $status' : null,
+      errorType: filtered.isEmpty ? 'no_results' : null,
     );
   }
 
   Future<void> refresh(BuildContext context, WidgetRef ref) async {
     await ref.read(getResidentProvider.notifier).refreshResident(context, ref);
-    _init();
+    await _init();
   }
 }

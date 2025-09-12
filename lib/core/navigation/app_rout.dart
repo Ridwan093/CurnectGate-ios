@@ -24,6 +24,7 @@ import 'package:curnectgate/features/operations/OTP_Activation/screen/Activate_O
 import 'package:curnectgate/features/operations/notifications/activites-reminders/activites_log.dart';
 import 'package:curnectgate/features/operations/violation/screens/reportViolation.dart';
 import 'package:curnectgate/features/security/screen/sccurityTap_Screen.dart';
+import 'package:curnectgate/features/security/screen/security_notifier/notification.dart';
 import 'package:curnectgate/features/security/screen/violation_details.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/screen/SetPreference.dart';
 import 'package:curnectgate/features/userProfile/Privacy_setting/screen/privacy_screen.dart';
@@ -286,6 +287,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           return ViolationDetailScreen(violationId: "2");
         },
       ),
+
       GoRoute(
         path: '/directory_address',
         name: AppRoutes.residentDirectory,
@@ -294,6 +296,16 @@ final routerProvider = Provider<GoRouter>((ref) {
 
           // Extract values with null checks
           return ResidentTab();
+        },
+      ),
+      GoRoute(
+        path: '/security_notifier',
+        name: AppRoutes.securitynotification,
+        builder: (context, state) {
+          // final extra = state.extra as Violation;
+
+          // Extract values with null checks
+          return SecurityNotifications();
         },
       ),
     ],
@@ -361,7 +373,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         return '/';
       }
 
-      if (currentPath.startsWith('/security') && userRole != 'security') {
+      if (currentPath.startsWith('/security') &&
+          userRole != 'security_personnel') {
         return '/';
       }
 

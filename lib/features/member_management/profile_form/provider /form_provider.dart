@@ -643,7 +643,7 @@ class FormNotifier extends StateNotifier<FormStates> {
             lastName: lasetName,
             email: email,
             phoneNumber: phnoneNumber,
-            gender: state.gender!,
+            gender: state.gender?? "",
             identityConfirmed: true,
             agreetoterms: state.agreedToTerms,
             password: state.pass ?? "",

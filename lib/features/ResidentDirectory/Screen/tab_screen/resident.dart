@@ -1,109 +1,158 @@
+import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
+import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/ResidentDirectory/provider/provider.dart';
+import 'package:curnectgate/features/ResidentDirectory/provider/getResidentProvider.dart';
+import 'package:curnectgate/features/ResidentDirectory/provider/resident_provider_filter.dart';
 import 'package:curnectgate/features/ResidentDirectory/widget/resident_card.dart';
-import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/vendor_fileter.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
-import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/ResidentDirectory/widget/resident_list.dart';
+import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Residentss extends ConsumerWidget {
-  Residentss({super.key});
+  const Residentss({super.key});
+  Future<void> _launchDialer(String phoneNumber) async {
+    // Validate the phone number (optional: remove non-digits)
+    String formattedNumber = phoneNumber.replaceAll(RegExp(r'[^\d+]'), '');
+    if (formattedNumber.isEmpty) {
+      // Handle empty number (e.g., show a snackbar)
+      return;
+    }
 
-  final List<String> _statusOptions = [
-    'All',
-    'Pending',
-    'Active',
-    'In Progress',
-    'Completed',
-    'Cancelled',
-  ];
+    final Uri url = Uri(scheme: 'tel', path: formattedNumber);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      // Handle launch failure (e.g., show error message)
+      throw 'Could not launch dialer for $phoneNumber';
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final searchState = ref.watch(residentSearchProvider);
     final searchNotifier = ref.read(residentSearchProvider.notifier);
 
-    return searchState.residentData.when(
-      data:
-          (residentData) => SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Resident Directory',
-                      style: TextStyle(
-                        fontFamily: FontFamilies.interDisplay,
-                        fontSize: 23,
-                        fontWeight: FontFamilies.bold,
-                        color: AppColors.instance.black600,
-                      ),
-                    ),
-                    CustomStatusDropdown(
-                      statusOptions: _statusOptions,
-                      initialStatus: 'All',
-                      onStatusChanged: (newStatus) {
-                        searchNotifier.filterByStatus(newStatus, ref);
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                _buildSearchEngine(searchNotifier, ref),
-                if (searchState.errorMessage != null) ...[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      searchState.errorMessage!,
-                      style: TextStyle(
-                        color: AppColors.instance.black500,
-                        fontSize: 12,
-                        fontFamily: FontFamilies.interDisplay,
-                        fontWeight: FontFamilies.bold,
-                      ),
-                    ),
-                  ),
-                ],
-                const SizedBox(height: 20),
-                if (searchState.filteredResidents.isEmpty &&
-                    searchState.errorMessage == null)
-                  const Center(child: Text('No residents available.')),
-                ...searchState.filteredResidents.map(
-                  (resident) => ResidentCard(
-                    userName: resident.fullName,
-                    block: resident.memberCode,
-                    adrress: resident.address,
-                    onChangePressed: () {},
-                  ),
-                ),
-              ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Resident Directory',
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              fontSize: 23,
+              fontWeight: FontFamilies.bold,
+              color: AppColors.instance.black600,
             ),
           ),
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error:
-          (error, _) => Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Error: $error',
-                  style: TextStyle(
-                    color: AppColors.instance.error500,
-                    fontFamily: FontFamilies.interDisplay,
+          const SizedBox(height: 20),
+          _buildSearchEngine(searchNotifier, ref),
+          if (searchState.errorMessage != null &&
+              searchState.errorType == 'no_results') ...[
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                searchState.errorMessage ?? "",
+                style: TextStyle(
+                  color: AppColors.instance.black500,
+                  fontSize: 12,
+                  fontFamily: FontFamilies.interDisplay,
+                  fontWeight: FontFamilies.bold,
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: 20),
+          searchState.residentData.when(
+            data:
+                (residentData) => Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        ...searchState.filteredResidents.map(
+                          (resident) => ResidentCard(
+                            userName: resident.fullName,
+                            block: resident.memberCode,
+                            adrress: resident.address,
+                            onChangePressed:
+                                resident.phone == null
+                                    ? null
+                                    : () {
+                                      _launchDialer(resident.phone ?? "");
+                                    },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () => searchNotifier.refresh(context, ref),
-                  child: const Text('Retry'),
-                ),
-              ],
-            ),
+            loading: () => const Loadingstates(),
+            error: (error, stack) {
+              try {
+                // Handle session expiration
+                if (error.toString().contains("Unauthenticated")) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    ref
+                        .read(authProvider.notifier)
+                        .seassionExpire(context, ref);
+                  });
+                  return Expiresessionbody();
+                }
+
+                // Try to show cached data
+                final resident = ref.read(getResidentProvider).value;
+                final res = resident?.data;
+                if (res != null &&
+                    res.residents!.data.isNotEmpty &&
+                    searchState.errorMessage == null) {
+                  return Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          ...searchState.filteredResidents.map(
+                            (resident) => ResidentCard(
+                              userName: resident.fullName,
+                              block: resident.memberCode,
+                              adrress: resident.address,
+                              onChangePressed:
+                                  resident.phone == null
+                                      ? null
+                                      : () {
+                                        _launchDialer(resident.phone ?? "");
+                                      },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+
+                // No cached data available
+                return _buildErrorUI(
+                  error.toString().toLowerCase().contains("connection")
+                      ? "Connection failed. Please check your network"
+                      : "Failed to load resident directory",
+                  ref,
+                  context,
+                  searchNotifier,
+                );
+              } catch (e) {
+                return _buildErrorUI(
+                  e.toString(),
+                  ref,
+                  context,
+                  searchNotifier,
+                );
+              }
+            },
           ),
+        ],
+      ),
     );
   }
 
@@ -149,46 +198,56 @@ class Residentss extends ConsumerWidget {
     );
   }
 
-  PreferredSizeWidget _buildAppBar(WidgetRef ref, BuildContext context) {
-    return AppBar(
-      leading: IconButton(
-        onPressed: () => Navigator.of(context).pop(),
-        icon: Icon(
-          Icons.arrow_back_ios,
-          color: AppColors.instance.black600,
-          size: 14,
-        ),
-      ),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 20),
-          child: InkWell(
-            onTap:
-                () => showUserBottomSheet(
-                  context: context,
-                  headertitle: '',
-                  headersubtitle: '',
-                  ref: ref,
-                  bottom: BottomSheetView.residentEmgencyContacts,
-                ),
-            child: Icon(
-              Icons.add_ic_call_outlined,
-              weight: 0.8,
-              color: AppColors.instance.error600,
+  Widget _buildErrorUI(
+    String error,
+    WidgetRef ref,
+    BuildContext context,
+    ResidentSearchNotifier notifier,
+  ) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.error_outline,
+            size: 48,
+            color: AppColors.instance.error600,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            "Failed to load resident directory",
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              fontSize: 16,
+              color: AppColors.instance.black600,
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 20),
-          child: IconButton(
-            onPressed:
-                () => ref
-                    .read(residentSearchProvider.notifier)
-                    .refresh(context, ref),
-            icon: Icon(Icons.refresh, color: AppColors.instance.black600),
+          const SizedBox(height: 8),
+          Text(
+            error.split(':').first,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              color: AppColors.instance.black400,
+            ),
           ),
-        ),
-      ],
+          const SizedBox(height: 24),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.instance.grey200,
+            ),
+            onPressed: () => notifier.refresh(context, ref),
+            child: Text(
+              "Try Again",
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                color: AppColors.instance.black600,
+                fontWeight: FontFamilies.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

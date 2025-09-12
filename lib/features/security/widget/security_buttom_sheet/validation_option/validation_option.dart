@@ -18,8 +18,8 @@ class ValidationTypeSelector extends ConsumerWidget {
     final notifier = ref.read(oTpformProvider.notifier);
 
     final options = [
-      ValidationOption(label: 'Validate QR Code', icon: AssetPaths.checkId),
       ValidationOption(label: 'Validate OTP', icon: AssetPaths.otpValidation),
+      ValidationOption(label: 'Validate QR Code', icon: AssetPaths.checkId),
     ];
 
     return Padding(
