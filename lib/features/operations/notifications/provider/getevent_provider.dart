@@ -33,7 +33,7 @@ class EventNotifier extends AutoDisposeAsyncNotifier<CalendarEventsResponse?> {
 
       final freshEvent = await ref
           .read(getApiServiceProvider)
-          .getEvent(bearerToken: token, limit: "");
+          .getEvent(bearerToken: token, limit: "", statuse: "active");
 
       // Only update local storage if data is different
       if (localEvent?.toJson() != freshEvent.toJson()) {
@@ -69,7 +69,7 @@ class EventNotifier extends AutoDisposeAsyncNotifier<CalendarEventsResponse?> {
         // final category = ref.watch(reminderProvider).filter.toLowerCase();
         final freshEvent = await ref
             .read(getApiServiceProvider)
-            .getEvent(bearerToken: token ?? "", limit: "");
+            .getEvent(bearerToken: token ?? "", limit: "",statuse: "active");
         await SharedPrefsService.saveEvent(freshEvent);
         return freshEvent;
       } catch (e) {

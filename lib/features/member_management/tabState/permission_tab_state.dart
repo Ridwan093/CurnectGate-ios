@@ -76,7 +76,8 @@ enum BottomSheetView {
   removedReminder,
   events,
   eventsDetails,
-
+  permitAccces,
+  addpermitItems,
 }
 
 // State notifier for permissions

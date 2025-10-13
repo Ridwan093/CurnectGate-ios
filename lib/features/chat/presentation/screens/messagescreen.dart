@@ -1,7 +1,7 @@
 import 'package:curnectgate/features/chat/data/chat_model/message_model.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/messageBubble.dart';
 import 'package:curnectgate/features/chat/presentation/controllers/chat_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,7 +23,7 @@ class MessageScreen extends ConsumerStatefulWidget {
 
 class _MessageScreenState extends ConsumerState<MessageScreen> {
   final ScrollController _scrollController = ScrollController();
-  final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+
   List<Messages> messages = [];
 
   @override
@@ -40,23 +40,23 @@ class _MessageScreenState extends ConsumerState<MessageScreen> {
 
 
   void _setupMessageListener() {
-    final messageStream = ref
-        .read(chatControllerProvider)
-        .chatStream(widget.chatId);
+    // final messageStream = ref
+        // .read(chatControllerProvider)
+        // .chatStream(widget.chatId);
 
-    messageStream.listen(
-      (messages) {
-        if (mounted) {
-          setState(() {
-            messages = messages;
-            _scrollToBottomIfNeeded();
-          });
-        }
-      },
-      onError: (error) {
-        debugPrint('Message stream error: $error');
-      },
-    );
+    // messageStream.listen(
+    //   (messages) {
+    //     if (mounted) {
+    //       setState(() {
+    //         messages = messages;
+    //         _scrollToBottomIfNeeded();
+    //       });
+    //     }
+    //   },
+    //   onError: (error) {
+    //     debugPrint('Message stream error: $error');
+    //   },
+    // );
   }
 
   void _scrollToBottomIfNeeded() {
@@ -74,7 +74,7 @@ class _MessageScreenState extends ConsumerState<MessageScreen> {
       children: [
         Expanded(
           child: StreamBuilder<List<Messages>>(
-            stream: ref.read(chatControllerProvider).chatStream(widget.chatId),
+            stream:null,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
@@ -123,7 +123,7 @@ class _MessageScreenState extends ConsumerState<MessageScreen> {
                     final message = messages[index];
                     return Align(
                       alignment:
-                          message.senderID == currentUserId
+                          message.senderID == ""
                               ? Alignment.centerRight
                               : Alignment.centerLeft,
                       child: Padding(
@@ -131,7 +131,7 @@ class _MessageScreenState extends ConsumerState<MessageScreen> {
                         child: MessageBubble(
                           key: ValueKey(message.messageId),
                           message: message,
-                          isCurrentUser: message.senderID == currentUserId,
+                          isCurrentUser: message.senderID == "",
                         ),
                       ),
                     );

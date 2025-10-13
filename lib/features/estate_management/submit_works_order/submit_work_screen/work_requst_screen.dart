@@ -1,17 +1,18 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/core/widgets/GetYourCode.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/venodrLod_model.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/work_order_model.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/workformprovider.dart';
-import 'package:curnectgate/core/widgets/GetYourCode.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/date_picker.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/dayTimeWindow.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/incressxdecress.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/work_drop_down.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/work_submitbutton.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/loading_screen/loading_page.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -112,8 +113,22 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
       email: _vendoremailController.text,
       phonenumber: _vendorphoneController.text,
     );
-
+    // final provider = ref.read(formProvider.notifier);
     // Your existing submission logic
+    // provider.submitWorkOrder(
+    //   context: context,
+    //   file: "",
+    //   name: _vendorNameController.text.trim(),
+    //   dec: _discriptionController.text.trim(),
+    //   email: _vendoremailController.text.trim(),
+    //   phone: _vendorphoneController.text.trim(),
+    //   startDate: state.startDate.toString(),
+    //   endDate: state.endDate.toString(),
+    //   dailyWindowTime: state.selectedTimeWindow ?? "",
+    //   numberofWorkers: state.workerCount.toString(),
+    //   numberofDays: state.daysCount.toString(),
+    //   ref: ref,
+    // );
     vendorList.add(vendor);
     if (vendorList.isNotEmpty) {
       Navigator.push(
@@ -160,114 +175,126 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
   Widget build(BuildContext context) {
     final state = ref.watch(workOrderFormProvider);
     final notifier = ref.read(workOrderFormProvider.notifier);
+    final provider = ref.read(formProvider);
     final isValid = ref.watch(
       workOrderFormProvider.select((state) => state.allValid),
     );
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.instance.grey200,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
-      bottomNavigationBar: WorkSubmitbutton(
-        label: "Generate access code",
-        onPressed: isValid ? () => _submitForm(context) : null,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Submit Work Order',
-              style: TextStyle(
-                fontSize: 24,
-                color: AppColors.instance.black600,
-                fontFamily: FontFamilies.interDisplay,
-                fontWeight: FontFamilies.bold,
+      appBar:
+          provider.workOderLoading
+              ? null
+              : AppBar(
+                backgroundColor: AppColors.instance.grey200,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
+      bottomNavigationBar:
+          provider.workOderLoading
+              ? null
+              : WorkSubmitbutton(
+                label: "Generate access code",
+                onPressed: isValid ? () => _submitForm(context) : null,
+              ),
+      body:
+          provider.workOderLoading
+              ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)
+              : SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Submit Work Order',
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: AppColors.instance.black600,
+                        fontFamily: FontFamilies.interDisplay,
+                        fontWeight: FontFamilies.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
 
-            // Vendor Name Field
-            ReusabelProfileForm(
-              controller: _vendorNameController,
-              fieldKey: "Vendor's name",
-              fieldType: FieldType.name,
-              hintText: 'Enter vendor name',
-              label: 'Vendor name',
-                    onChanged: (value) {},
-              onValidationChanged: (value) {
-                notifier.updateVendorName(_vendorNameController.text);
-              },
-            ),
-            const SizedBox(height: 16),
+                    // Vendor Name Field
+                    ReusabelProfileForm(
+                      controller: _vendorNameController,
+                      fieldKey: "Vendor's name",
+                      fieldType: FieldType.name,
+                      hintText: 'Enter vendor name',
+                      label: 'Vendor name',
+                      onChanged: (value) {},
+                      onValidationChanged: (value) {
+                        notifier.updateVendorName(_vendorNameController.text);
+                      },
+                    ),
+                    const SizedBox(height: 16),
 
-            // Email Field
-            ReusabelProfileForm(
-              controller: _vendoremailController,
-              fieldKey: "email",
-              fieldType: FieldType.email,
-              hintText: 'Enter email',
-              label: 'Email',
-                    onChanged: (value) {},
-              onValidationChanged: (value) {
-                notifier.updateVendorEmail(_vendoremailController.text);
-              },
-            ),
-            const SizedBox(height: 16),
+                    // Email Field
+                    ReusabelProfileForm(
+                      controller: _vendoremailController,
+                      fieldKey: "email",
+                      fieldType: FieldType.email,
+                      hintText: 'Enter email',
+                      label: 'Email',
+                      onChanged: (value) {},
+                      onValidationChanged: (value) {
+                        notifier.updateVendorEmail(_vendoremailController.text);
+                      },
+                    ),
+                    const SizedBox(height: 16),
 
-            // Phone Number Field
-            ReusabelProfileForm(
-              controller: _vendorphoneController,
-              fieldKey: "Phone Number",
-              fieldType: FieldType.phone,
-              hintText: 'Enter phone number',
-              label: 'Phone number',
-                    onChanged: (value) {},
-              onValidationChanged: (value) {
-                notifier.updatePhoneNumber(_vendorphoneController.text);
-              },
-            ),
-            const SizedBox(height: 16),
+                    // Phone Number Field
+                    ReusabelProfileForm(
+                      controller: _vendorphoneController,
+                      fieldKey: "Phone Number",
+                      fieldType: FieldType.phone,
+                      hintText: 'Enter phone number',
+                      label: 'Phone number',
+                      onChanged: (value) {},
+                      onValidationChanged: (value) {
+                        notifier.updatePhoneNumber(_vendorphoneController.text);
+                      },
+                    ),
+                    const SizedBox(height: 16),
 
-            // Work Type Dropdown
-            WorkDropDown(
-              workTypes: workTypes,
-              onChanged: (value) {
-                notifier.updateWorkType(value);
-              },
-            ),
-            const SizedBox(height: 16),
+                    // Work Type Dropdown
+                    WorkDropDown(
+                      workTypes: workTypes,
+                      onChanged: (value) {
+                        notifier.updateWorkType(value);
+                      },
+                    ),
+                    const SizedBox(height: 16),
 
-            // Work Description
-            ReusabelProfileForm(
-              controller: _discriptionController,
-              fieldKey: 'Work Description',
-              fieldType: FieldType.general,
-              hintText: 'Enter work description',
-              label: 'Description',
-              maxLength: 100,
-              maxLines: 5,
-                    onChanged: (value) {},
-              onValidationChanged: (value) {
-                notifier.updateWorkDescription(_discriptionController.text);
-              },
-            ),
-            const SizedBox(height: 20),
+                    // Work Description
+                    ReusabelProfileForm(
+                      controller: _discriptionController,
+                      fieldKey: 'Work Description',
+                      fieldType: FieldType.general,
+                      hintText: 'Enter work description',
+                      label: 'Description',
+                      maxLength: 100,
+                      maxLines: 5,
+                      onChanged: (value) {},
+                      onValidationChanged: (value) {
+                        notifier.updateWorkDescription(
+                          _discriptionController.text,
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 20),
 
-            // Worker and Days Count Section
-            _buildCounterSection(state, notifier),
-            const SizedBox(height: 20),
+                    // Worker and Days Count Section
+                    _buildCounterSection(state, notifier),
+                    const SizedBox(height: 20),
 
-            // Date and Time Section
-            _buildDateTimeSection(ref),
-          ],
-        ),
-      ),
+                    // Date and Time Section
+                    _buildDateTimeSection(ref),
+                  ],
+                ),
+              ),
     );
   }
 

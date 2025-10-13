@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class ChatLists {
   final String name;
@@ -85,7 +85,7 @@ class ChatLists {
         name: map["name"] ?? "",
         profilepice: map["profilepice"] ?? "",
         contactId: map["contactId"] ?? "",
-        sendeTime: (map['sendeTime'] as Timestamp).toDate(),
+        sendeTime: (map['sendeTime']),
         lastMessage: map["lastMessage"] ?? "",
         isSeen: map["isSeen"] ?? false,
         isonlin: map["isonlin"] ?? false,

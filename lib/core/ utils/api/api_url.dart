@@ -9,6 +9,10 @@ const String forgetPass = "/api/v1/auth/forgot-password";
 const String forgetpassOtpverify = "/api/v1/auth/verify-reset-code";
 const String createNewpass = "/api/v1/auth/reset-password";
 const String changetemporaryPass = "/api/v1/auth/change-password";
+const String biometricLogin = "/api/v1/auth/biometric-login";
+const String refresToken = "/api/v1/auth/refresh-token";
+const String setUpBiometri = "/api/v1/auth/biometric/setup";
+const String enableBiometric = "/api/v1/auth/biometric/disable";
 //NEXT CREATE NEW PASSWORD API URL
 const String onboardingHouseHold =
     "/api/v1/estates/owner-portal/households/onboarding";
@@ -23,6 +27,10 @@ const String creatViolation = "/api/v1/estates/general/violations/create";
 const String updateViolation = "/api/v1/estates/general/violations/";
 const String makeCommentViolation =
     "/api/v1/estates/general/violations/1/comments";
+
+/// WORKODER POST
+
+const String submitWorkOrder = "/api/v1/estates/general/workorders";
 
 /// SETTING/PROFILE POST API
 
@@ -67,6 +75,8 @@ const String reActiveMemberID =
 const String generateOtpWithValidator =
     "/api/v1/estates/general/visitor-otps/generate";
 const String schedulOtp = "/api/v1/estates/general/visitor-otps/generate";
+const String createinstantPermit = "/api/v1/estates/general/clearance-permits/create-for-otp";
+
 
 //SECURITY POST API URL
 
@@ -169,3 +179,7 @@ const String deleteViolation = "/api/v1/estates/violations/4";
 /// /api/v1/estates/general/committees
 const String getCommitt = "/api/v1/estates/general/committees";
 const String getResinde = "/api/v1/estates/general/directory";
+
+// WORKODER GET API
+
+const String getworkOrder = "/api/v1/estates/general/workorders";

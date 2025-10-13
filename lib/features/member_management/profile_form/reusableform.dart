@@ -3,7 +3,17 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-enum FieldType { name, email, phone, oTpCode, general, password, reason, year }
+enum FieldType {
+  name,
+  email,
+  phone,
+  oTpCode,
+  general,
+  password,
+  reason,
+  year,
+  itemName,
+}
 
 class ReusabelProfileForm extends StatefulWidget {
   final String? initialValue;
@@ -210,6 +220,10 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
         case FieldType.reason:
           if (value.length < 20) {
             error = '${widget.label} must be at least 20 characters';
+          }
+        case FieldType.itemName:
+          if (value.length < 5) {
+            error = '${widget.label} must be at least 5 characters';
           }
           break;
       }

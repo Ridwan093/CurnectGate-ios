@@ -21,6 +21,7 @@ class AppRoutes {
   static const String memberIdCheck = 'member_idCheck';
   static const String getMemberInfo = 'member_info';
   static const String memberPassCreated = 'pass_created';
+    static const String manageLoging = 'login_setting';
   static const String selectedMemeber = 'member_selected';
   static const String filleMemberInfo = 'member_fillInfo';
   static const String residentDirectory = 'resident';
@@ -55,7 +56,8 @@ class AppRoutes {
   static const String vendorLog = 'vendor_log';
   static const String visitorAccessCode = 'visitor_accessCode';
   static const String violation = 'violation';
-  static const String workSubmit = 'workOrder';
+  static const String workSubmit = 'Add_workOrder';
+  static const String  workOrder = 'workOrder';
 
   // ------------------------------------------------------------------
   // Payments (Grouped)

@@ -229,6 +229,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                 },
               ),
               Divider(color: AppColors.instance.grey300),
+
+              BuildListTile(
+                onTap: () {
+                  context.pushNamed(AppRoutes.manageLoging);
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => AllMemberListScreen(),
+                  //   ),
+                  // );
+                },
+                title: "Account Settings",
+                iconPath: AssetPaths.loginSetting,
+              ),
+              Divider(color: AppColors.instance.grey300),
               BuildListTile(
                 onTap: () {
                   context.pushNamed(AppRoutes.setPreferences);
@@ -330,7 +345,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
   }) {
     final formstate = ref.watch(formProvider);
     return Padding(
-      padding: const EdgeInsets.only(top: 90),
+      padding: const EdgeInsets.only(top: 50),
       child: Align(
         alignment: Alignment.bottomLeft,
         child: InkWell(

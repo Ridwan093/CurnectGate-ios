@@ -2,7 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
@@ -23,77 +22,73 @@
     <string>????</string>
     <key>CFBundleVersion</key>
     <string>$(FLUTTER_BUILD_NUMBER)</string>
+
     <key>LSRequiresIPhoneOS</key>
     <true/>
+
+    <!-- Launch screen (used instead of storyboard UI) -->
     <key>UILaunchStoryboardName</key>
     <string>LaunchScreen</string>
-    <key>UIMainStoryboardFile</key>
-    <string>Main</string>
-    
-    <!-- Background modes (keep this for push/background fetch) -->
+
+    <!-- Background fetch + push notification support -->
     <key>UIBackgroundModes</key>
     <array>
         <string>fetch</string>
         <string>remote-notification</string>
-        
     </array>
+
+    <!-- Deep link / app query schemes -->
     <key>LSApplicationQueriesSchemes</key>
-<array>
-  <string>sms</string>
-  <string>tel</string>
-</array>
-    <!-- Added: Modern iOS notification permissions (iOS 10+) -->
-    <key>UNUserNotificationCenter</key>
-    <dict>
-        <key>UNAuthorizationOptions</key>
-        <array>
-            <string>alert</string>
-            <string>badge</string>
-            <string>sound</string>
-        </array>
-    </dict>
+    <array>
+        <string>sms</string>
+        <string>tel</string>
+    </array>
+
+    <!-- Network security exceptions (for HTTP APIs like Cloudinary) -->
     <key>NSAppTransportSecurity</key>
-<dict>
-    <key>NSExceptionDomains</key>
     <dict>
-        <key>res.cloudinary.com</key>
+        <key>NSExceptionDomains</key>
         <dict>
-            <key>NSIncludesSubdomains</key>
-            <true/>
-            <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
-            <true/>
-            <key>NSTemporaryExceptionMinimumTLSVersion</key>
-            <string>TLSv1.2</string>
+            <key>res.cloudinary.com</key>
+            <dict>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+                <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+                <true/>
+                <key>NSTemporaryExceptionMinimumTLSVersion</key>
+                <string>TLSv1.2</string>
+            </dict>
         </dict>
     </dict>
-</dict>
-   <key>NSPhotoLibraryUsageDescription</key>
-    <string>We need access to your photos to let you upload profile pictures</string>
-    
-    <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>We save processed images back to your gallery</string>
-    
-    <key>NSCameraUsageDescription</key>
-    <string>We need camera access to capture new photos</string>
-    
-    <!-- Only include if using video recording -->
-    <key>NSMicrophoneUsageDescription</key>
-    <string>We need microphone access for video recording</string>
 
-    <!-- ===== 3. QR CODE SCANNING ===== -->
+    <!-- Permissions -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>We need access to your photos to let you upload profile pictures.</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>We save processed images back to your gallery.</string>
     <key>NSCameraUsageDescription</key>
-    <string>We need camera access to scan QR codes</string>
-    
-    <!-- For iOS 14+ clipboard detection -->
-    <key>NSUserTrackingUsageDescription</key>
-    <string>We check clipboard for QR codes when app opens</string>
-</dict>
+    <string>We need camera access to capture photos and scan QR codes.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>We need microphone access for video recording.</string>
+    <key>NSFaceIDUsageDescription</key>
+    <string>This app uses Face ID for secure authentication.</string>
+
+    <!-- Optional: if you actually use pasteboard or WebView -->
+    <!-- <key>NSPasteboardUsageDescription</key>
+    <string>We check clipboard content when scanning QR codes.</string> -->
+
+    <!-- Flutter embedding configuration -->
+    <key>io.flutter.embedded_views_preview</key>
+    <true/>
+
+    <!-- Orientation settings -->
     <key>UISupportedInterfaceOrientations</key>
     <array>
         <string>UIInterfaceOrientationPortrait</string>
         <string>UIInterfaceOrientationLandscapeLeft</string>
         <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
+
     <key>UISupportedInterfaceOrientations~ipad</key>
     <array>
         <string>UIInterfaceOrientationPortrait</string>
@@ -101,56 +96,10 @@
         <string>UIInterfaceOrientationLandscapeLeft</string>
         <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
-    
+
     <key>CADisableMinimumFrameDurationOnPhone</key>
     <true/>
     <key>UIApplicationSupportsIndirectInputEvents</key>
     <true/>
 </dict>
 </plist>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<key>CFBundleDisplayName</key>
-	<string>Curnectgate</string>
-	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
-	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>curnectgate</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
-	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-</dict>
-</plist>
-

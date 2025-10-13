@@ -1,0 +1,376 @@
+[ +891 ms] executing: sysctl hw.optional.arm64
+[ +159 ms] Exit code 1 from: sysctl hw.optional.arm64
+[        ] sysctl: unknown oid 'hw.optional.arm64'
+[+2209 ms] executing: sw_vers -productName
+[+1864 ms] Exit code 0 from: sw_vers -productName
+[   +1 ms] macOS
+[   +2 ms] executing: sw_vers -productVersion
+[  +56 ms] Exit code 0 from: sw_vers -productVersion
+[        ] 12.6.2
+[        ] executing: sw_vers -buildVersion
+[  +49 ms] Exit code 0 from: sw_vers -buildVersion
+[        ] 21G320
+[        ] executing: uname -m
+[  +34 ms] Exit code 0 from: uname -m
+[        ] x86_64
+[ +653 ms] executing: sysctl hw.optional.arm64
+[  +58 ms] Exit code 1 from: sysctl hw.optional.arm64
+[        ] sysctl: unknown oid 'hw.optional.arm64'
+[        ] executing: xcrun xcodebuild -version
+[+24139 ms] Exit code 0 from: xcrun xcodebuild -version
+[ +411 ms] Xcode 14.2
+           Build version 14C18
+[+1311 ms] executing: xcrun xcdevice list --timeout 5
+[ +354 ms] Artifact Instance of 'AndroidGenSnapshotArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'AndroidInternalBuildArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IOSEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterWebSdk' is not required, skipping update.
+[        ] Artifact Instance of 'LegacyCanvasKitRemover' is not required, skipping update.
+[  +86 ms] Artifact Instance of 'WindowsEngineArtifacts' is not required, skipping update.
+[   +3 ms] Artifact Instance of 'MacOSEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'LinuxEngineArtifacts' is not required, skipping update.
+[  +28 ms] Artifact Instance of 'LinuxFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'MacOSFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterRunnerSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterRunnerDebugSymbols' is not required, skipping update.
+[+6432 ms] executing: /Users/mac/Android/Sdk/platform-tools/adb devices -l
+[  +47 ms] executing: xcrun xcdevice list --timeout 2
+[  +43 ms] xcrun simctl list devices booted iOS --json
+[   +5 ms] executing: xcrun simctl list devices booted iOS --json
+[ +337 ms] executing: xcrun simctl list devices booted
+[+7671 ms] Exit code 0 from: xcrun simctl list devices booted
+[  +13 ms] == Devices ==
+           -- iOS 16.2 --
+[+2621 ms] List of devices attached
+[+4092 ms] {
+             "devices" : {
+               "com.apple.CoreSimulator.SimRuntime.iOS-16-2" : [
+
+               ]
+             }
+           }
+[+33190 ms] [
+              {
+                "simulator" : true,
+                "operatingSystemVersion" : "16.2 (20C52)",
+                "available" : true,
+                "platform" : "com.apple.platform.iphonesimulator",
+                "modelCode" : "iPhone15,2",
+                "identifier" : "FDAA9761-37A8-4C08-87BA-4A5DCF927258",
+                "architecture" : "x86_64",
+                "modelUTI" : "com.apple.iphone-14-pro-1",
+                "modelName" : "iPhone 14 Pro",
+                "name" : "iPhone 14 Pro"
+              },
+              {
+                "simulator" : true,
+                "operatingSystemVersion" : "16.2 (20C52)",
+                "available" : true,
+                "platform" : "com.apple.platform.iphonesimulator",
+                "modelCode" : "iPad14,3",
+                "identifier" : "35FF55B4-2AA5-4B20-AE06-A0BF50BC3318",
+                "architecture" : "x86_64",
+                "modelUTI" : "com.apple.ipad-pro-11-4th-1",
+                "modelName" : "iPad Pro (11-inch) (4th generation)",
+                "name" : "iPad Pro (11-inch) (4th generation)"
+              },
+              {
+                "simulator" : true,
+                "operatingSystemVersion" : "16.2 (20C52)",
+                "available" : true,
+                "platform" : "com.apple.platform.iphonesimulator",
+                "modelCode" : "iPhone14,8",
+                "identifier" : "2BBEF3A5-878C-47AC-99D8-FD13F842A661",
+                "architecture" : "x86_64",
+                "modelUTI" : "com.apple.iphone-14-plus-1",
+                "modelName" : "iPhone 14 Plus",
+                "name" : "iPhone14Plus-New"
+              },
+              {
+                "simulator" : true,
+                "operatingSystemVersion" : "16.2 (20C52)",
+                "available" : true,
+                "platform" : "com.apple.platform.iphonesimulator",
+                "modelCode" : "iPhone10,4",
+                "identifier" : "0CD63F40-9F47-4660-857E-075B5CCF93E5",
+                "architecture" : "x86_64",
+                "modelUTI" : "com.apple.iphone-8-2",
+                "modelName" : "iPhone 8",
+                "name" : "iPhone8"
+              },
+              {
+                "simulator" : true,
+                "operatingSystemVersion" : "16.2 (20C52)",
+                "available" : true,
+                "platform" : "com.apple.platform.iphonesimulator",
+                "modelCode" : "iPad13,17",
+                "identifier" : "B3E64558-0838-4E3D-8C2E-3275209B2CFD",
+                "architecture" : "x86_64",
+                "modelUTI" : "com.apple.ipad-air5-1",
+                "modelName" : "iPad Air (5th generation)",
+                "name" : "iPad Air (5th generation)"
+              },
+              {
+                "simulator" : true,
+                "operatingSystemVersion" : "16.2 (20C52)",
+                "available" : true,
+                "platform" : "com.apple.platform.iphonesimulator",
+                "modelCode" : "iPhone14,7",
+                "identifier" : "2DAB2C36-5ED6-4D22-8BA1-2C5ED669406A",
+                "architecture" : "x86_64",
+                "modelUTI" : "com.apple.iphone-14-1",
+                "modelName" : "iPhone 14",
+                "name" : "iPhone 14"
+              },
+              {
+                "simulator" : true,
+                "operatingSystemVersion" : "16.2 (20C52)",
+                "available" : true,
+                "platform" : "com.apple.platform.iphonesimulator",
+                "modelCode" : "iPad13,18",
+                "identifier" : "3F845C3F-71CB-4D7D-9583-020B7DA69FB9",
+                "architecture" : "x86_64",
+                "modelUTI" : "com.apple.ipad-10-1",
+                "modelName" : "iPad (10th generation)",
+                "name" : "iPad (10th generation)"
+              },
+              {
+                "simulator" : false,
+                "operatingSystemVersion" : "12.6.2 (21G320)",
+                "interface" : "usb",
+                "available" : true,
+                "platform" : "com.apple.platform.macosx",
+                "modelCode" : "MacBookAir7,1",
+                "identifier" : "BDCC9328-7690-59DF-9D0E-9D23CD0F5755",
+                "architecture" : "x86_64h",
+                "modelUTI" : "com.apple.macbookair-11-unibody",
+                "modelName" : "MacBook Air",
+                "name" : "My Mac"
+              },
+              {
+                "simulator" : true,
+                "operatingSystemVersion" : "16.2 (20C52)",
+                "available" : true,
+                "platform" : "com.apple.platform.iphonesimulator",
+                "modelCode" : "iPad14,5",
+                "identifier" : "8938DB96-8809-4BFB-92E2-F97ED71719C5",
+                "architecture" : "x86_64",
+                "modelUTI" : "com.apple.ipad-pro-12point9-6th-1",
+                "modelName" : "iPad Pro (12.9-inch) (6th generation)",
+                "name" : "iPad Pro (12.9-inch) (6th generation)"
+              },
+              {
+                "simulator" : true,
+                "operatingSystemVersion" : "16.2 (20C52)",
+                "available" : true,
+                "platform" : "com.apple.platform.iphonesimulator",
+                "modelCode" : "iPhone15,3",
+                "identifier" : "9D4C56B9-2AE1-4EFD-AE31-BFEBD0107F2C",
+                "architecture" : "x86_64",
+                "modelUTI" : "com.apple.iphone-14-pro-max-1",
+                "modelName" : "iPhone 14 Pro Max",
+                "name" : "iPhone 14 Pro Max"
+              },
+              {
+                "simulator" : true,
+                "operatingSystemVersion" : "16.2 (20C52)",
+                "available" : true,
+                "platform" : "com.apple.platform.iphonesimulator",
+                "modelCode" : "iPhone14,6",
+                "identifier" : "3EAD3E6F-B9FB-4574-B855-EC42443A96B3",
+                "architecture" : "x86_64",
+                "modelUTI" : "com.apple.iphone-se3-1",
+                "modelName" : "iPhone SE (3rd generation)",
+                "name" : "iPhone SE (3rd generation)"
+              },
+              {
+                "simulator" : true,
+                "operatingSystemVersion" : "16.2 (20C52)",
+                "available" : true,
+                "platform" : "com.apple.platform.iphonesimulator",
+                "modelCode" : "iPad14,1",
+                "identifier" : "BC47FC8B-0180-4C22-9283-091D457669F7",
+                "architecture" : "x86_64",
+                "modelUTI" : "com.apple.ipad-mini6-1",
+                "modelName" : "iPad mini (6th generation)",
+                "name" : "iPad mini (6th generation)"
+              }
+            ]
+[ +855 ms] Artifact Instance of 'MaterialFonts' is not required, skipping update.
+[   +1 ms] Artifact Instance of 'GradleWrapper' is not required, skipping update.
+[        ] Artifact Instance of 'AndroidGenSnapshotArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'AndroidInternalBuildArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IOSEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterWebSdk' is not required, skipping update.
+[        ] Artifact Instance of 'LegacyCanvasKitRemover' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterSdk' is not required, skipping update.
+[        ] Artifact Instance of 'WindowsEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'MacOSEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'LinuxEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'LinuxFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'MacOSFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterRunnerSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterRunnerDebugSymbols' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FontSubsetArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'PubDependencies' is not required, skipping update.
+[ +267 ms] No devices found yet. Checking for wireless devices...
+[+1108 ms] [
+             {
+               "simulator" : true,
+               "operatingSystemVersion" : "16.2 (20C52)",
+               "available" : true,
+               "platform" : "com.apple.platform.iphonesimulator",
+               "modelCode" : "iPhone15,2",
+               "identifier" : "FDAA9761-37A8-4C08-87BA-4A5DCF927258",
+               "architecture" : "x86_64",
+               "modelUTI" : "com.apple.iphone-14-pro-1",
+               "modelName" : "iPhone 14 Pro",
+               "name" : "iPhone 14 Pro"
+             },
+             {
+               "simulator" : true,
+               "operatingSystemVersion" : "16.2 (20C52)",
+               "available" : true,
+               "platform" : "com.apple.platform.iphonesimulator",
+               "modelCode" : "iPad14,3",
+               "identifier" : "35FF55B4-2AA5-4B20-AE06-A0BF50BC3318",
+               "architecture" : "x86_64",
+               "modelUTI" : "com.apple.ipad-pro-11-4th-1",
+               "modelName" : "iPad Pro (11-inch) (4th generation)",
+               "name" : "iPad Pro (11-inch) (4th generation)"
+             },
+             {
+               "simulator" : true,
+               "operatingSystemVersion" : "16.2 (20C52)",
+               "available" : true,
+               "platform" : "com.apple.platform.iphonesimulator",
+               "modelCode" : "iPhone14,8",
+               "identifier" : "2BBEF3A5-878C-47AC-99D8-FD13F842A661",
+               "architecture" : "x86_64",
+               "modelUTI" : "com.apple.iphone-14-plus-1",
+               "modelName" : "iPhone 14 Plus",
+               "name" : "iPhone14Plus-New"
+             },
+             {
+               "simulator" : true,
+               "operatingSystemVersion" : "16.2 (20C52)",
+               "available" : true,
+               "platform" : "com.apple.platform.iphonesimulator",
+               "modelCode" : "iPhone10,4",
+               "identifier" : "0CD63F40-9F47-4660-857E-075B5CCF93E5",
+               "architecture" : "x86_64",
+               "modelUTI" : "com.apple.iphone-8-2",
+               "modelName" : "iPhone 8",
+               "name" : "iPhone8"
+             },
+             {
+               "simulator" : true,
+               "operatingSystemVersion" : "16.2 (20C52)",
+               "available" : true,
+               "platform" : "com.apple.platform.iphonesimulator",
+               "modelCode" : "iPad13,17",
+               "identifier" : "B3E64558-0838-4E3D-8C2E-3275209B2CFD",
+               "architecture" : "x86_64",
+               "modelUTI" : "com.apple.ipad-air5-1",
+               "modelName" : "iPad Air (5th generation)",
+               "name" : "iPad Air (5th generation)"
+             },
+             {
+               "simulator" : true,
+               "operatingSystemVersion" : "16.2 (20C52)",
+               "available" : true,
+               "platform" : "com.apple.platform.iphonesimulator",
+               "modelCode" : "iPhone14,7",
+               "identifier" : "2DAB2C36-5ED6-4D22-8BA1-2C5ED669406A",
+               "architecture" : "x86_64",
+               "modelUTI" : "com.apple.iphone-14-1",
+               "modelName" : "iPhone 14",
+               "name" : "iPhone 14"
+             },
+             {
+               "simulator" : true,
+               "operatingSystemVersion" : "16.2 (20C52)",
+               "available" : true,
+               "platform" : "com.apple.platform.iphonesimulator",
+               "modelCode" : "iPad13,18",
+               "identifier" : "3F845C3F-71CB-4D7D-9583-020B7DA69FB9",
+               "architecture" : "x86_64",
+               "modelUTI" : "com.apple.ipad-10-1",
+               "modelName" : "iPad (10th generation)",
+               "name" : "iPad (10th generation)"
+             },
+             {
+               "simulator" : false,
+               "operatingSystemVersion" : "12.6.2 (21G320)",
+               "interface" : "usb",
+               "available" : true,
+               "platform" : "com.apple.platform.macosx",
+               "modelCode" : "MacBookAir7,1",
+               "identifier" : "BDCC9328-7690-59DF-9D0E-9D23CD0F5755",
+               "architecture" : "x86_64h",
+               "modelUTI" : "com.apple.macbookair-11-unibody",
+               "modelName" : "MacBook Air",
+               "name" : "My Mac"
+             },
+             {
+               "simulator" : true,
+               "operatingSystemVersion" : "16.2 (20C52)",
+               "available" : true,
+               "platform" : "com.apple.platform.iphonesimulator",
+               "modelCode" : "iPad14,5",
+               "identifier" : "8938DB96-8809-4BFB-92E2-F97ED71719C5",
+               "architecture" : "x86_64",
+               "modelUTI" : "com.apple.ipad-pro-12point9-6th-1",
+               "modelName" : "iPad Pro (12.9-inch) (6th generation)",
+               "name" : "iPad Pro (12.9-inch) (6th generation)"
+             },
+             {
+               "simulator" : true,
+               "operatingSystemVersion" : "16.2 (20C52)",
+               "available" : true,
+               "platform" : "com.apple.platform.iphonesimulator",
+               "modelCode" : "iPhone15,3",
+               "identifier" : "9D4C56B9-2AE1-4EFD-AE31-BFEBD0107F2C",
+               "architecture" : "x86_64",
+               "modelUTI" : "com.apple.iphone-14-pro-max-1",
+               "modelName" : "iPhone 14 Pro Max",
+               "name" : "iPhone 14 Pro Max"
+             },
+             {
+               "simulator" : true,
+               "operatingSystemVersion" : "16.2 (20C52)",
+               "available" : true,
+               "platform" : "com.apple.platform.iphonesimulator",
+               "modelCode" : "iPhone14,6",
+               "identifier" : "3EAD3E6F-B9FB-4574-B855-EC42443A96B3",
+               "architecture" : "x86_64",
+               "modelUTI" : "com.apple.iphone-se3-1",
+               "modelName" : "iPhone SE (3rd generation)",
+               "name" : "iPhone SE (3rd generation)"
+             },
+             {
+               "simulator" : true,
+               "operatingSystemVersion" : "16.2 (20C52)",
+               "available" : true,
+               "platform" : "com.apple.platform.iphonesimulator",
+               "modelCode" : "iPad14,1",
+               "identifier" : "BC47FC8B-0180-4C22-9283-091D457669F7",
+               "architecture" : "x86_64",
+               "modelUTI" : "com.apple.ipad-mini6-1",
+               "modelName" : "iPad mini (6th generation)",
+               "name" : "iPad mini (6th generation)"
+             }
+           ]
+[  +22 ms] No supported devices found with name or id matching 'Pixel_2_API_30'.
+[        ] The following devices were found:
+[ +129 ms] macOS (desktop) • macos  • darwin-x64     • macOS 12.6.2 21G320 darwin-x64
+[        ] Chrome (web)    • chrome • web-javascript • Google Chrome 139.0.7258.155
+[  +30 ms] "flutter run" took 83,577ms.
+[  +10 ms] Running 2 shutdown hooks
+[  +46 ms] Shutdown hooks complete
+[ +256 ms] exiting with code 1

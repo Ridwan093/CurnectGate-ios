@@ -8,6 +8,7 @@ import 'package:curnectgate/features/auth/presentation/screen/forgot_password.da
 import 'package:curnectgate/features/auth/presentation/screen/memeber_getstarted.dart';
 import 'package:curnectgate/features/auth/presentation/screen/rest_pass_otp_screen.dart';
 import 'package:curnectgate/features/auth/presentation/screen/sign_in.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_screen/vendor_log.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/screen/Dashborad.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/screen/add_member.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/screen/allmemberScreen.dart';
@@ -26,6 +27,7 @@ import 'package:curnectgate/features/operations/violation/screens/reportViolatio
 import 'package:curnectgate/features/security/screen/sccurityTap_Screen.dart';
 import 'package:curnectgate/features/security/screen/security_notifier/notification.dart';
 import 'package:curnectgate/features/security/screen/violation_details.dart';
+import 'package:curnectgate/features/userProfile/Login_setting/manage_loging.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/screen/SetPreference.dart';
 import 'package:curnectgate/features/userProfile/Privacy_setting/screen/privacy_screen.dart';
 import 'package:curnectgate/features/userProfile/notification_setting/screen/notificationSetting_screen.dart';
@@ -298,6 +300,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           return ResidentTab();
         },
       ),
+      
       GoRoute(
         path: '/security_notifier',
         name: AppRoutes.securitynotification,
@@ -306,6 +309,28 @@ final routerProvider = Provider<GoRouter>((ref) {
 
           // Extract values with null checks
           return SecurityNotifications();
+        },
+      ),
+    
+        GoRoute(
+        path: '/work_order',
+        name: AppRoutes.workOrder,
+        builder: (context, state) {
+          // final extra = state.extra as Violation;
+
+          // Extract values with null checks
+          return VendorLog();
+        },
+      ),
+      
+        GoRoute(
+        path: '/manage_login',
+        name: AppRoutes.manageLoging,
+        builder: (context, state) {
+          // final extra = state.extra as Violation;
+
+          // Extract values with null checks
+          return ManageLoging();
         },
       ),
     ],

@@ -26,23 +26,23 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     required BuildContext context,
     required String messages,
   }) {
-    ref
-        .read(chatControllerProvider)
-        .sendTextMessage(
-          context: context,
-          text: messages,
-          reciverUserId: widget.userId,
-          reciverprofilpix: widget.profileUrl,
-          reciverName: widget.username,
-          muted: false,
-          age: "30",
-          gender: "male",
-          p1: "",
-          p2: "",
-          p3: "",
-          callID: "",
-          reciverTokens: ['uwyuyweuywuywuywe', "jdjdwjwjhwdjdwjhwj"],
-        );
+    // ref
+    //     .read(chatControllerProvider)
+    //     .sendTextMessage(
+    //       context: context,
+    //       text: messages,
+    //       reciverUserId: widget.userId,
+    //       reciverprofilpix: widget.profileUrl,
+    //       reciverName: widget.username,
+    //       muted: false,
+    //       age: "30",
+    //       gender: "male",
+    //       p1: "",
+    //       p2: "",
+    //       p3: "",
+    //       callID: "",
+    //       reciverTokens: ['uwyuyweuywuywuywe', "jdjdwjwjhwdjdwjhwj"],
+    //     );
   }
 
   @override

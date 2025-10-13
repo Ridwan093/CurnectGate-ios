@@ -9,6 +9,7 @@ import 'package:curnectgate/features/estate_management/submit_works_order/submit
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/status_progress_widget.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/vendor_fileter.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -53,16 +54,18 @@ class VendorLog extends ConsumerWidget {
   Widget _buildBody(Size size, WidgetRef ref, BuildContext context) {
     return Column(
       children: [
-        _buildAddMemberButton(size, context),
+        _buildAddMemberButton(size, context,ref),
         const SizedBox(height: 30),
         Expanded(child: _buildContent(size, context, ref)),
       ],
     );
   }
 
-  Widget _buildAddMemberButton(Size size, BuildContext context) {
+  Widget _buildAddMemberButton(Size size, BuildContext context, WidgetRef ref) {
+    final provider = ref.read(formProvider.notifier);
     return InkWell(
       onTap: () {
+        provider.restaddMemberFillds();
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => SubmitWorkOrderPage()),

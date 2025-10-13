@@ -531,7 +531,7 @@ class GetApiService {
   Future<EventsResponse> getCalender({required String bearerToken}) async {
     try {
       final response = await _dio.get(
-        "/api/v1/estates/general/events/calendar?start_date=2025-09-30&end_date=2025-10-01", // Update with your actual endpoint
+        "/api/v1/estates/general/events/calendar", // Update with your actual endpoint
         options: Options(
           headers: {
             'Accept': 'application/json',
@@ -552,10 +552,11 @@ class GetApiService {
   Future<CalendarEventsResponse> getEvent({
     required String bearerToken,
     required String limit,
+    required String statuse,
   }) async {
     try {
       final response = await _dio.get(
-        "/api/v1/estates/general/events?status=active&type=&upcoming=1&limit=$limit", // Update with your actual endpoint
+        "/api/v1/estates/general/events?status=$statuse&type=&upcoming=1&limit=$limit", // Update with your actual endpoint
         options: Options(
           headers: {
             'Accept': 'application/json',
@@ -575,11 +576,10 @@ class GetApiService {
 
   Future<ResidentDirectoryResponse> getResident({
     required String bearerToken,
-
   }) async {
     try {
       final response = await _dio.get(
-getResinde, // Update with your actual endpoint
+        getResinde, // Update with your actual endpoint
         options: Options(
           headers: {
             'Accept': 'application/json',
@@ -596,13 +596,13 @@ getResinde, // Update with your actual endpoint
       throw _handleError(e);
     }
   }
+
   Future<CommitteesResponse> getCommittees({
     required String bearerToken,
-   
   }) async {
     try {
       final response = await _dio.get(
-getCommitt, // Update with your actual endpoint
+        getCommitt, // Update with your actual endpoint
         options: Options(
           headers: {
             'Accept': 'application/json',

@@ -105,7 +105,22 @@ Widget _buildCurrentView(
       return _buildVendorDeleteConfirmationView(context, ref);
     case BottomSheetView.revorkActiveOtpConfirmation:
       return _buildrevokActiveOtp(context, ref);
+      
     case BottomSheetView.setCofew:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+       case BottomSheetView.addpermitItems:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+       case BottomSheetView.permitAccces:
       return BottomsheetDetails(
         id: id,
         headertitle: userName,

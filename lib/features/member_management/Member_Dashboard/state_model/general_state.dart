@@ -49,6 +49,7 @@ class FormStates {
   final bool changProfilePicLoading;
   final bool changProfilePassLoading;
   final bool deActivatAccountLoading;
+  final bool workOderLoading;
   final bool? facilityLoading;
   final bool? curfewLoading;
   final bool? gateAccessLoading;
@@ -194,6 +195,7 @@ class FormStates {
     this.changProfilePassLoading = false,
     this.deActivatAccountLoading = false,
     this.generateMemberIdLoading = false,
+    this.workOderLoading = false,
 
     this.hasMinLength = false,
     this.hasNumber = false,
@@ -274,7 +276,7 @@ class FormStates {
     bool? nightAccessLoading,
 
     bool? parkingAccessLoading,
-
+    bool? workOderLoading,
     bool? visitorAccessLoading,
     bool? basicPermissionLoading,
     bool? emenergencyNameValid,
@@ -375,6 +377,7 @@ class FormStates {
     int? resendCountdownTime,
   }) {
     return FormStates(
+      workOderLoading: workOderLoading ?? this.workOderLoading,
       facilityLoading: facilityLoading ?? this.facilityLoading,
       curfewLoading: curfewLoading ?? this.curfewLoading,
       gateAccessLoading: gateAccessLoading ?? this.gateAccessLoading,

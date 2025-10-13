@@ -348,63 +348,61 @@ class Dashborad extends ConsumerWidget {
   }
 
   Widget _buildRow(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          Dashbordrowcard(
-            title: "Digital ID",
-            icon: AssetPaths.dashboardIdVerification,
-            onTap: () async {
-              final authData = await SharedPrefsService().getAuthData();
-              bool status = authData?['user']?['digital_id_status'];
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Dashbordrowcard(
+          title: "Digital ID",
+          icon: AssetPaths.dashboardIdVerification,
+          onTap: () async {
+            final authData = await SharedPrefsService().getAuthData();
+            bool status = authData?['user']?['digital_id_status'];
 
-              if (status) {
-                context.pushNamed(AppRoutes.digitalIDMember);
-              } else {
-                context.pushNamed(AppRoutes.digitalIDStarter);
-              }
-            },
-          ),
-          SizedBox(width: 10),
-          Dashbordrowcard(
-            title: "Work Order",
-            icon: AssetPaths.dashboardWorkOrder,
-            onTap: () {},
-          ),
-          SizedBox(width: 10),
-          Dashbordrowcard(
-            title: "Visitor",
-            icon: AssetPaths.dashboardVisitors,
-            onTap: () {
-              context.pushNamed(AppRoutes.vendorLog);
-            },
-          ),
-          SizedBox(width: 10),
-          Dashbordrowcard(
-            title: "Report",
-            icon: AssetPaths.dashboardReports,
-            onTap: () {
-              context.pushNamed(AppRoutes.violation);
-            },
-          ),
-        ],
-      ),
+            if (status) {
+              context.pushNamed(AppRoutes.digitalIDMember);
+            } else {
+              context.pushNamed(AppRoutes.digitalIDStarter);
+            }
+          },
+        ),
+        SizedBox(width: 10),
+        Dashbordrowcard(
+          title: "Work Order",
+          icon: AssetPaths.dashboardWorkOrder,
+          onTap: () {
+            context.pushNamed(AppRoutes.workOrder);
+          },
+        ),
+        SizedBox(width: 10),
+        Dashbordrowcard(
+          title: "Visitor",
+          icon: AssetPaths.dashboardVisitors,
+          onTap: () {
+            context.pushNamed(AppRoutes.vendorLog);
+          },
+        ),
+        SizedBox(width: 10),
+        Dashbordrowcard(
+          title: "Report",
+          icon: AssetPaths.dashboardReports,
+          onTap: () {
+            context.pushNamed(AppRoutes.violation);
+          },
+        ),
+      ],
     );
   }
 
   Widget _buildvisitorRow() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          Visitoractivecount(title: "Total today", count: '0'),
-          SizedBox(width: 10),
-          Visitoractivecount(title: "Active", count: "0"),
-          SizedBox(width: 10),
-          Visitoractivecount(title: "Expired", count: "0"),
-        ],
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Visitoractivecount(title: "Total today", count: '0'),
+        SizedBox(width: 10),
+        Visitoractivecount(title: "Active", count: "0"),
+        SizedBox(width: 10),
+        Visitoractivecount(title: "Expired", count: "0"),
+      ],
     );
   }
 }

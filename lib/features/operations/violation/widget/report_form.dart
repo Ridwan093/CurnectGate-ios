@@ -3,14 +3,14 @@ import 'dart:io';
 
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/violation/model/report_model.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/getCategory_provider.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
 import 'package:curnectgate/features/operations/violation/widget/category_dropdwon.dart';
 import 'package:curnectgate/features/operations/violation/widget/estate_dropdwon_Address.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
-import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -48,98 +48,97 @@ class _ReportFormState extends ConsumerState<ReportForm> {
         children: [
           Padding(
             padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
+              // bottom: MediaQuery.of(context).viewInsets.bottom,
               left: 0,
               right: 0,
               top: 0,
             ),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 20),
 
-                  // 1. Category dropdown (no Expanded!)
-                  _buildCategoryDropdown(ref, report.category ?? "", context),
-                  const SizedBox(height: 20),
+                // 1. Category dropdown (no Expanded!)
+                _buildCategoryDropdown(ref, report.category ?? "", context),
+                const SizedBox(height: 20),
 
-                  // 2. Description field (no Expanded!)
-                  TextFormField(
-                    controller: decController,
-                    decoration: InputDecoration(
-                      labelText: 'Description',
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: AppColors.instance.black500,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: AppColors.instance.black500,
-                        ),
-                      ),
-                      labelStyle: TextStyle(
-                        fontFamily: FontFamilies.interDisplay,
+                // 2. Description field (no Expanded!)
+                TextFormField(
+                  controller: decController,
+                  decoration: InputDecoration(
+                    labelText: 'Description',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
                         color: AppColors.instance.black500,
                       ),
                     ),
-                    maxLines: 3,
-                    onChanged:
-                        (value) => ref
-                            .read(reportProvider.notifier)
-                            .setDescription(value),
-                  ),
-
-                  const SizedBox(height: 8.0),
-                  Text(
-                    "Maximum 100 characters",
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      color: AppColors.instance.black300,
-                      fontSize: 13,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: AppColors.instance.black500,
+                      ),
                     ),
-                  ),
-
-                  const SizedBox(height: 20),
-                  // Replace your existing dropdown with:
-                  const CustomSearchDropdown(),
-                  const SizedBox(height: 25),
-                  Text(
-                    "Uploade image Proof",
-                    style: TextStyle(
+                    labelStyle: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       color: AppColors.instance.black500,
-                      fontWeight: FontFamilies.bold,
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      _buildImagePicker(
-                        ref,
-                        index: 0,
-                        imagePaths: report.imagePaths,
-                        files: report.files,
-                      ),
-                      const SizedBox(width: 20),
-                      _buildImagePicker(
-                        ref,
-                        index: 1,
-                        imagePaths: report.imagePaths,
-                        files: report.files,
-                      ),
-                    ],
+                  maxLines: 3,
+                  onChanged:
+                      (value) => ref
+                          .read(reportProvider.notifier)
+                          .setDescription(value),
+                ),
+
+                const SizedBox(height: 8.0),
+                Text(
+                  "Maximum 100 characters",
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    color: AppColors.instance.black300,
+                    fontSize: 13,
                   ),
-                  const SizedBox(height: 20),
-                  // 3. Optional anonymous toggle
-                  _buildanonymousHide(report, ref),
+                ),
 
-                  const SizedBox(height: 20),
+                const SizedBox(height: 20),
+                // Replace your existing dropdown with:
+                const CustomSearchDropdown(),
+                const SizedBox(height: 25),
+                Text(
+                  "Uploade image Proof",
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    color: AppColors.instance.black500,
+                    fontWeight: FontFamilies.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    _buildImagePicker(
+                      ref,
+                      index: 0,
+                      imagePaths: report.imagePaths,
+                      files: report.files,
+                    ),
+                    const SizedBox(width: 20),
+                    _buildImagePicker(
+                      ref,
+                      index: 1,
+                      imagePaths: report.imagePaths,
+                      files: report.files,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                // 3. Optional anonymous toggle
+                _buildanonymousHide(report, ref),
 
-                  // 4. Submit button
-                  _buildSubmitButton(size: size, ref: ref, context: context),
-                ],
-              ),
+                const SizedBox(height: 20),
+
+                // 4. Submit button
+                _buildSubmitButton(size: size, ref: ref, context: context),
+              ],
             ),
           ),
           if (isLoading)

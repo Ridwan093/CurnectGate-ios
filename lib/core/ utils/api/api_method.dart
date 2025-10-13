@@ -2985,6 +2985,251 @@ class AppApiMethod {
       rethrow;
     }
   }
+
+  Future<Map<String, dynamic>> submitWorkOrders({
+    required String token,
+    required String file,
+    required String name,
+    required String dec,
+    required String email,
+    required String phone,
+    required String startDate,
+    required String endDate,
+    required String dailyWindowTime,
+    required String numberofWorkers,
+    required String numberofDays,
+    required BuildContext context,
+  }) async {
+    final Map<String, dynamic> requestData = {
+      "workorder_category_id": numberofDays, // maybe, not_going
+      "vendor_name": name,
+      "vendor_phone": phone, // maybe, not_going
+      "start_date": startDate,
+      "end_date": endDate, // maybe, not_going
+      "daily_time_window": dailyWindowTime,
+      "description": dec, // maybe, not_going
+      "number_of_workers": numberofWorkers,
+      "before_photos[]": file, // maybe, not_going
+    };
+    try {
+      final response = await _dio.post(
+        data: requestData,
+        submitWorkOrder,
+
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> setUpBiometric({
+    required String token,
+    required String device_token,
+    required String biometricType,
+    required String device_name,
+    required String os_version,
+    required String app_version,
+
+    required BuildContext context,
+  }) async {
+    final Map<String, dynamic> requestData = {
+      "device_token": device_token,
+      "biometric_type": biometricType,
+      "device_info": {
+        "device_name": device_name,
+        "os_version": os_version,
+        "app_version": app_version,
+      },
+    };
+    log(requestData.toString());
+    try {
+      final response = await _dio.post(
+        data: requestData,
+        setUpBiometri,
+
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> enable_desable_fingal_faceID({
+    required String token,
+
+    required String isEnable,
+    required BuildContext context,
+  }) async {
+    try {
+      final response = await _dio.post(
+        "/api/v1/auth/biometric/$isEnable",
+
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> logIngwithFingerPrintAndFaceID({
+    required String token,
+    required String device_token,
+    required String biometric_signature,
+    required String email,
+    required BuildContext context,
+  }) async {
+    final Map<String, dynamic> requestData = {
+      "email": email,
+      "device_token": device_token,
+      "biometric_signature": biometric_signature,
+    };
+    log(requestData.toString());
+    try {
+      final response = await _dio.post(
+        biometricLogin,
+        data: requestData,
+
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> addWorkPermit({
+    required String token,
+    required Map<String, dynamic> requestData,
+
+    required BuildContext context,
+  }) async {
+    log(requestData.toString());
+    try {
+      final response = await _dio.post(
+        data: requestData,
+        createinstantPermit,
+
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
 }
 //927763
 //302988

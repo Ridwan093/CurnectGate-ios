@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/back_manageent/back_provider/provider.dart';
@@ -12,6 +13,7 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/estate_
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
+import 'package:curnectgate/features/userProfile/Login_setting/state/biometric_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -146,6 +148,7 @@ class _SignInState extends ConsumerState<SignIn> {
   }
 
   Widget _buildContent() {
+    final isBiometricEnabled = ref.read(biometricPrefProvider);
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 80),
       child: Column(
@@ -209,7 +212,9 @@ class _SignInState extends ConsumerState<SignIn> {
                   );
             },
           ),
+
           _buildForgotButton(),
+          if (isBiometricEnabled) _buildBiometricWidget(),
         ],
       ),
     );
@@ -239,6 +244,76 @@ class _SignInState extends ConsumerState<SignIn> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildBiometricWidget() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 100),
+          if (Platform.isAndroid) ...[
+            InkWell(
+              onTap: () {
+                ref
+                    .read(formProvider.notifier)
+                    .signInwithFaceID(context: context, ref: ref, slug: "");
+              },
+              child: Icon(
+                Icons.fingerprint,
+                size: 55,
+                color: AppColors.instance.teal300,
+              ),
+            ),
+            const SizedBox(height: 10),
+            InkWell(
+              onTap: () {
+                ref
+                    .read(formProvider.notifier)
+                    .signInwithFaceID(context: context, ref: ref, slug: "");
+              },
+              child: Text(
+                "Log in with fingerprint",
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  color: AppColors.instance.black600,
+                  fontWeight: FontFamilies.medium,
+                ),
+              ),
+            ),
+          ] else ...[
+            InkWell(
+              onTap: () {
+                ref
+                    .read(formProvider.notifier)
+                    .signInwithFaceID(context: context, ref: ref, slug: "");
+              },
+              child: Icon(
+                Icons.face,
+                size: 55,
+                color: AppColors.instance.teal300,
+              ),
+            ),
+            const SizedBox(height: 10),
+            InkWell(
+              onTap: () {
+                ref
+                    .read(formProvider.notifier)
+                    .signInwithFaceID(context: context, ref: ref, slug: "");
+              },
+              child: Text(
+                "Log in with face ID",
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  color: AppColors.instance.black600,
+                  fontWeight: FontFamilies.medium,
+                ),
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

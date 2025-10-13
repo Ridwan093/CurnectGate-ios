@@ -3,7 +3,6 @@ import 'package:curnectgate/core/appErrorBody/buildEmptyBody.dart';
 import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
 import 'package:curnectgate/core/appErrorBody/emmergencyBody.dart';
 import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
-import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -28,7 +27,6 @@ class UserPrivacySettings extends ConsumerWidget {
   }
 
   Widget _buildAppbarBottom(WidgetRef ref) {
-   
     return PreferredSize(
       preferredSize: Size.fromHeight(50),
       child: Padding(
@@ -45,7 +43,6 @@ class UserPrivacySettings extends ConsumerWidget {
                 color: AppColors.instance.black600,
               ),
             ),
-           
           ],
         ),
       ),
@@ -74,9 +71,11 @@ class UserPrivacySettings extends ConsumerWidget {
       ),
 
       actions: [
-        NotificationCount(onTap: (){
-          context.pushNamed(AppRoutes.notification);
-       },),
+        NotificationCount(
+          onTap: () {
+            context.pushNamed(AppRoutes.notification);
+          },
+        ),
       ],
     );
   }
@@ -84,7 +83,6 @@ class UserPrivacySettings extends ConsumerWidget {
   Widget _buildBody(WidgetRef ref, BuildContext context) {
     final privacyAsync = ref.watch(userPrivacyprovider);
     final formProviders = ref.read(formProvider.notifier);
-    
 
     return RefreshIndicator(
       color: AppColors.instance.yellow500,

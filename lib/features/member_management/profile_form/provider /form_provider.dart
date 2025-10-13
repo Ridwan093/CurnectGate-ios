@@ -6,6 +6,8 @@ import 'dart:io';
 
 import 'package:curnectgate/core/%20utils/api/api_Service.dart';
 import 'package:curnectgate/core/%20utils/api/api_method.dart';
+import 'package:curnectgate/core/config/biometric_faceID/Helper/biometric_signature_helper.dart';
+import 'package:curnectgate/core/config/biometric_faceID/Helper/device_info_helper.dart';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
@@ -23,6 +25,7 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/widget/
 import 'package:curnectgate/features/member_management/profile_form/validator/password_validator.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/active_provider.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/provider/submit_permit_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/getCalender_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/getevent_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notification_Count_provider.dart';
@@ -35,6 +38,7 @@ import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:curnectgate/features/security/provider/investigation_provider.dart';
 import 'package:curnectgate/features/security/provider/resolved_provider.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
+import 'package:curnectgate/features/userProfile/Login_setting/state/biometric_provider.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/provider/prefrence_provider.dart';
 import 'package:curnectgate/features/userProfile/Privacy_setting/provider/privacy_provider.dart';
 import 'package:curnectgate/features/userProfile/notification_setting/provider/NotificationSettings_provider.dart';
@@ -429,6 +433,12 @@ class FormNotifier extends StateNotifier<FormStates> {
     state = state.copyWith(removedHouseHoldLoading: isLoading);
   }
 
+  void updateWorkderLoading(bool isLoading) {
+    ///loading state if (optioner)
+    log(isLoading.toString());
+    state = state.copyWith(workOderLoading: isLoading);
+  }
+
   void updateOtp(String otp, bool isComplete) {
     log("FormStateOTP:$otp");
     state = state.copyWith(otp: otp, isOtpComplete: isComplete);
@@ -513,7 +523,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       rentalfrequencyValid: false,
       agentFeeValid: false,
       securityFeesValid: false,
-
+      workOderLoading: false,
       emenergencyRole: "",
       montlyIcom: "",
       employer: "",
@@ -643,7 +653,7 @@ class FormNotifier extends StateNotifier<FormStates> {
             lastName: lasetName,
             email: email,
             phoneNumber: phnoneNumber,
-            gender: state.gender?? "",
+            gender: state.gender ?? "",
             identityConfirmed: true,
             agreetoterms: state.agreedToTerms,
             password: state.pass ?? "",
@@ -839,7 +849,7 @@ class FormNotifier extends StateNotifier<FormStates> {
     required WidgetRef ref,
   }) async {
     updateloginLodaing(false);
-
+    final isBiometricEnabled = ref.read(biometricPrefProvider.notifier);
     if (password.isEmpty && email.isEmpty) {
       log("empty");
       return;
@@ -887,12 +897,26 @@ class FormNotifier extends StateNotifier<FormStates> {
           if (userData != null) {
             final user = userData['user'] as Map<String, dynamic>?;
             final firstName = user?['firstname'] as String?;
+            final email = user?["email"] as String?;
             if (firstName != null) {
               await SharedPrefsService().saveSingleUserName(firstName);
+            }
+
+            if (email != null) {
+              await DeviceInfoHelper.saveUserEmail(email);
             }
           }
           final user = response['data']["user"];
           final userRole = user['role'];
+          final biometricenabled = user["biometric_enabled"];
+
+          if (biometricenabled) {
+            await DeviceInfoHelper.saveFirstTimeCheck(false);
+            isBiometricEnabled.toggleBiometric(true);
+          } else {
+            await DeviceInfoHelper.saveFirstTimeCheck(true);
+            isBiometricEnabled.toggleBiometric(false);
+          }
           log(userRole.toString());
           getUserRoleFromString(context, userRole.toString());
           // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
@@ -6405,7 +6429,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         notifier.updateLoading(false);
         ref.read(getEventProvider.notifier).refreshEvent(context, ref);
         notifier.resetAll();
-        context.pop();
+        // context.pop();
         log("TRUE------->");
         showCustomSuccessToast(
           context: context,
@@ -6483,6 +6507,647 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       updateOtp('', false);
       log("END------->");
+    }
+  }
+
+  Future<void> submitWorkOrder({
+    required BuildContext context,
+    required String file,
+    required String name,
+    required String dec,
+    required String email,
+    required String phone,
+    required String startDate,
+    required String endDate,
+    required String dailyWindowTime,
+    required String numberofWorkers,
+    required String numberofDays,
+
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+
+    try {
+      final notifier = ref.read(reminderProvider.notifier);
+
+      updateWorkderLoading(true);
+
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .submitWorkOrders(
+            file: "",
+            name: "",
+            dec: "",
+            email: "",
+            phone: "",
+            startDate: "",
+            endDate: "",
+            dailyWindowTime: "",
+            numberofWorkers: "",
+            numberofDays: "",
+
+            token: token ?? "",
+
+            context: context,
+          );
+
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        updateWorkderLoading(false);
+        ref.read(getEventProvider.notifier).refreshEvent(context, ref);
+        notifier.resetAll();
+        // context.pop();
+        log("TRUE------->");
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      } else {
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          updateWorkderLoading(false);
+
+          //  final error = response['errors']?['comment']?.first;
+          // final message =
+          //     response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: response["message"],
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      updateWorkderLoading(false);
+
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      updateWorkderLoading(false);
+
+      log("END------->");
+    }
+  }
+
+  Future<void> enableFingerPrint({
+    required BuildContext context,
+    required bool value,
+    required WidgetRef ref,
+    required String slug,
+  }) async {
+    log("START------->");
+
+    final notifiers = ref.read(permissionLoadingProvider(slug).notifier);
+    notifiers.setLoading(true);
+
+    try {
+      final token = await ref.watch(accessTokenProvider.future);
+      final deviceToken = await DeviceInfoHelper.getDeviceToken();
+      final biometricType = await DeviceInfoHelper.getBiometricType();
+      final deviceInfo = await DeviceInfoHelper.getDeviceInfo();
+      final isFirstTime = await DeviceInfoHelper.getFirstTimeCheck();
+      final isBiometricEnabled = ref.watch(biometricPrefProvider);
+      final isBiometricEnableds = ref.read(biometricPrefProvider.notifier);
+
+      // ✅ Step 1: Check if biometrics available
+      final canUseBiometric = await DeviceInfoHelper.isBiometricAvailable();
+      if (!canUseBiometric) {
+        showCustomSuccessToast(
+          context: context,
+          message: "This device doesn't support biometric authentication.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+        return;
+      }
+
+      // ✅ Step 2: Ask user to authenticate with fingerprint/face
+      final authenticated = await DeviceInfoHelper.authenticateUser(ref);
+      if (!authenticated) {
+        showCustomSuccessToast(
+          context: context,
+          message: "Authentication cancelled or failed.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+        return;
+      }
+
+      // ✅ Step 3: Proceed to setup or enable after authentication
+      if (!isBiometricEnabled) {
+        if (isFirstTime) {
+          final response = await ref
+              .read(profileRepositoryProvider)
+              .setUpBiometric(
+                token: token ?? "",
+                device_token: deviceToken ?? "",
+                biometricType: biometricType,
+                device_name: deviceInfo["device_name"] ?? "",
+                os_version: deviceInfo["os_version"] ?? "",
+                app_version: deviceInfo["app_version"] ?? "",
+                context: context,
+              );
+
+          if (!context.mounted) return;
+
+          if (response['status'] == true) {
+            await DeviceInfoHelper.saveFirstTimeCheck(false);
+            isBiometricEnableds.toggleBiometric(true);
+
+            // enabletoggle(context: context, value: value, ref: ref, slug: slug);
+          } else {
+            final message = response["message"] ?? "Unknown error";
+            if (message.contains("Unauthenticated")) {
+              ref.read(authProvider.notifier).seassionExpire(context, ref);
+            } else {
+              showCustomSuccessToast(
+                context: context,
+                message: "SetUpFingerPrintErrorMessage: $message",
+                color: AppColors.instance.error500,
+                icon: Icons.error,
+                iconColors: AppColors.instance.grey200,
+                positionNumber: 70,
+              );
+            }
+          }
+        } else {
+          log("the first Time was not called");
+          enabletoggle(context: context, value: value, ref: ref, slug: slug);
+        }
+      } else {
+        log("the value was true");
+        enabletoggle(context: context, value: value, ref: ref, slug: slug);
+      }
+    } on DioException catch (e) {
+      log("DIO ERROR: $e");
+      showCustomSuccessToast(
+        context: context,
+        message: "Network error occurred",
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } catch (e) {
+      log("ERROR-------> $e");
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      notifiers.setLoading(false);
+      log("END------->");
+    }
+  }
+
+  Future<void> enabletoggle({
+    required BuildContext context,
+    required bool value,
+    required WidgetRef ref,
+    required String slug,
+  }) async {
+    log("🚀 START enableToggle() | switch current value = $value");
+
+    final notifiers = ref.read(permissionLoadingProvider(slug).notifier);
+    final biometricPref = ref.read(biometricPrefProvider.notifier);
+    notifiers.setLoading(true);
+
+    try {
+      final token = await ref.watch(accessTokenProvider.future) ?? "";
+
+      /// -------------------------------
+      /// CASE 1: User currently ENABLED (value = true)
+      /// Means → user wants to DISABLE it now
+      /// -------------------------------
+      if (value) {
+        log("🧭 Current state: enabled → disabling...");
+
+        final response = await ref
+            .read(profileRepositoryProvider)
+            .enable_desable_fingal_faceID(
+              token: token,
+              isEnable: "disable",
+              context: context,
+            );
+
+        if (!context.mounted) return;
+
+        if (response['status'] == true) {
+          log("✅ Biometric disabled successfully");
+          biometricPref.toggleBiometric(false);
+
+          showCustomSuccessToast(
+            context: context,
+            message: "Biometric disabled successfully!",
+            color: AppColors.instance.teal400,
+            icon: Icons.check,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        } else {
+          _handleErrorResponse(context, ref, response["message"]);
+        }
+      }
+      /// -------------------------------
+      /// CASE 2: User currently DISABLED (value = false)
+      /// Means → user wants to ENABLE it now
+      /// -------------------------------
+      else {
+        log("🧭 Current state: disabled → enabling...");
+
+        final response = await ref
+            .read(profileRepositoryProvider)
+            .enable_desable_fingal_faceID(
+              token: token,
+              isEnable: "enable",
+              context: context,
+            );
+
+        if (!context.mounted) return;
+
+        if (response['status'] == true) {
+          log("✅ Biometric enabled successfully");
+          biometricPref.toggleBiometric(true);
+
+          showCustomSuccessToast(
+            context: context,
+            message: "Biometric enabled successfully!",
+            color: AppColors.instance.teal400,
+            icon: Icons.check,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        } else {
+          _handleErrorResponse(context, ref, response["message"]);
+        }
+      }
+    } on DioException catch (e) {
+      log("🌐 DIO ERROR: $e");
+      showCustomSuccessToast(
+        context: context,
+        message: "Network error occurred",
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } catch (e) {
+      log("💥 ERROR: $e");
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      notifiers.setLoading(false);
+      log("🏁 END enableToggle()");
+    }
+  }
+
+  Future<void> signInwithFaceID({
+    required BuildContext context,
+    required WidgetRef ref,
+    required String slug,
+  }) async {
+    log("🚀 START signInwithFaceID()");
+
+    updateloginLodaing(true);
+    final isBiometricEnabled = ref.read(biometricPrefProvider.notifier);
+
+    try {
+      // 1️⃣ Authenticate user with biometrics (finger/face)
+      final authenticated = await DeviceInfoHelper.authenticateUser(ref);
+
+      if (!authenticated) {
+        showCustomSuccessToast(
+          context: context,
+          message: "Biometric authentication failed or cancelled.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+        return;
+      }
+
+      // 2️⃣ Gather all needed data for the login request
+      final email = await BiometricSignatureHelper.getStoredEmail();
+      final signature = await BiometricSignatureHelper.getStoredSignature();
+      final deviceToken = await DeviceInfoHelper.getDeviceToken();
+      final token = await ref.watch(accessTokenProvider.future) ?? "";
+
+      if (email == null || signature == null) {
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Biometric data not found. Please enable biometric login first.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+        return;
+      }
+
+      // 3️⃣ Call API to log in using stored biometric credentials
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .logIngwithFingerPrintAndFaceID(
+            token: token,
+            email: email,
+            device_token: deviceToken ?? "",
+            biometric_signature: signature,
+            context: context,
+          );
+
+      if (!context.mounted) return;
+
+      // 4️⃣ Handle response
+      if (response["status"] == true) {
+        log("✅ Biometric login successful for user: $email");
+        updateloginLodaing(false);
+
+        log("TRUE------->");
+        await SharedPrefsService().saveAuthData(response['data']);
+
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+        final userData = response['data'] as Map<String, dynamic>?;
+        if (userData != null) {
+          final user = userData['user'] as Map<String, dynamic>?;
+          final firstName = user?['firstname'] as String?;
+          final email = user?["email"] as String?;
+          if (firstName != null) {
+            await SharedPrefsService().saveSingleUserName(firstName);
+          }
+
+          if (email != null) {
+            await DeviceInfoHelper.saveUserEmail(email);
+          }
+        }
+        final user = response['data']["user"];
+        final userRole = user['role'];
+        final biometricenabled = user["biometric_enabled"];
+
+        if (biometricenabled) {
+          await DeviceInfoHelper.saveFirstTimeCheck(false);
+          isBiometricEnabled.toggleBiometric(true);
+        } else {
+          await DeviceInfoHelper.saveFirstTimeCheck(true);
+          isBiometricEnabled.toggleBiometric(false);
+        }
+        log(userRole.toString());
+        getUserRoleFromString(context, userRole.toString());
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+        // context.goNamed(AppRoutes.dashbord);
+        // Optionally save token or navigate to dashboard
+        // ref.read(authProvider.notifier).handleLoginSuccess(response);
+      } else {
+        final message = response["message"] ?? "Biometric login failed.";
+        log("❌ Login failed: $message");
+        updateloginLodaing(false);
+        _handleLoginError(context, ref, message);
+      }
+    } on DioException catch (e) {
+      log("🌐 DIO ERROR during biometric login: $e");
+      showCustomSuccessToast(
+        context: context,
+        message: "Network error occurred while logging in.",
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } catch (e) {
+      log("💥 Unexpected ERROR: $e");
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      updateloginLodaing(false);
+      log("🏁 END signInwithFaceID()");
+    }
+  }
+
+  Future<void> addPermitToActiveOTP({
+    required BuildContext context,
+
+    required Map<String, dynamic> requestData,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+
+    try {
+      final notifier = ref.read(reminderProvider.notifier);
+      final items = ref.watch(itemListProvider);
+
+      notifier.updateLoading(true);
+
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .addWorkPermit(
+            requestData: requestData,
+            token: token ?? "",
+
+            context: context,
+          );
+
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        items.clear();
+        notifier.updateLoading(false);
+
+        // context.pop();
+        log("TRUE------->");
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      } else {
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifier.updateLoading(false);
+          notifier.resetAll();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifiers = ref.read(reminderProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifiers.resetAll();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifiers.updateLoading(false);
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(reminderProvider.notifier);
+      final items = ref.watch(itemListProvider);
+
+      notifier.updateLoading(false);
+      items.clear();
+      notifier.resetAll();
+
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  /// 🧩 Handle login error gracefully
+  void _handleLoginError(BuildContext context, WidgetRef ref, String? message) {
+    final errorMessage = message ?? "Unknown error";
+    log("❌ Biometric Login Error: $errorMessage");
+
+    if (errorMessage.contains("Unauthenticated")) {
+      ref.read(authProvider.notifier).seassionExpire(context, ref);
+    } else {
+      showCustomSuccessToast(
+        context: context,
+        message: errorMessage,
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    }
+  }
+
+  /// Helper function for error responses
+  void _handleErrorResponse(
+    BuildContext context,
+    WidgetRef ref,
+    String? message,
+  ) {
+    final errorMessage = message ?? "Unknown error";
+    log("❌ API Response Error: $errorMessage");
+
+    if (errorMessage.contains("Unauthenticated")) {
+      ref.read(authProvider.notifier).seassionExpire(context, ref);
+    } else {
+      showCustomSuccessToast(
+        context: context,
+        message: errorMessage,
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
     }
   }
 

@@ -20,8 +20,10 @@ import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/a
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/visitotIvitaion.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/widget/Active_history.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/screen/workPermit_otpHistory.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/revokedOTP.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/add_item_bottomsheet.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/submit_permit.dart.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/all_bottom_widget/addReminder.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/all_bottom_widget/deleteConfirmation.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/all_bottom_widget/filter.dart';
@@ -93,7 +95,8 @@ class BottomsheetDetails extends ConsumerWidget {
           subtitle: headersubtitle,
         );
       case BottomSheetView.activeOTPHistory:
-        return ActiveHistory();
+        // return ActiveHistory();
+        return OtpTabsPage();
 
       case BottomSheetView.resolutionTime:
         return ResolutionTimeline(id: id ?? 0, title: headertitle);
@@ -231,6 +234,10 @@ class BottomsheetDetails extends ConsumerWidget {
         return EventsBottomSheet();
       case BottomSheetView.eventsDetails:
         return EventDetaile(data: eventData!);
+      case BottomSheetView.permitAccces:
+        return SubmitPermitBottomSheet("");
+      case BottomSheetView.addpermitItems:
+        return AddItemBottomSheet();
 
       default:
         return SingleChildScrollView(

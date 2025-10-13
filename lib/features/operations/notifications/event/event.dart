@@ -2,9 +2,9 @@ import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/calaender_Data.dart';
-import 'package:curnectgate/features/operations/notifications/event/event_widget/event_card.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/event_data.dart';
-import 'package:curnectgate/features/operations/notifications/event/model/event_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/event_widget/going_tab.dart';
+import 'package:curnectgate/features/operations/notifications/event/event_widget/notGoing.dart';
 import 'package:curnectgate/features/operations/notifications/provider/eventprovider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
 import 'package:flutter/material.dart';
@@ -32,11 +32,7 @@ class EventsBottomSheet extends ConsumerWidget {
                   _buildTitleSection(),
                   const SizedBox(height: 12), // Reduced spacing
                   // Calendar with fixed height
-                  Container(
-                    color: Colors.green,
-                    // height: MediaQuery.of(context).size.height * 0.45,
-                    child: CalenderData(),
-                  ),
+                  CalenderData(),
 
                   const SizedBox(height: 12), // Reduced spacing
                   _buildTabBar(ref),
@@ -156,36 +152,7 @@ class EventsBottomSheet extends ConsumerWidget {
 
     return IndexedStack(
       index: state.currentTab,
-      children: [
-        EventData(),
-        _buildEventList(state.goingEvents, false, false, ref, context),
-        _buildEventList(state.cancelledEvents, false, true, ref, context),
-      ],
+      children: [EventData(), GoingEvents(), CancelEvent()],
     );
-  }
-
-  Widget _buildEventList(
-    List<Event> events,
-    bool showActions,
-    bool isCancel,
-    WidgetRef ref,
-    BuildContext context,
-  ) {
-    final notifier = ref.read(eventsProvider.notifier);
-
-    return events.isEmpty
-        ? Center(child: Text("No events found"))
-        : ListView.builder(
-          // REMOVE PrimaryScrollController - this was causing the issue
-          itemCount: events.length,
-          itemBuilder:
-              (context, index) => EventCard(
-                iscancle: isCancel,
-                event: events[index],
-                showActions: showActions,
-                onGoing: notifier.toggleEventAttendance,
-                onTap: () => notifier.selectEvent(events[index]),
-              ),
-        );
   }
 }
