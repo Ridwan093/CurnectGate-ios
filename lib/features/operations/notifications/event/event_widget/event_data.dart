@@ -31,7 +31,9 @@ class EventData extends ConsumerWidget {
     return RefreshIndicator(
       color: AppColors.instance.yellow500,
       onRefresh:
-          () => ref.read(getEventProvider.notifier).refreshEvent(context, ref),
+          () => ref
+              .read(getEventProvider.notifier)
+              .refreshEvent(context, ref, ""),
 
       child: activeOtasync.when(
         data: (event) {
@@ -88,7 +90,7 @@ class EventData extends ConsumerWidget {
               onTap:
                   () => ref
                       .read(getEventProvider.notifier)
-                      .refreshEvent(context, ref),
+                      .refreshEvent(context, ref, ""),
               firstMessae: "Faile to load Event",
             );
           } catch (e) {
@@ -97,7 +99,7 @@ class EventData extends ConsumerWidget {
               onTap:
                   () => ref
                       .read(getEventProvider.notifier)
-                      .refreshEvent(context, ref),
+                      .refreshEvent(context, ref, ""),
               firstMessae: "Faile to load Event?",
             );
           }
@@ -143,21 +145,23 @@ class EventData extends ConsumerWidget {
 
   Widget _buildEmtyBody() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(AssetPaths.dashboardEvents, height: 100, width: 100),
-          SizedBox(height: 10),
-          Text(
-            "Your Evente detailes appears here",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.black300,
-              fontSize: 12,
-              fontWeight: FontFamilies.medium,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(AssetPaths.dashboardEvents, height: 100, width: 100),
+            SizedBox(height: 10),
+            Text(
+              "Your Evente detailes appears here",
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                color: AppColors.instance.black300,
+                fontSize: 12,
+                fontWeight: FontFamilies.medium,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

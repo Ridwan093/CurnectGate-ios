@@ -9,6 +9,7 @@ import 'package:curnectgate/features/operations/OTP_Activation/widget/custom_val
 import 'package:curnectgate/features/operations/OTP_Activation/widget/generateOTP_with_validity.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/scheduleOTPS.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_event_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/EventCodes/event_code_model.dart';
 import 'package:curnectgate/features/operations/violation/widget/report_file_uplode.dart';
 import 'package:curnectgate/features/operations/violation/widget/violation_form_bottom_sheet.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ void showUserBottomSheet({
   required WidgetRef ref,
   required BottomSheetView bottom,
   CalendarEvent? event,
+  EventCode? eventCode,
   int? id,
 }) {
   ref.read(bottomSheetStateProvider.notifier).state =
@@ -64,6 +66,7 @@ void showUserBottomSheet({
                 headersubtitle,
                 bottom,
                 event,
+                eventCode,
                 id,
               ),
             ),
@@ -82,6 +85,7 @@ Widget _buildCurrentView(
   String userRole,
   BottomSheetView bottom,
   CalendarEvent? vendor,
+  EventCode? eventcode,
   int? id,
 ) {
   switch (view) {
@@ -91,7 +95,7 @@ Widget _buildCurrentView(
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
-
+        eventCode: eventcode,
         id: id,
       );
     case BottomSheetView.permissions:
@@ -105,7 +109,7 @@ Widget _buildCurrentView(
       return _buildVendorDeleteConfirmationView(context, ref);
     case BottomSheetView.revorkActiveOtpConfirmation:
       return _buildrevokActiveOtp(context, ref);
-      
+
     case BottomSheetView.setCofew:
       return BottomsheetDetails(
         id: id,
@@ -113,14 +117,59 @@ Widget _buildCurrentView(
         headersubtitle: userRole,
         bottom: bottom,
       );
-       case BottomSheetView.addpermitItems:
+    case BottomSheetView.eventSetting:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+        eventCode: eventcode,
+      );
+    case BottomSheetView.myeventCode:
       return BottomsheetDetails(
         id: id,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
-       case BottomSheetView.permitAccces:
+    case BottomSheetView.eventDeactive:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+        eventCode: eventcode,
+      );
+    case BottomSheetView.checkEventcode:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+        eventCode: eventcode,
+      );
+    case BottomSheetView.addpermitItems:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.seletctEvent:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.createdEvent:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.permitAccces:
       return BottomsheetDetails(
         id: id,
         headertitle: userName,
@@ -135,6 +184,27 @@ Widget _buildCurrentView(
         bottom: bottom,
       );
     case BottomSheetView.setRestrictions:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.shedulPermit:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.schedulpermitItem:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.seletPermit:
       return BottomsheetDetails(
         id: id,
         headertitle: userName,

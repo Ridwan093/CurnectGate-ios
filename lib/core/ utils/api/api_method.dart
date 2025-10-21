@@ -2610,6 +2610,58 @@ class AppApiMethod {
     }
   }
 
+   Future<Map<String, dynamic>> denyEntryDigitalID({
+    required String token,
+    required String denyReason,
+    required String securityNote,
+    required String id,
+    required BuildContext context,
+  }) async {
+    try {
+      log("userID:$id");
+      final Map<String, dynamic> requestData = {
+        "denial_reason": denyReason,
+        "security_notes": securityNote,
+      };
+
+      // Log the exact request being sent
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        "/api/v1/estates/security/validations/$id/deny",
+        data: requestData,
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Request payload: $requestData');
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
   Future<Map<String, dynamic>> resolvedViolation({
     required String token,
     required String reason,
@@ -2998,10 +3050,11 @@ class AppApiMethod {
     required String dailyWindowTime,
     required String numberofWorkers,
     required String numberofDays,
+    required int categorie,
     required BuildContext context,
   }) async {
     final Map<String, dynamic> requestData = {
-      "workorder_category_id": numberofDays, // maybe, not_going
+      "workorder_category_id": categorie, // maybe, not_going
       "vendor_name": name,
       "vendor_phone": phone, // maybe, not_going
       "start_date": startDate,
@@ -3009,7 +3062,8 @@ class AppApiMethod {
       "daily_time_window": dailyWindowTime,
       "description": dec, // maybe, not_going
       "number_of_workers": numberofWorkers,
-      "before_photos[]": file, // maybe, not_going
+      "before_photos[]": [], // maybe, not_going
+      "vendor_email": email,
     };
     try {
       final response = await _dio.post(
@@ -3210,6 +3264,116 @@ class AppApiMethod {
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> requestEventCodes({
+    required String token,
+    required String event_title,
+    required String event_description,
+    required String event_type,
+    required String event_start_date,
+    required String event_end_date,
+    required int expected_guests,
+
+    required String event_location,
+    required String special_instructions,
+
+    required BuildContext context,
+  }) async {
+    final Map<String, dynamic> requestData = {
+      "event_title": event_title,
+      "event_description": event_description,
+      "event_type":
+          event_type, // party, wedding, meeting, ceremony, gathering, other
+      "event_start_date": event_start_date,
+      "event_end_date": event_end_date,
+      "expected_guests": expected_guests,
+      "event_location": event_location,
+      "special_instructions": special_instructions,
+    };
+    log(requestData.toString());
+    try {
+      final response = await _dio.post(
+        data: requestData,
+        requestEventCode,
+
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> deActiveEventCode({
+    required String token,
+
+    required int id,
+    required String reason,
+
+    required BuildContext context,
+  }) async {
+    try {
+      final Map<String, dynamic> requestData = {"reason": reason};
+      log(id.toString());
+      // Log the exact request being sent
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        "/api/v1/estates/general/event-codes/$id/revoke",
+        data: requestData,
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Request payload: $requestData');
 
       log('Response: ${response.data}');
       return response.data;

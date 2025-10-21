@@ -11,9 +11,9 @@ _$EventsResponseImpl _$$EventsResponseImplFromJson(Map<String, dynamic> json) =>
       status: json['status'] as bool?,
       message: json['message'] as String?,
       code: (json['code'] as num?)?.toInt(),
-      events: (json['events'] as List<dynamic>?)
-          ?.map((e) => Event.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      data: json['data'] == null
+          ? null
+          : EventsData.fromJson(json['data'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$EventsResponseImplToJson(
@@ -22,5 +22,5 @@ Map<String, dynamic> _$$EventsResponseImplToJson(
       'status': instance.status,
       'message': instance.message,
       'code': instance.code,
-      'events': instance.events?.map((e) => e.toJson()).toList(),
+      'data': instance.data?.toJson(),
     };

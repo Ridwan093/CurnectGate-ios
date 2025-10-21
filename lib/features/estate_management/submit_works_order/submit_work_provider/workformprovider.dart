@@ -41,10 +41,11 @@ class WorkOrderFormNotifier extends StateNotifier<WorkOrderFormState> {
     );
   }
 
-  void updateWorkType(String? type) {
+  void updateWorkType(String? type, int id) {
     state = state.copyWith(
       workType: type,
       workTypeValid: type != null && type.isNotEmpty,
+      id: id
     );
   }
 

@@ -17,7 +17,7 @@ class _AddItemBottomSheetState extends ConsumerState<AddItemBottomSheet> {
   final TextEditingController _itemName = TextEditingController();
   final TextEditingController _quantity = TextEditingController();
   final TextEditingController _description = TextEditingController();
-  final TextEditingController _value = TextEditingController();
+
   final TextEditingController _category = TextEditingController();
 
   @override
@@ -88,16 +88,6 @@ class _AddItemBottomSheetState extends ConsumerState<AddItemBottomSheet> {
 
           const SizedBox(height: 8),
           ReusabelProfileForm(
-            controller: _value,
-            fieldKey: 'estimated_value',
-            fieldType: FieldType.year,
-            hintText: 'Enter estimated value',
-            label: 'Estimated Value (₦)',
-            onChanged: (_) {},
-            onValidationChanged: (_) {},
-          ),
-          const SizedBox(height: 8),
-          ReusabelProfileForm(
             controller: _category,
             fieldKey: 'item_category',
             fieldType: FieldType.itemName,
@@ -125,14 +115,13 @@ class _AddItemBottomSheetState extends ConsumerState<AddItemBottomSheet> {
                 _itemName.text.isNotEmpty &&
                         _quantity.text.isNotEmpty &&
                         _description.text.isNotEmpty &&
-                        _value.text.isNotEmpty &&
                         _category.text.isNotEmpty
                     ? () {
                       final newItem = {
                         "item_name": _itemName.text,
                         "quantity": int.tryParse(_quantity.text) ?? 1,
                         "description": _description.text,
-                        "estimated_value": double.tryParse(_value.text) ?? 0.0,
+
                         "item_category": _category.text,
                       };
 
@@ -152,7 +141,6 @@ class _AddItemBottomSheetState extends ConsumerState<AddItemBottomSheet> {
                     _itemName.text.isNotEmpty &&
                             _quantity.text.isNotEmpty &&
                             _description.text.isNotEmpty &&
-                            _value.text.isNotEmpty &&
                             _category.text.isNotEmpty &&
                             _description.text.length > 20 &&
                             _category.text.length > 5 &&

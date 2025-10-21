@@ -11,7 +11,6 @@ import 'package:curnectgate/features/member_management/profile_form/provider%20/
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:curnectgate/features/userProfile/profile/provider/profile_provider.dart';
-import 'package:curnectgate/features/userProfile/profile/widget/account_dropdown_menu.dart';
 import 'package:curnectgate/features/userProfile/profile/widget/listTile.dart';
 import 'package:curnectgate/features/userProfile/profile/widget/profileCard.dart';
 import 'package:flutter/material.dart';
@@ -331,7 +330,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
             }
           },
         ),
-        AccountDropdownMenu(),
+
         SizedBox(width: 12),
       ],
     );

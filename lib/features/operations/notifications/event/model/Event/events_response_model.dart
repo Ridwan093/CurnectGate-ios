@@ -2,7 +2,8 @@
 import 'package:curnectgate/features/operations/OTP_Activation/model/nullSafty_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'event_model.dart';
+import 'events_data_model.dart';
+
 
 part 'events_response_model.freezed.dart';
 part 'events_response_model.g.dart';
@@ -14,7 +15,7 @@ class EventsResponse with _$EventsResponse {
     bool? status,
     String? message,
     int? code,
-    List<Event>? events,
+    EventsData? data,
   }) = _EventsResponse;
 
   factory EventsResponse.fromJson(Map<String, dynamic> json) =>
@@ -25,29 +26,18 @@ class EventsResponse with _$EventsResponse {
       status: NullSafetyHelper.safeBool(json['status']),
       message: NullSafetyHelper.safeString(json['message']),
       code: NullSafetyHelper.safeInt(json['code']),
-      events: _reminderFromJson(json['events']),
+      data: NullSafetyHelper.safeModel(
+        json['data'],
+        EventsData.fromSafeJson,
+        EventsData.empty(),
+      ),
     );
-  }
-  static List<Event>? _reminderFromJson(dynamic value) {
-    if (value == null) return null;
-    if (value is! List) return <Event>[];
-
-    return value
-        .map(
-          (item) => NullSafetyHelper.safeModel(
-            item,
-            Event.fromSafeJson, // Use fromSafeJson for nested safety
-            Event.empty(),
-          ),
-        )
-        .whereType<Event>() // Filter out nulls
-        .toList();
   }
 
   factory EventsResponse.empty() => const EventsResponse(
-    status: null,
-    message: null,
-    code: null,
-    events: null,
-  );
+        status: null,
+        message: null,
+        code: null,
+        data: null,
+      );
 }

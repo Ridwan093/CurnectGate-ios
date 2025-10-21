@@ -3,8 +3,9 @@ import 'dart:developer';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/payment/services/paystack_service.dart';
 import 'package:curnectgate/features/payment/state_model/state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,7 +51,7 @@ class PaymentMethodScreen extends ConsumerWidget {
             child: GestureDetector(
               onTap:
                   isMethodSelected
-                      ? () {
+                      ? () async {
                         // Navigate to next screen
                         final method = ref.read(paymentMethodProvider);
 
@@ -62,6 +63,15 @@ class PaymentMethodScreen extends ConsumerWidget {
                             headersubtitle: "",
                             ref: ref,
                             bottom: BottomSheetView.fundingWithbankTransfer,
+                          );
+                        } else {
+                          final ref =
+                              'TEST_REF_${DateTime.now().millisecondsSinceEpoch}';
+                          await PaystackService().checkout(
+                            context: context,
+                            email: 'testuser@example.com',
+                            amount: 500, // ₦500
+                            reference: ref,
                           );
                         }
                         // Navigator.push(...);

@@ -7,8 +7,8 @@ import 'package:curnectgate/features/estate_management/submit_works_order/submit
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/date_picker.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/dayTimeWindow.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/incressxdecress.dart';
-import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/work_drop_down.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/work_submitbutton.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/workcategory_data.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/loading_screen/loading_page.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
@@ -83,7 +83,7 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
     notifier.updateVendorEmail(vendor.email);
     notifier.updatePhoneNumber(vendor.phonenumber);
     notifier.updateWorkDescription(vendor.description);
-    notifier.updateWorkType(vendor.worktype);
+    notifier.updateWorkType(vendor.worktype, 0);
 
     // Handle numeric fields
     // notifier.updateDaysCount(int.tryParse(vendor.daysCount!) ?? 1);
@@ -100,53 +100,27 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
     // ref.read(formProvider.notifier).updateLoading(true);
     final state = ref.watch(workOrderFormProvider);
 
-    final vendor = VendorLogModel(
-      daysCount: state.daysCount.toString(),
-      description: _discriptionController.text,
-      taskStatus: "Active",
-      startDay: state.startDate!,
-      endDay: state.endDate!,
-      windowTime: state.selectedTimeWindow!,
-      vendorName: _vendorNameController.text,
-      worktype: state.workType!,
-      workNumbers: state.workerCount.toString(),
-      email: _vendoremailController.text,
-      phonenumber: _vendorphoneController.text,
+    final provider = ref.read(formProvider.notifier);
+
+    provider.submitWorkOrder(
+      categorie: state.id,
+      context: context,
+      file: "",
+      name: _vendorNameController.text.trim(),
+      dec: _discriptionController.text.trim(),
+      email: _vendoremailController.text.trim(),
+      phone: _vendorphoneController.text.trim(),
+      startDate: state.startDate.toString(),
+      endDate: state.endDate.toString(),
+      dailyWindowTime: state.selectedTimeWindow ?? "",
+      numberofWorkers: state.workerCount.toString(),
+      numberofDays: state.daysCount.toString(),
+      ref: ref,
     );
-    // final provider = ref.read(formProvider.notifier);
-    // Your existing submission logic
-    // provider.submitWorkOrder(
-    //   context: context,
-    //   file: "",
-    //   name: _vendorNameController.text.trim(),
-    //   dec: _discriptionController.text.trim(),
-    //   email: _vendoremailController.text.trim(),
-    //   phone: _vendorphoneController.text.trim(),
-    //   startDate: state.startDate.toString(),
-    //   endDate: state.endDate.toString(),
-    //   dailyWindowTime: state.selectedTimeWindow ?? "",
-    //   numberofWorkers: state.workerCount.toString(),
-    //   numberofDays: state.daysCount.toString(),
-    //   ref: ref,
-    // );
-    vendorList.add(vendor);
-    if (vendorList.isNotEmpty) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => GetYourCodeScreen()),
-      );
+
+    
       resetForm();
       _clearAllFields();
-      // ref.read(formProvider.notifier).updateLoading(false);
-      showCustomSuccessToast(
-        context: context,
-        message: "Work request sent",
-        color: AppColors.instance.teal300,
-        icon: Icons.done_rounded,
-        iconColors: AppColors.instance.black600,
-        positionNumber: 70,
-      );
-    }
   }
 
   void resetForm() {
@@ -175,7 +149,7 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
   Widget build(BuildContext context) {
     final state = ref.watch(workOrderFormProvider);
     final notifier = ref.read(workOrderFormProvider.notifier);
-    final provider = ref.read(formProvider);
+    final provider = ref.watch(formProvider);
     final isValid = ref.watch(
       workOrderFormProvider.select((state) => state.allValid),
     );
@@ -260,12 +234,13 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
                     const SizedBox(height: 16),
 
                     // Work Type Dropdown
-                    WorkDropDown(
-                      workTypes: workTypes,
-                      onChanged: (value) {
-                        notifier.updateWorkType(value);
-                      },
-                    ),
+                    CategoryData(currentValue: state.workType.toString()),
+                    // WorkDropDown(
+                    //   workTypes: workTypes,
+                    //   onChanged: (value) {
+                    //     notifier.updateWorkType(value);
+                    //   },
+                    // ),
                     const SizedBox(height: 16),
 
                     // Work Description

@@ -47,7 +47,7 @@ class ItemCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "Qty: ${item['quantity']}  ₦${item['estimated_value']}",
+                  "Qty: ${item['quantity']}",
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     color: AppColors.instance.black300,

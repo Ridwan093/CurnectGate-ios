@@ -1,0 +1,85 @@
+import 'package:curnectgate/core/style/colors.dart';
+import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/operations/notifications/event/event_widget/EventCode/eventCode_Data.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+class MyEventCode extends ConsumerWidget {
+  const MyEventCode({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final size = MediaQuery.sizeOf(context);
+    return Column(
+      key: const ValueKey('userDetails'),
+
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Header section
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                onPressed: () => context.pop(),
+                icon: const Icon(Icons.close),
+              ),
+            ),
+            const SizedBox(height: 10),
+            _buildAddMemberButton(size, context, ref),
+            const SizedBox(height: 30),
+
+            Text(
+              "Event Code",
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                fontWeight: FontFamilies.bold,
+                fontSize: 20,
+                color: AppColors.instance.black600,
+              ),
+            ),
+            const SizedBox(height: 4),
+          ],
+        ),
+        const SizedBox(height: 35),
+        Expanded(child: EventCodeData()),
+      ],
+    );
+  }
+
+  Widget _buildAddMemberButton(Size size, BuildContext context, WidgetRef ref) {
+    return InkWell(
+      onTap: () {
+        showUserBottomSheet(
+          context: context,
+          headertitle: "Select option",
+          headersubtitle: "Manage OTPs for Visitor Access",
+          ref: ref,
+          bottom: BottomSheetView.createdEvent,
+        );
+      },
+      child: Container(
+        height: 50,
+        width: size.width,
+        decoration: BoxDecoration(
+          color: AppColors.instance.black600,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Center(
+          child: Text(
+            "Request New Code",
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              color: AppColors.instance.grey200,
+              fontSize: 12,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

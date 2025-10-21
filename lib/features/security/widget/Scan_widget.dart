@@ -222,11 +222,11 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:curnectgate/features/security/provider/scanProvider.dart';
 import 'package:curnectgate/features/security/widget/Scan_code.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 class ScanWidget extends ConsumerStatefulWidget {
@@ -262,9 +262,7 @@ class _ScanWidgetState extends ConsumerState<ScanWidget> {
       final barcode = scanData.code;
       if (barcode != null) {
         try {
-          final decodedString = utf8.decode(
-            base64.decode(barcode),
-          );
+          final decodedString = utf8.decode(base64.decode(barcode));
           log('🔓 DECODED STRING: $decodedString');
 
           // Parse and log JSON
@@ -274,9 +272,9 @@ class _ScanWidgetState extends ConsumerState<ScanWidget> {
           log('🏠 Estate ID: ${jsonData['estate_id']}');
           log('👤 User ID: ${jsonData['user_id']}');
           log('⏰ Generated At: ${jsonData['generated_at']}');
-          
+
           ref.read(qrScanProvider.notifier).state = false;
-          
+
           log(barcode);
           showUserBottomSheet(
             context: context,
@@ -285,10 +283,9 @@ class _ScanWidgetState extends ConsumerState<ScanWidget> {
             ref: ref,
             bottom: BottomSheetView.additionForScan,
           );
-          
+
           // Pause camera after successful scan to prevent multiple scans
           controller.pauseCamera();
-          
         } catch (e) {
           log('Error processing QR code: $e');
           // Handle non-base64 QR codes or other formats
@@ -310,6 +307,7 @@ class _ScanWidgetState extends ConsumerState<ScanWidget> {
   Widget build(BuildContext context) {
     final scanAreaSize = MediaQuery.of(context).size.width * 0.7;
     final torchEnabled = ref.watch(torchStateProvider);
+    final notifier = ref.read(oTpformProvider.notifier);
 
     return Stack(
       children: [
@@ -396,7 +394,15 @@ class _ScanWidgetState extends ConsumerState<ScanWidget> {
                 onTap: () {
                   qrController?.dispose();
                   ref.read(qrScanProvider.notifier).state = false;
-                  _showManualIDEntry(context);
+                  notifier.updateValidationType("");
+
+                  showUserBottomSheet(
+                    context: context,
+                    headertitle: "",
+                    headersubtitle: "",
+                    ref: ref,
+                    bottom: BottomSheetView.validatedOTP,
+                  );
                 },
                 child: Text(
                   "Enter ID Instead",
@@ -432,31 +438,32 @@ class _ScanWidgetState extends ConsumerState<ScanWidget> {
   void _showManualIDEntry(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Enter ID Manually"),
-        content: TextField(
-          decoration: const InputDecoration(
-            hintText: "Enter the ID number",
-            border: OutlineInputBorder(),
+      builder:
+          (context) => AlertDialog(
+            title: const Text("Enter ID Manually"),
+            content: TextField(
+              decoration: const InputDecoration(
+                hintText: "Enter the ID number",
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.number,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("ID submitted successfully")),
+                  );
+                },
+                child: const Text("Submit"),
+              ),
+            ],
           ),
-          keyboardType: TextInputType.number,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("ID submitted successfully")),
-              );
-            },
-            child: const Text("Submit"),
-          ),
-        ],
-      ),
     );
   }
 }

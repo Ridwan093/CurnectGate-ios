@@ -70,7 +70,7 @@ class WorkDropDown extends ConsumerWidget {
             return DropdownMenuItem<String>(value: value, child: Text(value));
           }).toList(),
       onChanged: (value) {
-        notifier.updateWorkType(value);
+        notifier.updateWorkType(value,0);
         onChanged?.call(value);
         // Update form validation
       },

@@ -7,6 +7,7 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/event_model.dart';
 import 'package:curnectgate/features/operations/notifications/provider/eventprovider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/getCalender_provider.dart';
+import 'package:curnectgate/features/operations/notifications/provider/getevent_provider.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,10 +27,10 @@ class CalenderData extends ConsumerWidget {
               ref.read(getCalenderProvider.notifier).refreshEvent(context, ref),
       child: activeOtasync.when(
         data: (event) {
-          if (event?.events != null) {
-            return Text(event?.events?.first.title.toString() ?? "");
+          if (event != null) {
+            return _buildCalendar(ref, event.data?.events ?? [], context);
           } else {
-            return _buildCalendar(ref, event?.events ?? [], context);
+            return _buildCalendar(ref, event?.data?.events ?? [], context);
           }
         },
         loading: () {
@@ -44,10 +45,10 @@ class CalenderData extends ConsumerWidget {
               return Expiresessionbody();
             }
             final event = ref.read(getCalenderProvider).value;
-            if (event!.events!.isNotEmpty) {
-              return _buildCalendar(ref, event.events ?? [], context);
+            if (event!.data!.events!.isNotEmpty) {
+              return _buildCalendar(ref, event.data?.events ?? [], context);
             }
-            return _buildCalendar(ref, event.events ?? [], context);
+            return _buildCalendar(ref, event.data?.events ?? [], context);
           } catch (e) {
             return Builderroul(
               error: e.toString(),
@@ -83,6 +84,7 @@ class CalenderData extends ConsumerWidget {
       onFormatChanged: notifier.changeCalendarFormat,
       onPageChanged: notifier.changeFocusedDay,
       onDaySelected: (selectedDay, focusedDay) {
+        ref.read(getEventProvider.notifier).refreshEvent(context, ref,selectedDay.toString());
         log(
           "SELECTEDDATE: ${selectedDay.toString()} FocusedDay: ${focusedDay.toString()}",
         );

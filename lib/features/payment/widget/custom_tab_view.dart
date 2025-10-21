@@ -1,4 +1,3 @@
-// custom_tab_view.dart
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/payment/state_model/state.dart';
 import 'package:curnectgate/features/payment/widget/tab_button.dart';
@@ -6,26 +5,44 @@ import 'package:curnectgate/features/payment/widget/tab_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CustomTabView extends ConsumerWidget {
+class CustomTabView extends ConsumerStatefulWidget {
   const CustomTabView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final currentTab = ref.watch(tabProvider);
-    final pageController = PageController(
-      initialPage: WalletTab.values.indexOf(currentTab),
+  ConsumerState<CustomTabView> createState() => _CustomTabViewState();
+}
+
+class _CustomTabViewState extends ConsumerState<CustomTabView> {
+  late final PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    final initialTab = ref.read(tabProvider);
+    _pageController = PageController(
+      initialPage: WalletTab.values.indexOf(initialTab),
     );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final currentTab = ref.watch(tabProvider);
 
     return Column(
       children: [
         // Custom Tab Bar
         Container(
-          margin: EdgeInsets.all(12),
+          margin: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: AppColors.instance.grey300,
             borderRadius: BorderRadius.circular(20),
           ),
-
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -35,24 +52,29 @@ class CustomTabView extends ConsumerWidget {
                     return TabButton(
                       label: tab.name,
                       isSelected: currentTab == tab,
-                      onTap: () {
-                        ref.read(tabProvider.notifier).state = tab;
-                        pageController.animateToPage(
-                          WalletTab.values.indexOf(tab),
+                      onTap: () async {
+                        final targetPage = WalletTab.values.indexOf(tab);
+                        // Animate first
+                        await _pageController.animateToPage(
+                          targetPage,
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeInOut,
                         );
+                        // Then update provider
+                        ref.read(tabProvider.notifier).state = tab;
                       },
                     );
                   }).toList(),
             ),
           ),
         ),
-        // Tab Content (PageView)
+
+        // Tab Content
         Expanded(
           child: PageView(
-            controller: pageController,
+            controller: _pageController,
             onPageChanged: (index) {
+              // Sync state when user swipes
               ref.read(tabProvider.notifier).state = WalletTab.values[index];
             },
             children: [AllTabContent(), DueTabContent(), DepositTabContent()],

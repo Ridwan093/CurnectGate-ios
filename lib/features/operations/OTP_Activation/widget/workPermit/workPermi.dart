@@ -3,8 +3,7 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/model/mock_otp_data.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/widget/history_data.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/workPermit_card.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/pamit_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -109,7 +108,7 @@ class _CheckInOtpTabState extends ConsumerState<CheckInOtpTab> {
 
         const SizedBox(height: 23),
 
-        Expanded(child: _buildDynamicList()),
+        Expanded(child: PermitData()),
       ],
     );
   }
@@ -119,7 +118,7 @@ class _CheckInOtpTabState extends ConsumerState<CheckInOtpTab> {
       itemCount: mockOtpList.length,
       itemBuilder: (context, index) {
         final otp = mockOtpList[index];
-        return WorkpermitCard(otp);
+        return Text("");
       },
     );
   }

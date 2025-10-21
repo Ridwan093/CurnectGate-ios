@@ -124,6 +124,7 @@ class _ViolationDetailScreenState extends ConsumerState<ViolationDetailScreen> w
   }
 
   void _showCommentsBottomSheet(BuildContext context, List<Comment> initialComments) {
+    // ignore: invalid_use_of_protected_member
     ref.read(commentsProvider.notifier).state = initialComments; // Initialize with existing comments
 
     showModalBottomSheet(

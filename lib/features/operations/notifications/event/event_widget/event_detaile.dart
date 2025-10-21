@@ -108,14 +108,8 @@ class EventDetaile extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 60),
-              if (data.eventImageUrl != null) ...[
-                CircleAvatar(
-                  radius: 40,
-                  backgroundImage: NetworkImage(data.eventImageUrl ?? ""),
-                ),
-              ] else ...[
-                Image.asset(AssetPaths.eventblue, height: 50, width: 50),
-              ],
+
+              Image.asset(AssetPaths.eventblue, height: 50, width: 50),
 
               const SizedBox(height: 20),
               Text(

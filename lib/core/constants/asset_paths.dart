@@ -63,6 +63,7 @@ class AssetPaths {
   static const String vaolationIcon = '${_actions}violationIcon.png';
   static const String emgencySecurity = '${_actions}emgencySecurity.png';
     static const String loginSetting = '${_actions}password-access-key.png';
+      static const String terms = '${_actions}terms_condition.png';
   // Auth Icons
   static const String checkId = '${_auth}checks_id.png';
   static const String clipboard = '${_auth}clipboard.png';

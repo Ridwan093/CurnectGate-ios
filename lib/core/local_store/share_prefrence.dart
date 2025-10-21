@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:curnectgate/features/ResidentDirectory/model/comittee_model/committees_response_model.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resident_directory_respond.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/model/workOrder_categor/work_order_categories_response.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/household_members_response.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_slug_model/permissions_response_model.dart'
     as slug_model;
@@ -11,9 +12,11 @@ import 'package:curnectgate/features/member_management/Onboard_Houselod/model/pe
     as status_model;
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/property_model/property_response.dart';
 import 'package:curnectgate/features/member_management/membership_ID/model/digital_member_id_response.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/model/Work_permit/clearance_permit_response.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/model/otp_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_events_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/events_response_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/EventCodes/event_codes_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_count/notification_count_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_response.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/remider/reminders_response_model.dart';
@@ -66,6 +69,7 @@ class SharedPrefsService {
   static const String _userMainReminder = "reminder";
   static const String _eventKey = "eventKey";
   static const String _calenderKey = "Calender";
+  static const String _eventCode = "codess";
   static const String _notificationCountKey = "countKey";
   static const String _estateAddressKey = "estate_Address";
   static const String _reportListKey = "report_list";
@@ -76,6 +80,7 @@ class SharedPrefsService {
   static const String _estateCategory = "estate_category";
   static const String _reportHistory = "report_history";
   static const String _activeOtpKey = "Active_otp";
+  static const String _work_permitKey = "Work_permit";
   static const String _activeOtpHistoryKey = "active_history";
   static const String _getDigitalIdKey = "Digital_id";
   static const String _householdGetKey = "house_hold";
@@ -301,6 +306,20 @@ class SharedPrefsService {
     return null;
   }
 
+  static Future<void> saveEventCode(EventCodesResponse preference) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_eventCode, jsonEncode(preference.toJson()));
+  }
+
+  static Future<EventCodesResponse?> getEventCode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_eventCode);
+    if (data != null) {
+      return EventCodesResponse.fromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
   static Future<void> saveNotificationCount(
     NotificationCountResponse preference,
   ) async {
@@ -320,7 +339,7 @@ class SharedPrefsService {
     return null;
   }
 
-  /// ACTIVEOTP/
+  /// ACTIVEOTP/WORK PERMIT. ClearancePermitResponse
   static Future<void> saveActiveOtp(OtpResponseModel preference) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_activeOtpKey, jsonEncode(preference.toJson()));
@@ -331,6 +350,20 @@ class SharedPrefsService {
     final data = prefs.getString(_activeOtpKey);
     if (data != null) {
       return OtpResponseModel.fromSafeJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+   static Future<void> saveClearancePermit(ClearancePermitResponse preference) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_work_permitKey, jsonEncode(preference.toJson()));
+  }
+
+  static Future<ClearancePermitResponse?> getClearancePermit() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_work_permitKey);
+    if (data != null) {
+      return ClearancePermitResponse.fromSafeJson(jsonDecode(data));
     }
     return null;
   }
@@ -420,6 +453,28 @@ class SharedPrefsService {
     return null;
   }
 
+  /// WORKORDER
+  ///  CheckoutHistoryResponseModel saveWorkOrderCategories
+
+
+  static Future<void> saveWorkOrderCategories(
+    WorkOrderCategoriesResponse preference,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _permissionStatusKey,
+      jsonEncode(preference.toJson()),
+    );
+  }
+
+  static Future<WorkOrderCategoriesResponse?> getWorkOrderCategories() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_permissionStatusKey);
+    if (data != null) {
+      return WorkOrderCategoriesResponse.fromSafeJson(jsonDecode(data));
+    }
+    return null;
+  }
   /// SECURITY LOCAL
   /// CheckoutHistoryResponseModel
   static Future<void> saveCheckOut(
@@ -671,6 +726,11 @@ class SharedPrefsService {
     await prefs.remove(_committee);
   }
 
+  static Future<void> clearEventCode() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_eventCode);
+  }
+
   Future<void> saveAuthData(Map<String, dynamic> data) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_keyAuthData, jsonEncode(data));
@@ -686,7 +746,7 @@ class SharedPrefsService {
 
     final data = prefs.getString(_userName);
     return data;
-  }
+  } //_eventCode
 
   Future<Map<String, dynamic>?> getAuthData() async {
     final prefs = await SharedPreferences.getInstance();
@@ -722,6 +782,7 @@ class SharedPrefsService {
     clearcalender();
     clearCommitte();
     clearResident();
+    clearEventCode();
 
     await prefs.remove(_keyAuthData);
   }

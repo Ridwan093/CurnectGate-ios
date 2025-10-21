@@ -61,7 +61,7 @@ class EventNotifier extends AutoDisposeAsyncNotifier<CalendarEventsResponse?> {
     }
   }
 
-  Future<void> refreshEvent(BuildContext context, WidgetRef ref) async {
+  Future<void> refreshEvent(BuildContext context, WidgetRef ref, String filter) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       try {
@@ -69,7 +69,7 @@ class EventNotifier extends AutoDisposeAsyncNotifier<CalendarEventsResponse?> {
         // final category = ref.watch(reminderProvider).filter.toLowerCase();
         final freshEvent = await ref
             .read(getApiServiceProvider)
-            .getEvent(bearerToken: token ?? "", limit: "",statuse: "completed");
+            .getEvent(bearerToken: token ?? "", limit: "",statuse: filter);
         await SharedPrefsService.saveEvent(freshEvent);
         return freshEvent;
       } catch (e) {

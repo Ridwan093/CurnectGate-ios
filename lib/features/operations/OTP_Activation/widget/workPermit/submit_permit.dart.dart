@@ -24,8 +24,7 @@ class SubmitPermitBottomSheet extends ConsumerStatefulWidget {
 class _SubmitPermitBottomSheetState
     extends ConsumerState<SubmitPermitBottomSheet> {
   final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _estimatedValueController =
-      TextEditingController();
+
   final TextEditingController _contactPersonController =
       TextEditingController();
   final TextEditingController _noteController = TextEditingController();
@@ -68,7 +67,7 @@ class _SubmitPermitBottomSheetState
                         ),
                         const SizedBox(height: 30),
                         Text(
-                          "Add Access for Guest",
+                          "Create Clearance Permit",
                           style: TextStyle(
                             fontFamily: FontFamilies.interDisplay,
                             fontWeight: FontFamilies.bold,
@@ -100,22 +99,7 @@ class _SubmitPermitBottomSheetState
                         const SizedBox(height: 20),
 
                         /// Two fields side by side
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ReusabelProfileForm(
-                                controller: _estimatedValueController,
-                                fieldKey: 'estimated_value',
-                                fieldType: FieldType.year,
-                                hintText: 'Enter total estimated value',
-                                label: 'Total Estimated Value (₦)',
-                                onChanged: (_) {},
-                                onValidationChanged: (_) {},
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: ReusabelProfileForm(
+                        ReusabelProfileForm(
                                 controller: _contactPersonController,
                                 fieldKey: 'contact_person',
                                 fieldType: FieldType.name,
@@ -124,9 +108,6 @@ class _SubmitPermitBottomSheetState
                                 onChanged: (_) {},
                                 onValidationChanged: (_) {},
                               ),
-                            ),
-                          ],
-                        ),
                         const SizedBox(height: 20),
 
                         /// Description
@@ -216,9 +197,7 @@ class _SubmitPermitBottomSheetState
                           opacity:
                               items.isNotEmpty &&
                                       _descriptionController.text.isNotEmpty &&
-                                      _estimatedValueController
-                                          .text
-                                          .isNotEmpty &&
+                                     
                                       _contactPersonController
                                           .text
                                           .isNotEmpty &&
@@ -237,11 +216,7 @@ class _SubmitPermitBottomSheetState
                                   "otp_id": widget.otp,
                                   "items_description":
                                       _descriptionController.text.trim(),
-                                  "estimated_value":
-                                      double.tryParse(
-                                        _estimatedValueController.text.trim(),
-                                      ) ??
-                                      0.0,
+                                
                                   "items": items,
                                   "metadata": {
                                     "notes": _noteController.text.trim(),
@@ -258,7 +233,7 @@ class _SubmitPermitBottomSheetState
                                 // items.clear();
                                 _contactPersonController.clear();
                                 _descriptionController.clear();
-                                _estimatedValueController.clear();
+                            
                                 _noteController.clear();
                               },
                               child: Container(

@@ -5,7 +5,10 @@ import 'package:curnectgate/features/operations/notifications/event/event_widget
 import 'package:curnectgate/features/operations/notifications/event/event_widget/event_data.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/going_tab.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/notGoing.dart';
+import 'package:curnectgate/features/operations/notifications/provider/cancel_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/eventprovider.dart';
+import 'package:curnectgate/features/operations/notifications/provider/getevent_provider.dart';
+import 'package:curnectgate/features/operations/notifications/provider/going_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,7 +38,7 @@ class EventsBottomSheet extends ConsumerWidget {
                   CalenderData(),
 
                   const SizedBox(height: 12), // Reduced spacing
-                  _buildTabBar(ref),
+                  _buildTabBar(ref, context),
                   const SizedBox(height: 12), // Reduced spacing
                   // Content area - THIS IS THE KEY FIX
                   Expanded(child: _buildContent(ref, context)),
@@ -69,7 +72,7 @@ class EventsBottomSheet extends ConsumerWidget {
           context.pop();
         },
         child: Text(
-          "Close",
+          "close",
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,
             color: AppColors.instance.black600,
@@ -104,17 +107,162 @@ class EventsBottomSheet extends ConsumerWidget {
     );
   }
 
-  Widget _buildTabBar(WidgetRef ref) {
-    final state = ref.watch(eventsProvider);
-    final notifier = ref.read(eventsProvider.notifier);
-
+  Widget _buildTabBar(WidgetRef ref, BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        _buildTabButton(0, "Events", state.currentTab, notifier),
-        _buildTabButton(1, "Going", state.currentTab, notifier),
-        _buildTabButton(2, "Canceled", state.currentTab, notifier),
+        eventtabLegnt(ref, context),
+
+        goinglegnt(ref, context),
+        cancledEventlegnt(ref, context),
       ],
+    );
+  }
+
+  Widget cancledEventlegnt(WidgetRef ref, BuildContext context) {
+    final state = ref.watch(eventsProvider);
+    final notifier = ref.read(eventsProvider.notifier);
+    final getListEventCount = ref.watch(canceledEventProvider);
+    return getListEventCount.when(
+      data: (data) {
+        if (data?.data != null) {
+          return _buildTabButton(
+            2,
+            "Canceled(${data?.data?.events?.length.toString() ?? ""})",
+            state.currentTab,
+            notifier,
+            ref,
+            context,
+          );
+        } else {
+          return _buildTabButton(
+            2,
+            "Canceled",
+            state.currentTab,
+            notifier,
+            ref,
+            context,
+          );
+        }
+      },
+      error: (e, s) {
+        return _buildTabButton(
+          2,
+          "Canceled",
+          state.currentTab,
+          notifier,
+          ref,
+          context,
+        );
+      },
+      loading: () {
+        return _buildTabButton(
+          2,
+          "Canceled",
+          state.currentTab,
+          notifier,
+          ref,
+          context,
+        );
+      },
+    );
+  }
+
+  Widget goinglegnt(WidgetRef ref, BuildContext context) {
+    final state = ref.watch(eventsProvider);
+    final notifier = ref.read(eventsProvider.notifier);
+    final getListEventCount = ref.watch(goingEventProvider);
+    return getListEventCount.when(
+      data: (data) {
+        if (data?.data != null) {
+          return _buildTabButton(
+            1,
+            "Going(${data?.data?.events?.length.toString() ?? ""})",
+            state.currentTab,
+            notifier,
+            ref,
+            context,
+          );
+        } else {
+          return _buildTabButton(
+            1,
+            "Going",
+            state.currentTab,
+            notifier,
+            ref,
+            context,
+          );
+        }
+      },
+      error: (e, s) {
+        return _buildTabButton(
+          1,
+          "Going",
+          state.currentTab,
+          notifier,
+          ref,
+          context,
+        );
+      },
+      loading: () {
+        return _buildTabButton(
+          1,
+          "Going",
+          state.currentTab,
+          notifier,
+          ref,
+          context,
+        );
+      },
+    );
+  }
+
+  Widget eventtabLegnt(WidgetRef ref, BuildContext context) {
+    final state = ref.watch(eventsProvider);
+    final notifier = ref.read(eventsProvider.notifier);
+    final getListEventCount = ref.watch(getEventProvider);
+    return getListEventCount.when(
+      data: (data) {
+        if (data?.data != null) {
+          return _buildTabButton(
+            0,
+            "Events(${data?.data?.events?.length.toString() ?? ""})",
+            state.currentTab,
+            notifier,
+            ref,
+            context,
+          );
+        } else {
+          return _buildTabButton(
+            0,
+            "Events",
+            state.currentTab,
+            notifier,
+            ref,
+            context,
+          );
+        }
+      },
+      error: (e, s) {
+        return _buildTabButton(
+          0,
+          "Events",
+          state.currentTab,
+          notifier,
+          ref,
+          context,
+        );
+      },
+      loading: () {
+        return _buildTabButton(
+          0,
+          "Events",
+          state.currentTab,
+          notifier,
+          ref,
+          context,
+        );
+      },
     );
   }
 
@@ -123,11 +271,26 @@ class EventsBottomSheet extends ConsumerWidget {
     String title,
     int currentTab,
     EventsNotifier notifier,
+    WidgetRef ref,
+    BuildContext context,
   ) {
     return Column(
       children: [
         TextButton(
-          onPressed: () => notifier.changeTab(index),
+          onPressed: () {
+            if (index == 0) {
+              ref.read(getEventProvider.notifier).refreshEvent(context, ref,"");
+            } else if (index == 1) {
+              ref
+                  .read(goingEventProvider.notifier)
+                  .refreshEvent(context, ref, "completed");
+            } else if (index == 2) {
+              ref
+                  .read(canceledEventProvider.notifier)
+                  .refreshEvent(context, ref, "cancelled");
+            }
+            notifier.changeTab(index);
+          },
           style: TextButton.styleFrom(
             foregroundColor:
                 currentTab == index

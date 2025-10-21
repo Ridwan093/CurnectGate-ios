@@ -9,7 +9,6 @@ import 'package:curnectgate/features/member_management/tabState/permission_tab_s
 import 'package:curnectgate/features/operations/notifications/event/event_widget/build_errorUlfor_event.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/data_event_card.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_event_model.dart';
-import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_user_rsvp_model.dart';
 import 'package:curnectgate/features/operations/notifications/provider/cancel_provider.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +32,7 @@ class CancelEvent extends ConsumerWidget {
       onRefresh:
           () => ref
               .read(canceledEventProvider.notifier)
-              .refreshEvent(context, ref),
+              .refreshEvent(context, ref,"cancelled"),
 
       child: activeOtasync.when(
         data: (event) {
@@ -90,7 +89,7 @@ class CancelEvent extends ConsumerWidget {
               onTap:
                   () => ref
                       .read(canceledEventProvider.notifier)
-                      .refreshEvent(context, ref),
+                      .refreshEvent(context, ref,"cancelled"),
               firstMessae: "Faile to load Event",
             );
           } catch (e) {
@@ -99,7 +98,7 @@ class CancelEvent extends ConsumerWidget {
               onTap:
                   () => ref
                       .read(canceledEventProvider.notifier)
-                      .refreshEvent(context, ref),
+                      .refreshEvent(context, ref,"cancelled"),
               firstMessae: "Faile to load Event?",
             );
           }
@@ -145,21 +144,23 @@ class CancelEvent extends ConsumerWidget {
 
   Widget _buildEmtyBody() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(AssetPaths.dashboardEvents, height: 100, width: 100),
-          SizedBox(height: 10),
-          Text(
-            "Your Evente detailes appears here",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.black300,
-              fontSize: 12,
-              fontWeight: FontFamilies.medium,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(AssetPaths.dashboardEvents, height: 100, width: 100),
+            SizedBox(height: 10),
+            Text(
+              "Your Evente detailes appears here",
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                color: AppColors.instance.black300,
+                fontSize: 12,
+                fontWeight: FontFamilies.medium,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -98,7 +98,7 @@ class EventLimitData extends ConsumerWidget {
               onTap:
                   () => ref
                       .read(getEventProvider.notifier)
-                      .refreshEvent(context, ref),
+                      .refreshEvent(context, ref,""),
               firstMessae: "Faile to load Event?",
             );
           }

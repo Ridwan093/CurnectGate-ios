@@ -10,7 +10,7 @@ class WorkOrderFormState {
   final DateTime? startDate;
   final DateTime? endDate;
   final String? selectedTimeWindow;
-  
+  final int id;
 
   // Validation states
   final bool vendorNameValid;
@@ -45,6 +45,7 @@ class WorkOrderFormState {
     this.workDescription = '',
     this.workerCount = 1,
     this.daysCount = 1,
+    this.id = 0,
     this.startDate,
     this.endDate,
     this.selectedTimeWindow,
@@ -94,6 +95,7 @@ class WorkOrderFormState {
     String? workDescription,
     int? workerCount,
     int? daysCount,
+    int? id,
     DateTime? startDate,
     DateTime? endDate,
     String? selectedTimeWindow,
@@ -124,6 +126,7 @@ class WorkOrderFormState {
     bool? isLoading,
   }) {
     return WorkOrderFormState(
+      id:id?? this.id,
       vendorName: vendorName ?? this.vendorName,
       vendorEmail: vendorEmail ?? this.vendorEmail,
       phoneNumber: phoneNumber ?? this.phoneNumber,

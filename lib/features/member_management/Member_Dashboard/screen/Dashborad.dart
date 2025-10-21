@@ -5,13 +5,18 @@ import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/%20operations/property_agreement/agreement_sign_screen.dart';
+import 'package:curnectgate/features/%20operations/property_agreement/utils.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/workformprovider.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/dashBordRowcard.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/empty_body.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/headCard.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/reusable_vistor_card.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/vewMoreButton.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/visitorActiveCount.dart';
+import 'package:curnectgate/features/member_management/membership_ID/provider/digitalD_status.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/active_provider.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
@@ -41,7 +46,7 @@ class Dashborad extends ConsumerWidget {
             children: [
               Headcard(),
               SizedBox(height: 15),
-              _buildRow(context),
+              _buildRow(context, ref),
               SizedBox(height: 25),
               Text(
                 "YOUR DUES",
@@ -112,7 +117,7 @@ class Dashborad extends ConsumerWidget {
                 ),
               ),
               SizedBox(height: 10),
-              _buildSaftyRow(),
+              _buildSaftyRow(context),
             ],
           ),
         ),
@@ -120,7 +125,7 @@ class Dashborad extends ConsumerWidget {
     );
   }
 
-  Widget _buildSaftyRow() {
+  Widget _buildSaftyRow(BuildContext context) {
     return Row(
       spacing: 10,
       children: [
@@ -133,7 +138,9 @@ class Dashborad extends ConsumerWidget {
         ),
         Expanded(
           child: _buildSaftyBox(
-            onTap: () {},
+            onTap: () {
+              push(context, AgreementSignScreen());
+            },
             imagepath: AssetPaths.dashboardCall,
             title: 'Support',
           ),
@@ -207,6 +214,7 @@ class Dashborad extends ConsumerWidget {
 
   Widget _buildEventContent(WidgetRef ref, BuildContext context, Size size) {
     final reminderprovider = ref.read(reminderProvider.notifier);
+    final notifier = ref.read(workOrderFormProvider.notifier);
 
     return Column(
       children: [
@@ -215,12 +223,15 @@ class Dashborad extends ConsumerWidget {
           buttontext: "All events",
           onTap: () {
             reminderprovider.resetAll();
+            notifier.updateEndDate(null);
+            notifier.updateStartDate(null);
+            notifier.updateWorkType("", 0);
             showUserBottomSheet(
               context: context,
               headertitle: "",
               headersubtitle: "",
               ref: ref,
-              bottom: BottomSheetView.events,
+              bottom: BottomSheetView.seletctEvent,
             );
           },
         ),
@@ -230,6 +241,7 @@ class Dashborad extends ConsumerWidget {
 
   PreferredSizeWidget _buildAppBar(BuildContext context, WidgetRef ref) {
     final reminderprovider = ref.read(reminderProvider.notifier);
+    final notifier = ref.read(workOrderFormProvider.notifier);
     return AppBar(
       leadingWidth: 50,
       leading: Padding(
@@ -243,13 +255,15 @@ class Dashborad extends ConsumerWidget {
         InkWell(
           onTap: () {
             reminderprovider.resetAll();
-
+            notifier.updateEndDate(null);
+            notifier.updateStartDate(null);
+            notifier.updateWorkType("", 0);
             showUserBottomSheet(
               context: context,
               headertitle: "",
               headersubtitle: "",
               ref: ref,
-              bottom: BottomSheetView.events,
+              bottom: BottomSheetView.seletctEvent,
             );
           },
           child: Image.asset(AssetPaths.dashboardcalenderSetting, width: 20),
@@ -347,7 +361,8 @@ class Dashborad extends ConsumerWidget {
     );
   }
 
-  Widget _buildRow(BuildContext context) {
+  Widget _buildRow(BuildContext context, WidgetRef ref) {
+    final notifier = ref.read(workOrderFormProvider.notifier);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -355,10 +370,13 @@ class Dashborad extends ConsumerWidget {
           title: "Digital ID",
           icon: AssetPaths.dashboardIdVerification,
           onTap: () async {
-            final authData = await SharedPrefsService().getAuthData();
-            bool status = authData?['user']?['digital_id_status'];
+            ref.read(formProvider.notifier).updateRegenerateDigiterCode("");
+            ref.read(formProvider.notifier).updateGenrateMemberIdLoading(false);
+ 
 
-            if (status) {
+            final status = await ref.read(digitalIdStatusProvider.future);
+
+            if (status.hasDigitalId) {
               context.pushNamed(AppRoutes.digitalIDMember);
             } else {
               context.pushNamed(AppRoutes.digitalIDStarter);
@@ -370,6 +388,9 @@ class Dashborad extends ConsumerWidget {
           title: "Work Order",
           icon: AssetPaths.dashboardWorkOrder,
           onTap: () {
+            notifier.updateEndDate(null);
+            notifier.updateStartDate(null);
+            notifier.updateWorkType("", 0);
             context.pushNamed(AppRoutes.workOrder);
           },
         ),

@@ -1,4 +1,6 @@
 // features/member_management/provider/form_provider.dart
+// ignore_for_file: unused_result
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
@@ -19,6 +21,7 @@ import 'package:curnectgate/features/member_management/Onboard_Houselod/provider
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/multi_select_provider.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/permission_loading_provider.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/provider.dart';
+import 'package:curnectgate/features/member_management/membership_ID/provider/digitalD_status.dart';
 import 'package:curnectgate/features/member_management/membership_ID/provider/getDigitalIDProvider.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
@@ -26,6 +29,7 @@ import 'package:curnectgate/features/member_management/profile_form/validator/pa
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/active_provider.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/submit_permit_provider.dart';
+import 'package:curnectgate/features/operations/notifications/provider/EventCode_provider/getlistofEventCode_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/getCalender_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/getevent_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notification_Count_provider.dart';
@@ -2837,6 +2841,8 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (response['status'] == true) {
         updateGenrateMemberIdLoading(false);
+        ref.refresh(digitalIdStatusProvider);
+
         context.pop();
         log("TRUE------->");
 
@@ -2943,6 +2949,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (response['status'] == true) {
         resteRasion();
         updateGenrateMemberIdLoading(false);
+
         context.pop();
         log("TRUE------->");
 
@@ -6224,12 +6231,10 @@ class FormNotifier extends StateNotifier<FormStates> {
           notifier.updateLoading(false);
           notifier.resetAll();
           //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
           showCustomSuccessToast(
             context: context,
-            message: message,
+            message: response["message"],
             color: AppColors.instance.error500,
             icon: Icons.error,
             iconColors: AppColors.instance.grey200,
@@ -6309,7 +6314,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (response['status'] == true) {
         ref.read(getCalenderProvider.notifier).refreshEvent(context, ref);
-        ref.read(getEventProvider.notifier).refreshEvent(context, ref);
+        ref.read(getEventProvider.notifier).refreshEvent(context, ref, "");
         notifier.updateLoading(false);
 
         notifier.resetAll();
@@ -6427,7 +6432,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (response['status'] == true) {
         notifier.updateLoading(false);
-        ref.read(getEventProvider.notifier).refreshEvent(context, ref);
+        ref.read(getEventProvider.notifier).refreshEvent(context, ref, "");
         notifier.resetAll();
         // context.pop();
         log("TRUE------->");
@@ -6450,12 +6455,10 @@ class FormNotifier extends StateNotifier<FormStates> {
           notifier.updateLoading(false);
           notifier.resetAll();
           //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
           showCustomSuccessToast(
             context: context,
-            message: message,
+            message: response["message"],
             color: AppColors.instance.error500,
             icon: Icons.error,
             iconColors: AppColors.instance.grey200,
@@ -6522,6 +6525,7 @@ class FormNotifier extends StateNotifier<FormStates> {
     required String dailyWindowTime,
     required String numberofWorkers,
     required String numberofDays,
+    required int categorie,
 
     required WidgetRef ref,
   }) async {
@@ -6537,16 +6541,17 @@ class FormNotifier extends StateNotifier<FormStates> {
       final response = await ref
           .read(profileRepositoryProvider)
           .submitWorkOrders(
+            categorie: categorie,
             file: "",
-            name: "",
-            dec: "",
-            email: "",
-            phone: "",
-            startDate: "",
-            endDate: "",
-            dailyWindowTime: "",
-            numberofWorkers: "",
-            numberofDays: "",
+            name: name,
+            dec: dec,
+            email: email,
+            phone: phone,
+            startDate: startDate,
+            endDate: endDate,
+            dailyWindowTime: dailyWindowTime,
+            numberofWorkers: numberofWorkers,
+            numberofDays: numberofDays,
 
             token: token ?? "",
 
@@ -6558,8 +6563,12 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (response['status'] == true) {
         updateWorkderLoading(false);
-        ref.read(getEventProvider.notifier).refreshEvent(context, ref);
+
         notifier.resetAll();
+        context.push(
+          AppRoutes.vendorAccessCode,
+          extra: {"title": "", "share": "", "code": ""},
+        );
         // context.pop();
         log("TRUE------->");
         showCustomSuccessToast(
@@ -6648,7 +6657,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       final deviceToken = await DeviceInfoHelper.getDeviceToken();
       final biometricType = await DeviceInfoHelper.getBiometricType();
       final deviceInfo = await DeviceInfoHelper.getDeviceInfo();
-      final isFirstTime = await DeviceInfoHelper.getFirstTimeCheck();
+
       final isBiometricEnabled = ref.watch(biometricPrefProvider);
       final isBiometricEnableds = ref.read(biometricPrefProvider.notifier);
 
@@ -6682,48 +6691,54 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       // ✅ Step 3: Proceed to setup or enable after authentication
       if (!isBiometricEnabled) {
-        if (isFirstTime) {
-          final response = await ref
-              .read(profileRepositoryProvider)
-              .setUpBiometric(
-                token: token ?? "",
-                device_token: deviceToken ?? "",
-                biometricType: biometricType,
-                device_name: deviceInfo["device_name"] ?? "",
-                os_version: deviceInfo["os_version"] ?? "",
-                app_version: deviceInfo["app_version"] ?? "",
-                context: context,
-              );
+        final response = await ref
+            .read(profileRepositoryProvider)
+            .setUpBiometric(
+              token: token ?? "",
+              device_token: deviceToken ?? "",
+              biometricType: biometricType,
+              device_name: deviceInfo["device_name"] ?? "",
+              os_version: deviceInfo["os_version"] ?? "",
+              app_version: deviceInfo["app_version"] ?? "",
+              context: context,
+            );
 
-          if (!context.mounted) return;
+        if (!context.mounted) return;
 
-          if (response['status'] == true) {
-            await DeviceInfoHelper.saveFirstTimeCheck(false);
-            isBiometricEnableds.toggleBiometric(true);
+        if (response['status'] == true) {
+          await DeviceInfoHelper.saveFirstTimeCheck(false);
+          isBiometricEnableds.toggleBiometric(true);
+          final biometricId = deviceToken ?? "unknown_device_id";
+          final signature = await BiometricSignatureHelper.getOrCreateSignature(
+            uniqueBiometricId: biometricId,
+          );
 
-            // enabletoggle(context: context, value: value, ref: ref, slug: slug);
-          } else {
-            final message = response["message"] ?? "Unknown error";
-            if (message.contains("Unauthenticated")) {
-              ref.read(authProvider.notifier).seassionExpire(context, ref);
-            } else {
-              showCustomSuccessToast(
-                context: context,
-                message: "SetUpFingerPrintErrorMessage: $message",
-                color: AppColors.instance.error500,
-                icon: Icons.error,
-                iconColors: AppColors.instance.grey200,
-                positionNumber: 70,
-              );
-            }
-          }
+          log("✅ Signature created after successful setup: $signature");
+
+          // enabletoggle(context: context, value: value, ref: ref, slug: slug);
         } else {
-          log("the first Time was not called");
-          enabletoggle(context: context, value: value, ref: ref, slug: slug);
+          final message = response["message"] ?? "Unknown error";
+          if (message.contains("Unauthenticated")) {
+            ref.read(authProvider.notifier).seassionExpire(context, ref);
+          } else {
+            showCustomSuccessToast(
+              context: context,
+              message: "SetUpFingerPrintErrorMessage: $message",
+              color: AppColors.instance.error500,
+              icon: Icons.error,
+              iconColors: AppColors.instance.grey200,
+              positionNumber: 70,
+            );
+          }
         }
       } else {
         log("the value was true");
-        enabletoggle(context: context, value: value, ref: ref, slug: slug);
+        enabletoggle(
+          context: context,
+          value: isBiometricEnabled,
+          ref: ref,
+          slug: slug,
+        );
       }
     } on DioException catch (e) {
       log("DIO ERROR: $e");
@@ -6770,67 +6785,32 @@ class FormNotifier extends StateNotifier<FormStates> {
       /// CASE 1: User currently ENABLED (value = true)
       /// Means → user wants to DISABLE it now
       /// -------------------------------
-      if (value) {
-        log("🧭 Current state: enabled → disabling...");
+      log("🧭 Current state: enabled → disabling...");
 
-        final response = await ref
-            .read(profileRepositoryProvider)
-            .enable_desable_fingal_faceID(
-              token: token,
-              isEnable: "disable",
-              context: context,
-            );
-
-        if (!context.mounted) return;
-
-        if (response['status'] == true) {
-          log("✅ Biometric disabled successfully");
-          biometricPref.toggleBiometric(false);
-
-          showCustomSuccessToast(
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .enable_desable_fingal_faceID(
+            token: token,
+            isEnable: "disable",
             context: context,
-            message: "Biometric disabled successfully!",
-            color: AppColors.instance.teal400,
-            icon: Icons.check,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
           );
-        } else {
-          _handleErrorResponse(context, ref, response["message"]);
-        }
-      }
-      /// -------------------------------
-      /// CASE 2: User currently DISABLED (value = false)
-      /// Means → user wants to ENABLE it now
-      /// -------------------------------
-      else {
-        log("🧭 Current state: disabled → enabling...");
 
-        final response = await ref
-            .read(profileRepositoryProvider)
-            .enable_desable_fingal_faceID(
-              token: token,
-              isEnable: "enable",
-              context: context,
-            );
+      if (!context.mounted) return;
 
-        if (!context.mounted) return;
+      if (response['status'] == true) {
+        log("✅ Biometric disabled successfully");
+        biometricPref.toggleBiometric(false);
 
-        if (response['status'] == true) {
-          log("✅ Biometric enabled successfully");
-          biometricPref.toggleBiometric(true);
-
-          showCustomSuccessToast(
-            context: context,
-            message: "Biometric enabled successfully!",
-            color: AppColors.instance.teal400,
-            icon: Icons.check,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        } else {
-          _handleErrorResponse(context, ref, response["message"]);
-        }
+        showCustomSuccessToast(
+          context: context,
+          message: "Biometric disabled successfully!",
+          color: AppColors.instance.teal400,
+          icon: Icons.check,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      } else {
+        _handleErrorResponse(context, ref, response["message"]);
       }
     } on DioException catch (e) {
       log("🌐 DIO ERROR: $e");
@@ -6889,6 +6869,10 @@ class FormNotifier extends StateNotifier<FormStates> {
       final signature = await BiometricSignatureHelper.getStoredSignature();
       final deviceToken = await DeviceInfoHelper.getDeviceToken();
       final token = await ref.watch(accessTokenProvider.future) ?? "";
+
+      log('${signature}');
+
+      log("Device EMAIL: $email");
 
       if (email == null || signature == null) {
         showCustomSuccessToast(
@@ -7046,6 +7030,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           ref.read(authProvider.notifier).seassionExpire(context, ref);
         } else {
           notifier.updateLoading(false);
+          items.clear();
           notifier.resetAll();
           //  final error = response['errors']?['comment']?.first;
           final message =
@@ -7104,6 +7089,241 @@ class FormNotifier extends StateNotifier<FormStates> {
       items.clear();
       notifier.resetAll();
 
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> requestEventCode({
+    required BuildContext context,
+
+    required String event_title,
+    required String event_description,
+    required String event_type,
+    required String event_start_date,
+    required String event_end_date,
+    required int expected_guests,
+
+    required String event_location,
+    required String special_instructions,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+
+    try {
+      final notifier = ref.read(reminderProvider.notifier);
+
+      notifier.updateLoading(true);
+
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .requestEventCodes(
+            token: token ?? "",
+            event_title: event_title,
+            event_type: event_type,
+            event_start_date: event_start_date,
+            event_end_date: event_end_date,
+            expected_guests: expected_guests,
+            event_description: event_description,
+            event_location: event_location,
+            special_instructions: special_instructions,
+            context: context,
+          );
+
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        notifier.updateLoading(false);
+
+        context.pop();
+        log("TRUE------->");
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      } else {
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifier.updateLoading(false);
+          notifier.resetAll();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifiers = ref.read(reminderProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifiers.resetAll();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifiers.updateLoading(false);
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(reminderProvider.notifier);
+      final items = ref.watch(itemListProvider);
+
+      notifier.updateLoading(false);
+      items.clear();
+      notifier.resetAll();
+
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> deActiveEventCode({
+    required BuildContext context,
+    required int id,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+    updateGenrateMemberIdLoading(true);
+
+    try {
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .deActiveEventCode(
+            token: token ?? "",
+            id: id,
+            reason: state.digiterReason ?? "",
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        resteRasion();
+        updateGenrateMemberIdLoading(false);
+        ref.read(getEventCodeProvider.notifier).refreshEventCode(context, ref);
+        context.pop();
+        log("TRUE------->");
+
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+
+        // ref.read(commentProvider.notifier).refreshComment(context, ref);
+
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+      } else {
+        updateGenrateMemberIdLoading(false);
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          //  final error = response['errors']?['comment']?.first;
+          resteRasion();
+          showCustomSuccessToast(
+            context: context,
+            message: response["message"],
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      updateGenrateMemberIdLoading(false);
+      resteRasion();
+      final reportStatess = ref.watch(reportProvider.notifier);
+
+      if (!context.mounted) return;
+      reportStatess.resetState();
+
+      if (e.error is SocketException) {
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      resteRasion();
+      updateGenrateMemberIdLoading(false);
+      final visitor = ref.watch(generateNotifierProvider.notifier);
+      visitor.resetState();
+      if (!context.mounted) return;
+      context.pop();
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      resteRasion();
+      updateGenrateMemberIdLoading(false);
       updateOtp('', false);
       log("END------->");
     }

@@ -197,9 +197,7 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
           }
         case FieldType.year:
           if (value.isEmpty) {
-            error = 'Phone number must be at least 1 digits';
-          } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-            error = 'Only numbers allowed';
+            error = '${widget.label} must be at least 1 digits';
           }
           break;
         case FieldType.password:

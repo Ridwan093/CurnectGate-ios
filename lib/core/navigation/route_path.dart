@@ -5,6 +5,7 @@ class AppRoutes {
   static const String estateCodeVerificationScreen = 'codeverify';
   static const String confirmInfomation = 'Onbordinfo';
   static const String estategetstart = 'estate';
+  
 
   // ------------------------------------------------------------------
   // Auth Flow (Grouped with prefix)

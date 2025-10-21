@@ -75,8 +75,8 @@ const String reActiveMemberID =
 const String generateOtpWithValidator =
     "/api/v1/estates/general/visitor-otps/generate";
 const String schedulOtp = "/api/v1/estates/general/visitor-otps/generate";
-const String createinstantPermit = "/api/v1/estates/general/clearance-permits/create-for-otp";
-
+const String createinstantPermit =
+    "/api/v1/estates/general/clearance-permits/create-for-otp";
 
 //SECURITY POST API URL
 
@@ -131,13 +131,18 @@ const String getViolationComment =
 const String getViolationHistotyStatus =
     "/api/v1/estates/general/violations/1/history";
 
-/// GET ALL VISITO  ACCESS CODE
+/// GET ALL VISITO  ACCESS CODE/ GET PERMIT
 const String getVisitorByfirter = "/api/v1/estates/general/visitor-otps";
 const String getVisitorDetail = "/api/v1/estates/general/visitor-otps/1";
+const String getWorkpermit =
+    "/api/v1/estates/general/clearance-permits/my-permits";
 // GET DIGITALID CODE
 
 const String getDigitalIDCode =
     "/api/v1/estates/general/digital-member-id/printable";
+
+const String getDigitalStatus =
+    "/api/v1/estates/general/digital-member-id/my-digital-id";
 // ADDHOUSEHOLD//SET PERMMISION/SET CURFEW/GET
 const String getHouseHold = "/api/v1/estates/owner-portal/households/members";
 const String getPropertya =
@@ -153,9 +158,11 @@ const String getstatistic =
 
 /// NOTIFICATION/REMINDER/EVENT
 const String createReminder = "/api/v1/estates/general/reminders";
+const String requestEventCode = "/api/v1/estates/general/event-codes/request";
 
 const String notificationCount = "/api/v1/estates/general/notifications/count";
 const String getCalenders = "/api/v1/estates/general/events/calendar";
+const String getEventCodes = "/api/v1/estates/general/event-codes/my-codes";
 
 /// REMOVE HOUSEOLD DELETE
 
@@ -183,3 +190,5 @@ const String getResinde = "/api/v1/estates/general/directory";
 // WORKODER GET API
 
 const String getworkOrder = "/api/v1/estates/general/workorders";
+const String workOrdercategorie =
+    "/api/v1/estates/general/workorders/categories";

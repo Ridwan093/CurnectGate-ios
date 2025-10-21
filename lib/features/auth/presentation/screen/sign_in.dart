@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:curnectgate/core/config/biometric_faceID/Helper/device_info_helper.dart';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/back_manageent/back_provider/provider.dart';
 import 'package:curnectgate/core/navigation/back_manageent/back_widget/back_navigator.dart';
@@ -148,75 +149,83 @@ class _SignInState extends ConsumerState<SignIn> {
   }
 
   Widget _buildContent() {
-    final isBiometricEnabled = ref.read(biometricPrefProvider);
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 80),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 20),
+    return FutureBuilder<bool>(
+      future: DeviceInfoHelper.isBiometricAvailable(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-          Text(
-            "${widget.title} $name.👋🏻",
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontFamily: FontFamilies.interDisplay,
-              fontWeight: FontFamilies.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            widget.description,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontFamily: FontFamilies.interDisplay,
-              fontWeight: FontFamilies.bold,
-            ),
-          ),
+        final canUseBiometric = snapshot.data ?? false;
+        final isBiometricEnabled = ref.read(biometricPrefProvider);
 
-          const SizedBox(height: 30),
-          ReusabelProfileForm(
-            controller: _emailController,
-            fieldKey: 'email',
-            fieldType: FieldType.email,
-            hintText: 'Enter email address',
-            label: 'Email',
-            onChanged: (value) {},
-            onValidationChanged: (validation) {
-              ref
-                  .read(formProvider.notifier)
-                  .updateField(
-                    field: 'email',
-                    isValid: validation.isValid,
-                    errorMessage: validation.error,
-                  );
-            },
-          ),
-          const SizedBox(height: 20),
-          ReusabelProfileForm(
-            controller: _passwordController,
-            hintText: 'Create password',
-            label: 'Password',
-            fieldKey: 'password',
-            fieldType: FieldType.password,
-            onChanged: (value) {},
-            onValidationChanged: (validation) {
-              // Handle validation changes
-              // setState(() {
-              //   _isPasswordValid = validation.isValid;
-              // });
-              ref
-                  .read(formProvider.notifier)
-                  .updateField(
-                    field: 'password',
-                    isValid: validation.isValid,
-                    errorMessage: validation.error,
-                  );
-            },
-          ),
+        return SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 80),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
 
-          _buildForgotButton(),
-          if (isBiometricEnabled) _buildBiometricWidget(),
-        ],
-      ),
+              Text(
+                "${widget.title} $name.👋🏻",
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontFamily: FontFamilies.interDisplay,
+                  fontWeight: FontFamilies.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                widget.description,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontFamily: FontFamilies.interDisplay,
+                  fontWeight: FontFamilies.bold,
+                ),
+              ),
+
+              const SizedBox(height: 30),
+              ReusabelProfileForm(
+                controller: _emailController,
+                fieldKey: 'email',
+                fieldType: FieldType.email,
+                hintText: 'Enter email address',
+                label: 'Email',
+                onChanged: (value) {},
+                onValidationChanged: (validation) {
+                  ref
+                      .read(formProvider.notifier)
+                      .updateField(
+                        field: 'email',
+                        isValid: validation.isValid,
+                        errorMessage: validation.error,
+                      );
+                },
+              ),
+              const SizedBox(height: 20),
+              ReusabelProfileForm(
+                controller: _passwordController,
+                hintText: 'Enter password',
+                label: 'Password',
+                fieldKey: 'password',
+                fieldType: FieldType.password,
+                onChanged: (value) {},
+                onValidationChanged: (validation) {
+                  ref
+                      .read(formProvider.notifier)
+                      .updateField(
+                        field: 'password',
+                        isValid: validation.isValid,
+                        errorMessage: validation.error,
+                      );
+                },
+              ),
+
+              _buildForgotButton(),
+              if (isBiometricEnabled && canUseBiometric)
+                _buildBiometricWidget(),
+            ],
+          ),
+        );
+      },
     );
   }
 

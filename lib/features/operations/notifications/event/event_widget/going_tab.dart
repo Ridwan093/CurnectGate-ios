@@ -32,7 +32,7 @@ class GoingEvents extends ConsumerWidget {
       color: AppColors.instance.yellow500,
       onRefresh:
           () =>
-              ref.read(goingEventProvider.notifier).refreshEvent(context, ref),
+              ref.read(goingEventProvider.notifier).refreshEvent(context, ref,"completed"),
 
       child: activeOtasync.when(
         data: (event) {
@@ -89,7 +89,7 @@ class GoingEvents extends ConsumerWidget {
               onTap:
                   () => ref
                       .read(goingEventProvider.notifier)
-                      .refreshEvent(context, ref),
+                      .refreshEvent(context, ref, "completed"),
               firstMessae: "Faile to load Event",
             );
           } catch (e) {
@@ -98,7 +98,7 @@ class GoingEvents extends ConsumerWidget {
               onTap:
                   () => ref
                       .read(goingEventProvider.notifier)
-                      .refreshEvent(context, ref),
+                      .refreshEvent(context, ref,"completed"),
               firstMessae: "Faile to load Event?",
             );
           }

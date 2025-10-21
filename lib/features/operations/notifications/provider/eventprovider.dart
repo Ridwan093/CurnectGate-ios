@@ -84,6 +84,8 @@ class EventsNotifier extends StateNotifier<EventsState> {
   }
 
   void changeTab(int index) {
+
+    
     state = state.copyWith(currentTab: index);
   }
 

@@ -142,6 +142,7 @@ class ResolvedData extends ConsumerWidget {
                     "Select reason for dismissing this violation report",
                 ref: ref,
                 bottom: BottomSheetView.securitydismissViolation,
+                id: data.id
               );
             },
             onAccept: () {

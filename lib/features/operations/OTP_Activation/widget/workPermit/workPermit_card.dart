@@ -4,7 +4,7 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/model/otp.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/model/Work_permit/permit.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,10 +12,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 class WorkpermitCard extends ConsumerWidget {
-  final Otp generated;
+  final Permit generated;
   const WorkpermitCard(this.generated, {super.key});
-  String _formatDate(DateTime date) {
-    return DateFormat('d, MMM').format(date);
+
+  String _formatDate(String dateString) {
+    try {
+      // Try to parse the string into a DateTime
+      final parsedDate = DateTime.tryParse(dateString);
+      if (parsedDate == null) {
+        throw FormatException('Invalid date string');
+      }
+
+      // Format as 'd, MMM' (e.g., "21, Oct")
+      return DateFormat('d, MMM').format(parsedDate.toLocal());
+    } catch (e) {
+      debugPrint('Error formatting date: $e');
+      return 'Invalid date';
+    }
   }
 
   String formatRemainingTime(String timeValue) {
@@ -32,15 +45,21 @@ class WorkpermitCard extends ConsumerWidget {
   }
 
   // Usage: formatRemainingTime("63628.20003") → "17h 40m 28s"
-  String formatToTime(DateTime dateTime) {
+
+  String formatToTime(String dateTimeString) {
     try {
+      // Try to parse the string into a DateTime
+      final parsedDate = DateTime.tryParse(dateTimeString);
+      if (parsedDate == null) {
+        throw FormatException('Invalid date string');
+      }
+
       // Convert to local timezone if it's not already
-      final localTime = dateTime.toLocal();
+      final localTime = parsedDate.toLocal();
 
       // Format using DateFormat.jm() for 12-hour time with AM/PM
       return DateFormat.jm().format(localTime); // e.g., 4:21 AM
     } catch (e) {
-      // Handle formatting errors gracefully
       debugPrint('Error formatting time: $e');
       return 'Invalid time';
     }
@@ -75,29 +94,28 @@ class WorkpermitCard extends ConsumerWidget {
               context: context,
               isEndDate: false,
               title: "Type",
-              trailing: generated.purpose,
+              trailing: generated.visitorOtp?.purpose ?? "",
               isCode: false,
+              status: generated.visitorOtp?.status ?? "",
             ),
             _buildreUsableListTile(
               context: context,
-              time: formatToTime(generated.validUntil),
+              time: formatToTime(generated.visitorOtp?.validUntil ?? ""),
               isEndDate: true,
               title: "End",
-              trailing: _formatDate(generated.validUntil),
+              trailing: _formatDate(generated.visitorOtp?.validUntil ?? ""),
               isCode: false,
+              status: generated.visitorOtp?.status ?? "",
             ),
 
             _buildreUsableListTile(
               context: context,
               isEndDate: false,
               title: "Code",
-              trailing: generated.otpCode,
+              trailing: generated.visitorOtp?.otpCode ?? "",
               isCode: true,
-              expired:
-                  generated.timeRemaining == 0.0
-                      ? ""
-                      : formatRemainingTime(generated.timeRemaining.toString()),
-              status: generated.status,
+              expired: generated.visitorOtp?.countdownDisplay ?? "",
+              status: generated.visitorOtp?.status ?? "",
             ),
           ],
         ),
@@ -139,32 +157,40 @@ class WorkpermitCard extends ConsumerWidget {
     required String otp,
   }) {
     final notifier = ref.read(reminderProvider.notifier);
-    return InkWell(
-      onTap: () async {
-        // final authData = await SharedPrefsService().getAuthData();
-        // final data = authData?['user']?['digital_id_code'] ?? "";
-        // log(data.toString());
-        // log(token.toString());
 
-        notifier.updateLoading(false);
-        showUserBottomSheet(
-          context: context,
-          headertitle: otp,
-          headersubtitle: "Revoked  OTP",
-          ref: ref,
-          bottom: BottomSheetView.permitAccces,
-          id: activeOtpID,
+    switch (status.toLowerCase()) {
+      case "active":
+        return InkWell(
+          onTap: () async {
+            // final authData = await SharedPrefsService().getAuthData();
+            // final data = authData?['user']?['digital_id_code'] ?? "";
+            // log(data.toString());
+            // log(token.toString());
+
+            notifier.updateLoading(false);
+
+            showUserBottomSheet(
+              context: context,
+              headertitle: otp,
+              headersubtitle: "Revoked  OTP",
+              ref: ref,
+              bottom: BottomSheetView.seletPermit,
+              id: activeOtpID,
+            );
+          },
+          child: Text(
+            "Add Permit",
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              fontWeight: FontFamilies.bold,
+              color: AppColors.instance.teal300,
+            ),
+          ),
         );
-      },
-      child: Text(
-        "Add Permit",
-        style: TextStyle(
-          fontFamily: FontFamilies.interDisplay,
-          fontWeight: FontFamilies.bold,
-          color: AppColors.instance.teal300,
-        ),
-      ),
-    );
+
+      default:
+        return Text("");
+    }
   }
 
   Color color(String status) {
@@ -262,7 +288,7 @@ class WorkpermitCard extends ConsumerWidget {
   Widget _buildvendorcardHead(
     WidgetRef ref,
     BuildContext context,
-    Otp generated,
+    Permit generated,
   ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -274,7 +300,7 @@ class WorkpermitCard extends ConsumerWidget {
               backgroundColor: AppColors.instance.teal300,
               child: Center(
                 child: Text(
-                  getInitialsFromFullName(generated.visitorName),
+                  getInitialsFromFullName(generated.guestName ?? ""),
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     color: AppColors.instance.black600,
@@ -283,15 +309,15 @@ class WorkpermitCard extends ConsumerWidget {
                 ),
               ),
             ),
-            _buildheaderText(generated.visitorName),
+            _buildheaderText(generated.guestName ?? ""),
           ],
         ),
         changeButton(
-          otp: generated.otpCode,
+          otp: generated.visitorOtp?.id.toString() ?? "",
           context: context,
           ref: ref,
-          activeOtpID: generated.id,
-          status: generated.status,
+          activeOtpID: generated.id ?? 0,
+          status: generated.visitorOtp?.status ?? "",
         ),
       ],
     );

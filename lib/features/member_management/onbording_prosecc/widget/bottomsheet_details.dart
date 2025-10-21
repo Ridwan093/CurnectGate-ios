@@ -23,6 +23,9 @@ import 'package:curnectgate/features/member_management/tabState/permission_tab_s
 import 'package:curnectgate/features/operations/OTP_Activation/screen/workPermit_otpHistory.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/revokedOTP.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/add_item_bottomsheet.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/schedul_addItem_bottomsheet.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/schedul_work_permit.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/select_work_permit_bottomSheet.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/submit_permit.dart.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/all_bottom_widget/addReminder.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/all_bottom_widget/deleteConfirmation.dart';
@@ -30,8 +33,15 @@ import 'package:curnectgate/features/operations/notifications/activites-reminder
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/all_bottom_widget/mars_reminder.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/all_bottom_widget/notyeSettings.dart';
 import 'package:curnectgate/features/operations/notifications/event/event.dart';
+import 'package:curnectgate/features/operations/notifications/event/event_widget/EventCode/code_widget.dart';
+import 'package:curnectgate/features/operations/notifications/event/event_widget/EventCode/create_Event.dart';
+import 'package:curnectgate/features/operations/notifications/event/event_widget/EventCode/dactive_reactive.dart';
+import 'package:curnectgate/features/operations/notifications/event/event_widget/EventCode/event_setting.dart';
+import 'package:curnectgate/features/operations/notifications/event/event_widget/EventCode/myEventCode_bottomsheet.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/event_detaile.dart';
+import 'package:curnectgate/features/operations/notifications/event/event_widget/selected_event_bottomSheet.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_event_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/EventCodes/event_code_model.dart';
 import 'package:curnectgate/features/operations/violation/widget/comment_view.dart';
 import 'package:curnectgate/features/operations/violation/widget/report_form.dart';
 import 'package:curnectgate/features/operations/violation/widget/resulationTime.dart';
@@ -69,6 +79,7 @@ class BottomsheetDetails extends ConsumerWidget {
   final String headersubtitle;
   final BottomSheetView bottom;
   CalendarEvent? eventData;
+  EventCode? eventCode;
   int? id;
 
   BottomsheetDetails({
@@ -77,6 +88,7 @@ class BottomsheetDetails extends ConsumerWidget {
     required this.headersubtitle,
     required this.bottom,
     this.eventData,
+    this.eventCode,
     this.id,
   });
 
@@ -232,12 +244,32 @@ class BottomsheetDetails extends ConsumerWidget {
         return CommentView(id: id ?? 0);
       case BottomSheetView.events:
         return EventsBottomSheet();
+
       case BottomSheetView.eventsDetails:
         return EventDetaile(data: eventData!);
       case BottomSheetView.permitAccces:
         return SubmitPermitBottomSheet("");
       case BottomSheetView.addpermitItems:
         return AddItemBottomSheet();
+      case BottomSheetView.shedulPermit:
+        return SubmitSchedulPermitBottomSheet(headertitle);
+      case BottomSheetView.schedulpermitItem:
+        return SchedulAddItemBottomSheet();
+
+      case BottomSheetView.seletPermit:
+        return SelectpermitBottomsheet(otp: headertitle);
+      case BottomSheetView.seletctEvent:
+        return EventSelected();
+      case BottomSheetView.createdEvent:
+        return CreatEvent();
+      case BottomSheetView.myeventCode:
+        return MyEventCode();
+      case BottomSheetView.eventSetting:
+        return EventSettings(data: eventCode!);
+      case BottomSheetView.eventDeactive:
+        return DeactiveEventCode(eventCode: eventCode!);
+      case BottomSheetView.checkEventcode:
+        return EventCodeWidget(data: eventCode!);
 
       default:
         return SingleChildScrollView(

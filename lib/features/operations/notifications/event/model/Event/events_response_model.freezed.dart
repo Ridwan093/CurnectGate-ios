@@ -23,7 +23,7 @@ mixin _$EventsResponse {
   bool? get status => throw _privateConstructorUsedError;
   String? get message => throw _privateConstructorUsedError;
   int? get code => throw _privateConstructorUsedError;
-  List<Event>? get events => throw _privateConstructorUsedError;
+  EventsData? get data => throw _privateConstructorUsedError;
 
   /// Serializes this EventsResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -41,7 +41,9 @@ abstract class $EventsResponseCopyWith<$Res> {
           EventsResponse value, $Res Function(EventsResponse) then) =
       _$EventsResponseCopyWithImpl<$Res, EventsResponse>;
   @useResult
-  $Res call({bool? status, String? message, int? code, List<Event>? events});
+  $Res call({bool? status, String? message, int? code, EventsData? data});
+
+  $EventsDataCopyWith<$Res>? get data;
 }
 
 /// @nodoc
@@ -62,7 +64,7 @@ class _$EventsResponseCopyWithImpl<$Res, $Val extends EventsResponse>
     Object? status = freezed,
     Object? message = freezed,
     Object? code = freezed,
-    Object? events = freezed,
+    Object? data = freezed,
   }) {
     return _then(_value.copyWith(
       status: freezed == status
@@ -77,11 +79,25 @@ class _$EventsResponseCopyWithImpl<$Res, $Val extends EventsResponse>
           ? _value.code
           : code // ignore: cast_nullable_to_non_nullable
               as int?,
-      events: freezed == events
-          ? _value.events
-          : events // ignore: cast_nullable_to_non_nullable
-              as List<Event>?,
+      data: freezed == data
+          ? _value.data
+          : data // ignore: cast_nullable_to_non_nullable
+              as EventsData?,
     ) as $Val);
+  }
+
+  /// Create a copy of EventsResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $EventsDataCopyWith<$Res>? get data {
+    if (_value.data == null) {
+      return null;
+    }
+
+    return $EventsDataCopyWith<$Res>(_value.data!, (value) {
+      return _then(_value.copyWith(data: value) as $Val);
+    });
   }
 }
 
@@ -93,7 +109,10 @@ abstract class _$$EventsResponseImplCopyWith<$Res>
       __$$EventsResponseImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({bool? status, String? message, int? code, List<Event>? events});
+  $Res call({bool? status, String? message, int? code, EventsData? data});
+
+  @override
+  $EventsDataCopyWith<$Res>? get data;
 }
 
 /// @nodoc
@@ -112,7 +131,7 @@ class __$$EventsResponseImplCopyWithImpl<$Res>
     Object? status = freezed,
     Object? message = freezed,
     Object? code = freezed,
-    Object? events = freezed,
+    Object? data = freezed,
   }) {
     return _then(_$EventsResponseImpl(
       status: freezed == status
@@ -127,10 +146,10 @@ class __$$EventsResponseImplCopyWithImpl<$Res>
           ? _value.code
           : code // ignore: cast_nullable_to_non_nullable
               as int?,
-      events: freezed == events
-          ? _value._events
-          : events // ignore: cast_nullable_to_non_nullable
-              as List<Event>?,
+      data: freezed == data
+          ? _value.data
+          : data // ignore: cast_nullable_to_non_nullable
+              as EventsData?,
     ));
   }
 }
@@ -139,9 +158,7 @@ class __$$EventsResponseImplCopyWithImpl<$Res>
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class _$EventsResponseImpl implements _EventsResponse {
-  const _$EventsResponseImpl(
-      {this.status, this.message, this.code, final List<Event>? events})
-      : _events = events;
+  const _$EventsResponseImpl({this.status, this.message, this.code, this.data});
 
   factory _$EventsResponseImpl.fromJson(Map<String, dynamic> json) =>
       _$$EventsResponseImplFromJson(json);
@@ -152,19 +169,12 @@ class _$EventsResponseImpl implements _EventsResponse {
   final String? message;
   @override
   final int? code;
-  final List<Event>? _events;
   @override
-  List<Event>? get events {
-    final value = _events;
-    if (value == null) return null;
-    if (_events is EqualUnmodifiableListView) return _events;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
+  final EventsData? data;
 
   @override
   String toString() {
-    return 'EventsResponse(status: $status, message: $message, code: $code, events: $events)';
+    return 'EventsResponse(status: $status, message: $message, code: $code, data: $data)';
   }
 
   @override
@@ -175,13 +185,12 @@ class _$EventsResponseImpl implements _EventsResponse {
             (identical(other.status, status) || other.status == status) &&
             (identical(other.message, message) || other.message == message) &&
             (identical(other.code, code) || other.code == code) &&
-            const DeepCollectionEquality().equals(other._events, _events));
+            (identical(other.data, data) || other.data == data));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, status, message, code,
-      const DeepCollectionEquality().hash(_events));
+  int get hashCode => Object.hash(runtimeType, status, message, code, data);
 
   /// Create a copy of EventsResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -205,7 +214,7 @@ abstract class _EventsResponse implements EventsResponse {
       {final bool? status,
       final String? message,
       final int? code,
-      final List<Event>? events}) = _$EventsResponseImpl;
+      final EventsData? data}) = _$EventsResponseImpl;
 
   factory _EventsResponse.fromJson(Map<String, dynamic> json) =
       _$EventsResponseImpl.fromJson;
@@ -217,7 +226,7 @@ abstract class _EventsResponse implements EventsResponse {
   @override
   int? get code;
   @override
-  List<Event>? get events;
+  EventsData? get data;
 
   /// Create a copy of EventsResponse
   /// with the given fields replaced by the non-null parameter values.

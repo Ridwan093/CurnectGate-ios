@@ -97,3 +97,4 @@ class CalendarEvent with _$CalendarEvent {
         createdAt: null,
       );
 }
+

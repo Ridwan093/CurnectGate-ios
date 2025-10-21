@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:curnectgate/core/%20utils/service/notification_service.dart';
 import 'package:curnectgate/core/navigation/app_rout.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/chat/data/chat_model/message_model.dart';
@@ -13,10 +14,13 @@ import 'package:hive_flutter/hive_flutter.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+    
+  await NotificationService().initialize();
   // Initialize Hive with your app's documents directory
   await Hive.initFlutter();
 
   // Register adapters (generated files)
+
 
   Hive.registerAdapter(MessageEnumAdapter()); // From M_enum.dart
   Hive.registerAdapter(MessagesAdapter()); // Your generated adapter

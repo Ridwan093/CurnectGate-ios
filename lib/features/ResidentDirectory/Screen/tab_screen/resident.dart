@@ -5,7 +5,6 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/ResidentDirectory/provider/getResidentProvider.dart';
 import 'package:curnectgate/features/ResidentDirectory/provider/resident_provider_filter.dart';
 import 'package:curnectgate/features/ResidentDirectory/widget/resident_card.dart';
-import 'package:curnectgate/features/ResidentDirectory/widget/resident_list.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

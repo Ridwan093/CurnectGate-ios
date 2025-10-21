@@ -4,16 +4,20 @@ import 'dart:developer';
 import 'package:curnectgate/core/%20utils/api/api_url.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/comittee_model/committees_response_model.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resident_directory_respond.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/model/workOrder_categor/work_order_categories_response.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/household_members_response.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_slug_model/permissions_response_model.dart'
     as slug_model;
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_status_model.dart/permissions_response_model.dart'
     as status_model;
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/property_model/property_response.dart';
+import 'package:curnectgate/features/member_management/membership_ID/model/digital_id_status.dart';
 import 'package:curnectgate/features/member_management/membership_ID/model/digital_member_id_response.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/model/Work_permit/clearance_permit_response.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/model/otp_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_events_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/events_response_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/EventCodes/event_codes_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_count/notification_count_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_response.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/remider/reminders_response_model.dart';
@@ -346,6 +350,32 @@ class GetApiService {
     }
   }
 
+  Future<ClearancePermitResponse> getworkPermit({
+    required String bearerToken,
+    required String status,
+  }) async {
+    try {
+      // final Map<String, dynamic> requestData = {"status": status};
+      log("requestBody:${requestData.toString()}");
+      final response = await _dio.get(
+        getWorkpermit, // Update with your actual endpoint
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $bearerToken',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        ),
+      );
+      log(response.data.toString());
+
+      return ClearancePermitResponse.fromSafeJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
   Future<DigitalMemberIdResponse> getDigitalID({
     required String bearerToken,
   }) async {
@@ -531,7 +561,7 @@ class GetApiService {
   Future<EventsResponse> getCalender({required String bearerToken}) async {
     try {
       final response = await _dio.get(
-        "/api/v1/estates/general/events/calendar", // Update with your actual endpoint
+        getCalenders, // Update with your actual endpoint
         options: Options(
           headers: {
             'Accept': 'application/json',
@@ -540,9 +570,30 @@ class GetApiService {
           },
         ),
       );
-      log(response.data.toString());
+      log("Calender Event:" + response.data.toString());
 
       return EventsResponse.fromSafeJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<EventCodesResponse> getEventCode({required String bearerToken}) async {
+    try {
+      final response = await _dio.get(
+        getEventCodes, // Update with your actual endpoint
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $bearerToken',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        ),
+      );
+      log("Calender Event:" + response.data.toString());
+
+      return EventCodesResponse.fromSafeJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);
@@ -553,10 +604,12 @@ class GetApiService {
     required String bearerToken,
     required String limit,
     required String statuse,
+    String? date,
   }) async {
     try {
       final response = await _dio.get(
-        "/api/v1/estates/general/events?status=$statuse&type=&upcoming=1&limit=$limit", // Update with your actual endpoint
+        // "/api/v1/estates/general/events?status=cancelled",
+        "/api/v1/estates/general/events?status=$statuse&limit=$limit&start_date=${date ?? ""}", // Update with your actual endpoint
         options: Options(
           headers: {
             'Accept': 'application/json',
@@ -619,6 +672,75 @@ class GetApiService {
       throw _handleError(e);
     }
   }
+
+  Future<WorkOrderCategoriesResponse> getWorkOrderCategories({
+    required String bearerToken,
+  }) async {
+    try {
+      final response = await _dio.get(
+        workOrdercategorie, // Update with your actual endpoint
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $bearerToken',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        ),
+      );
+      log(response.data.toString());
+
+      return WorkOrderCategoriesResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<PropertyResponse> getWorkerOrder({required String bearerToken}) async {
+    try {
+      final response = await _dio.get(
+        getworkOrder, // Update with your actual endpoint
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $bearerToken',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        ),
+      );
+      log(response.data.toString());
+
+      return PropertyResponse.safeFromJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+   Future<DigitalIdStatus> fetchDigitalIdStatus({
+    required String bearerToken,
+  }) async {
+    try {
+      final response = await _dio.get(
+        getDigitalStatus, // Update with your actual endpoint
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $bearerToken',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        ),
+      );
+      log(response.data.toString());
+
+      return DigitalIdStatus.fromJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+
+      return DigitalIdStatus(hasDigitalId: false);
+    }
+  }
+
 
   dynamic _handleError(DioException e) {
     if (e.response != null) {

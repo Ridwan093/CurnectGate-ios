@@ -23,9 +23,9 @@ class CheckoutHistoryResponseModel with _$CheckoutHistoryResponseModel {
 
   factory CheckoutHistoryResponseModel.fromSafeJson(Map<String, dynamic> json) {
     return CheckoutHistoryResponseModel(
-      status: NullSafetyHelper.safeBool(json['status']) ?? false,
-      message: NullSafetyHelper.safeString(json['message']) ?? '',
-      code: NullSafetyHelper.safeInt(json['code']) ?? 0,
+      status: NullSafetyHelper.safeBool(json['status']),
+      message: NullSafetyHelper.safeString(json['message']),
+      code: NullSafetyHelper.safeInt(json['code']),
       data: NullSafetyHelper.safeModel(
         json['data'],
         CheckoutHistoryData.fromSafeJson, // Use fromSafeJson, not fromJson

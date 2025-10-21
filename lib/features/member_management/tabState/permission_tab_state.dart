@@ -78,6 +78,15 @@ enum BottomSheetView {
   eventsDetails,
   permitAccces,
   addpermitItems,
+  shedulPermit,
+  schedulpermitItem,
+  seletPermit,
+  seletctEvent,
+  createdEvent,
+  myeventCode,
+  eventSetting,
+  checkEventcode,
+  eventDeactive
 }
 
 // State notifier for permissions

@@ -33,7 +33,7 @@ class EventNotifier extends AutoDisposeAsyncNotifier<CalendarEventsResponse?> {
 
       final freshEvent = await ref
           .read(getApiServiceProvider)
-          .getEvent(bearerToken: token, limit: "",statuse:"cancelled" );
+          .getEvent(bearerToken: token, limit: "", statuse: "Cancelled");
 
       // Only update local storage if data is different
       if (localEvent?.toJson() != freshEvent.toJson()) {
@@ -43,9 +43,9 @@ class EventNotifier extends AutoDisposeAsyncNotifier<CalendarEventsResponse?> {
       return freshEvent;
     } catch (e) {
       // If error occurs, return local data if available
-      log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");
+      log("${e} Canclled Api");
       if (localEvent != null) {
-        log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");
+        log("${e} cancled api");
         // Show error toast but still return local data
         // WidgetsBinding.instance.addPostFrameCallback((_) {
         //   ScaffoldMessenger.of(context).showSnackBar(
@@ -61,7 +61,7 @@ class EventNotifier extends AutoDisposeAsyncNotifier<CalendarEventsResponse?> {
     }
   }
 
-  Future<void> refreshEvent(BuildContext context, WidgetRef ref) async {
+  Future<void> refreshEvent(BuildContext context, WidgetRef ref, String filter) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       try {
@@ -69,7 +69,11 @@ class EventNotifier extends AutoDisposeAsyncNotifier<CalendarEventsResponse?> {
         // final category = ref.watch(reminderProvider).filter.toLowerCase();
         final freshEvent = await ref
             .read(getApiServiceProvider)
-            .getEvent(bearerToken: token ?? "", limit: "",statuse: "cancelled");
+            .getEvent(
+              bearerToken: token ?? "",
+              limit: "",
+              statuse: filter,
+            );
         await SharedPrefsService.saveEvent(freshEvent);
         return freshEvent;
       } catch (e) {
