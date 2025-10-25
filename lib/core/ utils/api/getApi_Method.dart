@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:curnectgate/core/%20utils/api/api_url.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/comittee_model/committees_response_model.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resident_directory_respond.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/model/get_workOder/work_orders_response.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/workOrder_categor/work_order_categories_response.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/household_members_response.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_slug_model/permissions_response_model.dart'
@@ -696,7 +697,9 @@ class GetApiService {
     }
   }
 
-  Future<PropertyResponse> getWorkerOrder({required String bearerToken}) async {
+  Future<WorkOrderResponse> getWorkerOrder({
+    required String bearerToken,
+  }) async {
     try {
       final response = await _dio.get(
         getworkOrder, // Update with your actual endpoint
@@ -710,14 +713,14 @@ class GetApiService {
       );
       log(response.data.toString());
 
-      return PropertyResponse.safeFromJson(response.data);
+      return WorkOrderResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
 
-   Future<DigitalIdStatus> fetchDigitalIdStatus({
+  Future<DigitalIdStatus> fetchDigitalIdStatus({
     required String bearerToken,
   }) async {
     try {
@@ -740,7 +743,6 @@ class GetApiService {
       return DigitalIdStatus(hasDigitalId: false);
     }
   }
-
 
   dynamic _handleError(DioException e) {
     if (e.response != null) {

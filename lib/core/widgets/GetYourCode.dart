@@ -1,13 +1,14 @@
+import 'dart:convert';
+
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_screen/vendor_log.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
-import 'package:curnectgate/features/member_management/screen/main_navigation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
 class GetYourCodeScreen extends ConsumerStatefulWidget {
@@ -18,7 +19,7 @@ class GetYourCodeScreen extends ConsumerStatefulWidget {
     super.key,
     this.title = "Your vendor access code:",
     this.accessCode = "3456GAT",
-    this.share = "Here's m vendor access code: ",
+    this.share = "Here's  vendor access code: ",
   });
 
   @override
@@ -26,45 +27,72 @@ class GetYourCodeScreen extends ConsumerStatefulWidget {
       _WorkRequestVendorCodeState();
 }
 
+List<String> extractWorkerAccessCodes(Map<String, dynamic> json) {
+  try {
+    final workers = json['workers'] as List;
+    return workers
+        .whereType<Map<String, dynamic>>()
+        .map((worker) => worker['access_code'] as String? ?? '')
+        .where((code) => code.isNotEmpty)
+        .toList();
+  } catch (e) {
+    return [];
+  }
+}
+
+String extractVendorAccessCode(Map<String, dynamic> json) {
+  try {
+    return json['vendor_access_code'] as String? ?? '';
+  } catch (e) {
+    return '';
+  }
+}
+
 class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
   bool isCopied = false;
 
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic> extractedData = jsonDecode(widget.title ?? "");
+    final accessCodes = extractWorkerAccessCodes(extractedData);
+    final vendorCode = extractVendorAccessCode(extractedData);
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            if (widget.title == "Your vendor access code:") ...[
-              _buildSuccessContainer(),
-            ] else ...[
-              ///DESINGE THIS TO MEET THE OHTER CODE SUB WORKERS CODE
-              _buildSuccessContainerEvendor(
-                title: "",
-                subCodes: [],
-                mainCode: "",
-              ),
-            ],
+      bottomNavigationBar: ActionButton(
+        label: "Got it",
+        onPressed: () {
+          // if (widget.title!.contains("Your visitor access code")) {
+          //   Navigator.pop(context);
+          //   // Navigator.push(
+          //   //   context,
+          //   //   MaterialPageRoute(
+          //   //     builder:
+          //   //         (context) => MainNavigationScreen(mainPage: VendorLog()),
+          //   //   ),
+          //   // );
+          // } else {
+          //   log(widget.title.toString());
+          // }
 
-            ActionButton(
-              label: "Got it",
-              onPressed: () {
-                if (widget.title == "Your vendor access code:") {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) =>
-                              MainNavigationScreen(mainPage: VendorLog()),
-                    ),
-                  );
-                } else {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-          ],
+          context.pop();
+        },
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (widget.title!.contains("Your visitor access code")) ...[
+                _buildSuccessContainer(),
+              ] else ...[
+                ///DESINGE THIS TO MEET THE OHTER CODE SUB WORKERS CODE
+                _buildSuccessContainerEvendor(
+                  title: "Your vendor access code:",
+                  subCodes: accessCodes,
+                  mainCode: vendorCode,
+                ),
+              ],
+            ],
+          ),
         ),
       ),
     );
@@ -135,6 +163,7 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
     final hasSubCodes = subCodes != null && subCodes.isNotEmpty;
 
     return SingleChildScrollView(
+      padding: EdgeInsets.all(12.0),
       child: Column(
         children: [
           const SizedBox(height: 100),
@@ -163,6 +192,7 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
           const SizedBox(height: 25),
 
           // ✅ Title
+          const SizedBox(height: 25),
           Text(
             title,
             textAlign: TextAlign.center,
@@ -173,99 +203,122 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
               fontSize: 20,
             ),
           ),
-
           const SizedBox(height: 10),
-
-          // ✅ Main Access Code
           Text(
             mainCode,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.teal500,
+              color: AppColors.instance.black600,
               fontWeight: FontFamilies.bold,
               fontSize: 35,
             ),
           ),
-
           const SizedBox(height: 20),
-
-          // ✅ Copy & Share Row for main code
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildCopyButtons(""),
+              _buildCopyButton(widget.accessCode!),
               const SizedBox(width: 30),
-              _buildShareButton(""),
+              _buildShareButtons(widget.accessCode ?? ""),
             ],
           ),
-
           if (hasSubCodes) ...[
             const SizedBox(height: 30),
 
             // Divider or heading
-            Text(
-              "Sub Worker Codes",
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontWeight: FontFamilies.medium,
-                fontSize: 16,
-                color: AppColors.instance.black500,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Sub Worker Codes:",
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontWeight: FontFamilies.bold,
+                    fontSize: 14,
+                    color: AppColors.instance.black600,
+                  ),
+                ),
+
+                InkWell(
+                  onTap: () {
+                    _shareAllCodes(subCodes);
+                  },
+                  child: Text(
+                    "Share all",
+
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontWeight: FontFamilies.bold,
+                      fontSize: 12,
+                      color: AppColors.instance.black600,
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 10),
 
             // ✅ Display all sub-codes
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              alignment: WrapAlignment.center,
-              children:
-                  subCodes.map((code) {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.instance.teal300),
-                        borderRadius: BorderRadius.circular(12),
-                        color: AppColors.instance.teal500,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            code,
-                            style: TextStyle(
-                              fontFamily: FontFamilies.interDisplay,
-                              color: AppColors.instance.teal500,
-                              fontWeight: FontFamilies.bold,
-                              fontSize: 16,
+            Container(
+              padding: EdgeInsets.all(12),
+              width: MediaQuery.sizeOf(context).width,
+              decoration: BoxDecoration(
+                color: AppColors.instance.grey300,
+
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                alignment: WrapAlignment.spaceAround,
+                children:
+                    subCodes.map((code) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: AppColors.instance.teal300),
+                          borderRadius: BorderRadius.circular(12),
+                          color: AppColors.instance.grey300,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              code,
+                              style: TextStyle(
+                                fontFamily: FontFamilies.interDisplay,
+                                color: AppColors.instance.black600,
+                                fontWeight: FontFamilies.bold,
+                                fontSize: 16,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                          GestureDetector(
-                            onTap: () => _copyToClipboard(code),
-                            child: Icon(
-                              Icons.copy,
-                              size: 16,
-                              color: AppColors.instance.teal400,
+                            const SizedBox(width: 8),
+                            GestureDetector(
+                              onTap: () => _copyToClipboard(code),
+                              child: Icon(
+                                Icons.copy,
+                                size: 16,
+                                color: AppColors.instance.teal400,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                          GestureDetector(
-                            onTap: () => _shareCode(code),
-                            child: Icon(
-                              Icons.share,
-                              size: 16,
-                              color: AppColors.instance.teal400,
+                            const SizedBox(width: 8),
+                            GestureDetector(
+                              onTap: () => _shareCode(code),
+                              child: Icon(
+                                Icons.share,
+                                size: 16,
+                                color: AppColors.instance.teal400,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+              ),
             ),
           ],
         ],
@@ -322,46 +375,48 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildCopyButton(),
+            _buildCopyButton(widget.accessCode!),
             const SizedBox(width: 30),
-            _buildShareButton(""),
+            _buildShareButtons(widget.accessCode ?? ""),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildCopyButtons(String code) {
-    return IconButton(
-      onPressed: () => _copyToClipboard(code),
-      icon: const Icon(Icons.copy),
-      color: AppColors.instance.teal400,
-    );
-  }
-
-  Widget _buildShareButton(String code) {
-    return IconButton(
-      onPressed: () => _shareCode(code),
-      icon: const Icon(Icons.share),
-      color: AppColors.instance.teal400,
-    );
-  }
-
   void _copyToClipboard(String code) {
     Clipboard.setData(ClipboardData(text: code));
+    showCustomSuccessToast(
+      positionNumber: 50,
+      context: context,
+      message: "Copied",
+      color: AppColors.instance.teal300,
+      icon: Icons.check_circle,
+      iconColors: AppColors.instance.black600,
+    );
     // You can show a snackbar if you like
+  }
+
+  void _shareAllCodes(List<String> codes) {
+    if (codes.isEmpty) return;
+
+    final message = 'Here are your work codes:\n${codes.join('\n')}';
+    // ignore: deprecated_member_use
+    Share.share(message);
   }
 
   void _shareCode(String code) {
     // Use Share.share(code) if you have `share_plus` package
+    // ignore: deprecated_member_use
+    Share.share("Here are your work code: ${code}");
   }
 
-  Widget _buildCopyButton() {
+  Widget _buildCopyButton(String code) {
     return Column(
       children: [
         InkWell(
           onTap: () {
-            Clipboard.setData(ClipboardData(text: widget.accessCode!));
+            Clipboard.setData(ClipboardData(text: code));
             setState(() {
               isCopied = true;
             });
@@ -411,12 +466,13 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
     );
   }
 
-  Widget _buildShareButtons() {
+  Widget _buildShareButtons(String code) {
     return Column(
       children: [
         InkWell(
           onTap: () {
-            Share.share("${widget.share} ${widget.accessCode}");
+            // ignore: deprecated_member_use
+            Share.share("${widget.share} ${code}");
           },
           borderRadius: BorderRadius.circular(25),
           child: Container(

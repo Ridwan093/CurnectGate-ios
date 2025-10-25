@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:curnectgate/features/ResidentDirectory/model/comittee_model/committees_response_model.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resident_directory_respond.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/model/get_workOder/work_orders_response.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/workOrder_categor/work_order_categories_response.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/household_members_response.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_slug_model/permissions_response_model.dart'
@@ -85,7 +86,8 @@ class SharedPrefsService {
   static const String _getDigitalIdKey = "Digital_id";
   static const String _householdGetKey = "house_hold";
   static const String _propertyIDKey = "property_ID";
-
+  static const String _workOderCatigoriIDKey = "workOrder_categorie";
+  static const String _workOderKey = "workOrder";
   static const String _permissionStatusKey = "perm_status";
   static const String _permissionStaticKey = "perm_static";
   static const String _checkOutKey = "check_out";
@@ -354,7 +356,9 @@ class SharedPrefsService {
     return null;
   }
 
-   static Future<void> saveClearancePermit(ClearancePermitResponse preference) async {
+  static Future<void> saveClearancePermit(
+    ClearancePermitResponse preference,
+  ) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_work_permitKey, jsonEncode(preference.toJson()));
   }
@@ -454,27 +458,41 @@ class SharedPrefsService {
   }
 
   /// WORKORDER
-  ///  CheckoutHistoryResponseModel saveWorkOrderCategories
-
+  ///  CheckoutHistoryResponseModel saveWorkOrderCategories. GetWorkOrdersResponse
 
   static Future<void> saveWorkOrderCategories(
     WorkOrderCategoriesResponse preference,
   ) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
-      _permissionStatusKey,
+      _workOderCatigoriIDKey,
       jsonEncode(preference.toJson()),
     );
   }
 
   static Future<WorkOrderCategoriesResponse?> getWorkOrderCategories() async {
     final prefs = await SharedPreferences.getInstance();
-    final data = prefs.getString(_permissionStatusKey);
+    final data = prefs.getString(_workOderCatigoriIDKey);
     if (data != null) {
       return WorkOrderCategoriesResponse.fromSafeJson(jsonDecode(data));
     }
     return null;
   }
+
+  static Future<void> saveWorkOrder(WorkOrderResponse preference) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_workOderKey, jsonEncode(preference.toJson()));
+  }
+
+  static Future<WorkOrderResponse?> getWorkOrder() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_workOderKey);
+    if (data != null) {
+      return WorkOrderResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
   /// SECURITY LOCAL
   /// CheckoutHistoryResponseModel
   static Future<void> saveCheckOut(
@@ -731,6 +749,16 @@ class SharedPrefsService {
     await prefs.remove(_eventCode);
   }
 
+  static Future<void> clearWorkOrderCategory() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_workOderCatigoriIDKey);
+  }
+
+  static Future<void> clearWorkOder() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_workOderKey);
+  }
+
   Future<void> saveAuthData(Map<String, dynamic> data) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_keyAuthData, jsonEncode(data));
@@ -783,6 +811,8 @@ class SharedPrefsService {
     clearCommitte();
     clearResident();
     clearEventCode();
+    clearWorkOrderCategory();
+    clearWorkOder();
 
     await prefs.remove(_keyAuthData);
   }

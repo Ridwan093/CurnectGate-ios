@@ -8,8 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class SelectpermitBottomsheet extends ConsumerWidget {
+  final int id;
   final String otp;
-  const SelectpermitBottomsheet({super.key, required this.otp});
+  const SelectpermitBottomsheet({super.key, required this.otp, required this.id});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -58,7 +59,7 @@ class SelectpermitBottomsheet extends ConsumerWidget {
                 headersubtitle: "Revoked  OTP",
                 ref: ref,
                 bottom: BottomSheetView.permitAccces,
-                id: 0,
+                id: id,
               );
             },
             icon: AssetPaths.generateOtpwithperiod,
@@ -74,7 +75,7 @@ class SelectpermitBottomsheet extends ConsumerWidget {
                 headersubtitle: "Revoked  OTP",
                 ref: ref,
                 bottom: BottomSheetView.shedulPermit,
-                id: 0,
+                id: id,
               );
             },
             icon: AssetPaths.scheduleOtp,

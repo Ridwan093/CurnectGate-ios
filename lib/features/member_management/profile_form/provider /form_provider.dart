@@ -14,6 +14,8 @@ import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/auth/widget/tmporarypassword_dialog.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/getWorkOdder_provider.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/workformprovider.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/state_model/general_state.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/getHouseHold_provider.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/getPermission_status_provider.dart';
@@ -898,7 +900,9 @@ class FormNotifier extends StateNotifier<FormStates> {
             positionNumber: 70,
           );
           final userData = response['data'] as Map<String, dynamic>?;
+
           if (userData != null) {
+            log(userData["access_token"]);
             final user = userData['user'] as Map<String, dynamic>?;
             final firstName = user?['firstname'] as String?;
             final email = user?["email"] as String?;
@@ -2817,6 +2821,110 @@ class FormNotifier extends StateNotifier<FormStates> {
       final visitor = ref.watch(generateNotifierProvider.notifier);
       visitor.resetState();
       updatedeRevorkOtpLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> revorkWorkOder({
+    required BuildContext context,
+    required int id,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+
+    try {
+      final state = ref.read(workOrderFormProvider.notifier);
+
+      state.setLoading(true);
+
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .revoWorkOder(token: token ?? "", id: id, context: context);
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        state.setLoading(false);
+        ref.read(workOrderProvider.notifier).refreshWorkOrders(context, ref);
+        context.pop();
+        log("TRUE------->");
+
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+        // context.pop();
+
+        // ref.read(commentProvider.notifier).refreshComment(context, ref);
+
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+      } else {
+        state.setLoading(false);
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          state.setLoading(false);
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          //  final error = response['errors']?['comment']?.first;
+
+          showCustomSuccessToast(
+            context: context,
+            message: response['data']['otp_id']?.first ?? 'Unknown error',
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final state = ref.read(workOrderFormProvider.notifier);
+      state.setLoading(false);
+
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      final state = ref.read(workOrderFormProvider.notifier);
+      state.setLoading(false);
+      if (!context.mounted) return;
+      context.pop();
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final state = ref.read(workOrderFormProvider.notifier);
+      state.setLoading(false);
       updateOtp('', false);
       log("END------->");
     }
@@ -4984,7 +5092,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           headertitle: jsonString,
           headersubtitle: userData['estate_name'] ?? "N/A",
           ref: ref,
-          bottom: BottomSheetView.confirmEntry,
+          bottom: BottomSheetView.digitalIdConfirm,
         );
       } else {
         // log(e.toString());
@@ -5114,7 +5222,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           headertitle: jsonString,
           headersubtitle: userData['estate_name'] ?? "N/A",
           ref: ref,
-          bottom: BottomSheetView.confirmEntry,
+          bottom: BottomSheetView.digitalIdConfirm,
         );
       } else {
         // log(e.toString());
@@ -5222,9 +5330,9 @@ class FormNotifier extends StateNotifier<FormStates> {
         context.pop();
         notifiers.updateLoading(false);
         notifier.resetForm();
-        // final userData = response['data']["otp"]["generated_by"];
+        final userData = response;
 
-        final String jsonString = json.encode(response);
+        final String jsonString = json.encode(userData);
         final String jsonStringdata = json.encode(response['data']["otp"]);
 
         final int id = response['data']["otp"]["id"];
@@ -5240,6 +5348,147 @@ class FormNotifier extends StateNotifier<FormStates> {
           ref: ref,
           bottom: BottomSheetView.acceptCheckOut,
         );
+
+        // showUserBottomSheet(
+        //   id: id,
+        //   context: context,
+        //   headertitle: jsonString,
+        //   headersubtitle: jsonStringdata,
+        //   ref: ref,
+        //   bottom: BottomSheetView.confirmEntry,
+        // );
+      } else {
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifiers.updateLoading(false);
+          notifier.resetForm();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifiers.updateLoading(false);
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(oTpformProvider.notifier);
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      notifiers.updateLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> checkOutOTPwithPermit({
+    required BuildContext context,
+    required String otpCode,
+    required String securityNoted,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+
+    try {
+      final notifiers = ref.read(oTpformProvider.notifier);
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(true);
+
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .checkOutOtpwithPermit(
+            token: token ?? "",
+            otpCode: otpCode,
+            context: context,
+            securityNote: securityNoted,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        context.pop();
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        final userData = response;
+
+        final String jsonString = json.encode(userData);
+        final String jsonStringdata = json.encode(response['data']["otp"]);
+
+        final int id = response['data']["otp"]["id"];
+
+        debugPrint('─────────────────────────────────────────');
+        notifier.resetForm();
+        log("TRUE------->");
+        showUserBottomSheet(
+          id: id,
+          context: context,
+          headertitle: jsonString,
+          headersubtitle: jsonStringdata,
+          ref: ref,
+          bottom: BottomSheetView.checkOutWithpermitConfirm,
+        );
+
+        // showUserBottomSheet(
+        //   id: id,
+        //   context: context,
+        //   headertitle: jsonString,
+        //   headersubtitle: jsonStringdata,
+        //   ref: ref,
+        //   bottom: BottomSheetView.confirmEntry,
+        // );
       } else {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
@@ -5439,6 +5688,761 @@ class FormNotifier extends StateNotifier<FormStates> {
     }
   }
 
+  Future<void> workOrderCheckOut({
+    required BuildContext context,
+    required String otpCode,
+    required String securityNoted,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+
+    try {
+      final notifiers = ref.read(oTpformProvider.notifier);
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(true);
+
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .workersCheckOutOtp(
+            token: token ?? "",
+            otpCode: otpCode,
+            context: context,
+            securityNote: securityNoted,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        context.pop();
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        final userData = response['data']["otp"]["generated_by"];
+
+        final String jsonString = json.encode(userData);
+        final String jsonStringdata = json.encode(response['data']["otp"]);
+
+        final int id = response['data']["otp"]["id"];
+
+        debugPrint('─────────────────────────────────────────');
+        notifier.resetForm();
+        log("TRUE------->");
+        showUserBottomSheet(
+          id: id,
+          context: context,
+          headertitle: jsonString,
+          headersubtitle: jsonStringdata,
+          ref: ref,
+          bottom: BottomSheetView.acceptCheckOut,
+        );
+
+        // showUserBottomSheet(
+        //   id: id,
+        //   context: context,
+        //   headertitle: jsonString,
+        //   headersubtitle: jsonStringdata,
+        //   ref: ref,
+        //   bottom: BottomSheetView.confirmEntry,
+        // );
+      } else {
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifiers.updateLoading(false);
+          notifier.resetForm();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifiers.updateLoading(false);
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(oTpformProvider.notifier);
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      notifiers.updateLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> workOderChekInOtp({
+    required BuildContext context,
+    required String otpCode,
+    required String securityNote,
+    required bool override_time_window,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+
+    try {
+      final notifiers = ref.read(oTpformProvider.notifier);
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(true);
+
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .workOrderCheckInOtp(
+            token: token ?? "",
+            otpCode: otpCode,
+            securityNote: securityNote,
+            override_time_window: override_time_window,
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        context.pop();
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        log("TRUE------->");
+        final userData = response['data']["otp"]["generated_by"];
+
+        final String jsonString = json.encode(userData);
+        final String jsonStringdata = json.encode(response['data']["otp"]);
+
+        final int id = response['data']["otp"]["id"];
+
+        debugPrint('─────────────────────────────────────────');
+        notifier.resetForm();
+        log("TRUE------->");
+        showUserBottomSheet(
+          id: id,
+          context: context,
+          headertitle: jsonString,
+          headersubtitle: jsonStringdata,
+          ref: ref,
+          bottom: BottomSheetView.confirmEntry,
+        );
+      } else {
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifiers.updateLoading(false);
+          notifier.resetForm();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifiers.updateLoading(false);
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(oTpformProvider.notifier);
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      notifiers.updateLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> vendorAccessCodeCheckIn({
+    required BuildContext context,
+    required String otpCode,
+    required String securityNote,
+    required bool override_time_window,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+
+    try {
+      final notifiers = ref.read(oTpformProvider.notifier);
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(true);
+
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .vendorAccessCodeCheckIn(
+            token: token ?? "",
+            otpCode: otpCode,
+            securityNote: securityNote,
+            override_time_window: override_time_window,
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        context.pop();
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        log("TRUE------->");
+        final userData = response;
+
+        final String jsonString = json.encode(userData);
+
+        debugPrint('─────────────────────────────────────────');
+        notifier.resetForm();
+        log("TRUE------->");
+        showUserBottomSheet(
+          context: context,
+          headertitle: jsonString,
+          headersubtitle: '',
+          ref: ref,
+          bottom: BottomSheetView.vendorcheckinMessage,
+        );
+      } else {
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifiers.updateLoading(false);
+          notifier.resetForm();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifiers.updateLoading(false);
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(oTpformProvider.notifier);
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      notifiers.updateLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> vendorAccessCodeCheckOut({
+    required BuildContext context,
+    required String otpCode,
+    required String securityNote,
+    required bool override_time_window,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+
+    try {
+      final notifiers = ref.read(oTpformProvider.notifier);
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(true);
+
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .vendorAccssCodeCheckOut(
+            token: token ?? "",
+            otpCode: otpCode,
+            securityNote: securityNote,
+            override_time_window: override_time_window,
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        context.pop();
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        log("TRUE------->");
+        final userData = response;
+
+        final String jsonString = json.encode(userData);
+
+        debugPrint('─────────────────────────────────────────');
+        notifier.resetForm();
+        log("TRUE------->");
+        showUserBottomSheet(
+          context: context,
+          headertitle: jsonString,
+          headersubtitle: '',
+          ref: ref,
+          bottom: BottomSheetView.vendorCheckoutmessage,
+        );
+      } else {
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifiers.updateLoading(false);
+          notifier.resetForm();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifiers.updateLoading(false);
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(oTpformProvider.notifier);
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      notifiers.updateLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> vendorAccessCodeDeny({
+    required BuildContext context,
+    required String otpCode,
+    required String dec,
+    required String reason,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+
+    try {
+      final notifiers = ref.read(oTpformProvider.notifier);
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(true);
+
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .vendorAccessCodeDeny(
+            token: token ?? "",
+            otpCode: otpCode,
+            dec: dec,
+            reason: reason,
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        context.pop();
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        log("TRUE------->");
+        final userData = response;
+
+        final String jsonString = json.encode(userData);
+
+        debugPrint('─────────────────────────────────────────');
+        notifier.resetForm();
+        log("TRUE------->");
+        showUserBottomSheet(
+          context: context,
+          headertitle: jsonString,
+          headersubtitle: '',
+          ref: ref,
+          bottom: BottomSheetView.vendorAccessCodeDeyMessage,
+        );
+      } else {
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifiers.updateLoading(false);
+          notifier.resetForm();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifiers.updateLoading(false);
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(oTpformProvider.notifier);
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      notifiers.updateLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> validateVendorUsingOTP({
+    required BuildContext context,
+    required Map<String, dynamic> requestData,
+    required String vendochekc,
+    required WidgetRef ref,
+    required String otpCode
+  }) async {
+    log("START------->");
+
+    try {
+      final notifiers = ref.read(oTpformProvider.notifier);
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(true);
+
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .validateVendorCode(
+            token: token ?? "",
+            type: vendochekc,
+            requestData: requestData,
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        context.pop();
+        log("TRUE------->");
+        final userData = response;
+
+        final String jsonString = json.encode(userData);
+
+        debugPrint('─────────────────────────────────────────');
+        notifier.resetForm();
+        log("TRUE------->");
+        if (vendochekc.contains("1")) {
+          showUserBottomSheet(
+            context: context,
+            headertitle: jsonString,
+            headersubtitle: '',
+            ref: ref,
+            bottom: BottomSheetView.vendorCodeCornfirm,
+          );
+        } else if (vendochekc.contains("2")) {
+          showUserBottomSheet(
+            context: context,
+            headertitle: jsonString,
+            headersubtitle: otpCode,
+            ref: ref,
+            bottom: BottomSheetView.vendoraccesCodConfirm,
+          );
+        }
+      } else {
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifiers.updateLoading(false);
+          notifier.resetForm();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifiers.updateLoading(false);
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(oTpformProvider.notifier);
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      notifiers.updateLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
   Future<void> grantAccess({
     required BuildContext context,
     required String numberofguest,
@@ -5474,7 +6478,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         notifiers.updateLoading(false);
         notifier.resetForm();
         log("TRUE------->");
-        final userData = response['data'];
+        final userData = response;
         final String jsonString = json.encode(userData);
         notifier.resetForm();
         log("TRUE------->");
@@ -5559,6 +6563,127 @@ class FormNotifier extends StateNotifier<FormStates> {
     }
   }
 
+  Future<void> permitGrantAccess({
+    required BuildContext context,
+    required String code,
+    required String note,
+    required String id,
+
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+
+    try {
+      final notifiers = ref.read(oTpformProvider.notifier);
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(true);
+
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .permitapprovedEntry(
+            token: token ?? "",
+            otpcode: code,
+            note: note,
+            id: id,
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        context.pop();
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        log("TRUE------->");
+        final userData = response;
+        final String jsonString = json.encode(userData);
+        notifier.resetForm();
+        log("TRUE------->");
+        showUserBottomSheet(
+          context: context,
+          headertitle: jsonString,
+          headersubtitle: "yess",
+          ref: ref,
+          bottom: BottomSheetView.checkoutpermitapprovedmessaage,
+        );
+      } else {
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifiers.updateLoading(false);
+          notifier.resetForm();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifiers.updateLoading(false);
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(oTpformProvider.notifier);
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      notifiers.updateLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  ////api/v1/estates/security/workorders/validate validateVendorUsingOTP
   Future<void> denyEntry({
     required BuildContext context,
     required String denyReason,
@@ -5592,7 +6717,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (response['status'] == true) {
         context.pop();
         notifiers.updateLoading(false);
-        final userData = response['data'];
+        final userData = response;
 
         final String jsonString = json.encode(userData);
         notifier.resetForm();
@@ -5606,14 +6731,284 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
         notifier.resetForm();
         log("TRUE------->");
+        // showUserBottomSheet(
+        //   context: context,
+        //   headertitle:
+        //       "${userData["firstname"] ?? "N/A"} ${userData["lastname"] ?? "N/A"}",
+        //   headersubtitle: "",
+        //   ref: ref,
+        //   bottom: BottomSheetView.accesGranted,
+        // );
+      } else {
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifiers.updateLoading(false);
+          notifier.resetForm();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifiers.updateLoading(false);
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(oTpformProvider.notifier);
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      notifiers.updateLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> permitdenyEntry({
+    required BuildContext context,
+    required String denyReason,
+    required String securityNote,
+    required String id,
+
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+
+    try {
+      final notifiers = ref.read(oTpformProvider.notifier);
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(true);
+
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .permitDenyEntry(
+            token: token ?? "",
+            denyReason: denyReason,
+            securityNote: securityNote,
+            id: id,
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        context.pop();
+        notifiers.updateLoading(false);
+        final userData = response;
+
+        final String jsonString = json.encode(userData);
+        notifier.resetForm();
+        log("TRUE------->");
         showUserBottomSheet(
           context: context,
-          headertitle:
-              "${userData["firstname"] ?? "N/A"} ${userData["lastname"] ?? "N/A"}",
+          headertitle: jsonString,
           headersubtitle: "",
           ref: ref,
-          bottom: BottomSheetView.accesGranted,
+          bottom: BottomSheetView.cheoutPermitDenymessage,
         );
+        notifier.resetForm();
+        log("TRUE------->");
+        // showUserBottomSheet(
+        //   context: context,
+        //   headertitle:
+        //       "${userData["firstname"] ?? "N/A"} ${userData["lastname"] ?? "N/A"}",
+        //   headersubtitle: "",
+        //   ref: ref,
+        //   bottom: BottomSheetView.accesGranted,
+        // );
+      } else {
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifiers.updateLoading(false);
+          notifier.resetForm();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifiers.updateLoading(false);
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(oTpformProvider.notifier);
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      notifiers.updateLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> allWorkersAccess({
+    required BuildContext context,
+    required String action,
+    required String securityNote,
+    required String id,
+
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+
+    try {
+      final notifiers = ref.read(oTpformProvider.notifier);
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(true);
+
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .allWorkersAccess(
+            token: token ?? "",
+            action: action,
+            note: securityNote,
+            id: id,
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        context.pop();
+        notifiers.updateLoading(false);
+        final userData = response;
+
+        final String jsonString = json.encode(userData);
+        notifier.resetForm();
+        log("TRUE------->");
+
+        if (action.contains("grant")) {
+          showUserBottomSheet(
+            context: context,
+            headertitle: jsonString,
+            headersubtitle: "",
+            ref: ref,
+            bottom: BottomSheetView.vendorCodeApprovedMessage,
+          );
+        } else if (action.contains("reject")) {
+          showUserBottomSheet(
+            context: context,
+            headertitle: jsonString,
+            headersubtitle: "",
+            ref: ref,
+            bottom: BottomSheetView.vendorCodeDenyMessage,
+          );
+        }
+
+        notifier.resetForm();
+        log("TRUE------->");
+        // showUserBottomSheet(
+        //   context: context,
+        //   headertitle:
+        //       "${userData["firstname"] ?? "N/A"} ${userData["lastname"] ?? "N/A"}",
+        //   headersubtitle: "",
+        //   ref: ref,
+        //   bottom: BottomSheetView.accesGranted,
+        // );
       } else {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
@@ -5742,6 +7137,136 @@ class FormNotifier extends StateNotifier<FormStates> {
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifiers.updateLoading(false);
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(oTpformProvider.notifier);
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      notifiers.updateLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> denyAccessForWorkers({
+    required BuildContext context,
+    required String code,
+    required String reason,
+    required String dec,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+
+    try {
+      final notifiers = ref.read(oTpformProvider.notifier);
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(true);
+
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .denyAccessForWorkers(
+            token: token ?? "",
+            code: code,
+            reason: reason,
+
+            dec: dec,
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        log("TRUE------->");
+        final userData = response['data']['user'];
+
+        final String jsonString = json.encode(userData);
+        // Log the specific fields you want
+        debugPrint('📋 USER DETAILS LOG:');
+        debugPrint('─────────────────────────────────────────');
+        debugPrint('📸 Media URL: ${userData['media_url'] ?? "N/A"}');
+        debugPrint('👤 Role: ${userData['role'] ?? "N/A"}');
+        debugPrint('👤 First Name: ${userData['firstname'] ?? "N/A"}');
+        debugPrint('👤 Last Name: ${userData['lastname'] ?? "N/A"}');
+
+        debugPrint('─────────────────────────────────────────');
+        notifier.resetForm();
+        log("TRUE------->");
+        showUserBottomSheet(
+          context: context,
+          headertitle: jsonString,
+          headersubtitle: userData['estate_name'] ?? "N/A",
+          ref: ref,
+          bottom: BottomSheetView.confirmEntry,
+        );
+      } else {
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        } else {
+          notifiers.updateLoading(false);
+          notifier.resetForm();
+
           //  final error = response['errors']?['comment']?.first;
           final message =
               response["data"]?["0"]?["email"]?[0] ?? response["message"];
@@ -6563,13 +8088,17 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (response['status'] == true) {
         updateWorkderLoading(false);
+        final data = response['data']["workorder"];
 
-        notifier.resetAll();
-        context.push(
+        final String jsonString = json.encode(data);
+        context.pop();
+        context.pushNamed(
           AppRoutes.vendorAccessCode,
-          extra: {"title": "", "share": "", "code": ""},
+          extra: {"title": jsonString, "share": "", "code": ""},
         );
-        // context.pop();
+        notifier.resetAll();
+        ref.read(workOrderProvider.notifier).refreshWorkOrders(context, ref);
+
         log("TRUE------->");
         showCustomSuccessToast(
           context: context,
@@ -7011,7 +8540,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         items.clear();
         notifier.updateLoading(false);
 
-        // context.pop();
+        context.pop();
         log("TRUE------->");
         showCustomSuccessToast(
           context: context,

@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/config/biometric_faceID/Helper/device_info_helper.dart';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/back_manageent/back_provider/provider.dart';
@@ -153,7 +154,7 @@ class _SignInState extends ConsumerState<SignIn> {
       future: DeviceInfoHelper.isBiometricAvailable(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
+          return const Loadingstates();
         }
 
         final canUseBiometric = snapshot.data ?? false;

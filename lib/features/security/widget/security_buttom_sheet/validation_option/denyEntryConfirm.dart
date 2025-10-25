@@ -8,10 +8,34 @@ class DenyEntryConfirmation extends StatelessWidget {
   final String jsonData;
 
   const DenyEntryConfirmation({super.key, required this.jsonData});
+  static String _extractValue(String notes, String label) {
+    try {
+      final line =
+          notes
+              .split('\n')
+              .firstWhere((l) => l.contains(label), orElse: () => '')
+              .replaceAll(label, '')
+              .trim();
+      return line.isNotEmpty ? line : 'N/A';
+    } catch (_) {
+      return 'N/A';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> extractedData = json.decode(jsonData);
+
+    final validation = extractedData['data']?['validation'] ?? {};
+
+    // Extract key details from "security_notes" (for manual validation logs)
+    final String securityNotes = validation['security_notes'] ?? '';
+    final visitorName = _extractValue(securityNotes, '👤 Visitor:');
+    // final purpose = _extractValue(securityNotes, '🎯 Purpose:');
+    // final phone = _extractValue(securityNotes, '📞 Phone:');
+    // final destination = _extractValue(securityNotes, '🏠 Destination:');
+    // final address = _extractValue(securityNotes, '📍 Address:');
+    // final validPeriod = _extractValue(securityNotes, '⏱️ Valid Period:');
     final size = MediaQuery.sizeOf(context);
     return SingleChildScrollView(
       child: Column(
@@ -28,10 +52,7 @@ class DenyEntryConfirmation extends StatelessWidget {
 
           SizedBox(height: 30),
 
-          _buildUserInfoBox(
-            size: size,
-            userName: extractedData["visitor"]["name"] ?? "N/A",
-          ),
+          _buildUserInfoBox(size: size, userName: visitorName),
           SizedBox(height: 30),
           _buildFeatureButton(
             onTap: () {
@@ -46,7 +67,7 @@ class DenyEntryConfirmation extends StatelessWidget {
   Widget _buildUserInfoBox({required Size size, required String userName}) {
     return Column(
       children: [
-        Icon(Icons.close_rounded, size: 60, color: AppColors.instance.error500),
+        Icon(Icons.cancel, size: 60, color: AppColors.instance.error500),
 
         SizedBox(height: 30),
 

@@ -4,10 +4,12 @@ class SecurityStateModel {
   final bool locationGatevalid;
   final bool reasonvalid;
   final bool securityNotedvalid;
+  final bool vendorPhoneValid;
 
   final bool isLoading;
   final bool requiredEscort;
   final String? oTpCodeError;
+  final String phoneError;
   final String? accessTypeError;
   final String? locationGateError;
   final String? reasonError;
@@ -18,6 +20,7 @@ class SecurityStateModel {
   final String? reason;
   final String? securityNoted;
   final String? selectedValidationType;
+  final String? phone;
   const SecurityStateModel({
     this.requiredEscort = false,
     this.accessTypevalid = false,
@@ -26,9 +29,11 @@ class SecurityStateModel {
     this.securityNotedvalid = false,
     this.isLoading = false,
     this.oTpCodevalid = false,
+    this.vendorPhoneValid = false,
     this.reasonError = "",
     this.securityNotedError = "",
-
+    this.phoneError = "",
+    this.phone = "",
     this.oTpCodeError,
     this.accessTypeError = '',
     this.locationGateError = "",
@@ -39,7 +44,9 @@ class SecurityStateModel {
     this.reason = '',
     this.securityNoted = "",
   });
+  bool get vendorCodeValid => vendorPhoneValid && oTpCodevalid;
 
+  bool get workersValid => oTpCodevalid;
   bool get allValid => oTpCodevalid && accessTypevalid && locationGatevalid;
   bool get validateMain => accessTypevalid && locationGatevalid;
   bool get denyValid => reasonvalid && securityNotedvalid;
@@ -61,12 +68,20 @@ class SecurityStateModel {
     bool? accessTypevalid,
     bool? locationGatevalid,
     bool? requiredEscort,
+        bool? vendorPhoneValid,
     String? oTpCodeError,
+
     String? selectedValidationType,
     String? reason,
     String? securityNoted,
+    String? phone,
+
+    String? phoneError,
   }) {
     return SecurityStateModel(
+   vendorPhoneValid:vendorPhoneValid?? this.vendorPhoneValid,
+   phone:phone?? this.phone,
+   phoneError: phoneError?? this.phoneError,
       requiredEscort: requiredEscort ?? this.requiredEscort,
       securityNoted: securityNoted ?? this.securityNoted,
       securityNotedError: securityNotedError ?? this.securityNotedError,

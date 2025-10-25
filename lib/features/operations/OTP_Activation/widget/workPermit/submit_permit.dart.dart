@@ -14,7 +14,12 @@ import 'item_card.dart';
 
 class SubmitPermitBottomSheet extends ConsumerStatefulWidget {
   final String otp;
-  const SubmitPermitBottomSheet(this.otp, {super.key});
+  final int id;
+  const SubmitPermitBottomSheet({
+    super.key,
+    required this.otp,
+    required this.id,
+  });
 
   @override
   ConsumerState<SubmitPermitBottomSheet> createState() =>
@@ -100,14 +105,14 @@ class _SubmitPermitBottomSheetState
 
                         /// Two fields side by side
                         ReusabelProfileForm(
-                                controller: _contactPersonController,
-                                fieldKey: 'contact_person',
-                                fieldType: FieldType.name,
-                                hintText: 'Contact Person',
-                                label: 'Contact Person',
-                                onChanged: (_) {},
-                                onValidationChanged: (_) {},
-                              ),
+                          controller: _contactPersonController,
+                          fieldKey: 'contact_person',
+                          fieldType: FieldType.name,
+                          hintText: 'Contact Person',
+                          label: 'Contact Person',
+                          onChanged: (_) {},
+                          onValidationChanged: (_) {},
+                        ),
                         const SizedBox(height: 20),
 
                         /// Description
@@ -197,7 +202,6 @@ class _SubmitPermitBottomSheetState
                           opacity:
                               items.isNotEmpty &&
                                       _descriptionController.text.isNotEmpty &&
-                                     
                                       _contactPersonController
                                           .text
                                           .isNotEmpty &&
@@ -213,10 +217,10 @@ class _SubmitPermitBottomSheetState
                             child: InkWell(
                               onTap: () {
                                 final data = {
-                                  "otp_id": widget.otp,
+                                  "otp_id": widget.id,
                                   "items_description":
                                       _descriptionController.text.trim(),
-                                
+
                                   "items": items,
                                   "metadata": {
                                     "notes": _noteController.text.trim(),
@@ -233,7 +237,7 @@ class _SubmitPermitBottomSheetState
                                 // items.clear();
                                 _contactPersonController.clear();
                                 _descriptionController.clear();
-                            
+
                                 _noteController.clear();
                               },
                               child: Container(

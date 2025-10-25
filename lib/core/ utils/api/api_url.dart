@@ -94,12 +94,25 @@ const String checkOutValidatorOtpBymanual =
     "/api/v1/estates/security/validations/checkout-with-otp";
 const String checkInValidatorwithOtpbymanual =
     "/api/v1/estates/security/validations/validate-otp-manual";
+const String ckeckOutWithPermit =
+    "/api/v1/estates/security/clearance-permits/validate-checkout";
 const String approveEntry = "/api/v1/estates/security/validations/5/approve";
 const String denyEntry = "/api/v1/estates/security/validations/5/deny";
 const String validateDigitaIDbyManul =
     "/api/v1/estates/security/digital-member-id/validate/manual";
 const String validateDigitalIdByQrcode =
     "/api/v1/estates/security/digital-member-id/validate/qr-code";
+
+const String validateVendorCodes =
+    "/api/v1/estates/security/workorders/validate";
+
+const String checkInWorkOrder = "/api/v1/estates/security/workorders/check-in";
+const String checkOutWorkOrder =
+    "/api/v1/estates/security/workorders/check-out";
+const String validateWokers =
+    "/api/v1/estates/security/workorders/validate-worker";
+const String denyingAccess =
+    "/api/v1/estates/security/workorders/deny-behavior";
 
 /////. ALL GET APURL
 ///  /// SETTING/PROFILE GET API

@@ -146,7 +146,10 @@ class Confirmentry extends ConsumerWidget {
             subtitle: extractedData['role'].toString().toUpperCase(),
           ),
           SizedBox(height: 20),
-          _buildText(title: "House Address", subtitle: extractedData["estate_name"]?? "N/A"),
+          _buildText(
+            title: "House Address",
+            subtitle: extractedData["estate_name"] ?? "N/A",
+          ),
         ],
       ),
     );

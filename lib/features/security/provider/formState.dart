@@ -19,6 +19,13 @@ class FormNotifier extends StateNotifier<SecurityStateModel> {
     state = state.copyWith(locationAccess: value);
   }
 
+
+  void updatePhone(String value) {
+    log(value);
+    state = state.copyWith(phone: value);
+  }
+
+
   void updateLodaing(bool value) {
     state = state.copyWith(isLoading: value);
   }
@@ -63,6 +70,8 @@ class FormNotifier extends StateNotifier<SecurityStateModel> {
         );
       case 'Reason':
         state = state.copyWith(reasonvalid: isValid, reasonError: errorMessage);
+        case 'Phone':
+        state = state.copyWith(vendorPhoneValid: isValid, phoneError: errorMessage);
     }
   }
 
@@ -91,6 +100,9 @@ class FormNotifier extends StateNotifier<SecurityStateModel> {
       isLoading: false,
       selectedValidationType: '',
       requiredEscort: false,
+      vendorPhoneValid: false,
+      phone: "",
+      phoneError: "",
     );
   }
 

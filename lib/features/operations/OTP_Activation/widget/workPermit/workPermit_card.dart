@@ -114,7 +114,7 @@ class WorkpermitCard extends ConsumerWidget {
               title: "Code",
               trailing: generated.visitorOtp?.otpCode ?? "",
               isCode: true,
-              expired: generated.visitorOtp?.countdownDisplay ?? "",
+
               status: generated.visitorOtp?.status ?? "",
             ),
           ],
@@ -231,7 +231,7 @@ class WorkpermitCard extends ConsumerWidget {
           children: [
             if (isCode)
               Text(
-                expired!.isNotEmpty
+                expired != null
                     ? "Expired in $expired"
                     : statusCheck(status ?? ""),
                 style: TextStyle(
@@ -313,10 +313,10 @@ class WorkpermitCard extends ConsumerWidget {
           ],
         ),
         changeButton(
-          otp: generated.visitorOtp?.id.toString() ?? "",
+          otp: generated.visitorOtp?.otpCode.toString() ?? "",
           context: context,
           ref: ref,
-          activeOtpID: generated.id ?? 0,
+          activeOtpID: generated.visitorOtp?.id ?? 0,
           status: generated.visitorOtp?.status ?? "",
         ),
       ],

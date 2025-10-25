@@ -1,5 +1,6 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/revokeWorkOder.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/basic_permission.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/removeConfirmation_sheet.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/bottomsheet_details.dart';
@@ -46,7 +47,8 @@ void showUserBottomSheet({
                         bottom == BottomSheetView.optionForAll ||
                         bottom == BottomSheetView.optionForScan ||
                         bottom == BottomSheetView.events ||
-                        bottom == BottomSheetView.eventsDetails
+                        bottom == BottomSheetView.eventsDetails ||
+                        bottom == BottomSheetView.workOderSeletion
                     ? null
                     : EdgeInsets.all(20),
             margin: EdgeInsets.only(
@@ -106,7 +108,7 @@ Widget _buildCurrentView(
     case BottomSheetView.vendorLog:
       return RemoveconfirmationSheet(id: id, userName: userName);
     case BottomSheetView.revokevendorconfirm:
-      return _buildVendorDeleteConfirmationView(context, ref);
+      return Revokeworkoder(id: id ?? 0);
     case BottomSheetView.revorkActiveOtpConfirmation:
       return _buildrevokActiveOtp(context, ref);
 
@@ -155,6 +157,7 @@ Widget _buildCurrentView(
         headersubtitle: userRole,
         bottom: bottom,
       );
+
     case BottomSheetView.seletctEvent:
       return BottomsheetDetails(
         id: id,
@@ -170,6 +173,79 @@ Widget _buildCurrentView(
         bottom: bottom,
       );
     case BottomSheetView.permitAccces:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+
+    case BottomSheetView.checkOutWithpermitConfirm:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.checkoutPermitdeny:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+
+    case BottomSheetView.digitalIdDenymessage:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.digitalIDaprovedMessage:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.digitalIdApproved:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.digitalIdDeny:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.digitalIdConfirm:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+
+    case BottomSheetView.cheoutPermitDenymessage:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.checkoutpermitapprovedmessaage:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.checkOutPermitApproved:
       return BottomsheetDetails(
         id: id,
         headertitle: userName,
@@ -204,7 +280,28 @@ Widget _buildCurrentView(
         headersubtitle: userRole,
         bottom: bottom,
       );
+    case BottomSheetView.validateVendor:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
     case BottomSheetView.seletPermit:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.workOderSeletion:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.validateWorker:
       return BottomsheetDetails(
         id: id,
         headertitle: userName,
@@ -551,6 +648,7 @@ Widget _buildCurrentView(
         headersubtitle: userRole,
         bottom: bottom,
       );
+    
     case BottomSheetView.workEmgencyContacts:
       return BottomsheetDetails(
         eventData: vendor,
@@ -586,6 +684,98 @@ Widget _buildCurrentView(
         headersubtitle: userRole,
         bottom: bottom,
       );
+  
+/// FROM HER------->
+
+
+case BottomSheetView.vendoraccesCodConfirm:
+      return BottomsheetDetails(
+        eventData: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.vendorCheckIn:
+      return BottomsheetDetails(
+        eventData: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.vendorCheckOut:
+      return BottomsheetDetails(
+        eventData: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.vendorcheckinMessage:
+      return BottomsheetDetails(
+        eventData: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.vendorCheckoutmessage:
+      return BottomsheetDetails(
+        eventData: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+      /// to her
+    case BottomSheetView.vendoraccesCodeDeny:
+      return BottomsheetDetails(
+        eventData: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.vendorAccessCodeDeyMessage:
+      return BottomsheetDetails(
+        eventData: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+/// TO HER ----.
+      ///// from here 
+case BottomSheetView.vendorCodeCornfirm:
+      return BottomsheetDetails(
+        eventData: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.vendorCodeApproved:
+      return BottomsheetDetails(
+        eventData: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.vendorCodeDeny:
+      return BottomsheetDetails(
+        eventData: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.vendorCodeDenyMessage:
+      return BottomsheetDetails(
+        eventData: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.vendorCodeApprovedMessage:
+      return BottomsheetDetails(
+        eventData: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+      /// to her
     case BottomSheetView.remidermarks:
       return BottomsheetDetails(
         eventData: vendor,
@@ -634,52 +824,6 @@ Widget _buildCurrentView(
 }
 
 //  vendor log revoke confirmation------------->
-Widget _buildVendorDeleteConfirmationView(BuildContext context, WidgetRef ref) {
-  return Column(
-    key: const ValueKey('deleteVendorConfirmation'),
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Align(
-        alignment: Alignment.topRight,
-        child: IconButton(
-          onPressed:
-              () =>
-                  ref.read(bottomSheetStateProvider.notifier).state =
-                      BottomSheetView.userDetails,
-          icon: Icon(Icons.close, color: AppColors.instance.black600),
-        ),
-      ),
-      const SizedBox(height: 16),
-      Text(
-        'Revoke vendor Log?',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontFamily: FontFamilies.interDisplay,
-          fontWeight: FontFamilies.bold,
-          color: AppColors.instance.black600,
-        ),
-      ),
-      Text(
-        'Are you sure you want to revoke vendor Log?',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontFamily: FontFamilies.interDisplay,
-          fontWeight: FontFamilies.medium,
-          color: AppColors.instance.black300,
-          fontSize: 15,
-        ),
-      ),
-      const SizedBox(height: 70),
-      _button(
-        onPressed: () {
-          // Add your delete logic here
-          Navigator.of(context).pop();
-        },
-        buttiontitle: "Yes, Revoke",
-      ),
-    ],
-  );
-}
 
 Widget _buildrevokActiveOtp(BuildContext context, WidgetRef ref) {
   return Column(

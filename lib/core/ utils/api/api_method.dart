@@ -102,6 +102,7 @@ class AppApiMethod {
         'lastname': lastName,
         'email': email,
         'phone': phoneNumber,
+
         'dob': "", // Explicit empty string instead of null
         'password': password,
         'password_confirmation': password,
@@ -1033,6 +1034,48 @@ class AppApiMethod {
       );
 
       log('Request payload: $requestData');
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> revoWorkOder({
+    required String token,
+    required int id,
+
+    required BuildContext context,
+  }) async {
+    try {
+      // Log the exact request being sent
+
+      final response = await _dio.post(
+        "/api/v1/estates/general/workorders/$id/cancel",
+
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
 
       log('Response: ${response.data}');
       return response.data;
@@ -2403,6 +2446,66 @@ class AppApiMethod {
     }
   }
 
+  Future<Map<String, dynamic>> approvedDigitaIDCode({
+    required String token,
+    required String qrCodeData,
+    required String accessType,
+    required String location,
+    required String additionalNote,
+    required String device_id,
+    required String approveType,
+    required BuildContext context,
+  }) async {
+    try {
+      final Map<String, dynamic> requestData = {
+        "digital_id_code": qrCodeData,
+
+        "access_type": accessType,
+        "location": location,
+        "metadata": {
+          "additional_notes": additionalNote,
+          "device_id": device_id,
+        },
+      };
+
+      // Log the exact request being sent
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        "/api/v1/estates/security/digital-member-id/$approveType",
+        data: requestData,
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Request payload: $requestData');
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
   Future<Map<String, dynamic>> checkInOtp({
     required String token,
     required String otpCode,
@@ -2454,6 +2557,260 @@ class AppApiMethod {
     }
   }
 
+  Future<Map<String, dynamic>> workOrderCheckInOtp({
+    required String token,
+    required String otpCode,
+    required String securityNote,
+    required bool override_time_window,
+    required BuildContext context,
+  }) async {
+    try {
+      final Map<String, dynamic> requestData = {
+        "access_code": otpCode,
+        "security_notes": securityNote, // Optional
+        "override_time_window": override_time_window,
+      };
+
+      // Log the exact request being sent
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        checkInWorkOrder,
+        data: requestData,
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Request payload: $requestData');
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> vendorAccssCodeCheckOut({
+    required String token,
+    required String otpCode,
+    required String securityNote,
+    required bool override_time_window,
+    required BuildContext context,
+  }) async {
+    try {
+      final Map<String, dynamic> requestData = {
+        "access_code": otpCode,
+        "notes": securityNote, // Optional
+      };
+
+      // Log the exact request being sent
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        checkOutWorkOrder,
+        data: requestData,
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Request payload: $requestData');
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> vendorAccessCodeCheckIn({
+    required String token,
+    required String otpCode,
+    required String securityNote,
+    required bool override_time_window,
+    required BuildContext context,
+  }) async {
+    try {
+      final Map<String, dynamic> requestData = {
+        "access_code": otpCode,
+        "notes": securityNote, // Optional
+
+        "override_time_window": override_time_window,
+      };
+
+      // Log the exact request being sent
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        checkInWorkOrder,
+        data: requestData,
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Request payload: $requestData');
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> vendorAccessCodeDeny({
+    required String token,
+    required String otpCode,
+    required String dec,
+    required String reason,
+    required BuildContext context,
+  }) async {
+    try {
+      final Map<String, dynamic> requestData = {
+        "access_code": otpCode,
+        "description": dec, // Optional
+
+        "reason": reason,
+      };
+
+      // Log the exact request being sent
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        denyingAccess,
+        data: requestData,
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Request payload: $requestData');
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> validateVendorCode({
+    required String token,
+    required Map<String, dynamic> requestData,
+    required String type,
+    required BuildContext context,
+  }) async {
+    try {
+      // Log the exact request being sent
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        type.contains("1") ? validateVendorCodes : validateWokers,
+        data: requestData,
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Request payload: $requestData');
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
   Future<Map<String, dynamic>> checkOutOtp({
     required String token,
     required String otpCode,
@@ -2472,6 +2829,213 @@ class AppApiMethod {
 
       final response = await _dio.post(
         checkOutValidatorOtpBymanual,
+        data: requestData,
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Request payload: $requestData');
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> checkOutOtpwithPermit({
+    required String token,
+    required String otpCode,
+    required String securityNote,
+
+    required BuildContext context,
+  }) async {
+    log(token);
+    try {
+      final Map<String, dynamic> requestData = {
+        "otp_code": otpCode,
+        "security_notes": securityNote, // Optional
+      };
+
+      // Log the exact request being sent
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        ckeckOutWithPermit,
+        data: requestData,
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Request payload: $requestData');
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> workersCheckOutOtp({
+    required String token,
+    required String otpCode,
+    required String securityNote,
+
+    required BuildContext context,
+  }) async {
+    try {
+      final Map<String, dynamic> requestData = {
+        "access_code": otpCode,
+        "security_notes": securityNote, // Optional
+      };
+
+      // Log the exact request being sent
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        checkOutWorkOrder,
+        data: requestData,
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Request payload: $requestData');
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> allWorkersAccess({
+    required String token,
+    required String action,
+    required String note,
+    required String id,
+    required BuildContext context,
+  }) async {
+    try {
+      final Map<String, dynamic> requestData = {
+        "action": action,
+        "notes": note,
+      };
+      log(id);
+      // Log the exact request being sent
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        "/api/v1/estates/security/workorders/$id/access",
+        data: requestData,
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Request payload: $requestData');
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> denyAccessForWorkers({
+    required String token,
+    required String code,
+    required String reason,
+    required String dec,
+
+    required BuildContext context,
+  }) async {
+    try {
+      final Map<String, dynamic> requestData = {
+        "access_code": code,
+        "reason": reason, // rude,aggressive,intoxicated,no_id,suspicious,other
+        "description": dec,
+      };
+
+      // Log the exact request being sent
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        denyingAccess,
         data: requestData,
         options: Options(
           headers: {
@@ -2558,6 +3122,57 @@ class AppApiMethod {
     }
   }
 
+  Future<Map<String, dynamic>> permitapprovedEntry({
+    required String token,
+    required String otpcode,
+    required String note,
+    required String id,
+    required BuildContext context,
+  }) async {
+    try {
+      final Map<String, dynamic> requestData = {
+        "otp_code": otpcode, // entry_granted,entry_denied,awaiting_escort
+        "checkout_notes": note,
+      };
+      log(id);
+      // Log the exact request being sent
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        "/api/v1/estates/security/clearance-permits/$id/fulfill",
+        data: requestData,
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Request payload: $requestData');
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
   Future<Map<String, dynamic>> denyEntry({
     required String token,
     required String denyReason,
@@ -2610,7 +3225,59 @@ class AppApiMethod {
     }
   }
 
-   Future<Map<String, dynamic>> denyEntryDigitalID({
+  Future<Map<String, dynamic>> permitDenyEntry({
+    required String token,
+    required String denyReason,
+    required String securityNote,
+    required String id,
+    required BuildContext context,
+  }) async {
+    try {
+      log("userID:$id");
+      final Map<String, dynamic> requestData = {
+        "flag_reason": denyReason,
+        "discrepancy_notes": securityNote,
+      };
+
+      // Log the exact request being sent
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        "/api/v1/estates/security/clearance-permits/$id/flag",
+        data: requestData,
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Request payload: $requestData');
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> denyEntryDigitalID({
     required String token,
     required String denyReason,
     required String securityNote,

@@ -16,7 +16,12 @@ import 'item_card.dart';
 
 class SubmitSchedulPermitBottomSheet extends ConsumerStatefulWidget {
   final String otp;
-  const SubmitSchedulPermitBottomSheet(this.otp, {super.key});
+  final int id;
+  const SubmitSchedulPermitBottomSheet({
+    super.key,
+    required this.otp,
+    required this.id,
+  });
 
   @override
   ConsumerState<SubmitSchedulPermitBottomSheet> createState() =>
@@ -304,7 +309,7 @@ class _SubmitPermitBottomSheetState
                                           _specialInfoController.text.length > 2
                                       ? () {
                                         final data = {
-                                          "otp_id": widget.otp,
+                                          "otp_id": widget.id,
                                           "guest_phone_number":
                                               _guestNumberController.text
                                                   .trim(),

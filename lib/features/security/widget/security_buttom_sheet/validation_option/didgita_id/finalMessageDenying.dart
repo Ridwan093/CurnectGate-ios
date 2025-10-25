@@ -1,25 +1,42 @@
-
-
 import 'dart:convert';
 
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:flutter/material.dart';
 
-class CheckoutInfo extends StatelessWidget {
+class DenyEntryDigitalMessage extends StatelessWidget {
   final String jsonData;
-  const CheckoutInfo({
-    super.key,
-    required this.jsonData,
-  });
+
+  const DenyEntryDigitalMessage({super.key, required this.jsonData});
+  static String _extractValue(String notes, String label) {
+    try {
+      final line =
+          notes
+              .split('\n')
+              .firstWhere((l) => l.contains(label), orElse: () => '')
+              .replaceAll(label, '')
+              .trim();
+      return line.isNotEmpty ? line : 'N/A';
+    } catch (_) {
+      return 'N/A';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> extractedData = jsonDecode(jsonData);
-    final size = MediaQuery.sizeOf(context);
-    final visitor = extractedData['data']['visitor'];
-    final visitSummary = extractedData['data']['visit_summary'];
+    final Map<String, dynamic> extractedData = json.decode(jsonData);
 
+    final validation = extractedData['data']?['validation'] ?? {};
+
+    // Extract key details from "security_notes" (for manual validation logs)
+    final String securityNotes = validation['security_notes'] ?? '';
+    final visitorName = _extractValue(securityNotes, '👤 Visitor:');
+    // final purpose = _extractValue(securityNotes, '🎯 Purpose:');
+    // final phone = _extractValue(securityNotes, '📞 Phone:');
+    // final destination = _extractValue(securityNotes, '🏠 Destination:');
+    // final address = _extractValue(securityNotes, '📍 Address:');
+    // final validPeriod = _extractValue(securityNotes, '⏱️ Valid Period:');
+    final size = MediaQuery.sizeOf(context);
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -32,15 +49,10 @@ class CheckoutInfo extends StatelessWidget {
               child: Icon(Icons.close, color: AppColors.instance.black600),
             ),
           ),
+
           SizedBox(height: 30),
-          _buildUserInfoBox(
-            size: size,
-            userName: visitor['name'] ?? "N/A",
-            checkInTime: visitor['checkin'],
-            checkOutTime: visitor['checkout'],
-            duration: visitor['visit_duration_formatted'] ?? "N/A",
-            purpose: visitSummary['purpose'] ?? "N/A",
-          ),
+
+          _buildUserInfoBox(size: size, userName: visitorName),
           SizedBox(height: 30),
           _buildFeatureButton(
             onTap: () {
@@ -52,32 +64,17 @@ class CheckoutInfo extends StatelessWidget {
     );
   }
 
-  Widget _buildUserInfoBox({
-    required Size size,
-    required String userName,
-    required String checkInTime,
-    required String checkOutTime,
-    required String duration,
-    required String purpose,
-  }) {
+  Widget _buildUserInfoBox({required Size size, required String userName}) {
     return Column(
       children: [
-        Icon(
-          Icons.check_circle,
-          size: 60,
-          color: AppColors.instance.teal500,
-        ),
+        Icon(Icons.cancel, size: 60, color: AppColors.instance.error500),
+
         SizedBox(height: 30),
+
         _buildText(
-          title: "Checkout Completed",
-          subtitle: "Visitor ",
+          title: "Access deny",
+          subtitle: "You deny access to ",
           userName: userName,
-          details: [
-            "Check-in: $checkInTime",
-            "Check-out: $checkOutTime",
-            "Duration: $duration",
-            "Purpose: $purpose",
-          ],
         ),
       ],
     );
@@ -87,7 +84,6 @@ class CheckoutInfo extends StatelessWidget {
     required String title,
     required String subtitle,
     required String userName,
-    required List<String> details,
   }) {
     return Column(
       children: [
@@ -111,6 +107,7 @@ class CheckoutInfo extends StatelessWidget {
                   fontSize: 12,
                   color: AppColors.instance.black300,
                 ),
+
                 text: subtitle,
               ),
               TextSpan(
@@ -120,23 +117,12 @@ class CheckoutInfo extends StatelessWidget {
                   fontSize: 12,
                   color: AppColors.instance.black600,
                 ),
+
                 text: userName,
               ),
             ],
           ),
         ),
-        SizedBox(height: 10),
-        ...details.map((detail) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2.0),
-              child: Text(
-                detail,
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  fontSize: 12,
-                  color: AppColors.instance.black300,
-                ),
-              ),
-            )),
       ],
     );
   }

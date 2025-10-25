@@ -8,6 +8,7 @@ enum FieldType {
   email,
   phone,
   oTpCode,
+  vendorOtp,
   general,
   password,
   reason,
@@ -190,11 +191,13 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
           }
           break;
         case FieldType.phone:
-          if (value.length < 10) {
+          final cleaned = value.replaceAll(RegExp(r'[^0-9]'), '');
+          if (cleaned.length < 10) {
             error = 'Phone number must be at least 10 digits';
-          } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-            error = 'Only numbers allowed';
+          } else if (!RegExp(r'^\+?[0-9-]+$').hasMatch(value)) {
+            error = 'Invalid phone number format';
           }
+
         case FieldType.year:
           if (value.isEmpty) {
             error = '${widget.label} must be at least 1 digits';
@@ -207,6 +210,13 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
         case FieldType.oTpCode:
           if (value.length < 6) {
             error = 'OTP Code must be at least 6 characters';
+          } else if (value.isEmpty) {
+            error = 'Please enter a correct OTP code';
+          }
+          break;
+        case FieldType.vendorOtp:
+          if (value.length < 5) {
+            error = 'OTP Code must be at least 5 characters';
           } else if (value.isEmpty) {
             error = 'Please enter a correct OTP code';
           }
@@ -253,7 +263,7 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
       case FieldType.name:
         return [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]'))];
       case FieldType.phone:
-        return [FilteringTextInputFormatter.digitsOnly];
+        return [ FilteringTextInputFormatter.allow(RegExp(r'[0-9+\-]')),];
       default:
         return null;
     }

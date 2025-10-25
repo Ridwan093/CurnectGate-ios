@@ -20,7 +20,7 @@ class ScanOptions extends ConsumerWidget {
     final options = [
       ValidationOption(label: 'Scan Digital ID', icon: AssetPaths.memberId),
       ValidationOption(label: 'Scan OTP', icon: ''),
-      ValidationOption(label: 'Scan Work Order', icon: ''),
+      // ValidationOption(label: 'Scan Work Order', icon: ''),
     ];
 
     return Padding(

@@ -23,6 +23,13 @@ abstract class NullSafetyHelper {
     }
     return false;
   }
+static List<Map<String, dynamic>> safeMapList(dynamic value) {
+  if (value == null || value is! List) return [];
+  return value
+      .whereType<Map>()
+      .map((e) => Map<String, dynamic>.from(e))
+      .toList();
+}
 
   // Complex types
   static DateTime safeDateTime(dynamic value) {

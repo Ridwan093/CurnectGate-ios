@@ -21,7 +21,7 @@ class ValidateWorkOrderOtp extends ConsumerStatefulWidget {
 class _ValidateWorkOrderOtpState extends ConsumerState<ValidateWorkOrderOtp> {
   final _otpController = TextEditingController();
   final _noteController = TextEditingController();
-  List<String> _accessType = ["Checkin", "Checkout"];
+  List<String> _accessType = ["Checkin", "Checkout", "Checkout with Permit"];
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +97,9 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidateWorkOrderOtp> {
               CoDropdown(
                 item: _accessType,
                 onChanged: (value) {
-                     ref.read(oTpformProvider.notifier).updateAccesType(value??"");
+                  ref
+                      .read(oTpformProvider.notifier)
+                      .updateAccesType(value ?? "");
                   ref
                       .read(oTpformProvider.notifier)
                       .updateOTPCodeField(
@@ -117,7 +119,7 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidateWorkOrderOtp> {
               SizedBox(height: 10),
               ReusabelProfileForm(
                 controller: _noteController,
-                fieldType: FieldType.name,
+                fieldType: FieldType.itemName,
                 hintText: "(eg. arrived in time )",
                 label: "Security note",
                 fieldKey: "Security note",
@@ -169,8 +171,16 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidateWorkOrderOtp> {
 
                     ref: ref,
                   );
-                } else {
+                } else if (formState.accessType == "Checkout") {
                   providerState.checkOutOTP(
+                    context: context,
+                    otpCode: formState.otpCode ?? "",
+                    securityNoted: formState.securityNoted ?? "",
+
+                    ref: ref,
+                  );
+                } else {
+                  providerState.checkOutOTPwithPermit(
                     context: context,
                     otpCode: formState.otpCode ?? "",
                     securityNoted: formState.securityNoted ?? "",

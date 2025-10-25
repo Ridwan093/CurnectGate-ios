@@ -12,7 +12,7 @@ class WorkDropDown extends ConsumerWidget {
   const WorkDropDown({
     super.key,
     required this.workTypes,
-    this.label = "Work type",
+    this.label = "",
     this.onChanged,
   });
 

@@ -6,6 +6,7 @@ import 'package:curnectgate/features/chat/data/provider/chat_provier.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/chat_setting_widget.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/emergency_widget.dart';
 import 'package:curnectgate/features/chat/presentation/screens/messagbody.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/managevendorlog.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/Set_restrictions.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/add_restrictions.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/basic_permission.dart';
@@ -51,18 +52,41 @@ import 'package:curnectgate/features/payment/widget/buttom_sheet_widget/payOutst
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/MenatainLog.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/accessGranted.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/addComment.dart';
-import 'package:curnectgate/features/security/widget/security_buttom_sheet/additionalInfoQrScan.dart';
-import 'package:curnectgate/features/security/widget/security_buttom_sheet/checoutConfirm.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/checkoutConfirm.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/confirmEntry.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/dismissing_report.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/specifyNumberofGuest.dart';
-import 'package:curnectgate/features/security/widget/security_buttom_sheet/validateOtp.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validate_workOrdr_Otp.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/denyEntry.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/denyEntryConfirm.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/didgita_id/additionalInfoQrScan.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/didgita_id/aprovedEntry.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/didgita_id/confirmDigitEntry.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/didgita_id/denyingDigital.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/didgita_id/validateOtp.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/optionforCodeValidation.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/scanoption.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/validation_option.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/visitor_permit/approvedMessage.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/visitor_permit/denyPermit.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/visitor_permit/denymessage.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/visitor_permit/grant_permit_acess.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/visitor_permit/permit_confirm.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/work_order/vendorCode_approved.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/work_order/vendorCode_confirm.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/work_order/vendorCode_message_deny.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/work_order/vendor_message_approved.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/work_order/vendorcode_deny_bottom.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/work_order/workOder_ceckin_checkOut.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/work_order/workOrderOption.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/work_order/workOrder_Validation.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/work_order/workers_access_code/vendorAccessCodeDenyWorkers.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/work_order/workers_access_code/vendorAccessCode_checkIn_message.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/work_order/workers_access_code/vendorAccessCode_checkOut.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/work_order/workers_access_code/vendorAccessCode_checkOut_message.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/work_order/workers_access_code/vendorAccessCode_confirm.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/work_order/workers_access_code/vendorAccessCode_denyWorkers_message.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/work_order/workers_access_code/vendorAccesscode_checkIn.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validatorComfirmEntry.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/violationTrack.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/workEmergency.dart';
@@ -127,8 +151,8 @@ class BottomsheetDetails extends ConsumerWidget {
       case BottomSheetView.valdationConfrm:
         return ValidateConfirmEntry();
       case BottomSheetView.accesGranted:
-        return Accessgranted(
-          isGrated: headersubtitle.isNotEmpty,
+        return AccessGranted(
+          isGranted: headersubtitle.isNotEmpty,
           jsonData: headertitle,
         );
       case BottomSheetView.specifyNumberofGust:
@@ -229,12 +253,94 @@ class BottomsheetDetails extends ConsumerWidget {
         return ScanOptions();
       case BottomSheetView.denyEntry:
         return DenyEntry(id: id.toString());
+
       case BottomSheetView.workOdervalidation:
-        return ValidateWorkOrderOtp(validateType: "work");
+        return ValidateWorkOrderCheckIn(validateType: "work");
+
+      case BottomSheetView.workOderSeletion:
+        return WorkOrderOption();
+      case BottomSheetView.validateWorker:
+        return ValidateWorkOrders(validateType: "workers");
+      case BottomSheetView.validateVendor:
+        return ValidateWorkOrders(validateType: "vendor");
       case BottomSheetView.visitorValidation:
         return ValidateWorkOrderOtp(validateType: "otpValidation");
+
+      case BottomSheetView.digitalIdConfirm:
+        return ConfirmentryDigital(
+          type: headertitle,
+          name: headersubtitle,
+          id: id ?? 0,
+        );
+
+      /// STRTE HERE
+      // vendorCodeCornfirm,
+      // vendorCodeApproved,
+      // vendorCodeDeny,
+      // vendorCodeDenyMessage,
+      // vendorCodeApprovedMessage,
+
+      //// HEE
+      case BottomSheetView.vendorAccessCodeDeyMessage:
+        return VendorAccessCodeDenyMessage(jsonData: headertitle);
+      case BottomSheetView.vendoraccesCodeDeny:
+        return VendorAccessDeny(otpCode: headertitle);
+      case BottomSheetView.vendorCheckoutmessage:
+        return VendorCheckOutMessage(jsonData: headertitle);
+      case BottomSheetView.vendorcheckinMessage:
+        return VendorCheckInMessage(jsonData: headertitle);
+      case BottomSheetView.vendorCheckOut:
+        return VendorAccessCodeCheckOut(otpCode: headertitle);
+      case BottomSheetView.vendorCheckIn:
+        return VendorAccessCodeCheckIn(otpCode: headertitle);
+      case BottomSheetView.vendoraccesCodConfirm:
+        return VendorAccessCodeConfirm(
+          jsonData: headertitle,
+          otpCode: headersubtitle,
+        );
+
+      ///GHEHEH
+      case BottomSheetView.vendorCodeCornfirm:
+        return WorkOrderConfirmWidget(jsonData: headertitle);
+      case BottomSheetView.vendorCodeApproved:
+        return GrantVendorEntry(id: id.toString());
+      case BottomSheetView.vendorCodeDeny:
+        return DenyVendorEntry(id: id.toString());
+      case BottomSheetView.vendorCodeDenyMessage:
+        return VendorCodeDenyMessage(jsonData: headertitle);
+      case BottomSheetView.vendorCodeApprovedMessage:
+        return VendorApprovedMessage(jsonData: headertitle);
+
+      // END HERE
+      case BottomSheetView.digitalIdDeny:
+        return DenyDigitalEntry(otpCode: headersubtitle, id: id.toString());
+      case BottomSheetView.digitalIdApproved:
+        return GrantDigitalEntry(otpCode: headersubtitle, id: id.toString());
+      case BottomSheetView.digitalIDaprovedMessage:
+        return VendorApprovedMessage(jsonData: headertitle);
+      case BottomSheetView.digitalIdDenymessage:
+        return VendorCodeDenyMessage(jsonData: headertitle);
+      //      digitalIdConfirm,
+      // // digitalIdDeny,
+      // // digitalIdApproved,
+      // // digitalIDaprovedMessage,
+      // // digitalIdDenymessage,
       case BottomSheetView.acceptCheckOut:
         return CheckoutInfo(jsonData: headertitle);
+      case BottomSheetView.checkoutPermitdeny:
+        return DenyPermitEntry(id: id.toString());
+      case BottomSheetView.checkOutPermitApproved:
+        return GrantPermitEntry(id: id.toString(), otpCode: headertitle);
+      case BottomSheetView.checkOutWithpermitConfirm:
+        return ConfirmPermitentry(
+          id: id ?? 0,
+          name: headersubtitle,
+          type: headertitle,
+        );
+      case BottomSheetView.cheoutPermitDenymessage:
+        return DenyEntryPermitMessage(jsonData: headertitle);
+      case BottomSheetView.checkoutpermitapprovedmessaage:
+        return AccessGrantedPermit(jsonData: headertitle);
 
       case BottomSheetView.denyEntryConfirmation:
         return DenyEntryConfirmation(jsonData: headertitle);
@@ -248,16 +354,16 @@ class BottomsheetDetails extends ConsumerWidget {
       case BottomSheetView.eventsDetails:
         return EventDetaile(data: eventData!);
       case BottomSheetView.permitAccces:
-        return SubmitPermitBottomSheet("");
+        return SubmitPermitBottomSheet(id: id ?? 0, otp: headertitle);
       case BottomSheetView.addpermitItems:
         return AddItemBottomSheet();
       case BottomSheetView.shedulPermit:
-        return SubmitSchedulPermitBottomSheet(headertitle);
+        return SubmitSchedulPermitBottomSheet(otp: headertitle, id: id ?? 0);
       case BottomSheetView.schedulpermitItem:
         return SchedulAddItemBottomSheet();
 
       case BottomSheetView.seletPermit:
-        return SelectpermitBottomsheet(otp: headertitle);
+        return SelectpermitBottomsheet(otp: headertitle, id: id ?? 0);
       case BottomSheetView.seletctEvent:
         return EventSelected();
       case BottomSheetView.createdEvent:
@@ -270,6 +376,12 @@ class BottomsheetDetails extends ConsumerWidget {
         return DeactiveEventCode(eventCode: eventCode!);
       case BottomSheetView.checkEventcode:
         return EventCodeWidget(data: eventCode!);
+      case BottomSheetView.vendorLog:
+        return Managevendorlog(
+          id: id ?? 0,
+          title: headertitle,
+          subtitle: headersubtitle,
+        );
 
       default:
         return SingleChildScrollView(
@@ -345,27 +457,27 @@ class BottomsheetDetails extends ConsumerWidget {
     final chatNotifier = ref.watch(chatProvider.notifier);
 
     switch (bottom) {
-      case BottomSheetView.vendorLog:
-        onTap = () {
-          // log(eventData!.vendorName);
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => SubmitWorkOrderPage(vendor: ),
-          //   ),
-          // );
-        };
-        leading = CircleAvatar(
-          backgroundColor: AppColors.instance.grey400,
-          child: Center(
-            child: Icon(
-              Icons.drive_file_rename_outline_outlined,
-              color: AppColors.instance.black600,
-            ),
-          ),
-        );
-        title = "Edit vendor Log";
-        break;
+      // case BottomSheetView.vendorLog:
+      //   onTap = () {
+      //     // log(eventData!.vendorName);
+      //     // Navigator.push(
+      //     //   context,
+      //     //   MaterialPageRoute(
+      //     //     builder: (context) => SubmitWorkOrderPage(vendor: ),
+      //     //   ),
+      //     // );
+      //   };
+      //   leading = CircleAvatar(
+      //     backgroundColor: AppColors.instance.grey400,
+      //     child: Center(
+      //       child: Icon(
+      //         Icons.drive_file_rename_outline_outlined,
+      //         color: AppColors.instance.black600,
+      //       ),
+      //     ),
+      //   );
+      //   title = "Edit vendor Log";
+      //   break;
 
       case BottomSheetView.permissions:
         onTap = () {
@@ -478,19 +590,19 @@ class BottomsheetDetails extends ConsumerWidget {
 
     final chatNotifier = ref.watch(chatProvider.notifier);
     switch (bottom) {
-      case BottomSheetView.vendorLog:
-        onTap = () {
-          ref.read(bottomSheetStateProvider.notifier).state =
-              BottomSheetView.revokevendorconfirm;
-        };
-        leading = CircleAvatar(
-          backgroundColor: AppColors.instance.error300,
-          child: Center(
-            child: Icon(Icons.restore, color: AppColors.instance.error500),
-          ),
-        );
-        title = "Revoke vendor Log";
-        break;
+      // case BottomSheetView.vendorLog:
+      //   onTap = () {
+      //     ref.read(bottomSheetStateProvider.notifier).state =
+      //         BottomSheetView.revokevendorconfirm;
+      //   };
+      //   leading = CircleAvatar(
+      //     backgroundColor: AppColors.instance.error300,
+      //     child: Center(
+      //       child: Icon(Icons.restore, color: AppColors.instance.error500),
+      //     ),
+      //   );
+      //   title = "Revoke vendor Log";
+      //   break;
       case BottomSheetView.revorkActiveOtp:
         onTap = () {
           ref.read(bottomSheetStateProvider.notifier).state =
