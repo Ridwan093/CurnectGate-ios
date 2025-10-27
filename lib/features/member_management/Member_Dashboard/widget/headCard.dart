@@ -1,6 +1,7 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/estate_management/elections/screens/election_dashboard.dart';
 import 'package:flutter/material.dart';
 
 class Headcard extends StatelessWidget {
@@ -81,27 +82,49 @@ class Headcard extends StatelessWidget {
                 bottomRight: Radius.circular(10),
               ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Row(
               children: [
-                Text(
-                  "MEMBER",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontSize: 14,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "MEMBER",
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          fontSize: 14,
 
-                    color: AppColors.instance.grey400,
-                    fontWeight: FontFamilies.medium,
+                          color: AppColors.instance.grey400,
+                          fontWeight: FontFamilies.medium,
+                        ),
+                      ),
+                      Text(
+                        "Benjamin Afolabi",
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          fontSize: 19,
+                          color: AppColors.instance.grey200,
+                          fontWeight: FontFamilies.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Text(
-                  "Benjamin Afolabi",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontSize: 19,
-                    color: AppColors.instance.grey200,
-                    fontWeight: FontFamilies.bold,
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ElectionPage()),
+                      );
+                    },
+                    child: Icon(
+                      Icons.how_to_vote,
+                      color: AppColors.instance.yellow500,
+                      size: 30,
+                    ),
                   ),
                 ),
               ],

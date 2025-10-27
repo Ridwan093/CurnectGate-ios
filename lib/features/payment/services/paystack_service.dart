@@ -20,9 +20,8 @@ class PaystackService {
     try {
       await FlutterPaystackPlus.openPaystackPopup(
         publicKey:
-            'pk_test_073b8a8f310e7025d363bc95f3249f94ff289309', // ✅ replace with your test public key
-        secretKey:
-            "sk_test_97606777b939cd5e029c2ba3bc6c3209187209b9", // ✅ replace with your test secret key
+            'pk_live_9d344d14666a05c0837352dd6848405f868fcba9', // ✅ replace with your test public key
+        secretKey: "sk_live_042ff27da97de504a81df18d6f2b089f28ddcfe6", // ✅ replace with your test secret key
         customerEmail: email,
         currency: "",
         amount: (amount * 100).toString(), // amount in kobo

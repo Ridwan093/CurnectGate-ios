@@ -4,14 +4,14 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
 
-class AgreementSignScreen extends StatefulWidget {
-  const AgreementSignScreen({super.key});
+class TermsAndConditionScreen extends StatefulWidget {
+  const TermsAndConditionScreen({super.key});
 
   @override
-  State<AgreementSignScreen> createState() => _AgreementSignScreenState();
+  State<TermsAndConditionScreen> createState() => _TermsAndConditionScreenState();
 }
 
-class _AgreementSignScreenState extends State<AgreementSignScreen> {
+class _TermsAndConditionScreenState extends State<TermsAndConditionScreen> {
   final TextEditingController _nameController = TextEditingController();
   final SignatureController _signatureController = SignatureController(
     penStrokeWidth: 6,
@@ -113,16 +113,7 @@ Please:
                 ),
                 const SizedBox(height: 20),
 
-                // 📋 Tab Content
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 250),
-                  child:
-                      selectedTab == 0
-                          ? _buildTypeNameTab()
-                          : _buildDrawSignatureTab(),
-                ),
-
-                const SizedBox(height: 40),
+          
 
                 // 🔘 Buttons
                 Column(
@@ -234,94 +225,5 @@ Please:
     );
   }
 
-  // Type Name Tab
-  Widget _buildTypeNameTab() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      key: const ValueKey("typeNameTab"),
-      children: [
-        Text(
-          "Type your name",
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontWeight: FontFamilies.bold,
-            fontSize: 14,
-            color: AppColors.instance.black600,
-          ),
-        ),
-        const SizedBox(height: 8),
-        TextField(
-          controller: _nameController,
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontWeight: FontFamilies.medium,
-            fontSize: 15,
-            color: AppColors.instance.black600,
-          ),
-          decoration: InputDecoration(
-            hintStyle: TextStyle(color: AppColors.instance.black300),
-            filled: true,
-            fillColor: AppColors.instance.grey300,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: AppColors.instance.grey200),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: AppColors.instance.black600),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
-  // Draw Signature Tab
-  Widget _buildDrawSignatureTab() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      key: const ValueKey("drawSignatureTab"),
-      children: [
-        Text(
-          "Draw your signature",
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontWeight: FontFamilies.bold,
-            fontSize: 14,
-            color: AppColors.instance.black600,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          height: 70,
-          width: MediaQuery.sizeOf(context).width,
-          decoration: BoxDecoration(
-            color: AppColors.instance.black500,
-
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Signature(
-            controller: _signatureController,
-            backgroundColor: AppColors.instance.grey300,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Align(
-          alignment: Alignment.centerRight,
-          child: TextButton(
-            onPressed: _signatureController.clear,
-            child: Text(
-              "Clear",
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontWeight: FontFamilies.medium,
-                fontSize: 14,
-                color: AppColors.instance.black400,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 }

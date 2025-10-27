@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:curnectgate/core/constants/asset_paths.dart';
-import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -372,7 +371,6 @@ class Dashborad extends ConsumerWidget {
           onTap: () async {
             ref.read(formProvider.notifier).updateRegenerateDigiterCode("");
             ref.read(formProvider.notifier).updateGenrateMemberIdLoading(false);
- 
 
             final status = await ref.read(digitalIdStatusProvider.future);
 
