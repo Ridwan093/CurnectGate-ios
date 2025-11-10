@@ -73,7 +73,7 @@ class _VoteProgressCardState extends ConsumerState<VoteProgressCard> {
             child: LinearProgressIndicator(
               value: percent,
               minHeight: 12,
-              color: AppColors.instance.teal500,
+              color: AppColors.instance.yellow500,
             ),
           ),
           const SizedBox(height: 8),

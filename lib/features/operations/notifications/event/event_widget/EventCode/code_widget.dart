@@ -49,22 +49,27 @@ class EventCodeWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.home_filled,
+                    Icons.location_city,
                     size: 20,
                     color: AppColors.instance.teal300,
                   ),
-                  const SizedBox(width: 5),
-                  Text(
-                    data.eventLocation.toString().toUpperCase(),
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontFamilies.bold,
-                      fontFamily: FontFamilies.interDisplay,
-                      color: AppColors.instance.black600,
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      data.eventLocation?.toUpperCase() ?? 'UNKNOWN LOCATION',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontFamilies.bold,
+                        fontFamily: FontFamilies.interDisplay,
+                        color: AppColors.instance.black600,
+                      ),
                     ),
                   ),
                 ],
               ),
+
               SizedBox(height: 30),
               Text(
                 'ENTRY CODE',

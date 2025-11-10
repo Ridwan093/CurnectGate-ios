@@ -40,7 +40,7 @@ class WorkOrdrNotifier
         await SharedPrefsService.saveWorkOrder(freshWork);
       }
 
-      return localworkOder;
+      return freshWork;
     } catch (e) {
       // If error occurs, return local data if available
       log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");

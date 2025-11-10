@@ -3,7 +3,7 @@ class Candidate {
   final String name;
   final String party;
   final String avatarUrl; // can be empty
-
+  
   final int? totalVotes;
 
   Candidate({

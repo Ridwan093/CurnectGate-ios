@@ -44,13 +44,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         getUserprofile, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   // headers: {
+        //   //   'Accept': 'application/json',
+        //   //   'Authorization': 'Bearer $bearerToken',
+        //   //   'X-Requested-With': 'XMLHttpRequest',
+        //   // },
+        // ),
       );
 
       return GetUserProfile.fromSafeJson(response.data);
@@ -66,13 +66,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         getNotification, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
 
       return GetUserNotificationSettings.safeFromJson(response.data);
@@ -88,13 +88,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         getSettingPrivacy, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
 
       return GetUserPrivacySettings.safeFromJson(response.data);
@@ -125,13 +125,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         getSettingPreferences, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -148,13 +148,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         getNotificationApi, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       return NotificationResponse.safeFromJson(response.data);
     } on DioException catch (e) {
@@ -170,13 +170,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         "/api/v1/estates/general/reminders?category=$category", // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -193,13 +193,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         getViolationLocation, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -216,13 +216,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         getViolationCategorys, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -256,13 +256,13 @@ class GetApiService {
       final response = await _dio.get(
         data: requestDatas,
         listOfViolation, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -281,14 +281,14 @@ class GetApiService {
       final response = await _dio.get(
         "/api/v1/estates/general/violations/$id/history",
 
-        // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // // Update with your actual endpoint
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -307,13 +307,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         "/api/v1/estates/general/violations/$id/comments", // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -334,13 +334,13 @@ class GetApiService {
       final response = await _dio.get(
         data: requestData,
         getVisitorByfirter, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -360,13 +360,13 @@ class GetApiService {
       log("requestBody:${requestData.toString()}");
       final response = await _dio.get(
         getWorkpermit, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -383,13 +383,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         getDigitalIDCode, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -406,13 +406,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         getHouseHold, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -427,13 +427,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         getPropertya, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -451,13 +451,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         "/api/v1/estates/owner-portal/households/members/permission/$id/status", // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -475,15 +475,15 @@ class GetApiService {
     try {
       final response = await _dio.get(
         "/api/v1/estates/owner-portal/households/members/permission/$id/specific", // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
-      log(response.data.toString());
+      // log(response.data.toString());
 
       return slug_model.PermissionsResponse.safeFromJson(response.data);
     } on DioException catch (e) {
@@ -498,13 +498,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         getCheckOutVisitor, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -519,13 +519,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         getCheckInVisitor, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -542,13 +542,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         notificationCount, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -563,13 +563,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         getCalenders, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log("Calender Event:" + response.data.toString());
 
@@ -584,13 +584,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         getEventCodes, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log("Calender Event:" + response.data.toString());
 
@@ -611,13 +611,13 @@ class GetApiService {
       final response = await _dio.get(
         // "/api/v1/estates/general/events?status=cancelled",
         "/api/v1/estates/general/events?status=$statuse&limit=$limit&start_date=${date ?? ""}", // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -634,13 +634,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         getResinde, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -657,13 +657,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         getCommitt, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -680,13 +680,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         workOrdercategorie, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -703,13 +703,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         getworkOrder, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 
@@ -726,13 +726,13 @@ class GetApiService {
     try {
       final response = await _dio.get(
         getDigitalStatus, // Update with your actual endpoint
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $bearerToken',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
       );
       log(response.data.toString());
 

@@ -5,7 +5,6 @@ class AppColors {
   // Singleton pattern for efficient memory usage
   AppColors._();
   static final instance = AppColors._();
-  
 
   // final Color appBar = Theme.of(context).scaffoldBackgroundColor;
   //BLACK COLOR
@@ -15,6 +14,8 @@ class AppColors {
   final Color black300 = const Color(0xFFA4A4A4);
   final Color black200 = const Color(0xFFbbbbbb);
   final Color black100 = const Color(0xFFD2D2D2);
+
+  final Color random = const Color(0xFFF6F5ED);
 
   ///YELLOW COLOR
   final Color yellow600 = const Color(0xFFCCA300);

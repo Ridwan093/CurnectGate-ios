@@ -63,17 +63,17 @@ class _FacilityContetState extends ConsumerState<FacilityContet> {
       );
 
       if (conditions?.facilities != null) {
-        log(conditions!.facilities!.first.toString());
+        // log(conditions!.facilities!.first.toString());
         notifier.updateFacilityConditions(
-          facilities: conditions.facilities!,
-          timeRestrictions: conditions.timeRestrictions,
+          facilities: conditions?.facilities ?? [],
+          timeRestrictions: conditions?.timeRestrictions,
         );
 
         // Convert TimeRestrictions to start/end time maps
         final startTimes = <String, TimeOfDay?>{};
         final endTimes = <String, TimeOfDay?>{};
 
-        conditions.timeRestrictions?.forEach((day, restriction) {
+        conditions?.timeRestrictions?.forEach((day, restriction) {
           startTimes[_capitalize(day)] = _parseTimeString(
             restriction.startTime ?? '00:00',
           );
@@ -345,7 +345,7 @@ class _FacilityContetState extends ConsumerState<FacilityContet> {
                             id: widget.id,
                             ref: ref,
                           );
-                           restform();
+                          restform();
                         }
                       },
               child:

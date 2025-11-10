@@ -42,7 +42,7 @@ class PermissionStaticNotifier
         await SharedPrefsService.savePermissionStatistic(freshPermission);
       }
 
-      return localPermission;
+      return freshPermission;
     } catch (e) {
       // If error occurs, return local data if available
       log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");

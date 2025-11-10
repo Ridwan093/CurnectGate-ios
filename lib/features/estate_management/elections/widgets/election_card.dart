@@ -70,10 +70,7 @@ class ElectionCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             description,
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.grey,
-            ),
+            style: const TextStyle(fontSize: 14, color: Colors.grey),
           ),
           const SizedBox(height: 16),
           Row(
@@ -88,25 +85,20 @@ class ElectionCard extends StatelessWidget {
               ),
               Text(
                 '$votedCount / $totalVoters voted',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                ),
+                style: const TextStyle(fontWeight: FontWeight.w500),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          LinearProgressIndicator(
-            value: turnoutPercentage / 100,
-            backgroundColor: Colors.grey[200],
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-          ),
+          // LinearProgressIndicator(
+          //   value: turnoutPercentage / 100,
+          //   backgroundColor: Colors.grey[200],
+          //   valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+          // ),
           const SizedBox(height: 8),
           Text(
             '${turnoutPercentage.toStringAsFixed(1)}% turnout',
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.grey,
-            ),
+            style: const TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ],
       ),

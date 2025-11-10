@@ -1,6 +1,7 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/navigation/back_manageent/back_provider/provider.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/estate_management/screen_managment.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/model/estate_code_validator_state.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/provider/estate_code_repository.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/loading_screen/loading_page.dart';
@@ -9,7 +10,6 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/estate_
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/code_check_widget/codeformfield.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/progresscontainer.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/stepcount.dart';
-import 'package:curnectgate/features/estate_management/screen_managment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -70,6 +70,7 @@ class _EstateCodeVerificationScreenState
       ],
     );
   }
+
   Widget _buildContent() {
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 80),
@@ -119,8 +120,12 @@ class _EstateCodeVerificationScreenState
 
     return ActionButton(
       label: 'Validate',
+
       onPressed:
           formState.isValid ? () => submitNotifier.submitCode(context) : null,
+      // onPressed: () async {
+      //   await OnboardingProgressManager.clearProgress();
+      // },
     );
   }
 }

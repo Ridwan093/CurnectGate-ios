@@ -136,7 +136,7 @@ class LiveResultTab extends ConsumerWidget {
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
                   fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.teal400,
+                  color: AppColors.instance.black600,
                 ),
               ),
             ],
@@ -164,12 +164,14 @@ class LiveResultTab extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: leader ? AppColors.instance.teal100 : Colors.white,
+        color: leader ? AppColors.instance.blue100 : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           width: 2,
           color:
-              leader ? AppColors.instance.teal400 : AppColors.instance.grey300,
+              leader
+                  ? getVoteColor(percent).withValues()
+                  : AppColors.instance.grey300,
         ),
       ),
       child: Row(
@@ -177,6 +179,7 @@ class LiveResultTab extends ConsumerWidget {
           CircleAvatar(
             radius: 22,
             backgroundImage:
+                // ignore: unnecessary_null_comparison
                 c.avatarUrl != null ? NetworkImage(c.avatarUrl) : null,
             child: c.avatarUrl == null ? Text(c.name[0]) : null,
           ),
@@ -202,7 +205,7 @@ class LiveResultTab extends ConsumerWidget {
                   value: percent / 100,
                   minHeight: 8,
                   backgroundColor: Colors.grey.shade300,
-                  color: AppColors.instance.teal400,
+                  color: getVoteColor(percent),
                 ),
                 const SizedBox(height: 6),
                 Text(
@@ -222,7 +225,7 @@ class LiveResultTab extends ConsumerWidget {
                   fontFamily: FontFamilies.interDisplay,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.instance.teal400,
+                  color: AppColors.instance.black600,
                 ),
               ),
               const Text(
@@ -234,5 +237,18 @@ class LiveResultTab extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Color getVoteColor(double percent) {
+    switch (percent) {
+      case >= 45:
+        return AppColors.instance.teal500; // Strong lead
+      case >= 30:
+        return AppColors.instance.blue400; // Moderate lead
+      case >= 15:
+        return AppColors.instance.yellow500; // Competitive
+      default:
+        return AppColors.instance.error500; // Low votes
+    }
   }
 }

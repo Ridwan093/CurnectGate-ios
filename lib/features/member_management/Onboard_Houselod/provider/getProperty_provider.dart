@@ -39,7 +39,7 @@ class PropertyIDNotifier extends AutoDisposeAsyncNotifier<PropertyResponse?> {
         await SharedPrefsService.saveProperty(freshproperty);
       }
 
-      return localproperty;
+      return freshproperty;
     } catch (e) {
       // If error occurs, return local data if available
       log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");

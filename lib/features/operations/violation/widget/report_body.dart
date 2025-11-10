@@ -29,11 +29,14 @@ class ReportBody extends ConsumerWidget {
           data: (report) {
             try {
               final violations = report?.data.violations;
-              if (violations != null && violations.isNotEmpty) {
-                return _buildReportList(violations);
-              } else {
-                return _buildEmptyBody();
-              }
+              return violations != null && violations.isNotEmpty
+                  ? _buildReportList(violations)
+                  : _buildEmptyBody();
+              // if (violations != null && violations.isNotEmpty) {
+              //   return _buildReportList(violations);
+              // } else {
+              //   return _buildEmptyBody();
+              // }
             } catch (e) {
               return _buildErrorUI('Failed to load reports', ref, context);
             }
@@ -104,21 +107,23 @@ class ReportBody extends ConsumerWidget {
 
   Widget _buildEmptyBody() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(AssetPaths.dashboardWorkOrder, height: 100, width: 100),
-          const SizedBox(height: 10),
-          Text(
-            "Your report List appear here",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.black300,
-              fontSize: 12,
-              fontWeight: FontFamilies.medium,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(AssetPaths.dashboardWorkOrder, height: 100, width: 100),
+            const SizedBox(height: 10),
+            Text(
+              "Your report List appear here",
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                color: AppColors.instance.black300,
+                fontSize: 12,
+                fontWeight: FontFamilies.medium,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

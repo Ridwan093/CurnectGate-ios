@@ -4,17 +4,20 @@ import 'package:curnectgate/features/member_management/Onboard_Houselod/model/pe
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/provider.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/permission_widget/TimeBoxe.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/permission_widget/repeat_bottom_shet.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CurfewContent extends ConsumerWidget {
-  final  Map<String, Permission>? permission;
+  final Map<String, Permission>? permission;
+
   const CurfewContent({super.key, required this.permission});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(notificationProviders);
     final notifier = ref.read(notificationProviders.notifier);
+    final providerstate = ref.read((formProvider.notifier));
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -155,10 +158,12 @@ class CurfewContent extends ConsumerWidget {
                 ),
               ),
               onPressed: () {
-                // Save logic
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Curfew settings saved")),
-                );
+                // providerstate.setCurfew(
+                //               context: context,
+                //               id: widget.id,
+                //               ref: ref,
+                //             );
+                //             restform();
               },
               child: const Text(
                 "Save",
@@ -237,10 +242,11 @@ class CurfewContent extends ConsumerWidget {
                     ),
                     const SizedBox(height: 5),
                     Timeboxe(
+                      isEnable: !state.isCurfewEnabled,
                       selectedTime: state.startTimes[day],
 
                       onTimeSelected:
-                          (time) => notifier.updateEndTime(day, time),
+                          (time) => notifier.updateStartTime(day, time),
                     ),
                   ],
                 ),
@@ -263,7 +269,7 @@ class CurfewContent extends ConsumerWidget {
                     const SizedBox(height: 5),
                     Timeboxe(
                       selectedTime: state.endTimes[day],
-
+                      isEnable: !state.isCurfewEnabled,
                       onTimeSelected:
                           (time) => notifier.updateEndTime(day, time),
                     ),

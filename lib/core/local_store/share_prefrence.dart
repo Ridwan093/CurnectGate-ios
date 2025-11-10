@@ -694,6 +694,36 @@ class SharedPrefsService {
     await prefs.remove(_permissionStaticKey);
   }
 
+  Future<void> saveSessionCookie(String cookie) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('session_cookie', cookie);
+  }
+
+  Future<String?> getSessionCookie() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('session_cookie');
+  }
+
+  static Future<void> clearUserToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove("session_token");
+  }
+
+  Future<void> saveUserToken(String cookie) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('session_token', cookie);
+  }
+
+  Future<String?> getUserToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('session_token');
+  }
+
+  static Future<void> clearSessionCookie() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove("session_cookie");
+  }
+
   static Future<void> clearPermissionstatus() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_permissionStatusKey);
@@ -813,7 +843,8 @@ class SharedPrefsService {
     clearEventCode();
     clearWorkOrderCategory();
     clearWorkOder();
-
+    clearSessionCookie();
+    clearUserToken();
     await prefs.remove(_keyAuthData);
   }
 }

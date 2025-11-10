@@ -55,7 +55,7 @@ class _ReportFormState extends ConsumerState<ReportForm> {
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+              // mainAxisSize: MainAxisSize.min,
               children: [
                 const SizedBox(height: 20),
 
@@ -252,9 +252,7 @@ Widget _buildSubmitButton({
           positionNumber: 70,
         );
       }
-      if (report.imagePaths[0] == null ||
-          report.imagePaths[1] == null ||
-          report.imagePaths.isEmpty) {
+      if (report.imagePaths.isEmpty) {
         log("File: ${report.imagePaths[1] ?? ""}");
         log(report.imagePaths[0] ?? "");
 

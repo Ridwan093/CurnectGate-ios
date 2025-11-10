@@ -17,9 +17,9 @@ class GetYourCodeScreen extends ConsumerStatefulWidget {
   final String? share;
   const GetYourCodeScreen({
     super.key,
-    this.title = "Your vendor access code:",
-    this.accessCode = "3456GAT",
-    this.share = "Here's  vendor access code: ",
+    this.title = "",
+    this.accessCode = "",
+    this.share = "",
   });
 
   @override
@@ -53,9 +53,21 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> extractedData = jsonDecode(widget.title ?? "");
-    final accessCodes = extractWorkerAccessCodes(extractedData);
-    final vendorCode = extractVendorAccessCode(extractedData);
+    List<String> accessCodes = [];
+    String vendorCode = "";
+    if (widget.title!.toLowerCase().contains("your visitor access code")) {
+    } else {
+      final Map<String, dynamic> extractedData = jsonDecode(
+        widget.title ??
+            ""
+                "",
+      );
+      accessCodes = extractWorkerAccessCodes(extractedData);
+      vendorCode = extractVendorAccessCode(extractedData);
+    }
+
+    // final accessCodes = extractWorkerAccessCodes(extractedData);
+    // final vendorCode = extractVendorAccessCode(extractedData);
     return Scaffold(
       bottomNavigationBar: ActionButton(
         label: "Got it",

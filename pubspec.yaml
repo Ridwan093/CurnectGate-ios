@@ -18,7 +18,7 @@ dependencies:
   timezone: ^0.10.0
   intl: ^0.20.0
   dio: ^5.4.0
- 
+  flutter_launcher_icons: ^0.14.4
   firebase_core: ^3.5.0
   firebase_messaging: ^15.0.0
   firebase_analytics: ^11.0.0
@@ -78,6 +78,11 @@ flutter:
     - assets/images/logo/
     - assets/images/onboarding/
     - assets/images/action/
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/app_icon.png" # <-- your icon path
+  remove_alpha_ios: true
 
   fonts:
     - family: Lato

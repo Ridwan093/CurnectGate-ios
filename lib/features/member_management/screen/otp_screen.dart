@@ -1,12 +1,13 @@
 import 'dart:developer';
 
+import 'package:curnectgate/core/config/biometric_faceID/Helper/biometric_signature_helper.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/estate_management/screen_managment.dart'
+    show BaseVerificationScreen;
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/loading_screen/loading_page.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/stepcount.dart';
-import 'package:curnectgate/features/estate_management/screen_managment.dart'
-    show BaseVerificationScreen;
 import 'package:curnectgate/features/member_management/profile_form/otp_form.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
@@ -81,6 +82,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   }
 
   Widget _buildContent() {
+    final emails = BiometricSignatureHelper.getStoredEmail();
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 80),
       child: Column(
@@ -96,13 +98,29 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
             ),
           ),
           const SizedBox(height: 10),
+          FutureBuilder(
+            future: emails,
+            builder: (context, snapshorty) {
+              if (snapshorty.hasData) {
+                return _buildEmailRichText(
+                  firstText: widget.description,
+                  email: snapshorty.data ?? "",
 
-          _buildEmailRichText(
-            firstText: widget.description,
-            email: widget.data!["email"] ?? "",
-            lastText: ' please enter below',
-            visibleStartChars: 3,
-            visibleEndChars: 3,
+                  lastText: ' please enter below',
+                  visibleStartChars: 3,
+                  visibleEndChars: 3,
+                );
+              } else {
+                return _buildEmailRichText(
+                  firstText: widget.description,
+                  email:
+                      widget.data!["email"] ?? "koredR093@gmail.com",
+                  lastText: ' please enter below',
+                  visibleStartChars: 3,
+                  visibleEndChars: 3,
+                );
+              }
+            },
           ),
 
           // Displays: "exa****ser@domain.com"
@@ -234,7 +252,6 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
       onPressed:
           isOtpComplete
               ? () {
-              
                 ref
                     .read(formProvider.notifier)
                     .verifyOTP(

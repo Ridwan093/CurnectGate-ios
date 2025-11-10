@@ -165,7 +165,7 @@ class SummaryResultTab extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             Expanded(
-              child:_turnBoxe(
+              child: _turnBoxe(
                 title: "Voter Turnout",
                 value: "45%",
                 color: AppColors.instance.grey200.withOpacity(.4),
@@ -228,7 +228,7 @@ class SummaryResultTab extends StatelessWidget {
   }) {
     return Card(
       margin: EdgeInsets.only(bottom: 10),
-      color: AppColors.instance.teal100,
+      color: Color(0xFFF6F5ED),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         child: Row(
@@ -286,7 +286,7 @@ class SummaryResultTab extends StatelessWidget {
                     fontSize: 20,
                     fontFamily: FontFamilies.interDisplay,
                     fontWeight: FontFamilies.bold,
-                    color: AppColors.instance.teal400,
+                    color: AppColors.instance.black600,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -401,7 +401,7 @@ class SummaryResultTab extends StatelessWidget {
                         value: (leaderPct / 100).clamp(0.0, 1.0),
                         minHeight: 8,
                         backgroundColor: Colors.grey.shade300,
-                        color: AppColors.instance.teal400,
+                        color: getVoteColor(leaderPct),
                       ),
                     ),
                   ],
@@ -414,5 +414,18 @@ class SummaryResultTab extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Color getVoteColor(double percent) {
+    switch (percent) {
+      case >= 45:
+        return AppColors.instance.teal500; // Strong lead
+      case >= 30:
+        return AppColors.instance.blue400; // Moderate lead
+      case >= 15:
+        return AppColors.instance.yellow500; // Competitive
+      default:
+        return AppColors.instance.error500; // Low votes
+    }
   }
 }

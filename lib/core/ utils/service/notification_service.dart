@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 /// Handles both FCM (remote) and local notifications for iOS & Android.
 class NotificationService {
@@ -14,6 +17,80 @@ class NotificationService {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
+
+  Future<void> sendNotificationToAll({
+    required String bearerToken, // <-- new parameter
+    required String message,
+    required String messageType,
+    required String senderName,
+    required String senderProfilePix,
+    required String senderId,
+    required List<String> tokens,
+  }) async {
+    try {
+      if (tokens.isEmpty) {
+        print('No tokens found.');
+        return;
+      }
+
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $bearerToken',
+      };
+
+      for (String deviceToken in tokens) {
+        final Map<String, dynamic> body = {
+          'message': {
+            'token': deviceToken,
+            'notification': {
+              'title': '$senderName sent a message',
+              'body': message,
+            },
+            'data': {
+              'type': messageType,
+              'senderId': senderId,
+              'senderName': senderName,
+              'senderProfilePix': senderProfilePix,
+            },
+          },
+        };
+
+        // Add APNS payload for iOS
+        if (Platform.isIOS) {
+          body['message']['apns'] = {
+            'payload': {
+              'aps': {
+                'mutable-content': 1,
+                'sound': 'default',
+                'alert': {
+                  'title': '$senderName sent a message',
+                  'body': message,
+                },
+              },
+            },
+          };
+        }
+
+        final response = await http.post(
+          Uri.parse(
+            'https://fcm.googleapis.com/v1/projects/curnect-test-f9bc0/messages:send',
+          ),
+          headers: headers,
+          body: json.encode(body),
+        );
+
+        if (response.statusCode == 200) {
+          print('✅ Notification sent to $deviceToken');
+        } else {
+          print(
+            '❌ Failed to send notification: ${response.statusCode} -> ${response.body}',
+          );
+        }
+      }
+    } catch (e) {
+      print('⚠️ Error sending notification: $e');
+    }
+  }
 
   /// Initialize Firebase Messaging + Local Notifications
   Future<void> initialize() async {
@@ -64,16 +141,16 @@ class NotificationService {
 
     final DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+        );
 
     final InitializationSettings initializationSettings =
         InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
-    );
+          android: initializationSettingsAndroid,
+          iOS: initializationSettingsIOS,
+        );
 
     await _localNotifications.initialize(
       initializationSettings,
@@ -104,14 +181,24 @@ class NotificationService {
     final data = message.data;
 
     String type = data['type'] ?? 'general';
+    String isAmber = data["is_amber_alert"];
     String title = notification?.title ?? 'Notification';
     String body = notification?.body ?? 'You have a new message';
 
-    final AndroidNotificationDetails androidDetails =
-        _getAndroidChannelDetails(type);
+    String imagePath = await downloadAndSaveImage(
+      data["media_url"],
+      'chat_${data["senderId"]}.jpg',
+    );
 
-    final NotificationDetails notificationDetails =
-        NotificationDetails(android: androidDetails);
+    final AndroidNotificationDetails androidDetails = _getAndroidChannelDetails(
+      type,
+      imagePath,
+      isAmber,
+    );
+
+    final NotificationDetails notificationDetails = NotificationDetails(
+      android: androidDetails,
+    );
 
     await _localNotifications.show(
       notification.hashCode,
@@ -123,44 +210,35 @@ class NotificationService {
   }
 
   /// Define different notification channels based on type
-  AndroidNotificationDetails _getAndroidChannelDetails(String type) {
-    switch (type) {
-      case 'payment':
-        return const AndroidNotificationDetails(
-          'payment_channel',
-          'Payment Notifications',
-          channelDescription: 'Notifications related to payments',
-          importance: Importance.max,
-          priority: Priority.high,
-          playSound: true,
-          ticker: 'payment',
-        );
-      case 'chat':
-        return const AndroidNotificationDetails(
-          'chat_channel',
-          'Chat Notifications',
-          channelDescription: 'Chat messages and replies',
-          importance: Importance.max,
-          priority: Priority.high,
-          playSound: true,
-          ticker: 'chat',
-        );
-      case 'announcement':
-        return const AndroidNotificationDetails(
+  AndroidNotificationDetails _getAndroidChannelDetails(
+    String type,
+    String imageUrl,
+    String isAmber,
+  ) {
+    switch (isAmber.toLowerCase()) {
+      case "true":
+        return AndroidNotificationDetails(
           'announcement_channel',
           'Announcements',
           channelDescription: 'Community announcements and broadcasts',
           importance: Importance.high,
           priority: Priority.defaultPriority,
           playSound: true,
+          styleInformation: BigPictureStyleInformation(
+            FilePathAndroidBitmap(imageUrl),
+            contentTitle: '<b>Announcement</b>',
+            htmlFormatContentTitle: true,
+            htmlFormatSummaryText: true,
+            hideExpandedLargeIcon: true,
+          ),
         );
-      case 'reminder':
+      case "false":
         return const AndroidNotificationDetails(
-          'reminder_channel',
-          'Reminders',
-          channelDescription: 'Reminders and alerts',
-          importance: Importance.max,
-          priority: Priority.high,
+          'general_channel',
+          'General Notifications',
+          channelDescription: 'Miscellaneous notifications',
+          importance: Importance.defaultImportance,
+          priority: Priority.defaultPriority,
           playSound: true,
         );
       default:
@@ -173,11 +251,128 @@ class NotificationService {
           playSound: true,
         );
     }
+    // switch (type) {
+    //   case 'payment':
+    //     return const AndroidNotificationDetails(
+    //       'payment_channel',
+    //       'Payment Notifications',
+    //       channelDescription: 'Notifications related to payments',
+    //       importance: Importance.max,
+    //       priority: Priority.high,
+    //       playSound: true,
+    //       ticker: 'payment',
+    //     );
+    //   case 'chat':
+    //     return AndroidNotificationDetails(
+    //       'chat_channel',
+    //       'Chat Notifications',
+    //       channelDescription: 'Chat messages and replies',
+    //       importance: Importance.max,
+    //       priority: Priority.high,
+    //       playSound: true,
+    //       ticker: 'chat',
+    //       largeIcon: FilePathAndroidBitmap(imageUrl),
+
+    //       // ✅ REPLY ACTION
+    //       actions: <AndroidNotificationAction>[
+    //         AndroidNotificationAction(
+    //           'REPLY_ACTION', // Action key
+    //           'Reply',
+    //           inputs: <AndroidNotificationActionInput>[
+    //             AndroidNotificationActionInput(
+    //               label: 'Type a reply...', // placeholder
+    //             ),
+    //           ],
+    //           showsUserInterface: true,
+    //           allowGeneratedReplies: true,
+    //         ),
+    //       ],
+
+    //       styleInformation: const InboxStyleInformation(
+    //         [],
+    //         htmlFormatContentTitle: true,
+    //       ),
+    //     );
+
+    //   case 'announcement':
+    //     return AndroidNotificationDetails(
+    //       'announcement_channel',
+    //       'Announcements',
+    //       channelDescription: 'Community announcements and broadcasts',
+    //       importance: Importance.high,
+    //       priority: Priority.defaultPriority,
+    //       playSound: true,
+    //       styleInformation: BigPictureStyleInformation(
+    //         FilePathAndroidBitmap(imageUrl),
+    //         contentTitle: '<b>Announcement</b>',
+    //         htmlFormatContentTitle: true,
+    //         htmlFormatSummaryText: true,
+    //         hideExpandedLargeIcon: true,
+    //       ),
+    //     );
+    //   case 'reminder':
+    //     return const AndroidNotificationDetails(
+    //       'reminder_channel',
+    //       'Reminders',
+    //       channelDescription: 'Reminders and alerts',
+    //       importance: Importance.max,
+    //       priority: Priority.high,
+    //       playSound: true,
+    //     );
+    //   default:
+    //     return const AndroidNotificationDetails(
+    //       'general_channel',
+    //       'General Notifications',
+    //       channelDescription: 'Miscellaneous notifications',
+    //       importance: Importance.defaultImportance,
+    //       priority: Priority.defaultPriority,
+    //       playSound: true,
+    //     );
+    // }
+  }
+
+  Future<String> downloadAndSaveImage(String url, String fileName) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final filePath = '${directory.path}/$fileName';
+
+    if (url.isNotEmpty) {
+      final response = await http.get(Uri.parse(url));
+      final file = File(filePath);
+      await file.writeAsBytes(response.bodyBytes);
+    }
+
+    return filePath;
+  }
+
+  Future _onNotificationTap(String? payload) async {
+    if (payload == null) return;
+    final data = jsonDecode(payload);
+
+    switch (data['type']) {
+      case 'chat':
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (_) => ChatScreen(chatId: data['chatId']),
+        //   ),
+        // );
+        break;
+
+      case 'announcement':
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (_) => BannerDetailsPage(id: data['bannerId']),
+        //   ),
+        // );
+        break;
+    }
   }
 
   /// Background handler (must be top-level)
   static Future<void> _firebaseMessagingBackgroundHandler(
-      RemoteMessage message) async {
+    RemoteMessage message,
+  ) async {
     await Firebase.initializeApp();
     print('📩 Background message: ${message.data}');
   }

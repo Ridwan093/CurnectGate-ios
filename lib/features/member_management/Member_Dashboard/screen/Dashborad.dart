@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:curnectgate/core/%20utils/service/notification_service.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
@@ -97,7 +98,12 @@ class Dashborad extends ConsumerWidget {
                 },
               ),
               Divider(color: AppColors.instance.grey400),
-              _otherLinks(title: "ACCOUNT SETTINGS", onTap: () {}),
+              _otherLinks(
+                title: "ACCOUNT SETTINGS",
+                onTap: () {
+                  context.pushNamed(AppRoutes.manageLoging);
+                },
+              ),
               Divider(color: AppColors.instance.grey400),
               SizedBox(height: 5),
               _otherLinks(
@@ -319,43 +325,59 @@ class Dashborad extends ConsumerWidget {
   }
 
   Widget _buildDueCard(String amount) {
-    return Container(
-      padding: EdgeInsets.all(12),
-      height: 65,
-      decoration: BoxDecoration(
-        color: AppColors.instance.teal300,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            "Amount Due:  #$amount",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.black600,
-              fontWeight: FontFamilies.bold,
+    return InkWell(
+      onTap: () async {
+        final token = await NotificationService().getToken();
+        NotificationService().sendNotificationToAll(
+          bearerToken:
+              "ya29.c.c0ASRK0GY7bnJjYWhVtS4au26Eb2-tbUAEIZL4kLQhZEx1_r1h1jVCXLv3oFhhTbBhAGuTt1hqHHQj6DAv8VUahygJEG2_XgBTM3oOT9BLykDkAQtMO_uzxAx0uIxwvM54cnxvyeHgWWPCO_oy0i4q7q7ZOmiIb5LN80J5ii_FJDtlARdKnrkHJl48u8eKmuOk1apoM84iUYFiQ7oy3Bpe2xGJq_f3LAYTMxFvQBWj-S9zPioLMcsCAX03UmuuPRhQBsPiq34g3Jdc43-hI78jWNqVMjNZxvS9idYWjmttYHvEVTdrvo28dXrkKssY-u6_N3InOCTW2iGrahcZinOl4JaX7zmYinGQAMBbFrgwfVuCfcKvLNYLHzy6N385C84e_nrigbniU7-8f2nYt2UFt2Bhu2xvXi9mzm8sUhsy_ou5ilYiMydRvO1uRz0U3tW98FQbygwzV9la2M6QMxS2Ztup3gtlol2j9hsiufYeMqiqqkhybMOOyre4k09iVs-2c0dR0qMqfs6zalfbYp795YlM6Q-kWmaI5ozqRn5xyvvbXSeFV7zx_t7Rqk9yViv6v6SIRiWcn0zpgJFSyb_uVIFrzs_St1beRnxwZWygI-XougUgBg4rcXjz0SXep33oS3Jry8SQfJ6ulJeUWMMxgs9runriW7qBuZup-hhVm4_o5a1VhZ-Ul5wYU8u0j9jOSazz1z8U0oFidh5vRg4jbRpdJ-bYVhox5nU7FjtiRqiuJexSyVwy0rrIlyZxW20zJ1gMitnU_sVMU8BqhibBb_JtY1pjYy-R-_rlmM2tmU2ldvl8jd35SM8pZvd8aSzoJFkg-1uwok7VFsBtk8J0XrMn0ylnsBcdif0YJ5S8ZgZ9wxRun1dpJ0Z2FJuezv9M0jkcucyX7JBmQ_m3bVsVU0mX8sVdpo9axrplYu-jJg5nd8mhWjpB5r_RcYtJ0Zlm4SVWgkwpwVhF-4dfww5RdqUusddZnJczQnlwxOlgg3xVbWQS04cFno",
+          message:
+              "The magority of the comminuty was not coming to the meeting.",
+          messageType: "chat",
+          senderName: "James Muller",
+          senderProfilePix: "https://avatars.githubusercontent.com/u/1?v=4",
+          senderId: "12",
+          tokens: [token ?? ""],
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.all(12),
+        height: 65,
+        decoration: BoxDecoration(
+          color: AppColors.instance.teal300,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Amount Due:  #$amount",
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                color: AppColors.instance.black600,
+                fontWeight: FontFamilies.bold,
+              ),
             ),
-          ),
-          Container(
-            height: 35,
-            width: 70,
-            decoration: BoxDecoration(
-              color: AppColors.instance.black600,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Center(
-              child: Text(
-                "Pay due",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.grey200,
-                  fontSize: 12,
+            Container(
+              height: 35,
+              width: 70,
+              decoration: BoxDecoration(
+                color: AppColors.instance.black600,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: Text(
+                  "Pay due",
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    color: AppColors.instance.grey200,
+                    fontSize: 12,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

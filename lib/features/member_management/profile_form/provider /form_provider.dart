@@ -13,6 +13,8 @@ import 'package:curnectgate/core/config/biometric_faceID/Helper/device_info_help
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
+import 'package:curnectgate/features/auth/data/auth_model/OnboardingProgressManager.dart';
+import 'package:curnectgate/features/auth/data/auth_model/onbording_enum.dart';
 import 'package:curnectgate/features/auth/widget/tmporarypassword_dialog.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/getWorkOdder_provider.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/workformprovider.dart';
@@ -38,6 +40,7 @@ import 'package:curnectgate/features/operations/notifications/provider/notificat
 import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/reminder_provider.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/comment_provider.dart';
+import 'package:curnectgate/features/operations/violation/report_provider/getReport_provider.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
 import 'package:curnectgate/features/security/provider/dismiss_provider.dart';
 import 'package:curnectgate/features/security/provider/formState.dart';
@@ -669,6 +672,9 @@ class FormNotifier extends StateNotifier<FormStates> {
         if (context.mounted) {
           // log(response['data'].toString());
           updateCreatPassLoading(false);
+          if (email.isNotEmpty) {
+            await DeviceInfoHelper.saveUserEmail(email);
+          }
           showCustomSuccessToast(
             context: context,
             message: response["message"],
@@ -677,6 +683,7 @@ class FormNotifier extends StateNotifier<FormStates> {
             iconColors: AppColors.instance.grey200,
             positionNumber: 70,
           );
+          await OnboardingProgressManager.saveStep(OnboardingStep.otp);
           context.pushNamed(AppRoutes.oTPCode, extra: response['data']);
         }
       } else {
@@ -729,7 +736,8 @@ class FormNotifier extends StateNotifier<FormStates> {
     required String otp,
     required WidgetRef ref,
   }) async {
-    if (email.isEmpty && state.otp.isEmpty) {
+    final emails = await BiometricSignatureHelper.getStoredEmail();
+    if (email.isEmpty && state.otp.isEmpty && emails!.isEmpty) {
       log("empty");
       return;
     }
@@ -739,7 +747,11 @@ class FormNotifier extends StateNotifier<FormStates> {
     try {
       final response = await ref
           .read(profileRepositoryProvider)
-          .verifyOTPcode(email: email, code: state.otp, context: context);
+          .verifyOTPcode(
+            email: email.isEmpty ? emails : email,
+            code: state.otp,
+            context: context,
+          );
 
       // Always check first
 
@@ -754,6 +766,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
+        await OnboardingProgressManager.clearProgress();
 
         // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
         //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
@@ -856,6 +869,7 @@ class FormNotifier extends StateNotifier<FormStates> {
   }) async {
     updateloginLodaing(false);
     final isBiometricEnabled = ref.read(biometricPrefProvider.notifier);
+    final prefs = SharedPrefsService();
     if (password.isEmpty && email.isEmpty) {
       log("empty");
       return;
@@ -888,6 +902,7 @@ class FormNotifier extends StateNotifier<FormStates> {
             },
           );
         } else {
+          registerToken(context: context, ref: ref);
           log("TRUE------->");
           await SharedPrefsService().saveAuthData(response['data']);
 
@@ -902,7 +917,8 @@ class FormNotifier extends StateNotifier<FormStates> {
           final userData = response['data'] as Map<String, dynamic>?;
 
           if (userData != null) {
-            log(userData["access_token"]);
+            log("UserLoging Token: ${userData["access_token"]}");
+            prefs.saveUserToken(userData["access_token"]);
             final user = userData['user'] as Map<String, dynamic>?;
             final firstName = user?['firstname'] as String?;
             final email = user?["email"] as String?;
@@ -985,6 +1001,57 @@ class FormNotifier extends StateNotifier<FormStates> {
       updateloginLodaing(false);
       updateOtp('', false);
       log("END------->");
+    }
+  }
+
+  Future<void> registerToken({
+    required BuildContext context,
+    required WidgetRef ref,
+  }) async {
+    log("🚀 START registerToken()");
+
+    try {
+      // 2️⃣ Gather all needed data for the login request
+      final data = await DeviceInfoHelper.deviceInfo();
+
+      // 3️⃣ Call API to log in using stored biometric credentials
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .registerDeviceTokens(requestData: data, context: context);
+
+      if (!context.mounted) return;
+
+      // 4️⃣ Handle response
+      if (response["status"] == true) {
+      } else {
+        final message = response["message"] ?? "Token Register failed.";
+        log("❌ Regester Token  failed: $message");
+
+        _handleLoginError(context, ref, message);
+      }
+    } on DioException catch (e) {
+      log("🌐 DIO ERROR during biometric login: $e");
+      showCustomSuccessToast(
+        context: context,
+        message: "Network error occurred while logging in.",
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } catch (e) {
+      log("💥 Unexpected ERROR: $e");
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      updateloginLodaing(false);
+      log("🏁 END signInwithFaceID()");
     }
   }
 
@@ -1175,8 +1242,8 @@ class FormNotifier extends StateNotifier<FormStates> {
     required WidgetRef ref,
   }) async {
     updateOtpVerifyLoading(false);
-
-    if (email.isEmpty && state.otp.isEmpty) {
+    final emails = await BiometricSignatureHelper.getStoredEmail();
+    if (email.isEmpty && emails!.isEmpty) {
       log("empty");
       return;
     }
@@ -1186,7 +1253,7 @@ class FormNotifier extends StateNotifier<FormStates> {
     try {
       final response = await ref
           .read(profileRepositoryProvider)
-          .requestOTPcode(email: email);
+          .requestOTPcode(email: email.isEmpty ? emails : email);
 
       if (!context.mounted) return; // Always check first
 
@@ -2238,7 +2305,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
         reportStatess.resetState();
-        ref.read(userPrefrenceprovider.notifier).refreshSettings(context, ref);
+        ref.read(userReportProvider.notifier).refreshReports(context, ref);
         context.pop();
 
         // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
@@ -2470,7 +2537,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
         final otpCode = response["data"]?["otp"]?["otp_code"];
         if (otpCode != null) {
-          String title = "Your visitor access code: ";
+          String title = "Your visitor access code:";
           String shareContent = "Here's your vistor access $otpCode:";
           context.pushNamed(
             AppRoutes.vendorAccessCode,
@@ -3882,6 +3949,140 @@ class FormNotifier extends StateNotifier<FormStates> {
     }
   }
 
+  Future<void> setCurfew({
+    required BuildContext context,
+    required int id,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+    updateGranFacilityPermissionLoading(true);
+
+    try {
+      final token = await ref.watch(accessTokenProvider.future);
+      final state = ref.watch(notificationProviders); // WATCH not READ!
+      final notifier = ref.read(notificationProviders.notifier);
+      bool? isFacilityEnabled = state.isCurfewEnabled;
+      final facilities = state.facilityConditions?.facilities;
+      final reason = state.facilityReason;
+
+      final tr = state.facilityConditions?.timeRestrictions ?? {};
+      String getS(String d) => tr[d]?.startTime ?? '00:00';
+      String getE(String d) => tr[d]?.endTime ?? '00:00';
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .setCofew(
+            token: token!,
+            mondaystart: getS('monday'),
+            mondayEnd: getE('monday'),
+            tusdayStart: getS('tuesday'),
+            tusdayEnd: getE('tuesday'),
+            wednesdaystart: getS('wednesday'),
+            wednesdayEnd: getE('wednesday'),
+            thursdayStart: getS('thursday'),
+            thursdayEnd: getE('thursday'),
+            fridayStart: getS('friday'),
+            fridayEnd: getE('friday'),
+            saturdayStart: getS('saturday'),
+            saturdayEnd: getE('saturday'),
+            sundayStart: getS('sunday'),
+            sundayEnd: getE('sunday'),
+
+            id: id,
+
+            isEnabale: isFacilityEnabled ?? false,
+
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        updateGranFacilityPermissionLoading(false);
+        notifier.resetForm();
+        log("TRUE------->");
+
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+
+        ref.read(statisticProvider.notifier).refreshPermission(context, ref);
+
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+      } else {
+        notifier.resetForm();
+        updateGranFacilityPermissionLoading(false);
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          notifier.resetForm();
+        } else {
+          notifier.resetForm();
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+      updateGranFacilityPermissionLoading(false);
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifier.resetForm();
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      final notifier = ref.read(notificationProviders.notifier);
+      notifier.resetForm();
+      updateGranFacilityPermissionLoading(false);
+
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      updateGranFacilityPermissionLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
   Future<void> setFacilityPermission({
     required BuildContext context,
     required int id,
@@ -4169,23 +4370,21 @@ class FormNotifier extends StateNotifier<FormStates> {
       final token = await ref.watch(accessTokenProvider.future);
       final state = ref.watch(notificationProviders); // WATCH not READ!
       final notifier = ref.read(notificationProviders.notifier);
-      bool? iscommunityEnabled = state.isCommunityEnabel;
-      bool? moderated = state.moderated;
-      final max = state.totalComment;
-      final max2 = state.totalPost;
+      bool? isGateEnabled = state.enableVisitorInvitation;
+      bool? requiredApproval = state.requiresApproval;
+      final max = state.maxVisitorsPerDay;
 
-      final reason = state.otherReason;
+      final reason = state.visitorReason;
 
       final response = await ref
           .read(profileRepositoryProvider)
-          .communityforum(
+          .grantvisitorAccess(
             id: id,
-            isEnabale: iscommunityEnabled ?? false,
+            isEnabale: isGateEnabled,
             token: token ?? "",
-            moderated: moderated ?? false,
+            requiredApproval: requiredApproval,
             reason: reason ?? "",
-            commentLimit: max ?? 0,
-            postLimit: max2 ?? 0,
+            maxvisitorsperday: max,
             context: context,
           );
 
@@ -4294,24 +4493,25 @@ class FormNotifier extends StateNotifier<FormStates> {
       final token = await ref.watch(accessTokenProvider.future);
       final state = ref.watch(notificationProviders); // WATCH not READ!
       final notifier = ref.read(notificationProviders.notifier);
-      bool? isGateEnabled = state.enableVisitorInvitation;
-      bool? requiredApproval = state.requiresApproval;
-      final max = state.maxVisitorsPerDay;
+      bool? iscommunityEnabled = state.isCommunityEnabel;
+      bool? moderated = state.moderated;
+      final max = state.totalComment;
+      final max2 = state.totalPost;
 
-      final reason = state.visitorReason;
+      final reason = state.otherReason;
 
       final response = await ref
           .read(profileRepositoryProvider)
-          .grantvisitorAccess(
+          .communityforum(
             id: id,
-            isEnabale: isGateEnabled,
+            isEnabale: iscommunityEnabled ?? false,
             token: token ?? "",
-            requiredApproval: requiredApproval,
+            moderated: moderated ?? false,
             reason: reason ?? "",
-            maxvisitorsperday: max,
+            commentLimit: max ?? 0,
+            postLimit: max2 ?? 0,
             context: context,
           );
-
       log(response.toString());
       if (!context.mounted) return; // Always check first
 
@@ -6317,7 +6517,7 @@ class FormNotifier extends StateNotifier<FormStates> {
     required Map<String, dynamic> requestData,
     required String vendochekc,
     required WidgetRef ref,
-    required String otpCode
+    required String otpCode,
   }) async {
     log("START------->");
 
@@ -8677,6 +8877,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
+        ref.read(getEventCodeProvider.notifier).refreshEventCode(context, ref);
       } else {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);

@@ -1,5 +1,6 @@
 // dio_client.dart
 
+import 'dart:developer';
 
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:dio/dio.dart';
@@ -39,6 +40,39 @@ final dioProvider = Provider<Dio>((ref) {
             // }
           }
           return handler.next(error);
+        },
+      ),
+    )
+    ..interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final prefs = SharedPrefsService();
+
+          // final token = await ref.watch(accessTokenProvider.future);
+          // already saved from login
+          final cookie = await prefs.getSessionCookie();
+          final token = await prefs.getUserToken();
+          if (options.extra['requiresAuth'] == true) {
+            log("Bearer Token Pass on the hearder:${token.toString()}");
+            if (token != null) {
+              options.headers['Authorization'] = 'Bearer $token';
+            }
+            if (cookie != null) {
+              options.headers['Cookie'] = cookie;
+            }
+          }
+
+          return handler.next(options);
+        },
+        onResponse: (response, handler) async {
+          // ✅ Refresh cookie if backend sends a new one
+          final rawCookies = response.headers['set-cookie'];
+          if (rawCookies != null && rawCookies.isNotEmpty) {
+            await SharedPrefsService().saveSessionCookie(
+              rawCookies.first.split(';').first,
+            );
+          }
+          return handler.next(response);
         },
       ),
     )

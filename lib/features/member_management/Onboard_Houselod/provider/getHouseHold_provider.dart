@@ -41,7 +41,7 @@ class GetHouseHoldNotifier
         await SharedPrefsService.saveHouseHold(freshHouseHold);
       }
 
-      return localhouseHold;
+      return freshHouseHold;
     } catch (e) {
       // If error occurs, return local data if available
       log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");

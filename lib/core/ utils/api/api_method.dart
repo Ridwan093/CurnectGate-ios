@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:curnectgate/core/%20utils/api/api_url.dart';
+import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:dio/dio.dart';
@@ -52,11 +53,11 @@ class AppApiMethod {
         memberCodeValidation,
         data: requestData,
         options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            // Add any other headers you see in Postman
-          },
+          // headers: {
+          //   'Content-Type': 'application/json',
+          //   'Accept': 'application/json',
+          //   // Add any other headers you see in Postman
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -118,11 +119,11 @@ class AppApiMethod {
         onbordinguserInfo,
         data: requestData,
         options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            // Add any other headers you see in Postman
-          },
+          // headers: {
+          //   'Content-Type': 'application/json',
+          //   'Accept': 'application/json',
+          //   // Add any other headers you see in Postman
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -141,7 +142,7 @@ class AppApiMethod {
 
   Future<Map<String, dynamic>> verifyOTPcode({
     required String code,
-    required String email,
+    required String? email,
     required BuildContext context,
   }) async {
     try {
@@ -158,11 +159,11 @@ class AppApiMethod {
         verifyOTPcodes,
         data: requestData,
         options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            // Add any other headers you see in Postman
-          },
+          // headers: {
+          //   'Content-Type': 'application/json',
+          //   'Accept': 'application/json',
+          //   // Add any other headers you see in Postman
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -187,7 +188,7 @@ class AppApiMethod {
     }
   }
 
-  Future<Map<String, dynamic>> requestOTPcode({required String email}) async {
+  Future<Map<String, dynamic>> requestOTPcode({required String? email}) async {
     // Implementation for otp code request
 
     final response = await _dio.post(requestOTPcodes, data: {'email': email});
@@ -200,34 +201,38 @@ class AppApiMethod {
     required BuildContext context,
   }) async {
     try {
-      // Remove all nullable parameters (use required instead)
       final Map<String, dynamic> requestData = {
         'password': pass,
         'email': email,
       };
 
-      // Log the exact request being sent
-      log('Request payload: $requestData');
-
       final response = await _dio.post(
         loginUrl,
         data: requestData,
         options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            // Add any other headers you see in Postman
-          },
-          validateStatus: (status) => status! < 500, // Accept 422 as valid
+          // headers: {
+          //   'Content-Type': 'application/json',
+          //   'Accept': 'application/json',
+          // },
+          validateStatus: (status) => status! < 500,
         ),
       );
-
-      // log('Response: ${response.data}');
+      log("✅ Loging Respond Data: ${response.data.toString()}");
+      // ✅ Save Session Cookie from response headers
+      final rawCookies = response.headers['set-cookie'];
+      if (rawCookies != null && rawCookies.isNotEmpty) {
+        final cookieString = rawCookies.first.split(';').first;
+        await SharedPrefsService().saveSessionCookie(cookieString);
+        log("✅ Session Cookie Saved: $cookieString");
+      }
 
       return response.data;
     } on DioException catch (e) {
-      log('Error details:');
       log('Status: ${e.response?.statusCode}');
+      log('Response: ${e.response?.data}');
+      log('Headers: ${e.response?.headers}');
+      log('Request data: ${e.requestOptions.data}');
+
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -236,9 +241,7 @@ class AppApiMethod {
         iconColors: AppColors.instance.grey200,
         positionNumber: 70,
       );
-      log('Headers: ${e.response?.headers}');
-      log('Response: ${e.response?.data}');
-      log('Request: ${e.requestOptions.data}');
+
       rethrow;
     }
   }
@@ -258,11 +261,11 @@ class AppApiMethod {
         forgetPass,
         data: requestData,
         options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            // Add any other headers you see in Postman
-          },
+          // headers: {
+          //   'Content-Type': 'application/json',
+          //   'Accept': 'application/json',
+          //   // Add any other headers you see in Postman
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -374,13 +377,14 @@ class AppApiMethod {
         changetemporaryPass,
         data: requestData,
         options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-            // Add any other headers you see in Postman
-          },
+          // headers: {
+          //   'Content-Type': 'application/json',
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+
+          //   // Add any other headers you see in Postman
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -429,11 +433,11 @@ class AppApiMethod {
         updateUserProfile,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -477,11 +481,11 @@ class AppApiMethod {
         updateuserPicture,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500,
         ),
       );
@@ -545,14 +549,14 @@ class AppApiMethod {
         updateUserpassWord,
         data: requestData,
         options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
+          // headers: {
+          //   'Content-Type': 'application/json',
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
 
-            // Add any other headers you see in Postman
-          },
+          //   // Add any other headers you see in Postman
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -597,13 +601,13 @@ class AppApiMethod {
         accountDetactive,
         data: requestData,
         options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-            // Add any other headers you see in Postman
-          },
+          // headers: {
+          //   'Content-Type': 'application/json',
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          //   // Add any other headers you see in Postman
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -648,11 +652,11 @@ class AppApiMethod {
         updateNotificationSetting,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -699,11 +703,11 @@ class AppApiMethod {
         updatePrivacySetting,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -750,11 +754,11 @@ class AppApiMethod {
         upadateSettingPreferences,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -798,11 +802,11 @@ class AppApiMethod {
         markNotificationAsRead,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -850,11 +854,11 @@ class AppApiMethod {
         "/api/v1/estates/general/violations/$id/comments",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -913,11 +917,11 @@ class AppApiMethod {
         generateOtpWithValidator,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -976,11 +980,11 @@ class AppApiMethod {
         schedulOtp,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -1024,11 +1028,11 @@ class AppApiMethod {
         "/api/v1/estates/general/visitor-otps/$id/revoke",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -1068,11 +1072,11 @@ class AppApiMethod {
         "/api/v1/estates/general/workorders/$id/cancel",
 
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -1169,11 +1173,11 @@ class AppApiMethod {
         updatePrivacySetting,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -1212,11 +1216,11 @@ class AppApiMethod {
         generateMemberid,
 
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -1258,11 +1262,11 @@ class AppApiMethod {
         regenerateMemberID,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -1306,11 +1310,11 @@ class AppApiMethod {
         deActiveMemberID,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -1349,11 +1353,11 @@ class AppApiMethod {
         reActiveMemberID,
 
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -1407,11 +1411,11 @@ class AppApiMethod {
         addhousedHol,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -1483,11 +1487,11 @@ class AppApiMethod {
         addhousedHol,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -1566,11 +1570,11 @@ class AppApiMethod {
         addhousedHol,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -1611,11 +1615,11 @@ class AppApiMethod {
         "/api/v1/estates/owner-portal/households/members/$id",
 
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -1704,11 +1708,11 @@ class AppApiMethod {
         "/api/v1/estates/owner-portal/households/members/permission/$id/curfew",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -1761,11 +1765,11 @@ class AppApiMethod {
         "/api/v1/estates/owner-portal/households/members/permission/$id/bulk",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -1855,11 +1859,11 @@ class AppApiMethod {
         "/api/v1/estates/owner-portal/households/members/permission/$id/bulk",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -1949,11 +1953,11 @@ class AppApiMethod {
         "/api/v1/estates/owner-portal/households/members/permission/$id/bulk",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -2012,11 +2016,11 @@ class AppApiMethod {
         "/api/v1/estates/owner-portal/households/members/permission/$id/bulk",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -2078,11 +2082,11 @@ class AppApiMethod {
         "/api/v1/estates/owner-portal/households/members/permission/$id/bulk",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -2135,11 +2139,11 @@ class AppApiMethod {
         "/api/v1/estates/owner-portal/households/members/permission/$id/bulk",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -2192,11 +2196,11 @@ class AppApiMethod {
         "/api/v1/estates/owner-portal/households/members/permission/$id/bulk",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -2250,11 +2254,11 @@ class AppApiMethod {
         "/api/v1/estates/owner-portal/digital-member-id/$id/restrict",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -2299,11 +2303,11 @@ class AppApiMethod {
         "/api/v1/estates/general/owner-portal/digital-member-id/member/$id/restrictions",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -2355,11 +2359,11 @@ class AppApiMethod {
         validateDigitalIdByQrcode,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -2415,11 +2419,11 @@ class AppApiMethod {
         validateDigitaIDbyManul,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -2475,11 +2479,11 @@ class AppApiMethod {
         "/api/v1/estates/security/digital-member-id/$approveType",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -2526,11 +2530,11 @@ class AppApiMethod {
         checkInValidatorwithOtpbymanual,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -2578,11 +2582,11 @@ class AppApiMethod {
         checkInWorkOrder,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -2629,11 +2633,11 @@ class AppApiMethod {
         checkOutWorkOrder,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -2682,11 +2686,11 @@ class AppApiMethod {
         checkInWorkOrder,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -2735,11 +2739,11 @@ class AppApiMethod {
         denyingAccess,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -2780,11 +2784,11 @@ class AppApiMethod {
         type.contains("1") ? validateVendorCodes : validateWokers,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -2831,11 +2835,11 @@ class AppApiMethod {
         checkOutValidatorOtpBymanual,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -2883,11 +2887,11 @@ class AppApiMethod {
         ckeckOutWithPermit,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -2934,11 +2938,11 @@ class AppApiMethod {
         checkOutWorkOrder,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -2985,11 +2989,11 @@ class AppApiMethod {
         "/api/v1/estates/security/workorders/$id/access",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -3038,11 +3042,11 @@ class AppApiMethod {
         denyingAccess,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -3091,11 +3095,11 @@ class AppApiMethod {
         "/api/v1/estates/security/validations/$id/approve",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -3142,11 +3146,11 @@ class AppApiMethod {
         "/api/v1/estates/security/clearance-permits/$id/fulfill",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -3194,11 +3198,11 @@ class AppApiMethod {
         "/api/v1/estates/security/validations/$id/deny",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -3246,11 +3250,11 @@ class AppApiMethod {
         "/api/v1/estates/security/clearance-permits/$id/flag",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -3298,11 +3302,11 @@ class AppApiMethod {
         "/api/v1/estates/security/validations/$id/deny",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -3346,11 +3350,11 @@ class AppApiMethod {
         "/api/v1/estates/security/violations/$id/resolve",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -3394,11 +3398,11 @@ class AppApiMethod {
         "/api/v1/estates/security/violations/$id/dismiss",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -3454,11 +3458,11 @@ class AppApiMethod {
         "/api/v1/estates/general/reminders/$id/update",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -3544,11 +3548,11 @@ class AppApiMethod {
         createReminder,
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -3587,11 +3591,11 @@ class AppApiMethod {
         "/api/v1/estates/general/reminders/$id/$completeOrCancel",
 
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -3629,11 +3633,11 @@ class AppApiMethod {
         "/api/v1/estates/general/events/calendar/$id/add-to-calendar",
 
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -3676,11 +3680,11 @@ class AppApiMethod {
         "/api/v1/estates/general/events/rsvp/$id/rsvp",
 
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -3738,11 +3742,11 @@ class AppApiMethod {
         submitWorkOrder,
 
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -3793,11 +3797,11 @@ class AppApiMethod {
         setUpBiometri,
 
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -3833,11 +3837,108 @@ class AppApiMethod {
         "/api/v1/auth/biometric/$isEnable",
 
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> registerDeviceTokens({
+    required Map<String, dynamic> requestData,
+    required BuildContext context,
+  }) async {
+    // final Map<String, dynamic> requestData = {
+    //  "token": device_token,
+    // "device_type": device_type,
+    // "device_id": device_id,
+    // "platform": platform,
+    // "app_version": app_version,
+    // "os_version": os_version
+    // };
+    log(requestData.toString());
+    try {
+      final response = await _dio.post(
+        registerDeviceToken,
+        data: requestData,
+
+        options: Options(
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> removedDeviceTokens({
+    required Map<String, dynamic> requestData,
+
+    required BuildContext context,
+  }) async {
+    // final Map<String, dynamic> requestData = {
+    //  "token": device_token,
+    // "device_type": device_type,
+    // "device_id": device_id,
+    // "platform": platform,
+    // "app_version": app_version,
+    // "os_version": os_version
+    // };
+    log(requestData.toString());
+    try {
+      final response = await _dio.delete(
+        removedDeviceToken,
+        data: requestData,
+
+        options: Options(
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -3881,11 +3982,11 @@ class AppApiMethod {
         data: requestData,
 
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -3923,11 +4024,11 @@ class AppApiMethod {
         createinstantPermit,
 
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -3984,11 +4085,11 @@ class AppApiMethod {
         requestEventCode,
 
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
@@ -4031,11 +4132,11 @@ class AppApiMethod {
         "/api/v1/estates/general/event-codes/$id/revoke",
         data: requestData,
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );

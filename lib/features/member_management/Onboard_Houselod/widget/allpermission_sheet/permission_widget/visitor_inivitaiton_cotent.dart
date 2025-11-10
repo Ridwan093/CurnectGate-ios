@@ -68,13 +68,12 @@ class _VisitorInivitaitonCotentState
   void dispose() {
     super.dispose();
     _max1Controller.dispose();
-  
+
     _rasoncontoller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-
     final notifier = ref.read(notificationProviders.notifier);
     final providerstate = ref.read((formProvider.notifier));
     final isLoading = ref.watch(formProvider).visitorAccessLoading ?? false;
@@ -123,7 +122,7 @@ class _VisitorInivitaitonCotentState
                   onChanged: (value) {
                     notifier.updateVisitorReason(value);
                   },
-                  isEnable: isvisitorEnabled ?? false,
+                  isEnable: false,
                 ),
                 const SizedBox(height: 20),
 

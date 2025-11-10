@@ -3,8 +3,8 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
-import 'package:curnectgate/features/operations/violation/model/getCategory_model.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
+import 'package:curnectgate/features/operations/violation/model/getCategory_model.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,7 +40,7 @@ class EstatCategoryNotifier
         await SharedPrefsService.saveReportCategory(freshCategory);
       }
 
-      return localcategory;
+      return freshCategory;
     } catch (e) {
       // If error occurs, return local data if available
       log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");

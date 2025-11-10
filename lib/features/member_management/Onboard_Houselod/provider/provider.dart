@@ -118,7 +118,6 @@ class CurfewNotifier extends StateNotifier<CurfewState> {
     List<String>? facilities,
     Map<String, TimeRestriction>? timeRestrictions,
   }) {
-    log(facilities!.first.toString());
     state = state.copyWith(
       facilityConditions: (state.facilityConditions ?? Conditions()).copyWith(
         facilities: facilities,

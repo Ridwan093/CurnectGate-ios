@@ -96,8 +96,8 @@ class _PackingAccessContentState extends ConsumerState<PackingAccessContent> {
                 // Enable Visitor Invitation switch
                 _buildSwitchContainer(
                   title: "Enable Parking access",
-                  value: state.enableVisitorInvitation,
-                  onChanged: notifier.toggleVisitorInvitation,
+                  value: state.ispackingEnabled ?? false,
+                  onChanged: notifier.togglePackingaccess,
                 ),
                 const SizedBox(height: 12),
 
@@ -107,7 +107,7 @@ class _PackingAccessContentState extends ConsumerState<PackingAccessContent> {
                   onChanged: (value) {
                     notifier.updateOtherReason(value);
                   },
-                  isEnable: ispackingEnabled ?? false,
+                  isEnable: false,
                 ),
               ],
             ),
@@ -126,7 +126,7 @@ class _PackingAccessContentState extends ConsumerState<PackingAccessContent> {
                 ),
               ),
               onPressed:
-                  isLoading!
+                  !isLoading!
                       ? () {
                         if (ispackingEnabled!) {
                           if (_rasoncontoller.text.isEmpty) {

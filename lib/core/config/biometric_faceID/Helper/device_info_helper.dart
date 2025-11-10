@@ -204,6 +204,40 @@ class DeviceInfoHelper {
     };
   }
 
+  static Future<Map<String, dynamic>> deviceInfo() async {
+    final deviceInfo = DeviceInfoPlugin();
+    final packageInfo = await PackageInfo.fromPlatform();
+    final token = await getDeviceToken();
+    String deviceId = '';
+    String deviceType = '';
+    String platform = '';
+    String osVersion = '';
+    String appVersion = packageInfo.version;
+
+    if (Platform.isAndroid) {
+      final androidInfo = await deviceInfo.androidInfo;
+      deviceId = androidInfo.id;
+      deviceType = 'android';
+      platform = androidInfo.model;
+      osVersion = androidInfo.version.release;
+    } else if (Platform.isIOS) {
+      final iosInfo = await deviceInfo.iosInfo;
+      deviceId = iosInfo.identifierForVendor ?? '';
+      deviceType = 'ios';
+      platform = iosInfo.utsname.machine;
+      osVersion = iosInfo.systemVersion;
+    }
+
+    return {
+      "token": token,
+      'device_id': deviceId,
+      'device_type': deviceType,
+      'platform': platform,
+      'os_version': osVersion,
+      'app_version': appVersion,
+    };
+  }
+
   /// ✅ Save biometric enabled state locally
 
   /// ✅ Save first-time setup flag

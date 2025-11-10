@@ -2,6 +2,8 @@ import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/widgets/GetYourCode.dart';
 import 'package:curnectgate/features/ResidentDirectory/Screen/ResidentTab.dart';
+import 'package:curnectgate/features/auth/data/auth_model/OnboardingProgressManager.dart';
+import 'package:curnectgate/features/auth/data/auth_model/onbording_enum.dart';
 import 'package:curnectgate/features/auth/presentation/screen/changeTemporaryPassword.dart';
 import 'package:curnectgate/features/auth/presentation/screen/creatnewpassword.dart';
 import 'package:curnectgate/features/auth/presentation/screen/forgot_password.dart';
@@ -300,7 +302,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           return ResidentTab();
         },
       ),
-      
+
       GoRoute(
         path: '/security_notifier',
         name: AppRoutes.securitynotification,
@@ -311,8 +313,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           return SecurityNotifications();
         },
       ),
-    
-        GoRoute(
+
+      GoRoute(
         path: '/work_order',
         name: AppRoutes.workOrder,
         builder: (context, state) {
@@ -322,8 +324,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           return VendorLog();
         },
       ),
-      
-        GoRoute(
+
+      GoRoute(
         path: '/manage_login',
         name: AppRoutes.manageLoging,
         builder: (context, state) {
@@ -338,7 +340,26 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (BuildContext context, GoRouterState state) async {
       final currentPath = state.matchedLocation;
       debugPrint('Current path: $currentPath');
+      final lastStep = await OnboardingProgressManager.getStep();
 
+      // If user is mid-onboarding and not yet authenticated
+      if (currentPath == "/" && lastStep != null) {
+        switch (lastStep) {
+          case OnboardingStep.estateCode:
+            return '/code-verify';
+          case OnboardingStep.memberCode:
+            return '/member_IdCheck';
+          case OnboardingStep.infoCheck:
+            return '/Onbord_info';
+          case OnboardingStep.password:
+            return '/member_pass';
+          case OnboardingStep.otp:
+            return '/Otp';
+          case OnboardingStep.completed:
+            await OnboardingProgressManager.clearProgress();
+            break;
+        }
+      }
       // Define public paths (unchanged from your original)
       const publicPaths = [
         '/',

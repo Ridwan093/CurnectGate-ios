@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:curnectgate/core/%20utils/api/getApi_Method.dart';
 import 'package:curnectgate/core/%20utils/api/getApi_service.dart';
+import 'package:curnectgate/core/config/biometric_faceID/Helper/device_info_helper.dart';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
@@ -34,23 +35,34 @@ class SignOutNotifier extends StateNotifier<SharedPrefsService> {
       try {
         // Always check first
         final token = ref.read(accessTokenProvider).value;
+        final data = await DeviceInfoHelper.deviceInfo();
         final response = await ref
             .read(getApiServiceProvider)
             .signOut(token: token ?? "");
         if (response['status'] == true) {
-          ref.read(formProvider.notifier).updateLogOutLoadin(false);
+          final responses = await ref
+              .read(profileRepositoryProvider)
+              .removedDeviceTokens(requestData: data, context: context);
+          if (responses["status"] = true) {
+            showCustomSuccessToast(
+              context: context,
+              message: response["message"],
+              color: AppColors.instance.teal300,
+              icon: Icons.done_all_rounded,
+              iconColors: AppColors.instance.grey200,
+              positionNumber: 70,
+            );
+            state.clearAuthData();
+            ref.read(tabStateProvider.notifier).resetToMainTab();
+            context.goNamed(AppRoutes.signIN);
+            ref.read(formProvider.notifier).updateLogOutLoadin(false);
+          }
+
           log("TRUE------->");
-          showCustomSuccessToast(
-            context: context,
-            message: response["message"],
-            color: AppColors.instance.teal400,
-            icon: Icons.done_all_rounded,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-          state.clearAuthData();
-          ref.read(tabStateProvider.notifier).resetToMainTab();
-          context.goNamed(AppRoutes.signIN);
+          // ref
+          //     .read(formProvider.notifier)
+          //     .removedToken(context: context, ref: ref);
+
           // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
           //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
           // final userData = response['data'] as Map<String, dynamic>?;

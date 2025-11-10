@@ -50,19 +50,21 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyABm2ocYRphXiD_st-XiqsI6goZeYfWsbw',
-    appId: '1:915082934520:android:bccf0d6bd896e03ee4e30d',
-    messagingSenderId: '915082934520',
-    projectId: 'fir-app-189fc',
-    storageBucket: 'fir-app-189fc.appspot.com',
+    apiKey: 'AIzaSyDfgwbmq6ndjrVc51qYvaMJweBQKCCsLtE',
+    appId: '1:1018103511909:android:939fd4eb040f162087ff8c',
+    messagingSenderId: '1018103511909',
+    projectId: 'curnect-test-f9bc0',
+    databaseURL: 'https://curnect-test-f9bc0-default-rtdb.firebaseio.com',
+    storageBucket: 'curnect-test-f9bc0.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAd4cumdPqiaVa7UgsJtcjGDUrQgSjz8jg',
-    appId: '1:915082934520:ios:c636c1e24f567e96e4e30d',
-    messagingSenderId: '915082934520',
-    projectId: 'fir-app-189fc',
-    storageBucket: 'fir-app-189fc.appspot.com',
+    apiKey: 'AIzaSyAxyKEEz9b_lgORHJ4KqhOtcSR5TnHH6A0',
+    appId: '1:1018103511909:ios:56501d892afbf46f87ff8c',
+    messagingSenderId: '1018103511909',
+    projectId: 'curnect-test-f9bc0',
+    databaseURL: 'https://curnect-test-f9bc0-default-rtdb.firebaseio.com',
+    storageBucket: 'curnect-test-f9bc0.firebasestorage.app',
     iosBundleId: 'com.example.curnectgate',
   );
 }
