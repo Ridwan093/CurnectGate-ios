@@ -5,35 +5,31 @@ import 'package:curnectgate/features/estate_management/submit_works_order/submit
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class VendorLog extends ConsumerWidget {
   VendorLog({super.key});
 
-  final List<String> _statusOptions = [
-    'All',
-    'Pending',
-    'Active',
-    'In Progress',
-    'Completed',
-    'Cancelled',
-  ];
-
-  final String accessCode = "3456GAT";
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: _buildBody(size, ref, context),
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       centerTitle: true,
       backgroundColor: Colors.transparent,
-      leading: const Icon(Icons.arrow_back_ios_new),
+      leading: InkWell(
+        onTap: () {
+          context.pop();
+        },
+        child: const Icon(Icons.arrow_back_ios_new),
+      ),
     );
   }
 

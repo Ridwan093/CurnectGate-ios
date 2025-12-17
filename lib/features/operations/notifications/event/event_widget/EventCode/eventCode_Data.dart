@@ -11,7 +11,6 @@ import 'package:curnectgate/features/operations/notifications/event/event_widget
 import 'package:curnectgate/features/operations/notifications/event/event_widget/build_errorUlfor_event.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/EventCodes/event_code_model.dart';
 import 'package:curnectgate/features/operations/notifications/provider/EventCode_provider/getlistofEventCode_provider.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -57,11 +56,8 @@ class EventCodeData extends ConsumerWidget {
         error: (error, stack) {
           try {
             // Handle session expiration
-            if (error.toString().contains("Unauthenticated")) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                ref.read(authProvider.notifier).seassionExpire(context, ref);
-              });
-              return Expiresessionbody();
+            if (error.toString().contains("Unauthorized")) {
+              return const Expiresessionbody();
             }
             final event = ref.read(getEventCodeProvider).value;
 

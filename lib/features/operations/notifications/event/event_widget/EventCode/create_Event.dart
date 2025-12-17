@@ -28,7 +28,7 @@ class _SubmitPermitBottomSheetState extends ConsumerState<CreatEvent> {
 
   final TextEditingController _eventLocationController =
       TextEditingController();
-  final TextEditingController _expectedGust = TextEditingController();
+
   final List<String> event_type = [
     "Party",
     "Wedding",

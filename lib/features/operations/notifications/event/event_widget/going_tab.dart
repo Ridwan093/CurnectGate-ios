@@ -7,33 +7,22 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/build_errorUlfor_event.dart';
-import 'package:curnectgate/features/operations/notifications/event/event_widget/data_event_card.dart';
-import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_event_model.dart';
-import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_user_rsvp_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/event_widget/resvp_event_card.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/Event/resv_model/rsvp_event_history.dart';
 import 'package:curnectgate/features/operations/notifications/provider/going_provider.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class GoingEvents extends ConsumerWidget {
-  const GoingEvents({super.key});
-  bool isUserGoing(CalendarUserRsvp? userRsvpMap) {
-    if (userRsvpMap == null) return false;
-
-    final response = userRsvpMap.response;
-    return response != null && response.toString().toLowerCase() == 'going';
-  }
+  final String going;
+  const GoingEvents({super.key, required this.going});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activeOtasync = ref.watch(goingEventProvider);
+    final activeOtasync = ref.watch(goingEventRsvpProvider(going));
 
     return RefreshIndicator(
-      color: AppColors.instance.yellow500,
-      onRefresh:
-          () =>
-              ref.read(goingEventProvider.notifier).refreshEvent(context, ref,"completed"),
-
+      onRefresh: () => refreshRsvp(ref, going),
       child: activeOtasync.when(
         data: (event) {
           if (event!.data!.events!.isNotEmpty) {
@@ -45,7 +34,7 @@ class GoingEvents extends ConsumerWidget {
           // If data is valid
         },
         loading: () {
-          final cachedEvent = ref.read(goingEventProvider).value;
+          final cachedEvent = ref.read(goingEventRsvpProvider(going)).value;
 
           if (cachedEvent != null &&
               cachedEvent.status! &&
@@ -62,13 +51,10 @@ class GoingEvents extends ConsumerWidget {
         error: (error, stack) {
           try {
             // Handle session expiration
-            if (error.toString().contains("Unauthenticated")) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                ref.read(authProvider.notifier).seassionExpire(context, ref);
-              });
-              return Expiresessionbody();
+            if (error.toString().contains("Unauthorized")) {
+              return const Expiresessionbody();
             }
-            final event = ref.read(goingEventProvider).value;
+            final event = ref.read(goingEventRsvpProvider(going)).value;
 
             // Try to show cached data
 
@@ -86,36 +72,23 @@ class GoingEvents extends ConsumerWidget {
             // No cached data available
             return Builderrouls(
               error: error.toString(),
-              onTap:
-                  () => ref
-                      .read(goingEventProvider.notifier)
-                      .refreshEvent(context, ref, "completed"),
+              onTap: () => refreshRsvp(ref, going),
               firstMessae: "Faile to load Event",
             );
           } catch (e) {
             return Builderrouls(
               error: e.toString(),
-              onTap:
-                  () => ref
-                      .read(goingEventProvider.notifier)
-                      .refreshEvent(context, ref,"completed"),
+              onTap: () => refreshRsvp(ref, going),
               firstMessae: "Faile to load Event?",
             );
           }
         },
       ),
-
-      // Expanded(
-      //   child:
-      //       generatedList.isNotEmpty
-      //           ? _buildMemberList(ref, size)
-      //           : _buildEmtyBody(),
-      // ),
     );
   }
 
   Widget _buildEventList(
-    List<CalendarEvent> event,
+    List<RsvpEventHistory> event,
     BuildContext context,
     WidgetRef ref,
   ) {
@@ -123,7 +96,7 @@ class GoingEvents extends ConsumerWidget {
       itemCount: event.length,
       itemBuilder: (context, index) {
         var data = event[index];
-        return DataEventCard(
+        return RsvpDataEventCard(
           event: data,
           onGoing: (p0) {},
           onTap: () {
@@ -132,9 +105,9 @@ class GoingEvents extends ConsumerWidget {
               headertitle: "",
               headersubtitle: "",
               ref: ref,
-              bottom: BottomSheetView.eventsDetails,
+              bottom: BottomSheetView.eventRsvpDetails,
 
-              event: data,
+              rsvpdata: data,
             );
           },
         );

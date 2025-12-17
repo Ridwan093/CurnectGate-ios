@@ -3,11 +3,11 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/model/get_user_notifications.dart';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -70,11 +70,9 @@ class UserPrefrenceNotifer
         await SharedPrefsService.savePrefrencSettings(freshPreferency);
         return freshPreferency;
       } catch (e) {
-        if (e.toString().contains(
-          "Unauthenticated. Please login to continue.",
-        )) {
+        if (e is DioException && e.response?.statusCode == 401) {
           log(e.toString());
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else if (e.toString().contains("The connection errored")) {
           log(e.toString());
           showCustomSuccessToast(

@@ -13,7 +13,7 @@
 
 
     <application
-        android:label="Curnect Gate"
+        android:label="CurnectGate"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true"

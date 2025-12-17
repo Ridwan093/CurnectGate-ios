@@ -6,6 +6,7 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_count/notification_count_response_model.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -73,11 +74,9 @@ class ReminderNotifier
         await SharedPrefsService.saveNotificationCount(freshReminder);
         return freshReminder;
       } catch (e) {
-        if (e.toString().contains(
-          "Unauthenticated. Please login to continue.",
-        )) {
+        if (e is DioException && e.response?.statusCode == 401) {
           log(e.toString());
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else if (e.toString().contains("The connection errored")) {
           log(e.toString());
           showCustomSuccessToast(

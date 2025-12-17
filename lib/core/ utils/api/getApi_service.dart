@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
+import 'package:curnectgate/features/signOut/provider/authProvider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -32,12 +33,32 @@ final dioProvider = Provider<Dio>((ref) {
         onError: (error, handler) async {
           if (error.response?.statusCode == 401) {
             // Token expired - clear auth data
-            await SharedPrefsService().clearAuthData();
+            // await SharedPrefsService().clearAuthData();
             // Optional: Add navigation to login screen
             // if (error.requestOptions.context != null) {
             //   Navigator.of(error.requestOptions.context)
             //     .pushReplacementNamed('/login');
             // }
+          }
+          return handler.next(error);
+        },
+      ),
+    )
+    ..interceptors.add(
+      InterceptorsWrapper(
+        onError: (DioException error, ErrorInterceptorHandler handler) async {
+          if (error.response?.statusCode == 401) {
+            log("Session expired (401 detected)");
+
+            // ✅ Correct way – just set the state
+            ref.read(sessionExpiredProvider.notifier).expire();
+            log(
+              "HERE WE CAN CHECK THE STATUS>" +
+                  ref.read(sessionExpiredProvider).toString(),
+            );
+            // Optional: clear stored auth data immediately
+
+            // ref.read(sessionExpiredProvider.notifier).reset();
           }
           return handler.next(error);
         },
@@ -54,9 +75,7 @@ final dioProvider = Provider<Dio>((ref) {
           final token = await prefs.getUserToken();
           if (options.extra['requiresAuth'] == true) {
             log("Bearer Token Pass on the hearder:${token.toString()}");
-            if (token != null) {
-              options.headers['Authorization'] = 'Bearer $token';
-            }
+            options.headers['Authorization'] = 'Bearer $token';
             if (cookie != null) {
               options.headers['Cookie'] = cookie;
             }

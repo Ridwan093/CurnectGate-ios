@@ -26,10 +26,13 @@ plugins {
     id("com.google.gms.google-services") version "4.3.15" apply false
 
     // Kotlin for Android
-    id("org.jetbrains.kotlin.android") version "2.2.20" apply false
+    id("org.jetbrains.kotlin.android") version "2.2.21" apply false
 
     // Flutter plugin loader (ensure not applied at root)
     id("dev.flutter.flutter-gradle-plugin") version "1.0.0" apply false
+
+
+   
 }
 
 // Include app module

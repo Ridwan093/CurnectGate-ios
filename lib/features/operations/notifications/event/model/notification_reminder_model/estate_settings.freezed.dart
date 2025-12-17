@@ -27,7 +27,8 @@ mixin _$EstateSettings {
   @JsonKey(name: 'visitor_approval_required')
   bool? get visitorApprovalRequired => throw _privateConstructorUsedError;
   @JsonKey(name: 'emergency_contacts')
-  List<dynamic>? get emergencyContacts => throw _privateConstructorUsedError;
+  Map<String, List<dynamic>>? get emergencyContacts =>
+      throw _privateConstructorUsedError;
   @JsonKey(name: 'image_url')
   String? get imageUrl => throw _privateConstructorUsedError;
   @JsonKey(name: 'image_key')
@@ -57,7 +58,8 @@ abstract class $EstateSettingsCopyWith<$Res> {
       {@JsonKey(name: 'auto_approve_users') bool? autoApproveUsers,
       @JsonKey(name: 'require_deed_signature') bool? requireDeedSignature,
       @JsonKey(name: 'visitor_approval_required') bool? visitorApprovalRequired,
-      @JsonKey(name: 'emergency_contacts') List<dynamic>? emergencyContacts,
+      @JsonKey(name: 'emergency_contacts')
+      Map<String, List<dynamic>>? emergencyContacts,
       @JsonKey(name: 'image_url') String? imageUrl,
       @JsonKey(name: 'image_key') String? imageKey,
       @JsonKey(name: 'operating_hours') OperatingHours? operatingHours,
@@ -106,7 +108,7 @@ class _$EstateSettingsCopyWithImpl<$Res, $Val extends EstateSettings>
       emergencyContacts: freezed == emergencyContacts
           ? _value.emergencyContacts
           : emergencyContacts // ignore: cast_nullable_to_non_nullable
-              as List<dynamic>?,
+              as Map<String, List<dynamic>>?,
       imageUrl: freezed == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
@@ -153,7 +155,8 @@ abstract class _$$EstateSettingsImplCopyWith<$Res>
       {@JsonKey(name: 'auto_approve_users') bool? autoApproveUsers,
       @JsonKey(name: 'require_deed_signature') bool? requireDeedSignature,
       @JsonKey(name: 'visitor_approval_required') bool? visitorApprovalRequired,
-      @JsonKey(name: 'emergency_contacts') List<dynamic>? emergencyContacts,
+      @JsonKey(name: 'emergency_contacts')
+      Map<String, List<dynamic>>? emergencyContacts,
       @JsonKey(name: 'image_url') String? imageUrl,
       @JsonKey(name: 'image_key') String? imageKey,
       @JsonKey(name: 'operating_hours') OperatingHours? operatingHours,
@@ -201,7 +204,7 @@ class __$$EstateSettingsImplCopyWithImpl<$Res>
       emergencyContacts: freezed == emergencyContacts
           ? _value._emergencyContacts
           : emergencyContacts // ignore: cast_nullable_to_non_nullable
-              as List<dynamic>?,
+              as Map<String, List<dynamic>>?,
       imageUrl: freezed == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
@@ -233,7 +236,7 @@ class _$EstateSettingsImpl implements _EstateSettings {
       @JsonKey(name: 'visitor_approval_required')
       required this.visitorApprovalRequired,
       @JsonKey(name: 'emergency_contacts')
-      required final List<dynamic>? emergencyContacts,
+      final Map<String, List<dynamic>>? emergencyContacts,
       @JsonKey(name: 'image_url') required this.imageUrl,
       @JsonKey(name: 'image_key') required this.imageKey,
       @JsonKey(name: 'operating_hours') required this.operatingHours,
@@ -252,16 +255,16 @@ class _$EstateSettingsImpl implements _EstateSettings {
   @override
   @JsonKey(name: 'visitor_approval_required')
   final bool? visitorApprovalRequired;
-  final List<dynamic>? _emergencyContacts;
+  final Map<String, List<dynamic>>? _emergencyContacts;
   @override
   @JsonKey(name: 'emergency_contacts')
-  List<dynamic>? get emergencyContacts {
+  Map<String, List<dynamic>>? get emergencyContacts {
     final value = _emergencyContacts;
     if (value == null) return null;
-    if (_emergencyContacts is EqualUnmodifiableListView)
+    if (_emergencyContacts is EqualUnmodifiableMapView)
       return _emergencyContacts;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
+    return EqualUnmodifiableMapView(value);
   }
 
   @override
@@ -345,7 +348,7 @@ abstract class _EstateSettings implements EstateSettings {
           @JsonKey(name: 'visitor_approval_required')
           required final bool? visitorApprovalRequired,
           @JsonKey(name: 'emergency_contacts')
-          required final List<dynamic>? emergencyContacts,
+          final Map<String, List<dynamic>>? emergencyContacts,
           @JsonKey(name: 'image_url') required final String? imageUrl,
           @JsonKey(name: 'image_key') required final String? imageKey,
           @JsonKey(name: 'operating_hours')
@@ -367,7 +370,7 @@ abstract class _EstateSettings implements EstateSettings {
   bool? get visitorApprovalRequired;
   @override
   @JsonKey(name: 'emergency_contacts')
-  List<dynamic>? get emergencyContacts;
+  Map<String, List<dynamic>>? get emergencyContacts;
   @override
   @JsonKey(name: 'image_url')
   String? get imageUrl;

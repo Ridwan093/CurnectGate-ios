@@ -71,10 +71,7 @@ class SecurityReportBody extends ConsumerWidget {
           error: (error, stack) {
             try {
               // Handle session expiration first
-              if (error.toString().contains("Unauthenticated")) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  ref.read(authProvider.notifier).seassionExpire(context, ref);
-                });
+              if (error.toString().contains("Unauthorized")) {
                 return _buildSessionExpiredUI(context, ref);
               }
 
@@ -212,9 +209,8 @@ class SecurityReportBody extends ConsumerWidget {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed:
-                () => ref
-                    .read(authProvider.notifier)
-                    .seassionExpire(context, ref),
+                () =>
+                    ref.read(authProvider.notifier).sessionExpire(context, ref),
             child: const Text("Login"),
           ),
         ],

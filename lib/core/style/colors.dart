@@ -7,7 +7,7 @@ class AppColors {
   static final instance = AppColors._();
 
   // final Color appBar = Theme.of(context).scaffoldBackgroundColor;
-  //BLACK COLOR
+  //BLACK COLOR    9013FE  Color(0xFF9013FE;
   final Color black600 = const Color(0xFF1C1C1C);
   final Color black500 = const Color(0xFF494949);
   final Color black400 = const Color(0xFF777777);

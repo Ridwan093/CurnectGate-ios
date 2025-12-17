@@ -62,11 +62,7 @@ class DismissedData extends ConsumerWidget {
           error: (error, stack) {
             try {
               // Handle session expiration first
-              if (error.toString().contains("Unauthenticated")) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (!context.mounted) return;
-                  ref.read(authProvider.notifier).seassionExpire(context, ref);
-                });
+              if (error.toString().contains("Unauthorized")) {
                 return _buildSessionExpiredUI(context, ref);
               }
 
@@ -193,9 +189,8 @@ class DismissedData extends ConsumerWidget {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed:
-                () => ref
-                    .read(authProvider.notifier)
-                    .seassionExpire(context, ref),
+                () =>
+                    ref.read(authProvider.notifier).sessionExpire(context, ref),
             child: const Text("Login"),
           ),
         ],

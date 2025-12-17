@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -1141,7 +1142,7 @@ class AppApiMethod {
       filename: evidence1.path.split('/').last,
     );
     final MultipartFile multipartFile2 = await MultipartFile.fromFile(
-      evidence1.path,
+      evidence2.path,
       filename: evidence2.path.split('/').last,
     );
 
@@ -1168,9 +1169,9 @@ class AppApiMethod {
 
       // Log the exact request being sent
       log('Request payload: $requestData');
-      log(_dio.options.baseUrl + updatePrivacySetting);
+      log(_dio.options.baseUrl + creatViolation);
       final response = await _dio.post(
-        updatePrivacySetting,
+        creatViolation,
         data: requestData,
         options: Options(
           // headers: {
@@ -2450,6 +2451,19 @@ class AppApiMethod {
     }
   }
 
+  bool _isNumeric(String value) {
+    return int.tryParse(value) != null;
+  }
+
+  bool _isBase64(String value) {
+    try {
+      base64.decode(value);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   Future<Map<String, dynamic>> approvedDigitaIDCode({
     required String token,
     required String qrCodeData,
@@ -2458,12 +2472,22 @@ class AppApiMethod {
     required String additionalNote,
     required String device_id,
     required String approveType,
+    required String denial_reason,
     required BuildContext context,
   }) async {
     try {
-      final Map<String, dynamic> requestData = {
-        "digital_id_code": qrCodeData,
+      String digitalIdCode = "";
+      String qrCodeBase64 = "";
 
+      // Determine the type
+      if (_isNumeric(qrCodeData)) {
+        digitalIdCode = qrCodeData;
+      } else if (_isBase64(qrCodeData)) {
+        qrCodeBase64 = qrCodeData;
+      }
+
+      // Base request body
+      final Map<String, dynamic> requestData = {
         "access_type": accessType,
         "location": location,
         "metadata": {
@@ -2472,40 +2496,30 @@ class AppApiMethod {
         },
       };
 
-      // Log the exact request being sent
+      // Add only the correct field
+      if (digitalIdCode.isNotEmpty) {
+        requestData["digital_id_code"] = digitalIdCode;
+      }
+      if (denial_reason.isNotEmpty) {
+        requestData["denial_reason"] = denial_reason;
+      }
+      if (qrCodeBase64.isNotEmpty) {
+        requestData["qr_code_data"] = qrCodeBase64;
+      }
+
       log('Request payload: $requestData');
 
       final response = await _dio.post(
         "/api/v1/estates/security/digital-member-id/$approveType",
         data: requestData,
-        options: Options(
-          // headers: {
-          //   'Accept': 'application/json',
-          //   'Authorization': 'Bearer $token',
-          //   'X-Requested-With': 'XMLHttpRequest',
-          // },
-          validateStatus: (status) => status! < 500, // Accept 422 as valid
-        ),
+        options: Options(validateStatus: (status) => status! < 500),
       );
-
-      log('Request payload: $requestData');
 
       log('Response: ${response.data}');
       return response.data;
     } on DioException catch (e) {
-      log('Error details:');
       log('Status: ${e.response?.statusCode}');
-      showCustomSuccessToast(
-        context: context,
-        message: "",
-        color: AppColors.instance.teal400,
-        icon: Icons.close,
-        iconColors: AppColors.instance.grey200,
-        positionNumber: 70,
-      );
-      log('Headers: ${e.response?.headers}');
       log('Response: ${e.response?.data}');
-      log('Request: ${e.requestOptions.data}');
       rethrow;
     }
   }
@@ -3709,6 +3723,58 @@ class AppApiMethod {
     }
   }
 
+  Future<Map<String, dynamic>> uploadAfterWork({
+    required String id,
+    required List<File> file,
+    required BuildContext context,
+  }) async {
+    try {
+      // Convert to Multipart
+      FormData formData = FormData();
+
+      for (final f in file) {
+        formData.files.add(
+          MapEntry(
+            "after_photos[]",
+            await MultipartFile.fromFile(
+              f.path,
+              filename: f.path.split('/').last,
+            ),
+          ),
+        );
+      }
+
+      final response = await _dio.post(
+        "/api/v1/estates/general/workorders/$id/after-photos",
+        data: formData,
+        options: Options(
+          contentType: "multipart/form-data",
+          validateStatus: (status) => status! < 500,
+        ),
+      );
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+
+      rethrow;
+    }
+  }
+
   Future<Map<String, dynamic>> submitWorkOrders({
     required String token,
     required String file,
@@ -3990,7 +4056,14 @@ class AppApiMethod {
           validateStatus: (status) => status! < 500, // Accept 422 as valid
         ),
       );
-
+      log("✅ Loging Respond Data: ${response.data.toString()}");
+      // ✅ Save Session Cookie from response headers
+      final rawCookies = response.headers['set-cookie'];
+      if (rawCookies != null && rawCookies.isNotEmpty) {
+        final cookieString = rawCookies.first.split(';').first;
+        await SharedPrefsService().saveSessionCookie(cookieString);
+        log("✅ Session Cookie Saved: $cookieString");
+      }
       log('Response: ${response.data}');
       return response.data;
     } on DioException catch (e) {
@@ -4156,6 +4229,155 @@ class AppApiMethod {
         iconColors: AppColors.instance.grey200,
         positionNumber: 70,
       );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> castVote({
+    required final Map<String, dynamic> requestData,
+
+    required String id,
+    required String reason,
+
+    required BuildContext context,
+  }) async {
+    try {
+      log(id.toString());
+      // Log the exact request being sent
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        "/api/v1/estates/general/voting/polls/$id/vote",
+        data: requestData,
+        options: Options(
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Request payload: $requestData');
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> paydueOutStanding({
+    required List<int> selected_dues,
+    required double totalAmout,
+    required BuildContext context,
+  }) async {
+    try {
+      final Map<String, dynamic> requestData = {
+        "selected_dues": selected_dues,
+        "custom_amount": totalAmout, // or null
+      };
+
+      // Log the exact request being sent
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        payduePayment,
+        data: requestData,
+        options: Options(
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Request payload: $requestData');
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> initialisWalletFunding({
+    required String paymentMethod,
+    required double Amout,
+    required String paymentRefrenc,
+    required BuildContext context,
+  }) async {
+    try {
+      final Map<String, dynamic> requestData = {
+        "amount": Amout,
+        "payment_method": paymentMethod,
+        "payment_gateway": "paystack",
+        "transaction_reference": paymentRefrenc,
+      };
+
+      // Log the exact request being sent
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        initialFundWallet,
+        data: requestData,
+        options: Options(
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Authorization': 'Bearer $token',
+          //   'X-Requested-With': 'XMLHttpRequest',
+          // },
+          validateStatus: (status) => status! < 500, // Accept 422 as valid
+        ),
+      );
+
+      log('Request payload: $requestData');
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      // showCustomSuccessToast(
+      //   context: context,
+      //   message: "",
+      //   color: AppColors.instance.teal400,
+      //   icon: Icons.close,
+      //   iconColors: AppColors.instance.grey200,
+      //   positionNumber: 70,
+      // );
       log('Headers: ${e.response?.headers}');
       log('Response: ${e.response?.data}');
       log('Request: ${e.requestOptions.data}');

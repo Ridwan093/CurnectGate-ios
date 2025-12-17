@@ -95,10 +95,7 @@ class ChatListScreen extends ConsumerWidget {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      leading: const Padding(
-        padding: EdgeInsets.only(left: 16),
-        child: Icon(Icons.arrow_back_ios_new),
-      ),
+    
       title: const SizedBox.shrink(), // Empty title
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(30), // Height for the bottom text

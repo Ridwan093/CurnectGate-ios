@@ -4,11 +4,9 @@ import 'package:curnectgate/core/appErrorBody/emmergencyBody.dart';
 import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/ActiveCard.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_item.dart';
 import 'package:curnectgate/features/operations/notifications/provider/activity_provider.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -39,9 +37,7 @@ class _ActivitiesTabState extends ConsumerState<ActivitiesTab> {
   @override
   void initState() {
     super.initState();
-   
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -97,13 +93,9 @@ class _ActivitiesTabState extends ConsumerState<ActivitiesTab> {
         error: (error, stack) {
           try {
             // Handle session expiration
-            if (error.toString().contains("Unauthenticated")) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                ref.read(authProvider.notifier).seassionExpire(context, ref);
-              });
-              return Expiresessionbody();
+            if (error.toString().contains("Unauthorized")) {
+              return const Expiresessionbody();
             }
-
             // Try to show cached data
             final cachedNotification = ref.read(getUserNotification).value;
             if (cachedNotification != null &&

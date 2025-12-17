@@ -21,13 +21,13 @@ UserSettings _$UserSettingsFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$UserSettings {
   @JsonKey(name: 'privacy', defaultValue: PrivacySettings.empty)
-  PrivacySettings get privacy => throw _privateConstructorUsedError;
+  PrivacySettings? get privacy => throw _privateConstructorUsedError;
   @JsonKey(name: 'bank_name')
   String? get bankName => throw _privateConstructorUsedError;
-  @JsonKey(name: 'preferences', defaultValue: PrivacySettings.empty)
-  PrivacySettings get preferences => throw _privateConstructorUsedError;
+  @JsonKey(name: 'preferences', defaultValue: PreferencesSettings.empty)
+  PreferencesSettings? get preferences => throw _privateConstructorUsedError;
   @JsonKey(name: 'notifications', defaultValue: Notifications.empty)
-  Notifications get notifications => throw _privateConstructorUsedError;
+  Notifications? get notifications => throw _privateConstructorUsedError;
   @JsonKey(name: 'bank_account_name')
   String? get bankAccountName => throw _privateConstructorUsedError;
   @JsonKey(name: 'bank_account_number')
@@ -57,12 +57,12 @@ abstract class $UserSettingsCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: 'privacy', defaultValue: PrivacySettings.empty)
-      PrivacySettings privacy,
+      PrivacySettings? privacy,
       @JsonKey(name: 'bank_name') String? bankName,
-      @JsonKey(name: 'preferences', defaultValue: PrivacySettings.empty)
-      PrivacySettings preferences,
+      @JsonKey(name: 'preferences', defaultValue: PreferencesSettings.empty)
+      PreferencesSettings? preferences,
       @JsonKey(name: 'notifications', defaultValue: Notifications.empty)
-      Notifications notifications,
+      Notifications? notifications,
       @JsonKey(name: 'bank_account_name') String? bankAccountName,
       @JsonKey(name: 'bank_account_number') String? bankAccountNumber,
       @JsonKey(
@@ -72,9 +72,9 @@ abstract class $UserSettingsCopyWith<$Res> {
       @JsonKey(name: 'preferred_payment_method', defaultValue: '')
       String preferredPaymentMethod});
 
-  $PrivacySettingsCopyWith<$Res> get privacy;
-  $PrivacySettingsCopyWith<$Res> get preferences;
-  $NotificationsCopyWith<$Res> get notifications;
+  $PrivacySettingsCopyWith<$Res>? get privacy;
+  $PreferencesSettingsCopyWith<$Res>? get preferences;
+  $NotificationsCopyWith<$Res>? get notifications;
   $HouseholdPermissionsCopyWith<$Res> get householdPermissions;
 }
 
@@ -93,32 +93,32 @@ class _$UserSettingsCopyWithImpl<$Res, $Val extends UserSettings>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? privacy = null,
+    Object? privacy = freezed,
     Object? bankName = freezed,
-    Object? preferences = null,
-    Object? notifications = null,
+    Object? preferences = freezed,
+    Object? notifications = freezed,
     Object? bankAccountName = freezed,
     Object? bankAccountNumber = freezed,
     Object? householdPermissions = null,
     Object? preferredPaymentMethod = null,
   }) {
     return _then(_value.copyWith(
-      privacy: null == privacy
+      privacy: freezed == privacy
           ? _value.privacy
           : privacy // ignore: cast_nullable_to_non_nullable
-              as PrivacySettings,
+              as PrivacySettings?,
       bankName: freezed == bankName
           ? _value.bankName
           : bankName // ignore: cast_nullable_to_non_nullable
               as String?,
-      preferences: null == preferences
+      preferences: freezed == preferences
           ? _value.preferences
           : preferences // ignore: cast_nullable_to_non_nullable
-              as PrivacySettings,
-      notifications: null == notifications
+              as PreferencesSettings?,
+      notifications: freezed == notifications
           ? _value.notifications
           : notifications // ignore: cast_nullable_to_non_nullable
-              as Notifications,
+              as Notifications?,
       bankAccountName: freezed == bankAccountName
           ? _value.bankAccountName
           : bankAccountName // ignore: cast_nullable_to_non_nullable
@@ -142,8 +142,12 @@ class _$UserSettingsCopyWithImpl<$Res, $Val extends UserSettings>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $PrivacySettingsCopyWith<$Res> get privacy {
-    return $PrivacySettingsCopyWith<$Res>(_value.privacy, (value) {
+  $PrivacySettingsCopyWith<$Res>? get privacy {
+    if (_value.privacy == null) {
+      return null;
+    }
+
+    return $PrivacySettingsCopyWith<$Res>(_value.privacy!, (value) {
       return _then(_value.copyWith(privacy: value) as $Val);
     });
   }
@@ -152,8 +156,12 @@ class _$UserSettingsCopyWithImpl<$Res, $Val extends UserSettings>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $PrivacySettingsCopyWith<$Res> get preferences {
-    return $PrivacySettingsCopyWith<$Res>(_value.preferences, (value) {
+  $PreferencesSettingsCopyWith<$Res>? get preferences {
+    if (_value.preferences == null) {
+      return null;
+    }
+
+    return $PreferencesSettingsCopyWith<$Res>(_value.preferences!, (value) {
       return _then(_value.copyWith(preferences: value) as $Val);
     });
   }
@@ -162,8 +170,12 @@ class _$UserSettingsCopyWithImpl<$Res, $Val extends UserSettings>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $NotificationsCopyWith<$Res> get notifications {
-    return $NotificationsCopyWith<$Res>(_value.notifications, (value) {
+  $NotificationsCopyWith<$Res>? get notifications {
+    if (_value.notifications == null) {
+      return null;
+    }
+
+    return $NotificationsCopyWith<$Res>(_value.notifications!, (value) {
       return _then(_value.copyWith(notifications: value) as $Val);
     });
   }
@@ -190,12 +202,12 @@ abstract class _$$UserSettingsImplCopyWith<$Res>
   @useResult
   $Res call(
       {@JsonKey(name: 'privacy', defaultValue: PrivacySettings.empty)
-      PrivacySettings privacy,
+      PrivacySettings? privacy,
       @JsonKey(name: 'bank_name') String? bankName,
-      @JsonKey(name: 'preferences', defaultValue: PrivacySettings.empty)
-      PrivacySettings preferences,
+      @JsonKey(name: 'preferences', defaultValue: PreferencesSettings.empty)
+      PreferencesSettings? preferences,
       @JsonKey(name: 'notifications', defaultValue: Notifications.empty)
-      Notifications notifications,
+      Notifications? notifications,
       @JsonKey(name: 'bank_account_name') String? bankAccountName,
       @JsonKey(name: 'bank_account_number') String? bankAccountNumber,
       @JsonKey(
@@ -206,11 +218,11 @@ abstract class _$$UserSettingsImplCopyWith<$Res>
       String preferredPaymentMethod});
 
   @override
-  $PrivacySettingsCopyWith<$Res> get privacy;
+  $PrivacySettingsCopyWith<$Res>? get privacy;
   @override
-  $PrivacySettingsCopyWith<$Res> get preferences;
+  $PreferencesSettingsCopyWith<$Res>? get preferences;
   @override
-  $NotificationsCopyWith<$Res> get notifications;
+  $NotificationsCopyWith<$Res>? get notifications;
   @override
   $HouseholdPermissionsCopyWith<$Res> get householdPermissions;
 }
@@ -228,32 +240,32 @@ class __$$UserSettingsImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? privacy = null,
+    Object? privacy = freezed,
     Object? bankName = freezed,
-    Object? preferences = null,
-    Object? notifications = null,
+    Object? preferences = freezed,
+    Object? notifications = freezed,
     Object? bankAccountName = freezed,
     Object? bankAccountNumber = freezed,
     Object? householdPermissions = null,
     Object? preferredPaymentMethod = null,
   }) {
     return _then(_$UserSettingsImpl(
-      privacy: null == privacy
+      privacy: freezed == privacy
           ? _value.privacy
           : privacy // ignore: cast_nullable_to_non_nullable
-              as PrivacySettings,
+              as PrivacySettings?,
       bankName: freezed == bankName
           ? _value.bankName
           : bankName // ignore: cast_nullable_to_non_nullable
               as String?,
-      preferences: null == preferences
+      preferences: freezed == preferences
           ? _value.preferences
           : preferences // ignore: cast_nullable_to_non_nullable
-              as PrivacySettings,
-      notifications: null == notifications
+              as PreferencesSettings?,
+      notifications: freezed == notifications
           ? _value.notifications
           : notifications // ignore: cast_nullable_to_non_nullable
-              as Notifications,
+              as Notifications?,
       bankAccountName: freezed == bankAccountName
           ? _value.bankAccountName
           : bankAccountName // ignore: cast_nullable_to_non_nullable
@@ -280,12 +292,12 @@ class __$$UserSettingsImplCopyWithImpl<$Res>
 class _$UserSettingsImpl implements _UserSettings {
   const _$UserSettingsImpl(
       {@JsonKey(name: 'privacy', defaultValue: PrivacySettings.empty)
-      required this.privacy,
+      this.privacy,
       @JsonKey(name: 'bank_name') this.bankName,
-      @JsonKey(name: 'preferences', defaultValue: PrivacySettings.empty)
-      required this.preferences,
+      @JsonKey(name: 'preferences', defaultValue: PreferencesSettings.empty)
+      this.preferences,
       @JsonKey(name: 'notifications', defaultValue: Notifications.empty)
-      required this.notifications,
+      this.notifications,
       @JsonKey(name: 'bank_account_name') this.bankAccountName,
       @JsonKey(name: 'bank_account_number') this.bankAccountNumber,
       @JsonKey(
@@ -300,16 +312,16 @@ class _$UserSettingsImpl implements _UserSettings {
 
   @override
   @JsonKey(name: 'privacy', defaultValue: PrivacySettings.empty)
-  final PrivacySettings privacy;
+  final PrivacySettings? privacy;
   @override
   @JsonKey(name: 'bank_name')
   final String? bankName;
   @override
-  @JsonKey(name: 'preferences', defaultValue: PrivacySettings.empty)
-  final PrivacySettings preferences;
+  @JsonKey(name: 'preferences', defaultValue: PreferencesSettings.empty)
+  final PreferencesSettings? preferences;
   @override
   @JsonKey(name: 'notifications', defaultValue: Notifications.empty)
-  final Notifications notifications;
+  final Notifications? notifications;
   @override
   @JsonKey(name: 'bank_account_name')
   final String? bankAccountName;
@@ -383,12 +395,12 @@ class _$UserSettingsImpl implements _UserSettings {
 abstract class _UserSettings implements UserSettings {
   const factory _UserSettings(
       {@JsonKey(name: 'privacy', defaultValue: PrivacySettings.empty)
-      required final PrivacySettings privacy,
+      final PrivacySettings? privacy,
       @JsonKey(name: 'bank_name') final String? bankName,
-      @JsonKey(name: 'preferences', defaultValue: PrivacySettings.empty)
-      required final PrivacySettings preferences,
+      @JsonKey(name: 'preferences', defaultValue: PreferencesSettings.empty)
+      final PreferencesSettings? preferences,
       @JsonKey(name: 'notifications', defaultValue: Notifications.empty)
-      required final Notifications notifications,
+      final Notifications? notifications,
       @JsonKey(name: 'bank_account_name') final String? bankAccountName,
       @JsonKey(name: 'bank_account_number') final String? bankAccountNumber,
       @JsonKey(
@@ -403,16 +415,16 @@ abstract class _UserSettings implements UserSettings {
 
   @override
   @JsonKey(name: 'privacy', defaultValue: PrivacySettings.empty)
-  PrivacySettings get privacy;
+  PrivacySettings? get privacy;
   @override
   @JsonKey(name: 'bank_name')
   String? get bankName;
   @override
-  @JsonKey(name: 'preferences', defaultValue: PrivacySettings.empty)
-  PrivacySettings get preferences;
+  @JsonKey(name: 'preferences', defaultValue: PreferencesSettings.empty)
+  PreferencesSettings? get preferences;
   @override
   @JsonKey(name: 'notifications', defaultValue: Notifications.empty)
-  Notifications get notifications;
+  Notifications? get notifications;
   @override
   @JsonKey(name: 'bank_account_name')
   String? get bankAccountName;

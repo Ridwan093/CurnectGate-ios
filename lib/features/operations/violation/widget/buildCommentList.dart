@@ -3,7 +3,6 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/comment_provider.dart';
 import 'package:curnectgate/features/operations/violation/widget/comment_body.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -38,10 +37,7 @@ class Buildcommentlist extends ConsumerWidget {
       error: (error, stack) {
         try {
           // Handle session expiration
-          if (error.toString().contains("Unauthenticated")) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ref.read(authProvider.notifier).seassionExpire(context, ref);
-            });
+          if (error.toString().contains("Unauthorized")) {
             return _buildSessionExpiredUI();
           }
 
@@ -81,10 +77,6 @@ class Buildcommentlist extends ConsumerWidget {
     );
   }
 
-  Widget _buildEmptyState() {
-    return const Center(child: Text("No comment data available"));
-  }
-
   Widget _buildSessionExpiredUI() {
     return Center(
       child: Column(
@@ -107,7 +99,6 @@ class Buildcommentlist extends ConsumerWidget {
       ),
     );
   }
-
 
   Widget _buildErrorUI(String error, WidgetRef ref, BuildContext context) {
     return Center(

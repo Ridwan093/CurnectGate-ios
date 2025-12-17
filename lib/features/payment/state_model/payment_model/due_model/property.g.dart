@@ -1,0 +1,77 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'property.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+_$PropertyImpl _$$PropertyImplFromJson(Map<String, dynamic> json) =>
+    _$PropertyImpl(
+      id: (json['id'] as num?)?.toInt(),
+      estateId: (json['estate_id'] as num?)?.toInt(),
+      landlordId: (json['landlord_id'] as num?)?.toInt(),
+      managerId: (json['manager_id'] as num?)?.toInt(),
+      estateAddressId: (json['estate_address_id'] as num?)?.toInt(),
+      propertyCode: json['property_code'] as String?,
+      propertyName: json['property_name'] as String?,
+      propertyType: json['property_type'] as String?,
+      imageUrl: json['image_url'] as String?,
+      imageKey: json['image_key'] as String?,
+      bedrooms: (json['bedrooms'] as num?)?.toInt(),
+      bathrooms: (json['bathrooms'] as num?)?.toInt(),
+      size: json['size'] as String?,
+      description: json['description'] as String?,
+      specialFeatures: json['special_features'],
+      rentalAmount: json['rental_amount'] as String?,
+      latitude: (json['latitude'] as num?)?.toDouble(),
+      longitude: (json['longitude'] as num?)?.toDouble(),
+      condition: json['condition'] as String?,
+      rentalFrequency: json['rental_frequency'] as String?,
+      amenities: (json['amenities'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      utilityConnections: json['utility_connections'],
+      images: json['images'],
+      parkingSpaces: (json['parking_spaces'] as num?)?.toInt(),
+      status: json['status'] as String?,
+      smokingAllowed: (json['smoking_allowed'] as num?)?.toInt(),
+      isFurnished: json['is_furnished'] as bool?,
+      maxOccupants: (json['max_occupants'] as num?)?.toInt(),
+      createdAt: json['created_at'] as String?,
+      updatedAt: json['updated_at'] as String?,
+    );
+
+Map<String, dynamic> _$$PropertyImplToJson(_$PropertyImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'estate_id': instance.estateId,
+      'landlord_id': instance.landlordId,
+      'manager_id': instance.managerId,
+      'estate_address_id': instance.estateAddressId,
+      'property_code': instance.propertyCode,
+      'property_name': instance.propertyName,
+      'property_type': instance.propertyType,
+      'image_url': instance.imageUrl,
+      'image_key': instance.imageKey,
+      'bedrooms': instance.bedrooms,
+      'bathrooms': instance.bathrooms,
+      'size': instance.size,
+      'description': instance.description,
+      'special_features': instance.specialFeatures,
+      'rental_amount': instance.rentalAmount,
+      'latitude': instance.latitude,
+      'longitude': instance.longitude,
+      'condition': instance.condition,
+      'rental_frequency': instance.rentalFrequency,
+      'amenities': instance.amenities,
+      'utility_connections': instance.utilityConnections,
+      'images': instance.images,
+      'parking_spaces': instance.parkingSpaces,
+      'status': instance.status,
+      'smoking_allowed': instance.smokingAllowed,
+      'is_furnished': instance.isFurnished,
+      'max_occupants': instance.maxOccupants,
+      'created_at': instance.createdAt,
+      'updated_at': instance.updatedAt,
+    };

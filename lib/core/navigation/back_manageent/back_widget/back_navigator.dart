@@ -48,7 +48,8 @@ class BackButtonHandler extends ConsumerWidget {
           if (fullPath == '/') {
             final shouldExit = await backPressNotifier.handleBackPress(context);
             if (shouldExit && context.mounted) SystemNavigator.pop();
-          } else if (fullPath == '/dashboard' && !canPop) {
+          } else if (fullPath == '/dash_board' ||
+              fullPath == '/security-dashboard' && !canPop) {
             final shouldExit = await backPressNotifier.handleBackPress(context);
             if (shouldExit && context.mounted) SystemNavigator.pop();
           } else if (canPop) {

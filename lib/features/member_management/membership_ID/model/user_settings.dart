@@ -1,3 +1,4 @@
+import 'package:curnectgate/features/member_management/membership_ID/model/preferences_settings.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/model/nullSafty_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -16,16 +17,16 @@ class UserSettings with _$UserSettings {
   )
   const factory UserSettings({
     @JsonKey(name: 'privacy', defaultValue: PrivacySettings.empty) 
-    required PrivacySettings privacy,
+     PrivacySettings? privacy,
     
     @JsonKey(name: 'bank_name') 
     String? bankName,
     
-    @JsonKey(name: 'preferences', defaultValue: PrivacySettings.empty) 
-    required PrivacySettings preferences,
+    @JsonKey(name: 'preferences', defaultValue: PreferencesSettings.empty) 
+    PreferencesSettings? preferences,
     
     @JsonKey(name: 'notifications', defaultValue: Notifications.empty) 
-    required Notifications notifications,
+     Notifications? notifications,
     
     @JsonKey(name: 'bank_account_name') 
     String? bankAccountName,
@@ -49,7 +50,7 @@ class UserSettings with _$UserSettings {
     return UserSettings(
       privacy: PrivacySettings.safeFromJson(json['privacy']),
       bankName: NullSafetyHelper.safeString(json['bank_name']),
-      preferences: PrivacySettings.safeFromJson(json['preferences']),
+      preferences: PreferencesSettings.safeFromJson(json['preferences']),
       notifications: Notifications.safeFromJson(json['notifications']),
       bankAccountName: NullSafetyHelper.safeString(json['bank_account_name']),
       bankAccountNumber: NullSafetyHelper.safeString(json['bank_account_number']),
@@ -65,7 +66,7 @@ class UserSettings with _$UserSettings {
   factory UserSettings.empty() =>  UserSettings(
         privacy: PrivacySettings.empty(),
         bankName: null,
-        preferences: PrivacySettings.empty(),
+        preferences: PreferencesSettings.empty(),
         notifications: Notifications.empty(),
         bankAccountName: null,
         bankAccountNumber: null,

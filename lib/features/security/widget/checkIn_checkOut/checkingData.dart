@@ -5,7 +5,6 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/security/model/checkIn_ceckOut_model/visitor_model.dart';
 import 'package:curnectgate/features/security/provider/check_in_provider.dart';
-
 import 'package:curnectgate/features/security/widget/checkIn_checkOut/widget/logCard.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
@@ -53,10 +52,7 @@ class CheckInData extends ConsumerWidget {
           error: (error, stack) {
             try {
               // Handle session expiration first
-              if (error.toString().contains("Unauthenticated")) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  ref.read(authProvider.notifier).seassionExpire(context, ref);
-                });
+              if (error.toString().contains("Unauthorized")) {
                 return _buildSessionExpiredUI(context, ref);
               }
 
@@ -148,9 +144,8 @@ class CheckInData extends ConsumerWidget {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed:
-                () => ref
-                    .read(authProvider.notifier)
-                    .seassionExpire(context, ref),
+                () =>
+                    ref.read(authProvider.notifier).sessionExpire(context, ref),
             child: const Text("Login"),
           ),
         ],

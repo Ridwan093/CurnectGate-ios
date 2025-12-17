@@ -16,7 +16,7 @@ class CheckPendingMessage {
       if (message == null) continue;
 
       try {
-        final targetId = message.isReceiverCopy ? message.senderID : message.reciverID;
+        // final targetId = message.isReceiverCopy ? message.senderID : message.reciverID;
         // final currentId = message.isReceiverCopy ? message.reciverID : message.senderID;
 
         // await firestore

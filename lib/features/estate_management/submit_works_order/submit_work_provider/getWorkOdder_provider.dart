@@ -10,14 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final workOrderProvider =
-    AsyncNotifierProvider.autoDispose<WorkOrdrNotifier, WorkOrderResponse?>(
-      () {
-        return WorkOrdrNotifier();
-      },
-    );
+    AsyncNotifierProvider.autoDispose<WorkOrdrNotifier, WorkOrderResponse?>(() {
+      return WorkOrdrNotifier();
+    });
 
-class WorkOrdrNotifier
-    extends AutoDisposeAsyncNotifier<WorkOrderResponse?> {
+class WorkOrdrNotifier extends AutoDisposeAsyncNotifier<WorkOrderResponse?> {
   @override
   Future<WorkOrderResponse?> build() async {
     // First try to load from local storage
@@ -72,11 +69,8 @@ class WorkOrdrNotifier
         await SharedPrefsService.saveWorkOrder(freshworkOrders);
         return freshworkOrders;
       } catch (e) {
-        if (e.toString().contains(
-          "Unauthenticated. Please login to continue.",
-        )) {
-          log(e.toString());
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        if (e.toString().contains("Unauthorized")) {
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else if (e.toString().contains("The connection errored")) {
           log(e.toString());
           showCustomSuccessToast(

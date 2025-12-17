@@ -39,7 +39,7 @@ mixin _$Property {
   @JsonKey(name: 'formatted_size')
   String? get formattedSize => throw _privateConstructorUsedError;
   @JsonKey(name: 'description')
-  String get description => throw _privateConstructorUsedError;
+  String? get description => throw _privateConstructorUsedError;
   @JsonKey(name: 'rental_amount')
   String get rentalAmount => throw _privateConstructorUsedError;
   @JsonKey(name: 'formatted_rental_amount')
@@ -113,7 +113,7 @@ abstract class $PropertyCopyWith<$Res> {
       @JsonKey(name: 'bathrooms') int bathrooms,
       @JsonKey(name: 'size') String size,
       @JsonKey(name: 'formatted_size') String? formattedSize,
-      @JsonKey(name: 'description') String description,
+      @JsonKey(name: 'description') String? description,
       @JsonKey(name: 'rental_amount') String rentalAmount,
       @JsonKey(name: 'formatted_rental_amount') String? formattedRentalAmount,
       @JsonKey(name: 'rental_frequency') String rentalFrequency,
@@ -167,7 +167,7 @@ class _$PropertyCopyWithImpl<$Res, $Val extends Property>
     Object? bathrooms = null,
     Object? size = null,
     Object? formattedSize = freezed,
-    Object? description = null,
+    Object? description = freezed,
     Object? rentalAmount = null,
     Object? formattedRentalAmount = freezed,
     Object? rentalFrequency = null,
@@ -229,10 +229,10 @@ class _$PropertyCopyWithImpl<$Res, $Val extends Property>
           ? _value.formattedSize
           : formattedSize // ignore: cast_nullable_to_non_nullable
               as String?,
-      description: null == description
+      description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       rentalAmount: null == rentalAmount
           ? _value.rentalAmount
           : rentalAmount // ignore: cast_nullable_to_non_nullable
@@ -368,7 +368,7 @@ abstract class _$$PropertyImplCopyWith<$Res>
       @JsonKey(name: 'bathrooms') int bathrooms,
       @JsonKey(name: 'size') String size,
       @JsonKey(name: 'formatted_size') String? formattedSize,
-      @JsonKey(name: 'description') String description,
+      @JsonKey(name: 'description') String? description,
       @JsonKey(name: 'rental_amount') String rentalAmount,
       @JsonKey(name: 'formatted_rental_amount') String? formattedRentalAmount,
       @JsonKey(name: 'rental_frequency') String rentalFrequency,
@@ -422,7 +422,7 @@ class __$$PropertyImplCopyWithImpl<$Res>
     Object? bathrooms = null,
     Object? size = null,
     Object? formattedSize = freezed,
-    Object? description = null,
+    Object? description = freezed,
     Object? rentalAmount = null,
     Object? formattedRentalAmount = freezed,
     Object? rentalFrequency = null,
@@ -484,10 +484,10 @@ class __$$PropertyImplCopyWithImpl<$Res>
           ? _value.formattedSize
           : formattedSize // ignore: cast_nullable_to_non_nullable
               as String?,
-      description: null == description
+      description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       rentalAmount: null == rentalAmount
           ? _value.rentalAmount
           : rentalAmount // ignore: cast_nullable_to_non_nullable
@@ -659,7 +659,7 @@ class _$PropertyImpl implements _Property {
   final String? formattedSize;
   @override
   @JsonKey(name: 'description')
-  final String description;
+  final String? description;
   @override
   @JsonKey(name: 'rental_amount')
   final String rentalAmount;
@@ -886,7 +886,7 @@ abstract class _Property implements Property {
       @JsonKey(name: 'bathrooms') required final int bathrooms,
       @JsonKey(name: 'size') required final String size,
       @JsonKey(name: 'formatted_size') final String? formattedSize,
-      @JsonKey(name: 'description') required final String description,
+      @JsonKey(name: 'description') required final String? description,
       @JsonKey(name: 'rental_amount') required final String rentalAmount,
       @JsonKey(name: 'formatted_rental_amount')
       final String? formattedRentalAmount,
@@ -946,7 +946,7 @@ abstract class _Property implements Property {
   String? get formattedSize;
   @override
   @JsonKey(name: 'description')
-  String get description;
+  String? get description;
   @override
   @JsonKey(name: 'rental_amount')
   String get rentalAmount;

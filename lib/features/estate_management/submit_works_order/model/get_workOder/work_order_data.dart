@@ -1,8 +1,7 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'work_order.dart';
-import 'pagination_link.dart';
+
 import 'work_order_list.dart';
 
 part 'work_order_data.freezed.dart';

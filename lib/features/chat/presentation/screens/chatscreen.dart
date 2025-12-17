@@ -1,4 +1,3 @@
-import 'package:curnectgate/features/chat/presentation/controllers/chat_controller.dart';
 import 'package:curnectgate/features/chat/presentation/screens/messagescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

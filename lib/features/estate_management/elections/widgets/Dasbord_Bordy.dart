@@ -1,9 +1,10 @@
-
+import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/elections/models/election_enum.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_state.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/eletion_provider.dart';
+import 'package:curnectgate/features/estate_management/elections/provider/summary_result_provider.dart';
 import 'package:curnectgate/features/estate_management/elections/widgets/tab/allTab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,8 +15,10 @@ class ElectionBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final election = state.election;
-   
+    final authState = ref.watch(authProvider);
+    final candidateAsync = ref.watch(reultSummaryProvider);
+
+    final user = authState.user;
 
     return SafeArea(
       child: ListView(
@@ -51,7 +54,7 @@ class ElectionBody extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            election.estateName,
+                            "Estate Name",
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
@@ -61,7 +64,7 @@ class ElectionBody extends ConsumerWidget {
                           ),
                           // const SizedBox(height: 2),
                           Text(
-                            election.memberName,
+                            user!['estate_name']?? "",
                             style: const TextStyle(
                               color: Colors.white70,
                               fontFamily: FontFamilies.interDisplay,
@@ -83,7 +86,7 @@ class ElectionBody extends ConsumerWidget {
                         ),
 
                         Text(
-                          election.memberId,
+                          user['member_code']??"",
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -96,14 +99,57 @@ class ElectionBody extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: 15),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _smallStat('Active', election.activeCount.toString()),
-                    _smallStat('Your Votes', election.yourVotes.toString()),
-                    _smallStat('Total Voters', election.totalVoters.toString()),
-                  ],
+                candidateAsync.when(
+                  data: (e) {
+                    return e?.data?.statistics != null
+                        ? Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _smallStat(
+                              'Active',
+                              "${e?.data?.statistics?.turnoutPercentage.toString()}%",
+                            ),
+                            _smallStat(
+                              'Your Votes',
+                              "${e?.data?.statistics?.totalVoted.toString()}",
+                            ),
+                            _smallStat(
+                              'Total Voters',
+                              "${e?.data?.statistics?.totalVoters.toString()}",
+                            ),
+                          ],
+                        )
+                        : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _smallStat('Active', "0"),
+                            _smallStat('Your Votes', "0"),
+                            _smallStat('Total Voters', "0"),
+                          ],
+                        );
+                  },
+                  error: (_, _) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _smallStat('Active', "0"),
+                        _smallStat('Your Votes', "0"),
+                        _smallStat('Total Voters', "0"),
+                      ],
+                    );
+                  },
+                  loading: () {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _smallStat('Active', "0"),
+                        _smallStat('Your Votes', "0"),
+                        _smallStat('Total Voters', "0"),
+                      ],
+                    );
+                  },
                 ),
+
                 const SizedBox(height: 12),
 
                 // Tabs row (Vote Now / Live Results / History)
@@ -126,16 +172,11 @@ class ElectionBody extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Alltab(state:state),
-    
-
-  
+          Alltab(state: state),
         ],
       ),
     );
   }
-
-
 
   Widget _tabButton(WidgetRef ref, ElectionTab tab, String label) {
     final active = state.activeTab == tab;
@@ -201,6 +242,4 @@ class ElectionBody extends ConsumerWidget {
       ),
     );
   }
-
-
 }

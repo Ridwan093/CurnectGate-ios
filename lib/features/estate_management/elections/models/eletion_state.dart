@@ -1,32 +1,35 @@
 import 'package:curnectgate/features/estate_management/elections/models/election_enum.dart';
-import 'package:curnectgate/features/estate_management/elections/models/election_models.dart';
 
 class ElectionState {
-  final ElectionModel election;
+final Map<String, String> selections;
   final ElectionTab activeTab;
   final String? activeResultTab;
-
-  /// Map of positionId -> selected candidateId
-  final Map<String, String?> selections;
-
-  ElectionState({
-    required this.election,
-    Map<String, String?>? selections,
+  final String id;
+  const ElectionState({
+    this.id = "",
+    required this.selections,
     required this.activeTab,
-    required this.activeResultTab,
-  }) : selections = selections ?? {};
+    this.activeResultTab,
+  });
+
+  // Initial empty state
+  factory ElectionState.empty() => ElectionState(
+    selections: {},
+    activeTab: ElectionTab.voteNow,
+    activeResultTab: null,
+  );
 
   ElectionState copyWith({
-    Map<String, String?>? selections,
+    String? id,
+   Map<String, String> ? selections,
     ElectionTab? activeTab,
-    ElectionModel? election,
     String? activeResultTab,
   }) {
     return ElectionState(
-      activeResultTab: activeResultTab ?? this.activeResultTab,
-      election: election ?? this.election,
+      id: id ?? this.id,
+      selections: selections ?? this.selections,
       activeTab: activeTab ?? this.activeTab,
-      selections: selections ?? Map.of(this.selections),
+      activeResultTab: activeResultTab ?? this.activeResultTab,
     );
   }
 }

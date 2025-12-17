@@ -222,7 +222,7 @@ class NotificationService {
           'Announcements',
           channelDescription: 'Community announcements and broadcasts',
           importance: Importance.high,
-          priority: Priority.defaultPriority,
+          priority: Priority.high,
           playSound: true,
           styleInformation: BigPictureStyleInformation(
             FilePathAndroidBitmap(imageUrl),
@@ -344,30 +344,30 @@ class NotificationService {
     return filePath;
   }
 
-  Future _onNotificationTap(String? payload) async {
-    if (payload == null) return;
-    final data = jsonDecode(payload);
+  // Future _onNotificationTap(String? payload) async {
+  //   if (payload == null) return;
+  //   final data = jsonDecode(payload);
 
-    switch (data['type']) {
-      case 'chat':
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (_) => ChatScreen(chatId: data['chatId']),
-        //   ),
-        // );
-        break;
+  //   switch (data['type']) {
+  //     case 'chat':
+  //       // Navigator.push(
+  //       //   context,
+  //       //   MaterialPageRoute(
+  //       //     builder: (_) => ChatScreen(chatId: data['chatId']),
+  //       //   ),
+  //       // );
+  //       break;
 
-      case 'announcement':
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (_) => BannerDetailsPage(id: data['bannerId']),
-        //   ),
-        // );
-        break;
-    }
-  }
+  //     case 'announcement':
+  //       // Navigator.push(
+  //       //   context,
+  //       //   MaterialPageRoute(
+  //       //     builder: (_) => BannerDetailsPage(id: data['bannerId']),
+  //       //   ),
+  //       // );
+  //       break;
+  //   }
+  // }
 
   /// Background handler (must be top-level)
   static Future<void> _firebaseMessagingBackgroundHandler(

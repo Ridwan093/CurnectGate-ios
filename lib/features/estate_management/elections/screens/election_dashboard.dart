@@ -1,15 +1,19 @@
+import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/eletion_provider.dart';
 import 'package:curnectgate/features/estate_management/elections/widgets/Dasbord_Bordy.dart';
+import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 // --- Models ---
 
 // --- UI ---
 class ElectionPage extends ConsumerWidget {
-  const ElectionPage({Key? key}) : super(key: key);
+  final String id;
+  const ElectionPage({Key? key, required this.id}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,6 +26,7 @@ class ElectionPage extends ConsumerWidget {
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,
             color: AppColors.instance.black600,
+            fontWeight: FontFamilies.bold,
           ),
         ),
         centerTitle: true,
@@ -33,9 +38,10 @@ class ElectionPage extends ConsumerWidget {
           onPressed: () => Navigator.of(context).maybePop(),
         ),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.notifications_none),
+          NotificationCount(
+            onTap: () {
+              context.pushNamed(AppRoutes.notification);
+            },
           ),
         ],
       ),

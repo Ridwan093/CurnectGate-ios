@@ -1,7 +1,8 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/payment/state_model/state.dart';
+import 'package:curnectgate/features/payment/widget/payment_data/payment_history_data.dart';
 import 'package:curnectgate/features/payment/widget/tab_button.dart';
-import 'package:curnectgate/features/payment/widget/tab_content.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -71,14 +72,9 @@ class _CustomTabViewState extends ConsumerState<CustomTabView> {
 
         // Tab Content
         Expanded(
-          child: PageView(
+          child:PaymentHistory(
             controller: _pageController,
-            onPageChanged: (index) {
-              // Sync state when user swipes
-              ref.read(tabProvider.notifier).state = WalletTab.values[index];
-            },
-            children: [AllTabContent(), DueTabContent(), DepositTabContent()],
-          ),
+          )
         ),
       ],
     );

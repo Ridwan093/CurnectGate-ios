@@ -7,7 +7,6 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/empty_body.dart';
 import 'package:curnectgate/features/member_management/membership_ID/provider/getDigitalIDProvider.dart';
 import 'package:curnectgate/features/member_management/membership_ID/widget/QR_Widget.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -43,8 +42,9 @@ class QRCodeTab extends ConsumerWidget {
           try {
             final digitalcode = ref.read(digitMemberIDprovider).value;
             final digit = digitalcode?.data;
-            return digit!.digitalId!.digitalIdCode!.isNotEmpty
-                ? QrWidget(data: digit)
+
+            return digit?.user != null && digit?.estate != null
+                ? QrWidget(data: digit!)
                 : Loadingstates();
           } catch (e) {
             return Loadingstates();
@@ -53,10 +53,7 @@ class QRCodeTab extends ConsumerWidget {
         error: (error, stack) {
           try {
             // Handle session expiration
-            if (error.toString().contains("Unauthenticated")) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                ref.read(authProvider.notifier).seassionExpire(context, ref);
-              });
+            if (error.toString().contains("Unauthorized")) {
               return Expiresessionbody();
             }
             final digit = ref.read(digitMemberIDprovider).value;

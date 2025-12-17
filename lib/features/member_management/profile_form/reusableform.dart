@@ -21,6 +21,7 @@ class ReusabelProfileForm extends StatefulWidget {
   final bool isRead;
   final String hintText;
   final String label;
+
   final FieldType fieldType;
   final TextEditingController? controller;
   final int? maxLength;
@@ -43,7 +44,8 @@ class ReusabelProfileForm extends StatefulWidget {
     this.onChanged,
     this.maxLength,
     this.maxLines = 1,
-    this.showLockIcon = false, // Default to false
+    this.showLockIcon = false,
+   // Default to false
   });
 
   @override
@@ -136,6 +138,8 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
         color: colors.black300,
         fontSize: 13,
       ),
+
+
       errorStyle: TextStyle(
         fontFamily: FontFamilies.interDisplay,
         color: colors.error600,
@@ -263,7 +267,7 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
       case FieldType.name:
         return [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]'))];
       case FieldType.phone:
-        return [ FilteringTextInputFormatter.allow(RegExp(r'[0-9+\-]')),];
+        return [FilteringTextInputFormatter.allow(RegExp(r'[0-9+\-]'))];
       default:
         return null;
     }

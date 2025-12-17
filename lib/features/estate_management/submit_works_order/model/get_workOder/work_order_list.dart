@@ -32,19 +32,19 @@ class WorkOrderList with _$WorkOrderList {
   factory WorkOrderList.safeFromJson(Map<String, dynamic>? json) {
     if (json == null) return WorkOrderList.empty();
     return WorkOrderList(
-      currentPage: NullSafetyHelper.safeInt(json['current_page']) ?? 1,
+      currentPage: NullSafetyHelper.safeInt(json['current_page']),
       data: _safeWorkOrderList(json['data']),
-      firstPageUrl: NullSafetyHelper.safeString(json['first_page_url']) ?? '',
-      from: NullSafetyHelper.safeInt(json['from']) ?? 0,
-      lastPage: NullSafetyHelper.safeInt(json['last_page']) ?? 1,
+      firstPageUrl: NullSafetyHelper.safeString(json['first_page_url']),
+      from: NullSafetyHelper.safeInt(json['from']),
+      lastPage: NullSafetyHelper.safeInt(json['last_page']),
       lastPageUrl: NullSafetyHelper.safeString(json['last_page_url']),
       links: _safePaginationLinkList(json['links']),
       nextPageUrl: NullSafetyHelper.safeString(json['next_page_url']),
-      path: NullSafetyHelper.safeString(json['path']) ?? '',
-      perPage: NullSafetyHelper.safeInt(json['per_page']) ?? 15,
+      path: NullSafetyHelper.safeString(json['path']),
+      perPage: NullSafetyHelper.safeInt(json['per_page']),
       prevPageUrl: NullSafetyHelper.safeString(json['prev_page_url']),
-      to: NullSafetyHelper.safeInt(json['to']) ?? 0,
-      total: NullSafetyHelper.safeInt(json['total']) ?? 0,
+      to: NullSafetyHelper.safeInt(json['to']),
+      total: NullSafetyHelper.safeInt(json['total']),
     );
   }
 

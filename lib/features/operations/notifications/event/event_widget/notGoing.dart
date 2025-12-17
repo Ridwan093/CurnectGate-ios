@@ -10,7 +10,6 @@ import 'package:curnectgate/features/operations/notifications/event/event_widget
 import 'package:curnectgate/features/operations/notifications/event/event_widget/data_event_card.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_event_model.dart';
 import 'package:curnectgate/features/operations/notifications/provider/cancel_provider.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -32,7 +31,7 @@ class CancelEvent extends ConsumerWidget {
       onRefresh:
           () => ref
               .read(canceledEventProvider.notifier)
-              .refreshEvent(context, ref,"cancelled"),
+              .refreshEvent(context, ref, "cancelled"),
 
       child: activeOtasync.when(
         data: (event) {
@@ -62,11 +61,8 @@ class CancelEvent extends ConsumerWidget {
         error: (error, stack) {
           try {
             // Handle session expiration
-            if (error.toString().contains("Unauthenticated")) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                ref.read(authProvider.notifier).seassionExpire(context, ref);
-              });
-              return Expiresessionbody();
+            if (error.toString().contains("Unauthorized")) {
+              return const Expiresessionbody();
             }
             final event = ref.read(canceledEventProvider).value;
 
@@ -89,7 +85,7 @@ class CancelEvent extends ConsumerWidget {
               onTap:
                   () => ref
                       .read(canceledEventProvider.notifier)
-                      .refreshEvent(context, ref,"cancelled"),
+                      .refreshEvent(context, ref, "cancelled"),
               firstMessae: "Faile to load Event",
             );
           } catch (e) {
@@ -98,7 +94,7 @@ class CancelEvent extends ConsumerWidget {
               onTap:
                   () => ref
                       .read(canceledEventProvider.notifier)
-                      .refreshEvent(context, ref,"cancelled"),
+                      .refreshEvent(context, ref, "cancelled"),
               firstMessae: "Faile to load Event?",
             );
           }

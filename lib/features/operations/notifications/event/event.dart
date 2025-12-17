@@ -4,7 +4,6 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/calaender_Data.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/event_data.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/going_tab.dart';
-import 'package:curnectgate/features/operations/notifications/event/event_widget/notGoing.dart';
 import 'package:curnectgate/features/operations/notifications/provider/cancel_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/eventprovider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/getevent_provider.dart';
@@ -122,7 +121,7 @@ class EventsBottomSheet extends ConsumerWidget {
   Widget cancledEventlegnt(WidgetRef ref, BuildContext context) {
     final state = ref.watch(eventsProvider);
     final notifier = ref.read(eventsProvider.notifier);
-    final getListEventCount = ref.watch(canceledEventProvider);
+    final getListEventCount = ref.watch(goingEventRsvpProvider("not_going"));
     return getListEventCount.when(
       data: (data) {
         if (data?.data != null) {
@@ -171,7 +170,7 @@ class EventsBottomSheet extends ConsumerWidget {
   Widget goinglegnt(WidgetRef ref, BuildContext context) {
     final state = ref.watch(eventsProvider);
     final notifier = ref.read(eventsProvider.notifier);
-    final getListEventCount = ref.watch(goingEventProvider);
+    final getListEventCount = ref.watch(goingEventRsvpProvider("going"));
     return getListEventCount.when(
       data: (data) {
         if (data?.data != null) {
@@ -279,11 +278,10 @@ class EventsBottomSheet extends ConsumerWidget {
         TextButton(
           onPressed: () {
             if (index == 0) {
-              ref.read(getEventProvider.notifier).refreshEvent(context, ref,"");
-            } else if (index == 1) {
               ref
-                  .read(goingEventProvider.notifier)
-                  .refreshEvent(context, ref, "completed");
+                  .read(getEventProvider.notifier)
+                  .refreshEvent(context, ref, "");
+            } else if (index == 1) {
             } else if (index == 2) {
               ref
                   .read(canceledEventProvider.notifier)
@@ -315,7 +313,11 @@ class EventsBottomSheet extends ConsumerWidget {
 
     return IndexedStack(
       index: state.currentTab,
-      children: [EventData(), GoingEvents(), CancelEvent()],
+      children: [
+        EventData(),
+        GoingEvents(going: "going"),
+        GoingEvents(going: "not_going"),
+      ],
     );
   }
 }

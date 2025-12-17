@@ -1,99 +1,55 @@
 // Provider for your API class
-import 'dart:developer';
-
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
-import 'package:curnectgate/core/style/colors.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
-import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_events_response_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/Event/resv_model/rsvp_events_response.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final goingEventProvider =
-    AsyncNotifierProvider.autoDispose<EventNotifier, CalendarEventsResponse?>(
-      () {
-        return EventNotifier();
-      },
-    );
+final goingEventRsvpProvider = FutureProvider.autoDispose.family<
+  RsvpEventsResponse?,
+  String
+>((ref, type) async {
+  // Try load cached
+  final local = await SharedPrefsService.getEventRsvp();
 
-class EventNotifier extends AutoDisposeAsyncNotifier<CalendarEventsResponse?> {
-  @override
-  Future<CalendarEventsResponse?> build() async {
-    // First try to load from local storage
-    final localEvent = await SharedPrefsService.getEvent();
+  try {
+    // Fetch fresh from API using the passed `type` argument
+    final fresh = await ref
+        .read(getApiServiceProvider)
+        .getEventRsvps(type: type);
 
-    try {
-      // Then try to fetch fresh data
-      final token = await ref.watch(accessTokenProvider.future);
-      // final category = ref.watch(reminderProvider).category.toLowerCase();
-
-      if (token == null || token.isEmpty) {
-        throw Exception("Unauthenticated");
-      }
-
-      final freshEvent = await ref
-          .read(getApiServiceProvider)
-          .getEvent(bearerToken: token, limit: "",statuse: "completed");
-
-      // Only update local storage if data is different
-      if (localEvent?.toJson() != freshEvent.toJson()) {
-        await SharedPrefsService.saveEvent(freshEvent);
-      }
-
-      return freshEvent;
-    } catch (e) {
-      // If error occurs, return local data if available
-      log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");
-      if (localEvent != null) {
-        log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");
-        // Show error toast but still return local data
-        // WidgetsBinding.instance.addPostFrameCallback((_) {
-        //   ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(
-        //       content: Text('Using cached data: ${e.toString()}'),
-        //       duration: const Duration(seconds: 2),
-        //     ),
-        //   );
-        // });
-        return localEvent;
-      }
-      rethrow;
+    // Save if changed
+    if (local == null || local.toJson() != fresh.toJson()) {
+      await SharedPrefsService.saveEventRsvp(fresh);
     }
+
+    return fresh;
+  } catch (e) {
+    // On error return cached when available, else rethrow so FutureProvider goes to error state
+    if (local != null) return local;
+    rethrow;
   }
+});
+Future<RsvpEventsResponse?> refreshRsvp(
+    WidgetRef ref, String type) async {
+  try {
+    // Force refresh provider
+    final refreshed = await ref.refresh(goingEventRsvpProvider(type).future);
 
-  Future<void> refreshEvent(BuildContext context, WidgetRef ref, String filter) async {
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
-      try {
-        final token = await ref.watch(accessTokenProvider.future);
-        // final category = ref.watch(reminderProvider).filter.toLowerCase();
-        final freshEvent = await ref
-            .read(getApiServiceProvider)
-            .getEvent(bearerToken: token ?? "", limit: "",statuse: filter);
-        await SharedPrefsService.saveEvent(freshEvent);
-        return freshEvent;
-      } catch (e) {
-        if (e.toString().contains(
-          "Unauthenticated. Please login to continue.",
-        )) {
-          log(e.toString());
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
-        } else if (e.toString().contains("The connection errored")) {
-          log(e.toString());
-          showCustomSuccessToast(
-            context: context,
-            message: 'Connection failed. Please check your network',
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey300,
-            positionNumber: 72,
-          );
-        }
+    // Optionally save locally
+    if (refreshed != null) {
+      await SharedPrefsService.saveEventRsvp(refreshed);
+    }
 
-        final localEvent = await SharedPrefsService.getEvent();
-        if (localEvent != null) return localEvent;
-        rethrow;
-      }
-    });
+    // Return the fresh data
+    return refreshed;
+  } catch (e) {
+    // On error, return cached data if available
+    final local = await SharedPrefsService.getEventRsvp();
+    if (local != null) {
+      return local;
+    }
+
+    // If no cached data, rethrow
+    rethrow;
   }
 }

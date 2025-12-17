@@ -4,6 +4,13 @@ import 'dart:developer';
 
 import 'package:curnectgate/features/ResidentDirectory/model/comittee_model/committees_response_model.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resident_directory_respond.dart';
+import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate/candidates_response.dart';
+import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate_result/live_results_response.dart';
+import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/election_Setting/voting_settings_response.dart';
+import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/poll/polls_response.dart';
+import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/poll_History/poll_history_response.dart';
+import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/poll_deteils/poll_details_response.dart';
+import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/summary_result/results_response.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/get_workOder/work_orders_response.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/workOrder_categor/work_order_categories_response.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/household_members_response.dart';
@@ -12,11 +19,16 @@ import 'package:curnectgate/features/member_management/Onboard_Houselod/model/pe
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_status_model.dart/permissions_response_model.dart'
     as status_model;
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/property_model/property_response.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/model/setCurfew/curfew_response_model.dart';
+import 'package:curnectgate/features/member_management/estate_settings/setting_model/estate_settings_response.dart';
 import 'package:curnectgate/features/member_management/membership_ID/model/digital_member_id_response.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/model/Work_permit/clearance_permit_response.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/model/active_Otp_count/Expired_count/expired_count_response.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/model/active_Otp_count/active_count/active_count_response.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/model/otp_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_events_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/events_response_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/Event/resv_model/rsvp_events_response.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/EventCodes/event_codes_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_count/notification_count_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_response.dart';
@@ -26,8 +38,14 @@ import 'package:curnectgate/features/operations/violation/model/comment_model.da
 import 'package:curnectgate/features/operations/violation/model/estate_address_model.dart';
 import 'package:curnectgate/features/operations/violation/model/getCategory_model.dart';
 import 'package:curnectgate/features/operations/violation/model/report_models/violation_response.dart';
+import 'package:curnectgate/features/payment/state_model/payment_model/dashbord_Model/payment_dashboard_response.dart';
+import 'package:curnectgate/features/payment/state_model/payment_model/due_model/outstanding_dues_response.dart';
+import 'package:curnectgate/features/payment/state_model/payment_model/history_model/payment_history_response.dart';
+import 'package:curnectgate/features/payment/state_model/payment_model/payment_method/payment_methods_response.dart';
+import 'package:curnectgate/features/payment/state_model/payment_model/wallet_history/wallet_history_response.dart';
 import 'package:curnectgate/features/security/model/checkIn_ceckOut_model/api_response_model.dart';
 import 'package:curnectgate/features/security/model/checkIn_ceckOut_model/checkOut/checkout_history_response_model.dart';
+import 'package:curnectgate/features/security/model/count_model/violation_count_response.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/model/get_user_notifications.dart';
 import 'package:curnectgate/features/userProfile/Privacy_setting/model/get_user_privacy_settings.dart';
 import 'package:curnectgate/features/userProfile/notification_setting/model/get_user_notification_settings.dart';
@@ -51,24 +69,43 @@ final firstnameProvider = FutureProvider<String>((ref) async {
   return authData?['user']?['firstname'] ?? "";
 });
 // Digital ID Status Provider - CORRECTED
+
+
 final memberIdProvider = FutureProvider.autoDispose<String>((ref) async {
   final authData = await SharedPrefsService().getAuthData();
   return authData?['user']?['member_code'] ?? ""; // Fixed path
 });
+
+
+final securityEmployeeID = FutureProvider.autoDispose<String>((ref) async {
+  final authData = await SharedPrefsService().getAuthData();
+
+  // safety checks for list
+  final spList = authData?['user']?['security_personnel'];
+  if (spList is List && spList.isNotEmpty) {
+    return spList.first['employee_id'] ?? "";
+  }
+
+  return "";
+});
+
 final userRoleProvider = FutureProvider.autoDispose<String>((ref) async {
   final authData = await SharedPrefsService().getAuthData();
   return authData?['user']?['role'] ?? ""; // Fixed path
 });
 
 class SharedPrefsService {
-  static const _keyAuthData = 'auth_data';
-  static const _userName = 'User_name';
+  static const String _keyAuthData = 'auth_data';
+  static const String _userName = 'User_name';
+  static const String _fullname = 'full_name';
+  static const String _medialUrl = 'Url';
   static const String _profileKey = 'user_profile';
   static const String _userNotificationsettingKey = 'user_notificationSettings';
   static const String _getUserPrivacy = "user_privacySetttings";
   static const String _userMainNotification = "user_mainNotification";
   static const String _userMainReminder = "reminder";
   static const String _eventKey = "eventKey";
+  static const String _eventKeyResv = "eventKey_rsvp";
   static const String _calenderKey = "Calender";
   static const String _eventCode = "codess";
   static const String _notificationCountKey = "countKey";
@@ -83,6 +120,8 @@ class SharedPrefsService {
   static const String _activeOtpKey = "Active_otp";
   static const String _work_permitKey = "Work_permit";
   static const String _activeOtpHistoryKey = "active_history";
+  static const String _activeOtpCountKey = "active_Count";
+  static const String _activeOtpExpireUsedKey = "active_used";
   static const String _getDigitalIdKey = "Digital_id";
   static const String _householdGetKey = "house_hold";
   static const String _propertyIDKey = "property_ID";
@@ -90,10 +129,25 @@ class SharedPrefsService {
   static const String _workOderKey = "workOrder";
   static const String _permissionStatusKey = "perm_status";
   static const String _permissionStaticKey = "perm_static";
+  static const String _setCurfewKey = "setCurfew_key";
   static const String _checkOutKey = "check_out";
   static const String _checkInKey = "check_in";
   static const String _resident = "resident";
   static const String _committee = "committee";
+  static const String _candidateKey = "candidat_Key";
+  static const String _candidateResultKey = "candidat_result_Key";
+  static const String _summary_resultKey = "summary_result_key";
+  static const String _pollDeteils = "poll_deteils";
+  static const String _pollHistory = "poll_History";
+  static const String _pollKey = "poll_Key";
+  static const String _votingSettingKey = "Voting_key";
+  static const String _violationCountKey = "violation_key";
+  static const String _walletHistoryKey = "Wallet_key";
+  static const String _paymentHistoryKey = "payment_history";
+  static const String _duePaymentKey = "due_key";
+  static const String _paymentDashbordKey = "Payment_das";
+  static const String _paymentMethodKey = "Payment_method";
+  static const String _emergencyContact = "Emergency_key";
 
   static Future<void> saveNotificationSettings(
     GetUserNotificationSettings notification,
@@ -112,6 +166,7 @@ class SharedPrefsService {
     await prefs.setString(_getUserPrivacy, jsonEncode(privacy.toJson()));
   }
 
+  //  flutter pub run build_runner build --delete-conflicting-outputs --build-filter="lib/features/userProfile/notification_setting/model**"
   static Future<GetUserPrivacySettings?> getUserPrivacySettings() async {
     final prefs = await SharedPreferences.getInstance();
     final data = prefs.getString(_getUserPrivacy);
@@ -132,6 +187,20 @@ class SharedPrefsService {
     final data = prefs.getString(_getDigitalIdKey);
     if (data != null) {
       return DigitalMemberIdResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> saveEstateSettings(EstateSettingsResponse privacy) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_emergencyContact, jsonEncode(privacy.toJson()));
+  }
+
+  static Future<EstateSettingsResponse?> getEstateSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_emergencyContact);
+    if (data != null) {
+      return EstateSettingsResponse.safeFromJson(jsonDecode(data));
     }
     return null;
   }
@@ -294,6 +363,20 @@ class SharedPrefsService {
     return null;
   }
 
+  static Future<void> saveEventRsvp(RsvpEventsResponse preference) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_eventKeyResv, jsonEncode(preference.toJson()));
+  }
+
+  static Future<RsvpEventsResponse?> getEventRsvp() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_eventKeyResv);
+    if (data != null) {
+      return RsvpEventsResponse.fromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
   static Future<void> saveCalender(EventsResponse preference) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_calenderKey, jsonEncode(preference.toJson()));
@@ -389,6 +472,57 @@ class SharedPrefsService {
     return null;
   }
 
+  // _activeOtpCountKey
+  // _activeOtpExpireUsedKey
+  static Future<void> saveActiveCount(ActiveCountResponse preference) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_activeOtpCountKey, jsonEncode(preference.toJson()));
+  }
+
+  static Future<ActiveCountResponse?> getActiveCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_activeOtpCountKey);
+    if (data != null) {
+      return ActiveCountResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> saveActivExpiredeCount(
+    ExpiredCountResponse preference,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _activeOtpExpireUsedKey,
+      jsonEncode(preference.toJson()),
+    );
+  }
+
+  static Future<ExpiredCountResponse?> getActiveExpiredCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_activeOtpExpireUsedKey);
+    if (data != null) {
+      return ExpiredCountResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> saveViolationCount(
+    ViolationCountResponse preference,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_violationCountKey, jsonEncode(preference.toJson()));
+  }
+
+  static Future<ViolationCountResponse?> getViolationCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_violationCountKey);
+    if (data != null) {
+      return ViolationCountResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
   // HOUSEHOLD/SETTING PERMISSION/
   static Future<void> saveHouseHold(HouseholdMembersResponse preference) async {
     final prefs = await SharedPreferences.getInstance();
@@ -438,6 +572,20 @@ class SharedPrefsService {
     return null;
   }
 
+  static Future<void> savePermissionCurfew(CurfewResponse preference) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_setCurfewKey, jsonEncode(preference.toJson()));
+  }
+
+  static Future<CurfewResponse?> getPermissionCurfew() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_setCurfewKey);
+    if (data != null) {
+      return CurfewResponse.fromSafeJson(jsonDecode(data));
+    }
+    return null;
+  }
+
   static Future<void> savePermissionStatus(
     status_model.PermissionsResponse preference,
   ) async {
@@ -453,6 +601,110 @@ class SharedPrefsService {
     final data = prefs.getString(_permissionStatusKey);
     if (data != null) {
       return status_model.PermissionsResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  /// ELECTION / VOTING POLL PollsResponse
+
+  static Future<void> saveCandidate(CandidatesResponse preference) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_candidateKey, jsonEncode(preference.toJson()));
+  }
+
+  static Future<CandidatesResponse?> getCandidate() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_candidateKey);
+    if (data != null) {
+      return CandidatesResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> saveCandidateResult(
+    LiveResultsResponse preference,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_candidateResultKey, jsonEncode(preference.toJson()));
+  }
+
+  static Future<LiveResultsResponse?> getCandidateResult() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_candidateResultKey);
+    if (data != null) {
+      return LiveResultsResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> saveLiveResultSummary(ResultsResponse preference) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_summary_resultKey, jsonEncode(preference.toJson()));
+  }
+
+  static Future<ResultsResponse?> getLiveResultSummary() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_summary_resultKey);
+    if (data != null) {
+      return ResultsResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> savePoll(PollsResponse preference) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_pollKey, jsonEncode(preference.toJson()));
+  }
+
+  static Future<PollsResponse?> getPoll() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_pollKey);
+    if (data != null) {
+      return PollsResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> savePollDeteils(PollDetailsResponse preference) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_pollDeteils, jsonEncode(preference.toJson()));
+  }
+
+  static Future<PollDetailsResponse?> getPollDeteils() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_pollDeteils);
+    if (data != null) {
+      return PollDetailsResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> savePollHistory(PollHistoryResponse preference) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_pollHistory, jsonEncode(preference.toJson()));
+  }
+
+  static Future<PollHistoryResponse?> getPollHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_pollHistory);
+    if (data != null) {
+      return PollHistoryResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> saveVotingSettings(
+    VotingSettingsResponse preference,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_votingSettingKey, jsonEncode(preference.toJson()));
+  }
+
+  static Future<VotingSettingsResponse?> getVotingSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_votingSettingKey);
+    if (data != null) {
+      return VotingSettingsResponse.safeFromJson(jsonDecode(data));
     }
     return null;
   }
@@ -619,6 +871,85 @@ class SharedPrefsService {
     return null;
   }
 
+  //// PAYMENT DATA AND CORE
+  ///_walletHistoryKey
+  // _paymentHistoryKey
+  // _duePaymentKey
+  // _paymentDashbordKey
+  static Future<void> savePaymentDashbord(
+    PaymentDashboardResponse profile,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_paymentDashbordKey, jsonEncode(profile.toJson()));
+  }
+
+  static Future<PaymentDashboardResponse?> getPaymentDashobord() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_paymentDashbordKey);
+    if (data != null) {
+      return PaymentDashboardResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> savePaymentDue(OutstandingDuesResponse profile) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_duePaymentKey, jsonEncode(profile.toJson()));
+  }
+
+  static Future<OutstandingDuesResponse?> getPaymentDue() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_duePaymentKey);
+    if (data != null) {
+      return OutstandingDuesResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> savePaymentHistory(PaymentHistoryResponse profile) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_paymentHistoryKey, jsonEncode(profile.toJson()));
+  }
+
+  static Future<PaymentHistoryResponse?> getPaymentHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_paymentHistoryKey);
+    if (data != null) {
+      return PaymentHistoryResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> savePayMethod(PaymentMethodsResponse profile) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_paymentMethodKey, jsonEncode(profile.toJson()));
+  }
+
+  static Future<PaymentMethodsResponse?> getPayMethod() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_paymentMethodKey);
+    if (data != null) {
+      return PaymentMethodsResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> savePaymenWallettHistory(
+    WalletHistoryResponse profile,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_walletHistoryKey, jsonEncode(profile.toJson()));
+  }
+
+  static Future<WalletHistoryResponse?> getPaymentWalletHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_walletHistoryKey);
+    if (data != null) {
+      return WalletHistoryResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
   static Future<void> clearProfile() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_profileKey);
@@ -724,6 +1055,11 @@ class SharedPrefsService {
     await prefs.remove("session_cookie");
   }
 
+  static Future<void> clearLiveResultSummary() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_summary_resultKey);
+  }
+
   static Future<void> clearPermissionstatus() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_permissionStatusKey);
@@ -749,6 +1085,11 @@ class SharedPrefsService {
     await prefs.remove(_investigateReportKey);
   }
 
+  static Future<void> clearCandidate() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_candidateKey);
+  }
+
   static Future<void> clearReminder() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_userMainReminder);
@@ -759,14 +1100,36 @@ class SharedPrefsService {
     await prefs.remove(_eventKey);
   }
 
+  static Future<void> clearSecurfew() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_setCurfewKey);
+  }
+
   static Future<void> clearcalender() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_calenderKey);
   }
 
+  static Future<void> clearActiveExpiredCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_activeOtpExpireUsedKey);
+  }
+
+  static Future<void> clearActiveCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_activeOtpCountKey);
+  }
+
+  // _activeOtpCountKey _eventKeyResv
+  // _activeOtpExpireUsedKey
   static Future<void> clearResident() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_resident);
+  }
+
+  static Future<void> clearEventRsvp() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_eventKeyResv);
   }
 
   static Future<void> clearCommitte() async {
@@ -789,6 +1152,47 @@ class SharedPrefsService {
     await prefs.remove(_workOderKey);
   }
 
+  static Future<void> clearPollDeteils() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_pollDeteils);
+  }
+
+  static Future<void> clearPollHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_pollHistory);
+  }
+
+  static Future<void> clearPoll() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_pollKey);
+  }
+
+  static Future<void> clearVotingSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_votingSettingKey);
+  }
+
+  ///_emergencyContact
+  static Future<void> clearpaymentMethod() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_paymentMethodKey);
+  }
+
+  static Future<void> clearEstateSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_emergencyContact);
+  }
+
+  static Future<void> clearCandidateResuilt() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_candidateResultKey);
+  }
+
+  static Future<void> clearViolationCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_violationCountKey);
+  }
+
   Future<void> saveAuthData(Map<String, dynamic> data) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_keyAuthData, jsonEncode(data));
@@ -799,12 +1203,36 @@ class SharedPrefsService {
     await prefs.setString(_userName, usserName);
   }
 
+  Future<void> saveFullName(String usserName) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_fullname, usserName);
+  }
+
+  Future<void> saveMedialUrl(String url) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_medialUrl, url);
+  }
+
+  Future<String?> getMedialUrl() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final data = prefs.getString(_medialUrl);
+    return data;
+  }
+
   Future<String?> getUserName() async {
     final prefs = await SharedPreferences.getInstance();
 
     final data = prefs.getString(_userName);
     return data;
   } //_eventCode
+
+  Future<String?> getfullName() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final data = prefs.getString(_fullname);
+    return data;
+  }
 
   Future<Map<String, dynamic>?> getAuthData() async {
     final prefs = await SharedPreferences.getInstance();
@@ -845,6 +1273,20 @@ class SharedPrefsService {
     clearWorkOder();
     clearSessionCookie();
     clearUserToken();
+    clearCandidate();
+    clearPollDeteils();
+    clearPollHistory();
+    clearPoll();
+    clearVotingSettings();
+    clearpaymentMethod();
+    clearEstateSettings();
+    clearActiveCount();
+    clearActiveExpiredCount();
+    clearViolationCount();
+    clearCandidateResuilt();
+    clearLiveResultSummary();
+    clearEventRsvp();
+    clearSecurfew();
     await prefs.remove(_keyAuthData);
   }
 }

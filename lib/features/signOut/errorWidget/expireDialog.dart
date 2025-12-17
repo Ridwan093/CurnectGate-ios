@@ -34,7 +34,7 @@ Future<bool> showSessionExpiredDialog(BuildContext context) async {
                     ),
                     child: Center(
                       child: Text(
-                        "LOGIN NOW",
+                        "Login Now",
                         style: TextStyle(
                           fontFamily: FontFamilies.interDisplay,
                           color: AppColors.instance.black600,

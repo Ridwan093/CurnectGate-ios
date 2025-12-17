@@ -7,6 +7,7 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/widget/
 import 'package:curnectgate/features/operations/violation/model/comment_model.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -71,11 +72,9 @@ class CommentNotifer extends AutoDisposeAsyncNotifier<CommentResponse?> {
         await SharedPrefsService.saveReportComment(freshComment);
         return freshComment;
       } catch (e) {
-        if (e.toString().contains(
-          "Unauthenticated. Please login to continue.",
-        )) {
+        if (e is DioException && e.response?.statusCode == 401) {
           log(e.toString());
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else if (e.toString().contains("The connection errored") ||
             e.toString().contains("The request connection took longer than")) {
           log(e.toString());

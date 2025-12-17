@@ -7,7 +7,6 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/getHouseHold_provider.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/memberList.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -48,11 +47,8 @@ class HouseholdDatas extends ConsumerWidget {
         error: (error, stack) {
           try {
             // Handle session expiration
-            if (error.toString().contains("Unauthenticated")) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                ref.read(authProvider.notifier).seassionExpire(context, ref);
-              });
-              return Expiresessionbody();
+            if (error.toString().contains("Unauthorized")) {
+              return const Expiresessionbody();
             }
             final householdData = ref.read(houseProvider).value;
             final data = householdData?.data;

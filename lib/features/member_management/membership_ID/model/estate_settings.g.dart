@@ -11,7 +11,10 @@ _$EstateSettingsImpl _$$EstateSettingsImplFromJson(Map<String, dynamic> json) =>
       autoApproveUsers: json['auto_approve_users'] as bool?,
       requireDeedSignature: json['require_deed_signature'] as bool?,
       visitorApprovalRequired: json['visitor_approval_required'] as bool?,
-      emergencyContacts: json['emergency_contacts'] as List<dynamic>?,
+      emergencyContacts:
+          (json['emergency_contacts'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as List<dynamic>),
+      ),
       imageUrl: json['image_url'] as String?,
       imageKey: json['image_key'] as String?,
       operatingHours: json['operating_hours'] == null

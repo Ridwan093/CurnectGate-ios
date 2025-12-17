@@ -4,7 +4,6 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/getProperty_provider.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/property_dropdown.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -64,10 +63,7 @@ class PropertyWidget extends ConsumerWidget {
       error: (error, stack) {
         try {
           // Handle session expiration
-          if (error.toString().contains("Unauthenticated")) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ref.read(authProvider.notifier).seassionExpire(context, ref);
-            });
+          if (error.toString().contains("Unauthorized")) {
             return _buildSessionExpiredUI(
               () => ref
                   .read(propertyIdProvider.notifier)

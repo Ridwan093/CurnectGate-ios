@@ -1,12 +1,8 @@
-import 'dart:developer';
-
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
-import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
-import 'package:curnectgate/features/payment/services/paystack_service.dart';
 import 'package:curnectgate/features/payment/state_model/state.dart';
+import 'package:curnectgate/features/payment/widget/payment_data/paymentMethod_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,10 +16,8 @@ class PaymentMethodScreen extends ConsumerWidget {
     return Scaffold(
       bottomNavigationBar: SizedBox(
         height: 70,
-        child: _buildBottonsheet(
-          ref,
-          selectedMethod != PaymentMethod.none,
-          context,
+        child: PaymentMethodData(
+          isMethodSelected: selectedMethod != PaymentMethod.none,
         ),
       ),
       appBar: AppBar(
@@ -35,98 +29,6 @@ class PaymentMethodScreen extends ConsumerWidget {
         ),
       ),
       body: _buildbody(size, ref),
-    );
-  }
-
-  Widget _buildBottonsheet(
-    WidgetRef ref,
-    bool isMethodSelected,
-    BuildContext context,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap:
-                  isMethodSelected
-                      ? () async {
-                        // Navigate to next screen
-                        final method = ref.read(paymentMethodProvider);
-
-                        if (method == PaymentMethod.bankTransfer) {
-                          log('Selected method: $method');
-                          showUserBottomSheet(
-                            context: context,
-                            headertitle: "Funding with bank transfer?",
-                            headersubtitle: "",
-                            ref: ref,
-                            bottom: BottomSheetView.fundingWithbankTransfer,
-                          );
-                        } else {
-                          final ref =
-                              'TEST_REF_${DateTime.now().millisecondsSinceEpoch}';
-                          await PaystackService().checkout(
-                            context: context,
-                            email: 'testuser@example.com',
-                            amount: 500, // ₦500
-                            reference: ref,
-                          );
-                        }
-                        // Navigator.push(...);
-                      }
-                      : null,
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color:
-                      isMethodSelected
-                          ? AppColors.instance.black600
-                          : AppColors.instance.grey400,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Center(
-                  child: Text(
-                    "Continue",
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      color:
-                          isMethodSelected
-                              ? Colors.white
-                              : AppColors.instance.black300,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(width: 10),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Next step:",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black300,
-                  fontSize: 12,
-                ),
-              ),
-              SizedBox(height: 5),
-              Text(
-                "2:information",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black300,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 
@@ -161,6 +63,20 @@ class PaymentMethodScreen extends ConsumerWidget {
             SizedBox(height: 13),
             _buildNotifyerBox(),
             SizedBox(height: 20),
+
+            _buildPaymentClick(
+              title: "Debit/Credit card",
+              subtitle: "Fund with cards in your currency",
+              iconPath: AssetPaths.navCreditCardFilled,
+              isSelected:
+                  ref.watch(paymentMethodProvider) == PaymentMethod.debitCard,
+              onTap: () {
+                ref.read(paymentMethodProvider.notifier).state =
+                    PaymentMethod.debitCard;
+              },
+            ),
+            SizedBox(height: 10),
+            //
             _buildPaymentClick(
               title: "Bank Transfer",
               subtitle: "Transfer to your virtual account number",
@@ -173,18 +89,7 @@ class PaymentMethodScreen extends ConsumerWidget {
                     PaymentMethod.bankTransfer;
               },
             ),
-            SizedBox(height: 10),
-            _buildPaymentClick(
-              title: "Debit/Credit card",
-              subtitle: "Fund with cards in your currency",
-              iconPath: AssetPaths.navCreditCardFilled,
-              isSelected:
-                  ref.watch(paymentMethodProvider) == PaymentMethod.debitCard,
-              onTap: () {
-                ref.read(paymentMethodProvider.notifier).state =
-                    PaymentMethod.debitCard;
-              },
-            ),
+            // PaystackCardPayment(),
           ],
         ),
       ),

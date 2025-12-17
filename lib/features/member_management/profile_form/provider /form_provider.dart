@@ -10,15 +10,22 @@ import 'package:curnectgate/core/%20utils/api/api_Service.dart';
 import 'package:curnectgate/core/%20utils/api/api_method.dart';
 import 'package:curnectgate/core/config/biometric_faceID/Helper/biometric_signature_helper.dart';
 import 'package:curnectgate/core/config/biometric_faceID/Helper/device_info_helper.dart';
+import 'package:curnectgate/core/local_store/User_localdata_provider.dart'
+    as authState;
+import 'package:curnectgate/core/local_store/getUserprofile_file_provider.dart';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/auth/data/auth_model/OnboardingProgressManager.dart';
 import 'package:curnectgate/features/auth/data/auth_model/onbording_enum.dart';
 import 'package:curnectgate/features/auth/widget/tmporarypassword_dialog.dart';
+import 'package:curnectgate/features/estate_management/elections/provider/candidate_provider.dart';
+import 'package:curnectgate/features/estate_management/elections/provider/eletion_provider.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/afterImage_provider.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/getWorkOdder_provider.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/workformprovider.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/state_model/general_state.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/CurfewProvider.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/getHouseHold_provider.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/getPermission_status_provider.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/getpermissionStatic_provider.dart';
@@ -36,12 +43,15 @@ import 'package:curnectgate/features/operations/OTP_Activation/provider/submit_p
 import 'package:curnectgate/features/operations/notifications/provider/EventCode_provider/getlistofEventCode_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/getCalender_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/getevent_provider.dart';
+import 'package:curnectgate/features/operations/notifications/provider/going_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notification_Count_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/reminder_provider.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/comment_provider.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/getReport_provider.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
+import 'package:curnectgate/features/payment/provider/dashbord_provider.dart';
+import 'package:curnectgate/features/payment/provider/payment_History_provider.dart';
 import 'package:curnectgate/features/security/provider/dismiss_provider.dart';
 import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:curnectgate/features/security/provider/investigation_provider.dart';
@@ -921,15 +931,29 @@ class FormNotifier extends StateNotifier<FormStates> {
             prefs.saveUserToken(userData["access_token"]);
             final user = userData['user'] as Map<String, dynamic>?;
             final firstName = user?['firstname'] as String?;
-            final email = user?["email"] as String?;
+            final lastName = user!["lastname"] as String?;
+            final email = user["email"] as String?;
+            final medUrl = user["media_url"] as String?;
+            ref.read(authState.authProvider.notifier).loadAuthData();
+
+            if (medUrl != null) {
+              await SharedPrefsService().saveMedialUrl(medUrl);
+              ref.read(profilePicProvider.notifier).refreshProfilePic();
+              ref.read(profilePicProvider.notifier).loadProfilePic();
+            }
             if (firstName != null) {
               await SharedPrefsService().saveSingleUserName(firstName);
+              await SharedPrefsService().saveFullName(
+                "${firstName} ${lastName}",
+              );
+              ref.read(authState.authProvider.notifier).loadfullName();
             }
 
             if (email != null) {
               await DeviceInfoHelper.saveUserEmail(email);
             }
           }
+
           final user = response['data']["user"];
           final userRole = user['role'];
           final biometricenabled = user["biometric_enabled"];
@@ -1545,17 +1569,20 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
-        ref.read(userProfileProvider.notifier).refreshProfile(context, ref);
+        final data = response["data"];
 
+        final fullName = data["full_name"].toString();
+        await SharedPrefsService().saveFullName(fullName);
+        log(fullName);
         // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
         //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
-
+        ref.read(userProfileProvider.notifier).refreshProfile(context, ref);
         context.pop();
       } else {
         updateChangProfileInfoLoading(false);
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           showCustomSuccessToast(
             context: context,
@@ -1651,7 +1678,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateChangProfilePassLoading(false);
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           showCustomSuccessToast(
             context: context,
@@ -1746,7 +1773,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         updatedeActivatAccountLoading(false);
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           showCustomSuccessToast(
             context: context,
@@ -1822,6 +1849,15 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
+        final profileFile = ref.read(profilePicProvider.notifier);
+        final data = response["data"];
+        final url = data["media_url"] as String?;
+
+        if (url != null) {
+          await SharedPrefsService().saveMedialUrl(url);
+          profileFile.refreshProfilePic();
+        }
+
         ref.read(userProfileProvider.notifier).refreshProfile(context, ref);
 
         // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
@@ -1835,7 +1871,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           showCustomSuccessToast(
             context: context,
@@ -1935,7 +1971,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           showCustomSuccessToast(
             context: context,
@@ -2027,7 +2063,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           showCustomSuccessToast(
             context: context,
@@ -2127,7 +2163,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           context.pop();
           showCustomSuccessToast(
@@ -2213,7 +2249,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           context.pop();
           showCustomSuccessToast(
@@ -2285,7 +2321,7 @@ class FormNotifier extends StateNotifier<FormStates> {
             des: report.description,
             location: report.category ?? "",
             isAnonymouse: report.isAnonymous,
-            priority: "High",
+            priority: "high",
             evidence1: File(report.imagePaths[0] ?? ""),
             evidence2: File(report.imagePaths[1] ?? ""),
           );
@@ -2318,7 +2354,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
           reportStatess.resetState();
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           reportStatess.resetState();
           context.pop();
@@ -2429,7 +2465,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
           reportStatess.resetState();
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           reportStatess.resetState();
           //  final error = response['errors']?['comment']?.first;
@@ -2576,7 +2612,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
           visitors.resetState();
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           visitors.resetState();
           //  final error = response['errors']?['comment']?.first;
@@ -2720,7 +2756,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
           visitors.resetState();
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           visitors.resetState();
           //  final error = response['errors']?['comment']?.first;
@@ -2833,7 +2869,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
           visitors.resetState();
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           visitors.resetState();
           //  final error = response['errors']?['comment']?.first;
@@ -2941,7 +2977,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
           state.setLoading(false);
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           //  final error = response['errors']?['comment']?.first;
 
@@ -3043,7 +3079,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           //  final error = response['errors']?['comment']?.first;
 
@@ -3150,7 +3186,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           //  final error = response['errors']?['comment']?.first;
           resteRasion();
@@ -3258,7 +3294,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           //  final error = response['errors']?['comment']?.first;
           resteRasion();
@@ -3363,7 +3399,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           //  final error = response['errors']?['comment']?.first;
           resteRasion();
@@ -3484,7 +3520,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           //  final error = response['errors']?['comment']?.first;
           final message =
@@ -3595,7 +3631,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           //  final error = response['errors']?['comment']?.first;
           resteRasion();
@@ -3733,7 +3769,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           //  final error = response['errors']?['comment']?.first;
           final message =
@@ -3838,7 +3874,7 @@ class FormNotifier extends StateNotifier<FormStates> {
             propertyId: propertyId,
             role: role,
             context: context,
-            rentfrequency: state.rentalfrequency ?? "",
+            rentfrequency: state.rentalfrequency?.toLowerCase() ?? "",
             status: 'Active',
             agentFees: int.parse(state.agentFee ?? ""),
             securitydeposit: int.parse(state.securityFees ?? ""),
@@ -3881,7 +3917,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           //  final error = response['errors']?['comment']?.first;
           final message =
@@ -3948,6 +3984,24 @@ class FormNotifier extends StateNotifier<FormStates> {
       log("END------->");
     }
   }
+  // String getS(String d, WidgetRef ref, String function toTitle) {
+  //     final state = ref.watch(notificationProviders);
+  //   final t = state.startTimes[toTitle(d)];
+  //   if (t == null) return "00:00";
+  //   return "${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}";
+  // }
+
+  // String getE(String d) {
+  //   final t = state.endTimes[toTitle(d)];
+  //   if (t == null) return "00:00";
+  //   return "${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}";
+  // }
+  String formatTime(TimeOfDay? t) {
+    if (t == null) return "00:00";
+    final h = t.hour.toString().padLeft(2, '0');
+    final m = t.minute.toString().padLeft(2, '0');
+    return "$h:$m";
+  }
 
   Future<void> setCurfew({
     required BuildContext context,
@@ -3962,37 +4016,36 @@ class FormNotifier extends StateNotifier<FormStates> {
       final state = ref.watch(notificationProviders); // WATCH not READ!
       final notifier = ref.read(notificationProviders.notifier);
       bool? isFacilityEnabled = state.isCurfewEnabled;
-      final facilities = state.facilityConditions?.facilities;
-      final reason = state.facilityReason;
 
-      final tr = state.facilityConditions?.timeRestrictions ?? {};
-      String getS(String d) => tr[d]?.startTime ?? '00:00';
-      String getE(String d) => tr[d]?.endTime ?? '00:00';
+      String toTitle(String d) =>
+          "${d[0].toUpperCase()}${d.substring(1).toLowerCase()}";
+
+      String getStart(String d) => formatTime(state.startTimes[toTitle(d)]);
+      String getEnd(String d) => formatTime(state.endTimes[toTitle(d)]);
+
       final response = await ref
           .read(profileRepositoryProvider)
           .setCofew(
             token: token!,
-            mondaystart: getS('monday'),
-            mondayEnd: getE('monday'),
-            tusdayStart: getS('tuesday'),
-            tusdayEnd: getE('tuesday'),
-            wednesdaystart: getS('wednesday'),
-            wednesdayEnd: getE('wednesday'),
-            thursdayStart: getS('thursday'),
-            thursdayEnd: getE('thursday'),
-            fridayStart: getS('friday'),
-            fridayEnd: getE('friday'),
-            saturdayStart: getS('saturday'),
-            saturdayEnd: getE('saturday'),
-            sundayStart: getS('sunday'),
-            sundayEnd: getE('sunday'),
-
+            mondaystart: getStart('monday'),
+            mondayEnd: getEnd('monday'),
+            tusdayStart: getStart('tuesday'),
+            tusdayEnd: getEnd('tuesday'),
+            wednesdaystart: getStart('wednesday'),
+            wednesdayEnd: getEnd('wednesday'),
+            thursdayStart: getStart('thursday'),
+            thursdayEnd: getEnd('thursday'),
+            fridayStart: getStart('friday'),
+            fridayEnd: getEnd('friday'),
+            saturdayStart: getStart('saturday'),
+            saturdayEnd: getEnd('saturday'),
+            sundayStart: getStart('sunday'),
+            sundayEnd: getEnd('sunday'),
             id: id,
-
             isEnabale: isFacilityEnabled ?? false,
-
             context: context,
           );
+
       log(response.toString());
       if (!context.mounted) return; // Always check first
 
@@ -4010,7 +4063,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
 
-        ref.read(statisticProvider.notifier).refreshPermission(context, ref);
+        ref
+            .read(getCurfewSettingProvider.notifier)
+            .refreshPermission(context, ref);
 
         // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
         //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
@@ -4022,7 +4077,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
           notifier.resetForm();
         } else {
           notifier.resetForm();
@@ -4158,7 +4213,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
           notifier.resetForm();
         } else {
           notifier.resetForm();
@@ -4295,7 +4350,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifier.resetForm();
           //  final error = response['errors']?['comment']?.first;
@@ -4418,7 +4473,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifier.resetForm();
           //  final error = response['errors']?['comment']?.first;
@@ -4542,7 +4597,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifier.resetForm();
           //  final error = response['errors']?['comment']?.first;
@@ -4659,7 +4714,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifier.resetForm();
           //  final error = response['errors']?['comment']?.first;
@@ -4780,7 +4835,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifier.resetForm();
           //  final error = response['errors']?['comment']?.first;
@@ -4902,7 +4957,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifier.resetForm();
           //  final error = response['errors']?['comment']?.first;
@@ -5030,7 +5085,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifier.resetForm();
           //  final error = response['errors']?['comment']?.first;
@@ -5153,7 +5208,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifier.resetForm();
           //  final error = response['errors']?['comment']?.first;
@@ -5293,6 +5348,11 @@ class FormNotifier extends StateNotifier<FormStates> {
           headersubtitle: userData['estate_name'] ?? "N/A",
           ref: ref,
           bottom: BottomSheetView.digitalIdConfirm,
+          digital_id_code: qrCodeData,
+          access_type: accessType(accessTypes),
+          location: location,
+          additional_notes: "",
+          device_id: "",
         );
       } else {
         // log(e.toString());
@@ -5300,7 +5360,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
@@ -5416,6 +5476,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         debugPrint('─────────────────────────────────────────');
         notifier.resetForm();
+        context.pop();
         log("TRUE------->");
         showUserBottomSheet(
           context: context,
@@ -5423,6 +5484,11 @@ class FormNotifier extends StateNotifier<FormStates> {
           headersubtitle: userData['estate_name'] ?? "N/A",
           ref: ref,
           bottom: BottomSheetView.digitalIdConfirm,
+          digital_id_code: qrCodeData,
+          access_type: accessType(accessTypes),
+          location: location,
+          additional_notes: "",
+          device_id: "",
         );
       } else {
         // log(e.toString());
@@ -5430,7 +5496,152 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
+        } else {
+          notifiers.updateLoading(false);
+          notifier.resetForm();
+
+          //  final error = response['errors']?['comment']?.first;
+          final message =
+              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifiers.updateLoading(false);
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(oTpformProvider.notifier);
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      notifiers.updateLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> digitalIDApproveDeny({
+    required BuildContext context,
+    required String qrCodeData,
+    required String accessTypes,
+    required String location,
+    required WidgetRef ref,
+    required String approveType,
+    required String denial_reason,
+  }) async {
+    log("START------->");
+
+    try {
+      final notifiers = ref.read(oTpformProvider.notifier);
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(true);
+
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .approvedDigitaIDCode(
+            denial_reason: denial_reason,
+            approveType: approveType,
+            token: token ?? "",
+            additionalNote: "",
+            device_id: "",
+            qrCodeData: qrCodeData,
+            accessType: accessType(accessTypes),
+            location: location,
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        log("TRUE------->");
+        final userData = response['data']['user'];
+        context.pop();
+        final String jsonString = json.encode(userData);
+        // Log the specific fields you want
+        debugPrint('📋 USER DETAILS LOG:');
+        debugPrint('─────────────────────────────────────────');
+        debugPrint('📸 Media URL: ${userData['media_url'] ?? "N/A"}');
+        debugPrint('👤 Role: ${userData['role'] ?? "N/A"}');
+        debugPrint('👤 First Name: ${userData['firstname'] ?? "N/A"}');
+        debugPrint('👤 Last Name: ${userData['lastname'] ?? "N/A"}');
+
+        debugPrint('─────────────────────────────────────────');
+        notifier.resetForm();
+        log("TRUE------->");
+        if (approveType.contains("deny-access")) {
+          showUserBottomSheet(
+            context: context,
+            headertitle: jsonString,
+            headersubtitle: userData['estate_name'] ?? "N/A",
+            ref: ref,
+            bottom: BottomSheetView.digitalIdDenymessage,
+          );
+        } else {
+          showUserBottomSheet(
+            context: context,
+            headertitle: jsonString,
+            headersubtitle: userData['estate_name'] ?? "N/A",
+            ref: ref,
+            bottom: BottomSheetView.digitalIDaprovedMessage,
+          );
+        }
+      } else {
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
@@ -5563,7 +5774,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
@@ -5695,7 +5906,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
@@ -5820,7 +6031,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
@@ -5952,7 +6163,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
@@ -6078,7 +6289,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
@@ -6200,7 +6411,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
@@ -6322,7 +6533,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
@@ -6444,7 +6655,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
@@ -6575,7 +6786,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
@@ -6695,7 +6906,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
@@ -6815,7 +7026,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
@@ -6945,7 +7156,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
@@ -7074,7 +7285,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
@@ -7215,7 +7426,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
@@ -7333,7 +7544,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
@@ -7462,7 +7673,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
@@ -7581,7 +7792,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifiers.updateLoading(false);
           notifier.resetForm();
@@ -7706,7 +7917,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifier.updateLoading(false);
           ref.read(generateNotifierProvider.notifier).resetState();
@@ -7835,7 +8046,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           ref.read(generateNotifierProvider.notifier).resetState();
           notifier.updateLoading(false);
@@ -7951,7 +8162,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifier.updateLoading(false);
           notifier.resetAll();
@@ -8041,7 +8252,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         ref.read(getCalenderProvider.notifier).refreshEvent(context, ref);
         ref.read(getEventProvider.notifier).refreshEvent(context, ref, "");
         notifier.updateLoading(false);
-
+        refreshRsvp(ref, "going");
         notifier.resetAll();
         context.pop();
         log("TRUE------->");
@@ -8059,7 +8270,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifier.updateLoading(false);
           notifier.resetAll();
@@ -8175,7 +8386,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifier.updateLoading(false);
           notifier.resetAll();
@@ -8314,7 +8525,110 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
+        } else {
+          updateWorkderLoading(false);
+
+          //  final error = response['errors']?['comment']?.first;
+          // final message =
+          //     response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+          showCustomSuccessToast(
+            context: context,
+            message: response["message"],
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      updateWorkderLoading(false);
+
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      updateWorkderLoading(false);
+
+      log("END------->");
+    }
+  }
+
+  Future<void> uploadeAfterWork({
+    required BuildContext context,
+    required List<File> file,
+
+    required String id,
+
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+
+    try {
+      final notifier = ref.read(reminderProvider.notifier);
+
+      updateWorkderLoading(true);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .uploadAfterWork(id: id, file: file, context: context);
+
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        updateWorkderLoading(false);
+
+        ref.read(workImagesProvider.notifier).clear();
+
+        context.pop();
+
+        notifier.resetAll();
+        ref.read(workOrderProvider.notifier).refreshWorkOrders(context, ref);
+
+        log("TRUE------->");
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      } else {
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           updateWorkderLoading(false);
 
@@ -8448,7 +8762,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         } else {
           final message = response["message"] ?? "Unknown error";
           if (message.contains("Unauthenticated")) {
-            ref.read(authProvider.notifier).seassionExpire(context, ref);
+            ref.read(authProvider.notifier).sessionExpire(context, ref);
           } else {
             showCustomSuccessToast(
               context: context,
@@ -8756,7 +9070,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifier.updateLoading(false);
           items.clear();
@@ -8884,7 +9198,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           notifier.updateLoading(false);
           notifier.resetAll();
@@ -8999,7 +9313,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
           //  final error = response['errors']?['comment']?.first;
           resteRasion();
@@ -9059,13 +9373,370 @@ class FormNotifier extends StateNotifier<FormStates> {
     }
   }
 
+  Future<void> casetVote({
+    required BuildContext context,
+    required String id,
+    required WidgetRef ref,
+    required Map<String, dynamic> requestData,
+  }) async {
+    log("START------->");
+    updateGenrateMemberIdLoading(true);
+
+    try {
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .castVote(
+            requestData: requestData,
+            id: id,
+            reason: state.digiterReason ?? "",
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        ref.read(electionProvider.notifier).clearAll();
+        resteRasion();
+        updateGenrateMemberIdLoading(false);
+        ref.read(candidateProvider.notifier).refreshCandidate(context, ref);
+
+        log("TRUE------->");
+
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+
+        // ref.read(commentProvider.notifier).refreshComment(context, ref);
+
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+      } else {
+        ref.read(electionProvider.notifier).clearAll();
+        updateGenrateMemberIdLoading(false);
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
+        } else {
+          ref.read(electionProvider.notifier).clearAll();
+          //  final error = response['errors']?['comment']?.first;
+          resteRasion();
+          showCustomSuccessToast(
+            context: context,
+            message: response["message"],
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        }
+      }
+    } on DioException catch (e) {
+      updateGenrateMemberIdLoading(false);
+      resteRasion();
+      final reportStatess = ref.watch(reportProvider.notifier);
+
+      if (!context.mounted) return;
+      reportStatess.resetState();
+
+      if (e.error is SocketException) {
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      resteRasion();
+      updateGenrateMemberIdLoading(false);
+      final visitor = ref.watch(generateNotifierProvider.notifier);
+      visitor.resetState();
+      if (!context.mounted) return;
+      context.pop();
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      resteRasion();
+      updateGenrateMemberIdLoading(false);
+      updateOtp('', false);
+      log("END------->");
+      ref.read(electionProvider.notifier).clearAll();
+    }
+  }
+
+  Future<void> payDueOutstanding({
+    required BuildContext context,
+    required List<int> selected_dues,
+    required double totalAmout,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+    updateGenrateMemberIdLoading(true);
+
+    try {
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .paydueOutStanding(
+            selected_dues: selected_dues,
+            totalAmout: totalAmout,
+
+            context: context,
+          );
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        updateGenrateMemberIdLoading(false);
+
+        context.pop();
+
+        context.pushNamed(
+          AppRoutes.paymentSuccess,
+          extra: {"fails_succs": false, "ErrorMessage": response["message"]},
+        );
+        log("TRUE------->");
+
+        // showCustomSuccessToast(
+        //   context: context,
+        //   message: response["message"],
+        //   color: AppColors.instance.teal300,
+        //   icon: Icons.check_circle,
+        //   iconColors: AppColors.instance.grey200,
+        //   positionNumber: 70,
+        // );
+
+        // ref.read(commentProvider.notifier).refreshComment(context, ref);
+
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+      } else {
+        updateGenrateMemberIdLoading(false);
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
+        } else {
+          //  final error = response['errors']?['comment']?.first;
+          context.pop();
+          context.pushNamed(
+            AppRoutes.paymentSuccess,
+            extra: {"fails_succs": true, "ErrorMessage": response["message"]},
+          );
+          // showCustomSuccessToast(
+          //   context: context,
+          //   message: response["message"],
+          //   color: AppColors.instance.error500,
+          //   icon: Icons.error,
+          //   iconColors: AppColors.instance.grey200,
+          //   positionNumber: 70,
+          // );
+        }
+      }
+    } on DioException catch (e) {
+      updateGenrateMemberIdLoading(false);
+      resteRasion();
+      final reportStatess = ref.watch(reportProvider.notifier);
+
+      if (!context.mounted) return;
+      reportStatess.resetState();
+
+      if (e.error is SocketException) {
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      resteRasion();
+      updateGenrateMemberIdLoading(false);
+      final visitor = ref.watch(generateNotifierProvider.notifier);
+      visitor.resetState();
+      if (!context.mounted) return;
+      context.pop();
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      resteRasion();
+      updateGenrateMemberIdLoading(false);
+      updateOtp('', false);
+      log("END------->");
+    }
+  }
+
+  Future<void> initialisWalletFunding({
+    required BuildContext context,
+    required String paymentMethod,
+    required String refrence,
+    required double totalAmout,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+    log("REQUEST DATA: amount: ${(totalAmout * 100).round()}");
+    log("REQUEST DATA: method: $paymentMethod");
+    log("REQUEST DATA: reference: $refrence");
+    log("Mounted? ${context.mounted}");
+
+    try {
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .initialisWalletFunding(
+            Amout: totalAmout,
+            paymentMethod: paymentMethod,
+            paymentRefrenc: refrence,
+
+            context: context,
+          );
+
+      log("befor isMouted------->");
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+      log("after isMouted------->");
+      if (response['status'] == true) {
+        ref
+            .read(paymentDashbordProvider.notifier)
+            .refreshPaymentDashbord(context, ref);
+        context.pop();
+        ref
+            .read(paymentHistoryProvider.notifier)
+            .refreshPaymentHistory(context, ref);
+        showUserBottomSheet(
+          context: context,
+          headertitle: response["message"].toString(),
+          headersubtitle: "",
+          ref: ref,
+          bottom: BottomSheetView.paymentSuccess,
+        );
+
+        // context.pushNamed(
+        //   AppRoutes.paymentSuccess,
+        //   extra: {"fails_succs": false, "ErrorMessage": response["message"]},
+        // );
+        log("TRUE------->");
+
+        // showCustomSuccessToast(
+        //   context: context,
+        //   message: response["message"],
+        //   color: AppColors.instance.teal300,
+        //   icon: Icons.check_circle,
+        //   iconColors: AppColors.instance.grey200,
+        //   positionNumber: 70,
+        // );
+
+        // ref.read(commentProvider.notifier).refreshComment(context, ref);
+
+        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+      } else {
+        updateGenrateMemberIdLoading(false);
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
+        } else {
+          //  final error = response['errors']?['comment']?.first;
+          context.pop();
+          // context.pushNamed(
+          //   AppRoutes.paymentSuccess,
+          //   extra: {"fails_succs": true, "ErrorMessage": response["message"]},
+          // );
+          showUserBottomSheet(
+            context: context,
+            headertitle: response["message"].toString(),
+            headersubtitle: "hellleo",
+            ref: ref,
+            bottom: BottomSheetView.paymentSuccess,
+          );
+          // showCustomSuccessToast(
+          //   context: context,
+          //   message: response["message"],
+          //   color: AppColors.instance.error500,
+          //   icon: Icons.error,
+          //   iconColors: AppColors.instance.grey200,
+          //   positionNumber: 70,
+          // );
+        }
+      }
+    } on DioException catch (e) {
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+      context.pop();
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      log("END------->");
+    }
+  }
+
   /// 🧩 Handle login error gracefully
   void _handleLoginError(BuildContext context, WidgetRef ref, String? message) {
     final errorMessage = message ?? "Unknown error";
     log("❌ Biometric Login Error: $errorMessage");
 
     if (errorMessage.contains("Unauthenticated")) {
-      ref.read(authProvider.notifier).seassionExpire(context, ref);
+      ref.read(authProvider.notifier).sessionExpire(context, ref);
     } else {
       showCustomSuccessToast(
         context: context,
@@ -9088,7 +9759,7 @@ class FormNotifier extends StateNotifier<FormStates> {
     log("❌ API Response Error: $errorMessage");
 
     if (errorMessage.contains("Unauthenticated")) {
-      ref.read(authProvider.notifier).seassionExpire(context, ref);
+      ref.read(authProvider.notifier).sessionExpire(context, ref);
     } else {
       showCustomSuccessToast(
         context: context,

@@ -17,6 +17,7 @@ class AssetPaths {
   static const _onboarding = '${_images}onboarding/';
   static const _logo = '${_images}logo/';
 
+
   // Navbar Icons
   static const String navCreditCardFilled = '${_nav}credit_card_active.png';
   static const String navCreditCard = '${_nav}credit_card_inactive.png';
@@ -28,7 +29,7 @@ class AssetPaths {
   static const String navProfileInactive = '${_nav}profile_inactive.png';
   static const String navVisitorLog = '${_nav}visitorLogTab.png';
   static const String navVisitorLogFilled = '${_nav}visitorLogTabFilled.png';
-
+static const String appLogos = 'assets/icons/app_icon.png';
   // Action Icons
   static const String addMember = '${_actions}add_member.png';
   static const String chat = '${_actions}chat.png';

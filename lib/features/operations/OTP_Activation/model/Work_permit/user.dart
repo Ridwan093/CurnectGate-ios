@@ -101,7 +101,7 @@ class User with _$User {
       updatedAt: NullSafetyHelper.safeString(json['updated_at']),
       biometricEnabled: NullSafetyHelper.safeBool(json['biometric_enabled']),
       biometricDevices: NullSafetyHelper.safeList(json['biometric_devices'])
-          ?.map((e) => NullSafetyHelper.safeModel(
+          .map((e) => NullSafetyHelper.safeModel(
                 e,
                 BiometricDevice.fromSafeJson,
                 BiometricDevice.empty(),

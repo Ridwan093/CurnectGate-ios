@@ -6,6 +6,7 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resident_directory_respond.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -46,6 +47,8 @@ class getResidentNotifier
       log("${e}");
       if (localResident != null) {
         log("${e}");
+
+        return localResident;
       } else {}
       rethrow;
     }
@@ -64,10 +67,9 @@ class getResidentNotifier
 
         return freshResindent;
       } catch (e) {
-        if (e.toString().contains(
-          "Unauthenticated. Please login to continue.",
-        )) {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        if (e is DioException && e.response?.statusCode == 401) {
+          log(e.toString());
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else if (e.toString().contains("connection")) {
           showCustomSuccessToast(
             context: context,

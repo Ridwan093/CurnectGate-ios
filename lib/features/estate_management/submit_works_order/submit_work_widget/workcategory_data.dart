@@ -5,7 +5,6 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/workOrder_categor/work_order_category_data.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/getCategory_provider.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/workOder_online_dropdown.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,7 +21,7 @@ class CategoryData extends ConsumerWidget {
       data: (cat) {
         try {
           final user = cat?.data;
-          if (user != null ) {
+          if (user != null) {
             return DropDownWorkOoder(currentValue: currentValue, data: user);
           } else {
             return _buildEmptyState(
@@ -65,10 +64,7 @@ class CategoryData extends ConsumerWidget {
       error: (error, stack) {
         try {
           // Handle session expiration
-          if (error.toString().contains("Unauthenticated")) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ref.read(authProvider.notifier).seassionExpire(context, ref);
-            });
+          if (error.toString().contains("Unauthorized")) {
             return _buildSessionExpiredUI(
               () => ref
                   .read(workOrderCategoriesProvider.notifier)

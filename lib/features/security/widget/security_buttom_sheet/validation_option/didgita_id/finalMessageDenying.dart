@@ -3,39 +3,21 @@ import 'dart:convert';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class DenyEntryDigitalMessage extends StatelessWidget {
   final String jsonData;
 
   const DenyEntryDigitalMessage({super.key, required this.jsonData});
-  static String _extractValue(String notes, String label) {
-    try {
-      final line =
-          notes
-              .split('\n')
-              .firstWhere((l) => l.contains(label), orElse: () => '')
-              .replaceAll(label, '')
-              .trim();
-      return line.isNotEmpty ? line : 'N/A';
-    } catch (_) {
-      return 'N/A';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> extractedData = json.decode(jsonData);
 
-    final validation = extractedData['data']?['validation'] ?? {};
+    final String firstName = extractedData['firstname']?.toString() ?? '';
+    final String lastName = extractedData['lastname']?.toString() ?? '';
 
-    // Extract key details from "security_notes" (for manual validation logs)
-    final String securityNotes = validation['security_notes'] ?? '';
-    final visitorName = _extractValue(securityNotes, '👤 Visitor:');
-    // final purpose = _extractValue(securityNotes, '🎯 Purpose:');
-    // final phone = _extractValue(securityNotes, '📞 Phone:');
-    // final destination = _extractValue(securityNotes, '🏠 Destination:');
-    // final address = _extractValue(securityNotes, '📍 Address:');
-    // final validPeriod = _extractValue(securityNotes, '⏱️ Valid Period:');
+    final String fullName = "$firstName $lastName".trim();
     final size = MediaQuery.sizeOf(context);
     return SingleChildScrollView(
       child: Column(
@@ -44,7 +26,8 @@ class DenyEntryDigitalMessage extends StatelessWidget {
             alignment: Alignment.topRight,
             child: InkWell(
               onTap: () {
-                Navigator.pop(context);
+                context.pop();
+                // Navigator.;pop(context);
               },
               child: Icon(Icons.close, color: AppColors.instance.black600),
             ),
@@ -52,7 +35,7 @@ class DenyEntryDigitalMessage extends StatelessWidget {
 
           SizedBox(height: 30),
 
-          _buildUserInfoBox(size: size, userName: visitorName),
+          _buildUserInfoBox(size: size, userName: fullName),
           SizedBox(height: 30),
           _buildFeatureButton(
             onTap: () {

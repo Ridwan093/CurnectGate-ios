@@ -20,6 +20,6 @@ class LatestComment with _$LatestComment {
   factory LatestComment.safeFromJson(Map<String, dynamic>? json) => LatestComment(
         comment: NullSafetyHelper.safeString(json?['comment']),
         user: NullSafetyHelper.safeString(json?['user']),
-        createdAt: NullSafetyHelper.safeDateTime(json?['created_at']) ?? DateTime.now(),
+        createdAt: NullSafetyHelper.safeDateTime(json?['created_at']) ,
       );
 }

@@ -9,15 +9,14 @@ part of 'privacy_settings.dart';
 _$PrivacySettingsImpl _$$PrivacySettingsImplFromJson(
         Map<String, dynamic> json) =>
     _$PrivacySettingsImpl(
-      showEmail: json['show_email'] as bool? ?? false,
-      showPhone: json['show_phone'] as bool? ?? false,
-      profileVisibility: json['profile_visibility'] as bool? ?? false,
+      items: (json['items'] as List<dynamic>?)
+              ?.map((e) => PrivacyItem.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
     );
 
 Map<String, dynamic> _$$PrivacySettingsImplToJson(
         _$PrivacySettingsImpl instance) =>
     <String, dynamic>{
-      'show_email': instance.showEmail,
-      'show_phone': instance.showPhone,
-      'profile_visibility': instance.profileVisibility,
+      'items': instance.items?.map((e) => e.toJson()).toList(),
     };

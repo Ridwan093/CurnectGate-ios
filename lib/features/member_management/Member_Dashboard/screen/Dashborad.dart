@@ -1,38 +1,53 @@
-import 'dart:math';
+import 'dart:developer';
 
-import 'package:curnectgate/core/%20utils/service/notification_service.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
+import 'package:curnectgate/core/local_store/getUserprofile_file_provider.dart';
+import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/%20operations/property_agreement/agreement_sign_screen.dart';
-import 'package:curnectgate/features/%20operations/property_agreement/utils.dart';
+import 'package:curnectgate/features/estate_management/elections/widgets/eletionData/poll_data.dart';
+import 'package:curnectgate/features/estate_management/elections/widgets/votingSettingCheck.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/workformprovider.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/dashBordRowcard.dart';
-import 'package:curnectgate/features/member_management/Member_Dashboard/widget/empty_body.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/headCard.dart';
-import 'package:curnectgate/features/member_management/Member_Dashboard/widget/reusable_vistor_card.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/vewMoreButton.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/visitorActiveCount.dart';
 import 'package:curnectgate/features/member_management/membership_ID/provider/digitalD_status.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/provider/active_provider.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/model/active_Otp_count/Expired_count/expired_count_response.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/model/active_Otp_count/active_count/active_count_response.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/provider/active_count_provider.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/provider/expired_used_count_provider.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/widget/ActiveData_widget.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/widget/count_data.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/event_limit_data.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
+import 'package:curnectgate/features/payment/state_model/payment_model/dashbord_Model/payment_dashboard_data.dart';
+import 'package:curnectgate/features/payment/widget/payment_data/dasbordData.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Dashborad extends ConsumerWidget {
   Dashborad({super.key});
   int maxItems = 2;
+  String formatPrice(String price) {
+    final number = double.tryParse(price) ?? 0.0;
+    final formatter = NumberFormat('#,##0.00');
+    return formatter.format(number);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
+    final role = ref.watch(userRoleProvider);
 
     return Scaffold(
       appBar: _buildAppBar(context, ref),
@@ -47,7 +62,11 @@ class Dashborad extends ConsumerWidget {
               Headcard(),
               SizedBox(height: 15),
               _buildRow(context, ref),
+              SizedBox(height: 15),
+
+              Votingsettingcheck(child: PollDatas(canRoute: true)),
               SizedBox(height: 25),
+
               Text(
                 "YOUR DUES",
                 style: TextStyle(
@@ -57,7 +76,15 @@ class Dashborad extends ConsumerWidget {
                 ),
               ),
               SizedBox(height: 15),
-              _buildDueCard("95,000"),
+              DashbordData(
+                builder:
+                    (context, data) => _buildDueCard(
+                      data as PaymentDashboardData,
+                      context,
+                      ref,
+                    ),
+              ),
+
               SizedBox(height: 20),
               Text(
                 "VISITOR ACTIVITIES",
@@ -91,12 +118,33 @@ class Dashborad extends ConsumerWidget {
                 ),
               ),
               SizedBox(height: 25),
-              _otherLinks(
-                title: "ADD FAMILY",
-                onTap: () async {
-                  context.pushNamed(AppRoutes.getMemberInfo);
+
+              role.when(
+                data: (data) {
+                  if (data.isNotEmpty) {
+                    if (data.toLowerCase().contains("landlord") ||
+                        data.toLowerCase().contains("spouse")) {
+                      return _otherLinks(
+                        title: "ADD FAMILY",
+                        onTap: () async {
+                          context.pushNamed(AppRoutes.getMemberInfo);
+                        },
+                      );
+                    } else {
+                      return SizedBox();
+                    }
+                  } else {
+                    return SizedBox();
+                  }
+                },
+                error: (e, s) {
+                  return SizedBox();
+                },
+                loading: () {
+                  return SizedBox();
                 },
               ),
+
               Divider(color: AppColors.instance.grey400),
               _otherLinks(
                 title: "ACCOUNT SETTINGS",
@@ -122,7 +170,7 @@ class Dashborad extends ConsumerWidget {
                 ),
               ),
               SizedBox(height: 10),
-              _buildSaftyRow(context),
+              _buildSaftyRow(context, ref),
             ],
           ),
         ),
@@ -130,13 +178,27 @@ class Dashborad extends ConsumerWidget {
     );
   }
 
-  Widget _buildSaftyRow(BuildContext context) {
+  Widget _buildSaftyRow(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authProvider);
+    final user = authState.user;
+    final fullname = authState.fullname;
+    final adminEmail = user?["estate"]["contact_email"] ?? "";
+    final estateName = user?['estate_name'] ?? "";
+
     return Row(
       spacing: 10,
       children: [
         Expanded(
           child: _buildSaftyBox(
-            onTap: () {},
+            onTap: () {
+              showUserBottomSheet(
+                context: context,
+                headertitle: "",
+                headersubtitle: "",
+                ref: ref,
+                bottom: BottomSheetView.residentEmgencyContacts,
+              );
+            },
             imagepath: AssetPaths.dashboardemergency,
             title: 'Emergency',
           ),
@@ -144,7 +206,11 @@ class Dashborad extends ConsumerWidget {
         Expanded(
           child: _buildSaftyBox(
             onTap: () {
-              push(context, AgreementSignScreen());
+              _launchSupportEmail(
+                adminEmail: adminEmail,
+                estateName: estateName,
+                userName: fullname ?? "",
+              );
             },
             imagepath: AssetPaths.dashboardCall,
             title: 'Support',
@@ -247,13 +313,17 @@ class Dashborad extends ConsumerWidget {
   PreferredSizeWidget _buildAppBar(BuildContext context, WidgetRef ref) {
     final reminderprovider = ref.read(reminderProvider.notifier);
     final notifier = ref.read(workOrderFormProvider.notifier);
+    final profileFile = ref.watch(profilePicProvider);
     return AppBar(
       leadingWidth: 50,
       leading: Padding(
         padding: const EdgeInsets.all(8.0),
         child: CircleAvatar(
           radius: 20,
-          backgroundImage: AssetImage(AssetPaths.userAvatar2),
+          backgroundImage:
+              profileFile != null
+                  ? FileImage(profileFile)
+                  : AssetImage(AssetPaths.navProfileActive) as ImageProvider,
         ),
       ),
       actions: [
@@ -284,105 +354,97 @@ class Dashborad extends ConsumerWidget {
   }
 
   Widget _buildContent(Size size, BuildContext context, WidgetRef ref) {
-    final generatedList = ref.watch(
-      generateNotifierProvider.select((s) => s.generatedList),
-    );
-
-    return Column(
-      children: [
-        if (generatedList.isNotEmpty) ...[
-          SizedBox(height: 200, child: _buildMemberList(ref, size)),
-          ViewMoreButton(buttontext: "View all", onTap: () {}),
-        ] else
-          EmptyBody(
-            onTap: () {},
-            imagepath: AssetPaths.dashboardActivities,
-            emptyMessag: "Your visitor activity will appear here",
-            buttonTexe: "View all",
-          ),
-      ],
-    );
+    return SizedBox(height: 200, child: ActivedataWidget());
+    // return Column(
+    //   children: [
+    //     if (generatedList.isNotEmpty) ...[
+    //       SizedBox(height: 200, child: ActivedataWidget()),
+    //       ViewMoreButton(buttontext: "View all", onTap: () {}),
+    //     ] else
+    //       EmptyBody(
+    //         onTap: () {},
+    //         imagepath: AssetPaths.dashboardActivities,
+    //         emptyMessag: "Your visitor activity will appear here",
+    //         buttonTexe: "View all",
+    //       ),
+    //   ],
+    // );
   }
 
-  Widget _buildMemberList(WidgetRef ref, Size size) {
-    final generatedList = ref.watch(
-      generateNotifierProvider.select((s) => s.generatedList),
-    );
-    return ListView.builder(
-      physics: const BouncingScrollPhysics(),
-      itemCount: min(2, generatedList.length),
-      itemBuilder: (BuildContext context, int index) {
-        final generatedLists = generatedList[index];
-        return VisitorCard(
-          userName: generatedLists.vistorName,
-          purposeOfVisit: generatedLists.purposeofVisit,
-          selectedDate: generatedLists.selectedDate,
-          selectedTime: generatedLists.selectedTime,
-          onChangePressed: () {},
-        );
-      },
-    );
-  }
-
-  Widget _buildDueCard(String amount) {
-    return InkWell(
-      onTap: () async {
-        final token = await NotificationService().getToken();
-        NotificationService().sendNotificationToAll(
-          bearerToken:
-              "ya29.c.c0ASRK0GY7bnJjYWhVtS4au26Eb2-tbUAEIZL4kLQhZEx1_r1h1jVCXLv3oFhhTbBhAGuTt1hqHHQj6DAv8VUahygJEG2_XgBTM3oOT9BLykDkAQtMO_uzxAx0uIxwvM54cnxvyeHgWWPCO_oy0i4q7q7ZOmiIb5LN80J5ii_FJDtlARdKnrkHJl48u8eKmuOk1apoM84iUYFiQ7oy3Bpe2xGJq_f3LAYTMxFvQBWj-S9zPioLMcsCAX03UmuuPRhQBsPiq34g3Jdc43-hI78jWNqVMjNZxvS9idYWjmttYHvEVTdrvo28dXrkKssY-u6_N3InOCTW2iGrahcZinOl4JaX7zmYinGQAMBbFrgwfVuCfcKvLNYLHzy6N385C84e_nrigbniU7-8f2nYt2UFt2Bhu2xvXi9mzm8sUhsy_ou5ilYiMydRvO1uRz0U3tW98FQbygwzV9la2M6QMxS2Ztup3gtlol2j9hsiufYeMqiqqkhybMOOyre4k09iVs-2c0dR0qMqfs6zalfbYp795YlM6Q-kWmaI5ozqRn5xyvvbXSeFV7zx_t7Rqk9yViv6v6SIRiWcn0zpgJFSyb_uVIFrzs_St1beRnxwZWygI-XougUgBg4rcXjz0SXep33oS3Jry8SQfJ6ulJeUWMMxgs9runriW7qBuZup-hhVm4_o5a1VhZ-Ul5wYU8u0j9jOSazz1z8U0oFidh5vRg4jbRpdJ-bYVhox5nU7FjtiRqiuJexSyVwy0rrIlyZxW20zJ1gMitnU_sVMU8BqhibBb_JtY1pjYy-R-_rlmM2tmU2ldvl8jd35SM8pZvd8aSzoJFkg-1uwok7VFsBtk8J0XrMn0ylnsBcdif0YJ5S8ZgZ9wxRun1dpJ0Z2FJuezv9M0jkcucyX7JBmQ_m3bVsVU0mX8sVdpo9axrplYu-jJg5nd8mhWjpB5r_RcYtJ0Zlm4SVWgkwpwVhF-4dfww5RdqUusddZnJczQnlwxOlgg3xVbWQS04cFno",
-          message:
-              "The magority of the comminuty was not coming to the meeting.",
-          messageType: "chat",
-          senderName: "James Muller",
-          senderProfilePix: "https://avatars.githubusercontent.com/u/1?v=4",
-          senderId: "12",
-          tokens: [token ?? ""],
-        );
-      },
-      child: Container(
-        padding: EdgeInsets.all(12),
-        height: 65,
-        decoration: BoxDecoration(
-          color: AppColors.instance.teal300,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "Amount Due:  #$amount",
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                color: AppColors.instance.black600,
-                fontWeight: FontFamilies.bold,
+  Widget _buildDueCard(
+    PaymentDashboardData? data,
+    BuildContext context,
+    WidgetRef ref,
+  ) {
+    final isDue = data?.totalOutstanding == 0;
+    final amount = data?.totalOutstanding.toString();
+    return Container(
+      padding: EdgeInsets.all(12),
+      height: 65,
+      decoration: BoxDecoration(
+        color: AppColors.instance.teal300,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          isDue
+              ? Text(
+                "No upcoming dues",
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  color: AppColors.instance.black400,
+                  fontWeight: FontFamilies.medium,
+                  fontSize: 13,
+                ),
+              )
+              : Text(
+                "Amount Due:  ₦${formatPrice(amount ?? "")}",
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  color: AppColors.instance.black600,
+                  fontWeight: FontFamilies.bold,
+                ),
               ),
-            ),
-            Container(
-              height: 35,
-              width: 70,
-              decoration: BoxDecoration(
-                color: AppColors.instance.black600,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Center(
-                child: Text(
-                  "Pay due",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    color: AppColors.instance.grey200,
-                    fontSize: 12,
+          isDue
+              ? Text("")
+              : InkWell(
+                onTap: () {
+                  showUserBottomSheet(
+                    context: context,
+                    headertitle: "Pay Outstanding Due",
+                    headersubtitle: "",
+                    ref: ref,
+                    dashbordData: data,
+                    bottom: BottomSheetView.payOustanding,
+                  );
+                },
+                child: Container(
+                  height: 35,
+                  width: 70,
+                  decoration: BoxDecoration(
+                    color: AppColors.instance.black600,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Pay due",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        color: AppColors.instance.grey200,
+                        fontSize: 12,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }
 
   Widget _buildRow(BuildContext context, WidgetRef ref) {
+    final role = ref.watch(userRoleProvider);
     final notifier = ref.read(workOrderFormProvider.notifier);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -396,7 +458,8 @@ class Dashborad extends ConsumerWidget {
 
             final status = await ref.read(digitalIdStatusProvider.future);
 
-            if (status.hasDigitalId) {
+            log(status.hasDigitalId.toString());
+            if (status.canGenerate) {
               context.pushNamed(AppRoutes.digitalIDMember);
             } else {
               context.pushNamed(AppRoutes.digitalIDStarter);
@@ -404,16 +467,37 @@ class Dashborad extends ConsumerWidget {
           },
         ),
         SizedBox(width: 10),
-        Dashbordrowcard(
-          title: "Work Order",
-          icon: AssetPaths.dashboardWorkOrder,
-          onTap: () {
-            notifier.updateEndDate(null);
-            notifier.updateStartDate(null);
-            notifier.updateWorkType("", 0);
-            context.pushNamed(AppRoutes.workOrder);
+
+        role.when(
+          data: (data) {
+            if (data.isNotEmpty) {
+              if (data.toLowerCase().contains("staff") ||
+                  data.toLowerCase().contains("family_member")) {
+                return SizedBox();
+              } else {
+                return Dashbordrowcard(
+                  title: "Work Order",
+                  icon: AssetPaths.dashboardWorkOrder,
+                  onTap: () {
+                    notifier.updateEndDate(null);
+                    notifier.updateStartDate(null);
+                    notifier.updateWorkType("", 0);
+                    context.pushNamed(AppRoutes.workOrder);
+                  },
+                );
+              }
+            } else {
+              return SizedBox();
+            }
+          },
+          error: (e, s) {
+            return SizedBox();
+          },
+          loading: () {
+            return SizedBox();
           },
         ),
+
         SizedBox(width: 10),
         Dashbordrowcard(
           title: "Visitor",
@@ -438,12 +522,63 @@ class Dashborad extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Visitoractivecount(title: "Total today", count: '0'),
+        CountDataForAll<ExpiredCountResponse>(
+          provider: expiredCountProvider("used"),
+          emptyBody: Visitoractivecount(title: "Total today", count: "0"),
+          builder:
+              (data) => Visitoractivecount(
+                title: "Total today",
+                count: '${data.data?.count ?? 0}',
+              ),
+        ),
+
         SizedBox(width: 10),
-        Visitoractivecount(title: "Active", count: "0"),
+        CountDataForAll<ActiveCountResponse>(
+          provider: getActiveCountProvider,
+          emptyBody: Visitoractivecount(title: "Active", count: '0'),
+          builder:
+              (data) => Visitoractivecount(
+                title: "Active",
+                count: '${data.data?.count ?? 0}',
+              ),
+        ),
+
         SizedBox(width: 10),
-        Visitoractivecount(title: "Expired", count: "0"),
+        CountDataForAll<ExpiredCountResponse>(
+          provider: expiredCountProvider("expired"),
+          emptyBody: Visitoractivecount(title: "Expired", count: "0"),
+          builder:
+              (data) => Visitoractivecount(
+                title: "Expired",
+                count: '${data.data?.count ?? 0}',
+              ),
+        ),
       ],
     );
+  }
+
+  Future<void> _launchSupportEmail({
+    required String adminEmail,
+    required String estateName,
+    required String userName,
+  }) async {
+    final Uri emailUri = Uri(
+      scheme: 'mailto',
+      path: adminEmail,
+      query: Uri.encodeQueryComponent(
+        'subject=Support Request - $estateName'
+        '&body=Hello Admin,\n\n'
+        'I need assistance.\n\n'
+        'User: $userName\n'
+        'Estate: $estateName\n\n'
+        'Thank you.',
+      ),
+    );
+
+    if (await canLaunchUrl(emailUri)) {
+      await launchUrl(emailUri);
+    } else {
+      throw 'Could not launch email app';
+    }
   }
 }

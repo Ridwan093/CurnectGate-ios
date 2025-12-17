@@ -13,8 +13,8 @@ _$UserSettingsImpl _$$UserSettingsImplFromJson(Map<String, dynamic> json) =>
           : PrivacySettings.fromJson(json['privacy'] as Map<String, dynamic>),
       bankName: json['bank_name'] as String?,
       preferences: json['preferences'] == null
-          ? PrivacySettings.empty()
-          : PrivacySettings.fromJson(
+          ? PreferencesSettings.empty()
+          : PreferencesSettings.fromJson(
               json['preferences'] as Map<String, dynamic>),
       notifications: json['notifications'] == null
           ? Notifications.empty()
@@ -31,10 +31,10 @@ _$UserSettingsImpl _$$UserSettingsImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$UserSettingsImplToJson(_$UserSettingsImpl instance) =>
     <String, dynamic>{
-      'privacy': instance.privacy.toJson(),
+      'privacy': instance.privacy?.toJson(),
       'bank_name': instance.bankName,
-      'preferences': instance.preferences.toJson(),
-      'notifications': instance.notifications.toJson(),
+      'preferences': instance.preferences?.toJson(),
+      'notifications': instance.notifications?.toJson(),
       'bank_account_name': instance.bankAccountName,
       'bank_account_number': instance.bankAccountNumber,
       'household_permissions': instance.householdPermissions.toJson(),

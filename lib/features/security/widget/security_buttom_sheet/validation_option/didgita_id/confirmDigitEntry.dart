@@ -1,95 +1,142 @@
 import 'dart:convert';
 
+import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/customPath.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class ConfirmentryDigital extends ConsumerWidget {
-  final String name;
+  final String digital_id_code;
+  final String access_type;
+  final String location;
+  final String additional_notes;
+  final String device_id;
   final String type;
-  final int id;
+
   ConfirmentryDigital({
     super.key,
-    required this.name,
+    required this.digital_id_code,
     required this.type,
-    required this.id,
+
+    required this.access_type,
+    required this.location,
+    required this.additional_notes,
+    required this.device_id,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final Map<String, dynamic> extractedData = json.decode(type);
     // final Map<String, dynamic> data = json.decode(name);
+    final provider = ref.read(formProvider.notifier);
     final size = MediaQuery.sizeOf(context);
+    final isLoading = ref.watch(oTpformProvider).isLoading;
     return SingleChildScrollView(
-      child: Column(
+      child: Stack(
+        // alignment: Alignment.center,
         children: [
-          Align(
-            alignment: Alignment.topRight,
-            child: InkWell(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Icon(Icons.close, color: AppColors.instance.black600),
-            ),
-          ),
-          SizedBox(height: 25),
-          Text(
-            "Confirm Entry",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.black600,
-              fontSize: 14,
-              fontWeight: FontFamilies.bold,
-            ),
-          ),
-          SizedBox(height: 30),
-          _buildUserInfoBox(size: size, extractedData: extractedData),
-          SizedBox(height: 30),
-          Row(
+          Column(
             children: [
-              Expanded(
-                child: _buildFeatureButton(
+              Align(
+                alignment: Alignment.topRight,
+                child: InkWell(
                   onTap: () {
-                    context.pop();
-                    showUserBottomSheet(
-                      id: id,
-                      context: context,
-                      headertitle: "",
-                      headersubtitle: extractedData['id'].toString(),
-                      ref: ref,
-                      bottom: BottomSheetView.digitalIdDeny,
-                    );
+                    Navigator.pop(context);
                   },
-                  title: "Deny Access",
-                  color: AppColors.instance.grey500,
+                  child: Icon(Icons.close, color: AppColors.instance.black600),
                 ),
               ),
-              SizedBox(width: 10),
-              Expanded(
-                child: _buildFeatureButton(
-                  onTap: () {
-                    context.pop();
-                    showUserBottomSheet(
-                      id: id,
-                      context: context,
-                      headertitle: extractedData["firstname"] ?? "N/A",
-
-                      headersubtitle: "",
-                      ref: ref,
-                      bottom: BottomSheetView.digitalIdDeny,
-                    );
-                  },
-                  title: "Grant Access",
+              SizedBox(height: 25),
+              Text(
+                "Confirm Entry",
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
                   color: AppColors.instance.black600,
+                  fontSize: 14,
+                  fontWeight: FontFamilies.bold,
                 ),
+              ),
+              SizedBox(height: 30),
+              _buildUserInfoBox(size: size, extractedData: extractedData),
+              SizedBox(height: 30),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildFeatureButton(
+                      onTap:
+                          isLoading
+                              ? () {}
+                              : () {
+                                // context.pop();
+                                // showUserBottomSheet(
+                                //   id: id,
+                                //   context: context,
+                                //   headertitle: "",
+                                //   headersubtitle: extractedData['id'].toString(),
+                                //   ref: ref,
+                                //   bottom: BottomSheetView.digitalIdDeny,
+                                // );
+                                context.pop();
+                                showUserBottomSheet(
+                                  context: context,
+                                  headertitle:
+                                      extractedData["firstname"] ?? "N/A",
+                                  digital_id_code: digital_id_code,
+                                  access_type: access_type,
+                                  location: location,
+                                  ref: ref,
+
+                                  additional_notes: "",
+                                  headersubtitle: "",
+
+                                  bottom: BottomSheetView.digitalIdDeny,
+                                );
+                              },
+                      title: "Deny Access",
+                      color: AppColors.instance.grey500,
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: _buildFeatureButton(
+                      onTap:
+                          isLoading
+                              ? () {}
+                              : () {
+                                provider.digitalIDApproveDeny(
+                                  context: context,
+                                  qrCodeData: digital_id_code,
+                                  accessTypes: access_type,
+                                  location: location,
+                                  ref: ref,
+                                  approveType: "grant-access",
+                                  denial_reason: "",
+                                );
+                                // provider.digitalIDApproveDeny(
+                                //   context: context,
+                                //   qrCodeData: digital_id_code,
+                                //   accessTypes: access_type,
+                                //   location: location,
+                                //   ref: ref,
+                                //   approveType: "deny-access",
+                                // );
+                              },
+                      title: "Grant Access",
+                      color: AppColors.instance.black600,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
+          if (isLoading) Positioned.fill(child: _buildOverlayLoading()),
         ],
       ),
     );
@@ -172,6 +219,13 @@ class ConfirmentryDigital extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildOverlayLoading() {
+    return Container(
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
+      child: Center(child: Loadingstates()),
     );
   }
 

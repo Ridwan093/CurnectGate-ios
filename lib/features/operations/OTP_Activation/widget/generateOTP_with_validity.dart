@@ -1,7 +1,7 @@
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/core/widgets/GetYourCode.dart';
+
 import 'package:curnectgate/features/operations/OTP_Activation/provider/active_provider.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/additionalInfo.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/validity_period_drop_down.dart';
@@ -222,48 +222,4 @@ Widget _buildPurposeDropdown(WidgetRef ref, String currentValue) {
       },
     ),
   );
-}
-
-Future<void> _submit(WidgetRef ref, BuildContext context) async {
-  final visitor = ref.read(generateNotifierProvider);
-  final visitors = ref.read(generateNotifierProvider.notifier);
-
-  if (visitor.purposeofVisit.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please select a report category')),
-    );
-
-    return;
-  }
-
-  if (visitor.vistorName.isEmpty) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Please enter a description')));
-    return;
-  }
-
-  try {
-    visitors.submit();
-    Navigator.pop(context);
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder:
-            (context) => GetYourCodeScreen(
-              title: "Your visitor access code: ",
-              accessCode: "3456GAT",
-              share: "Here's my vistor access code:",
-            ),
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Report submitted successfully!')),
-    );
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Failed to submit report: ${e.toString()}')),
-    );
-  }
 }

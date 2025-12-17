@@ -4,10 +4,8 @@ import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
 import 'package:curnectgate/core/appErrorBody/emmergencyBody.dart';
 import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/style/colors.dart';
-import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/getpermissionStatic_provider.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/CurfewProvider.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/permission_widget/curfew_content.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
-import 'package:curnectgate/features/userProfile/profile/provider/profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,27 +16,27 @@ class CurfewSettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final permissionAsync = ref.watch(statisticProvider);
+    final permissionAsync = ref.watch(getCurfewSettingProvider);
 
     return RefreshIndicator(
       color: AppColors.instance.yellow500,
       onRefresh:
           () => ref
-              .read(statisticProvider.notifier)
+              .read(getCurfewSettingProvider.notifier)
               .refreshPermission(context, ref),
       child: permissionAsync.when(
         data: (profile) {
           try {
             final user = profile?.data;
             return user != null
-                ? CurfewContent(permission: user.permissions)
+                ? CurfewContent(permission: user.curfewSettings!, id: id)
                 : EmptyBodys(message: "No curfew settings?");
           } catch (e) {
             return Builderroul(
               error: e.toString(),
               onTap:
                   () => ref
-                      .read(statisticProvider.notifier)
+                      .read(getCurfewSettingProvider.notifier)
                       .refreshPermission(context, ref),
               firstMessae: "Faile to load curfew?",
             );
@@ -46,17 +44,20 @@ class CurfewSettingsScreen extends ConsumerWidget {
         },
         loading: () {
           try {
-            final cachedsetting = ref.read(statisticProvider).value;
+            final cachedsetting = ref.read(getCurfewSettingProvider).value;
             return cachedsetting != null
-                ? CurfewContent(permission: cachedsetting.data?.permissions)
+                ? CurfewContent(
+                  permission: cachedsetting.data!.curfewSettings!,
+                  id: id,
+                )
                 : Loadingstates();
           } catch (e) {
             return Builderroul(
               error: e.toString(),
               onTap:
                   () => ref
-                      .read(userProfileProvider.notifier)
-                      .refreshProfile(context, ref),
+                      .read(getCurfewSettingProvider.notifier)
+                      .refreshPermission(context, ref),
               firstMessae: "Faile to load profile?",
             );
           }
@@ -64,19 +65,19 @@ class CurfewSettingsScreen extends ConsumerWidget {
         error: (error, stack) {
           try {
             // Handle session expiration
-            if (error.toString().contains("Unauthenticated")) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                ref.read(authProvider.notifier).seassionExpire(context, ref);
-              });
-              return Expiresessionbody();
+            if (error.toString().contains("Unauthorized")) {
+              return const Expiresessionbody();
             }
 
-            // Try to show cached data
-            final cachedetting = ref.read(statisticProvider).value;
+            // Try to show cached getCurfewSettingProvider
+            final cachedetting = ref.read(getCurfewSettingProvider).value;
             if (cachedetting != null) {
               return Column(
                 children: [
-                  CurfewContent(permission: cachedetting.data?.permissions),
+                  CurfewContent(
+                    permission: cachedetting.data!.curfewSettings!,
+                    id: id,
+                  ),
                   Emmergencybody(error: error.toString()),
                 ],
               );
@@ -87,7 +88,7 @@ class CurfewSettingsScreen extends ConsumerWidget {
               error: error.toString(),
               onTap:
                   () => ref
-                      .read(statisticProvider.notifier)
+                      .read(getCurfewSettingProvider.notifier)
                       .refreshPermission(context, ref),
               firstMessae: "Faile to load curfew settings?",
             );
@@ -96,7 +97,7 @@ class CurfewSettingsScreen extends ConsumerWidget {
               error: e.toString(),
               onTap:
                   () => ref
-                      .read(statisticProvider.notifier)
+                      .read(getCurfewSettingProvider.notifier)
                       .refreshPermission(context, ref),
               firstMessae: "Faile to load curfew?",
             );

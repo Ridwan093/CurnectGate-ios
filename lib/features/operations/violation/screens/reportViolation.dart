@@ -124,8 +124,10 @@ class _ReportviolationState extends ConsumerState<ReportViolation> {
   }
 
   Widget _buildAddMemberButton(Size size, BuildContext context, WidgetRef ref) {
+    final reportStatess = ref.watch(reportProvider.notifier);
     return InkWell(
       onTap: () {
+        reportStatess.resetState();
         showUserBottomSheet(
           context: context,
           headertitle: "Report violation",

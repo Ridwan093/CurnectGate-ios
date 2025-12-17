@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:curnectgate/core/%20utils/api/getApi_Method.dart';
 import 'package:curnectgate/core/%20utils/api/getApi_service.dart';
 import 'package:curnectgate/core/config/biometric_faceID/Helper/device_info_helper.dart';
+import 'package:curnectgate/core/local_store/getUserprofile_file_provider.dart';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
@@ -12,6 +13,7 @@ import 'package:curnectgate/features/member_management/profile_form/provider%20/
 import 'package:curnectgate/features/member_management/tabState/tab_state.dart';
 import 'package:curnectgate/features/signOut/errorWidget/SignOut_dialog.dart';
 import 'package:curnectgate/features/signOut/errorWidget/expireDialog.dart';
+import 'package:curnectgate/features/signOut/provider/authProvider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,7 +54,9 @@ class SignOutNotifier extends StateNotifier<SharedPrefsService> {
               iconColors: AppColors.instance.grey200,
               positionNumber: 70,
             );
+
             state.clearAuthData();
+            await ref.read(profilePicProvider.notifier).clearAllProfilePics();
             ref.read(tabStateProvider.notifier).resetToMainTab();
             context.goNamed(AppRoutes.signIN);
             ref.read(formProvider.notifier).updateLogOutLoadin(false);
@@ -119,18 +123,21 @@ class SignOutNotifier extends StateNotifier<SharedPrefsService> {
     }
   }
 
-  void seassionExpire(BuildContext context, WidgetRef ref) async {
+  void sessionExpire(BuildContext context, WidgetRef ref) async {
     final shouldLogout = await showSessionExpiredDialog(context);
 
     if (shouldLogout) {
       // 2. Clear states only after user confirms
       state.clearAuthData();
+      ref.read(sessionExpiredProvider.notifier).reset();
       ref.read(tabStateProvider.notifier).resetToMainTab();
 
       // 3. Navigate to login screen
       if (context.mounted) {
         context.goNamed(AppRoutes.signIN);
       }
+    } else {
+      ref.read(sessionExpiredProvider.notifier).reset();
     }
   }
 }

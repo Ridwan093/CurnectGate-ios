@@ -28,7 +28,7 @@ class AllMemberListScreen extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       leading: InkWell(
         onTap: () {
-          context.goNamed(AppRoutes.dashbord);
+          context.pop();
         },
         child: const Icon(Icons.arrow_back_ios_new),
       ),
@@ -188,7 +188,7 @@ class AllMemberListScreen extends ConsumerWidget {
                   // final data = householdData?.data;
 
                   // Try to show cached data
- return Text(
+                  return Text(
                     "0",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,

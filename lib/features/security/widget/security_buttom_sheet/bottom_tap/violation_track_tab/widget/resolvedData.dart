@@ -3,8 +3,6 @@ import 'dart:developer';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
-import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/violation/model/report_models/violation.dart';
 import 'package:curnectgate/features/operations/violation/screens/ViolationDetailPage.dart';
 import 'package:curnectgate/features/security/provider/resolved_provider.dart';
@@ -61,13 +59,10 @@ class ResolvedData extends ConsumerWidget {
           },
           error: (error, stack) {
             try {
-              // Handle session expiration first
-              if (error.toString().contains("Unauthenticated")) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  ref.read(authProvider.notifier).seassionExpire(context, ref);
-                });
+              if (error.toString().contains("Unauthorized")) {
                 return _buildSessionExpiredUI(context, ref);
               }
+              // Handle session expiration first
 
               // Try to show cached data if available
               final cachedReport = ref.read(resovedProvider).value;
@@ -109,8 +104,8 @@ class ResolvedData extends ConsumerWidget {
       itemBuilder: (context, index) {
         var data = violations[index];
         return InkWell(
-          onTap: (){
-             Navigator.push(
+          onTap: () {
+            Navigator.push(
               context,
               PageRouteBuilder(
                 transitionDuration: const Duration(milliseconds: 500),
@@ -123,27 +118,28 @@ class ResolvedData extends ConsumerWidget {
                     ),
                   );
                 },
-              ));
+              ),
+            );
           },
           child: ParkingViolationCard(
             isInvestigation: true,
             imageUrl: data.evidence.mediaUrls.first.toString(),
             violationType: data.locationDetails.additionalLocation,
             reportedBy: data.isAnonymous ? "Anonymous" : data.reporter.name,
-          
+
             resolutionType: "Awareness",
             date: formatDate(data.updatedAt),
             onDismiss: () {
               // Handle dismiss action
-              showUserBottomSheet(
-                context: context,
-                headertitle: "Dismiss this violation?",
-                headersubtitle:
-                    "Select reason for dismissing this violation report",
-                ref: ref,
-                bottom: BottomSheetView.securitydismissViolation,
-                id: data.id
-              );
+              // showUserBottomSheet(
+              //   context: context,
+              //   headertitle: "Dismiss this violation?",
+              //   headersubtitle:
+              //       "Select reason for dismissing this violation report",
+              //   ref: ref,
+              //   bottom: BottomSheetView.securitydismissViolation,
+              //   id: data.id
+              // );
             },
             onAccept: () {
               // Handle accept action
@@ -191,9 +187,8 @@ class ResolvedData extends ConsumerWidget {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed:
-                () => ref
-                    .read(authProvider.notifier)
-                    .seassionExpire(context, ref),
+                () =>
+                    ref.read(authProvider.notifier).sessionExpire(context, ref),
             child: const Text("Login"),
           ),
         ],

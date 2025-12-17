@@ -7,7 +7,12 @@ abstract class NullSafetyHelper {
     if (value is int) return value;
     return int.tryParse(value.toString()) ?? 0;
   }
-  
+  static Map<String, int> safeMapInt(dynamic map) {
+    if (map is Map<String, dynamic>) {
+      return map.map((key, value) => MapEntry(key, safeInt(value)));
+    }
+    return {};
+  }
   static double safeDouble(dynamic value) {
     if (value == null) return 0.0;
     if (value is double) return value;

@@ -1,12 +1,12 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/ResidentDirectory/Screen/bottom_seet/emergency.dart';
 import 'package:curnectgate/features/chat/data/provider/chat_provier.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/chat_setting_widget.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/emergency_widget.dart';
 import 'package:curnectgate/features/chat/presentation/screens/messagbody.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/managevendorlog.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/uplodeAfterWork/uplodeAfterWork.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/Set_restrictions.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/add_restrictions.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/basic_permission.dart';
@@ -19,6 +19,7 @@ import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/a
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/setCufew.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/setupPermission.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/visitotIvitaion.dart';
+import 'package:curnectgate/features/member_management/estate_settings/widget/bottom_seet/emergency.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/screen/workPermit_otpHistory.dart';
@@ -39,16 +40,21 @@ import 'package:curnectgate/features/operations/notifications/event/event_widget
 import 'package:curnectgate/features/operations/notifications/event/event_widget/EventCode/dactive_reactive.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/EventCode/event_setting.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/EventCode/myEventCode_bottomsheet.dart';
+import 'package:curnectgate/features/operations/notifications/event/event_widget/build_event_rsvp_details.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/event_detaile.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/selected_event_bottomSheet.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_event_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/Event/resv_model/rsvp_event_history.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/EventCodes/event_code_model.dart';
 import 'package:curnectgate/features/operations/violation/widget/comment_view.dart';
 import 'package:curnectgate/features/operations/violation/widget/report_form.dart';
 import 'package:curnectgate/features/operations/violation/widget/resulationTime.dart';
 import 'package:curnectgate/features/operations/violation/widget/violation_form_bottom_sheet.dart';
+import 'package:curnectgate/features/payment/state_model/payment_model/dashbord_Model/payment_dashboard_data.dart';
 import 'package:curnectgate/features/payment/widget/buttom_sheet_widget/funding_wallet.dart';
+import 'package:curnectgate/features/payment/widget/buttom_sheet_widget/funding_wallet_amout.dart';
 import 'package:curnectgate/features/payment/widget/buttom_sheet_widget/payOutstanding.dart';
+import 'package:curnectgate/features/payment/widget/buttom_sheet_widget/succeful_button_sheet.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/MenatainLog.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/accessGranted.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/addComment.dart';
@@ -63,6 +69,8 @@ import 'package:curnectgate/features/security/widget/security_buttom_sheet/valid
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/didgita_id/aprovedEntry.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/didgita_id/confirmDigitEntry.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/didgita_id/denyingDigital.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/didgita_id/finalMessageApproved.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/didgita_id/finalMessageDenying.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/didgita_id/validateOtp.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/optionforCodeValidation.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/scanoption.dart';
@@ -104,7 +112,14 @@ class BottomsheetDetails extends ConsumerWidget {
   final BottomSheetView bottom;
   CalendarEvent? eventData;
   EventCode? eventCode;
+  RsvpEventHistory? event;
   int? id;
+  String? digital_id_code;
+  String? access_type;
+  String? location;
+  String? additional_notes;
+  String? device_id;
+  PaymentDashboardData? dashborddata;
 
   BottomsheetDetails({
     super.key,
@@ -114,6 +129,13 @@ class BottomsheetDetails extends ConsumerWidget {
     this.eventData,
     this.eventCode,
     this.id,
+    this.dashborddata,
+    this.event,
+    this.digital_id_code,
+    this.access_type,
+    this.location,
+    this.additional_notes,
+    this.device_id,
   });
 
   @override
@@ -131,15 +153,25 @@ class BottomsheetDetails extends ConsumerWidget {
           subtitle: headersubtitle,
         );
       case BottomSheetView.activeOTPHistory:
-        // return ActiveHistory();
+        // return ActiveHistory();fundingAmount
         return OtpTabsPage();
 
+      case BottomSheetView.fundingAmount:
+        // return ActiveHistory();fundingAmount
+        return FundWalletBottomSheet(
+          private: headertitle,
+          puplic: headersubtitle,
+        );
+
+      case BottomSheetView.eventRsvpDetails:
+        // return ActiveHistory();fundingAmount
+        return EventRsvpDetaile(data: event!);
       case BottomSheetView.resolutionTime:
         return ResolutionTimeline(id: id ?? 0, title: headertitle);
       case BottomSheetView.fundingWithbankTransfer:
         return FundingWallet(headertitle: headertitle);
       case BottomSheetView.payOustanding:
-        return PayOutstanding(headertitle: headertitle);
+        return PayOutstanding(headertitle: headertitle, data: dashborddata);
       case BottomSheetView.confirmEntry:
         return Confirmentry(
           name: headersubtitle,
@@ -154,6 +186,12 @@ class BottomsheetDetails extends ConsumerWidget {
         return AccessGranted(
           isGranted: headersubtitle.isNotEmpty,
           jsonData: headertitle,
+        );
+      case BottomSheetView.afterphoto:
+        return UploadWorkImagesSheet(
+          id: id ?? 0,
+          title: headertitle,
+          subtitle: headersubtitle,
         );
       case BottomSheetView.specifyNumberofGust:
         return SpecifyumberOfGuest(extractData: headertitle, id: id.toString());
@@ -216,6 +254,11 @@ class BottomsheetDetails extends ConsumerWidget {
 
       case BottomSheetView.gateAccess:
         return GateSettingsScreen(id: id ?? 0);
+      case BottomSheetView.paymentSuccess:
+        return PaymentSuccessSheet(
+          message: headertitle,
+          isError: headersubtitle.isNotEmpty,
+        );
       case BottomSheetView.communty:
         return Community_Forum(id: id ?? 0);
 
@@ -269,8 +312,12 @@ class BottomsheetDetails extends ConsumerWidget {
       case BottomSheetView.digitalIdConfirm:
         return ConfirmentryDigital(
           type: headertitle,
-          name: headersubtitle,
-          id: id ?? 0,
+
+          digital_id_code: digital_id_code ?? "",
+          access_type: access_type ?? "",
+          location: location ?? "",
+          additional_notes: additional_notes ?? "",
+          device_id: device_id ?? "",
         );
 
       /// STRTE HERE
@@ -313,13 +360,19 @@ class BottomsheetDetails extends ConsumerWidget {
 
       // END HERE
       case BottomSheetView.digitalIdDeny:
-        return DenyDigitalEntry(otpCode: headersubtitle, id: id.toString());
+        return DenyDigitalEntry(
+          digital_id_code: digital_id_code ?? "",
+          access_type: access_type ?? "",
+          location: location ?? "",
+          additional_notes: additional_notes ?? "",
+          device_id: device_id ?? "",
+        );
       case BottomSheetView.digitalIdApproved:
         return GrantDigitalEntry(otpCode: headersubtitle, id: id.toString());
       case BottomSheetView.digitalIDaprovedMessage:
-        return VendorApprovedMessage(jsonData: headertitle);
+        return AccessGrantedDigital(jsonData: headertitle);
       case BottomSheetView.digitalIdDenymessage:
-        return VendorCodeDenyMessage(jsonData: headertitle);
+        return DenyEntryDigitalMessage(jsonData: headertitle);
       //      digitalIdConfirm,
       // // digitalIdDeny,
       // // digitalIdApproved,

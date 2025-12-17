@@ -1,37 +1,45 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/estate_management/elections/models/election_models.dart';
-import 'package:curnectgate/features/estate_management/elections/models/eletion_state.dart';
+import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/summary_result/candidate.dart';
+import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/summary_result/position.dart';
+import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/summary_result/results_data.dart';
 import 'package:curnectgate/features/estate_management/elections/widgets/flam_container.dart';
 import 'package:flutter/material.dart';
 
 /// SummaryResultTab: implements the Summary UI you described
 class SummaryResultTab extends StatelessWidget {
-  final ElectionState state;
-  const SummaryResultTab({super.key, required this.state});
+  final ResultsData data;
+  const SummaryResultTab({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
     // winners: top candidate per position, in ballot order (positions order)
-    final winners =
-        state.election.positions.map((p) {
-          final sorted = List.of(p.candidates)
-            ..sort((a, b) => (b.totalVotes ?? 0).compareTo(a.totalVotes ?? 0));
-          final top = sorted.isNotEmpty ? sorted.first : null;
-          return {'positionTitle': p.title, 'winner': top};
-        }).toList();
+    final winnerList =
+        data.positions?.map((position) {
+          final Candidate? winner =
+              (position.winners?.isNotEmpty ?? false)
+                  ? position.winners!.first
+                  : null;
+
+          return {
+            "positionTitle": position.positionTitle,
+            "winner": winner,
+            "totalVotes": position.totalVotes ?? 0,
+          };
+        }).toList() ??
+        [];
 
     // small helpers for summary stats
-    final totalPositions = state.election.positions.length;
-    final totalCandidates = state.election.positions.fold<int>(
-      0,
-      (s, p) => s + p.candidates.length,
-    );
-    final totalVotesAll = state.election.positions.fold<int>(
-      0,
-      (s, p) =>
-          s + p.candidates.fold<int>(0, (t, c) => t + (c.totalVotes ?? 0)),
-    );
+    // final totalPositions = state.election.positions.length;
+    // final totalCandidates = state.election.positions.fold<int>(
+    //   0,
+    //   (s, p) => s + p.candidates.length,
+    // );
+    // final totalVotesAll = state.election.positions.fold<int>(
+    //   0,
+    //   (s, p) =>
+    //       s + p.candidates.fold<int>(0, (t, c) => t + (c.totalVotes ?? 0)),
+    // );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,29 +82,23 @@ class SummaryResultTab extends StatelessWidget {
                 // winners list inside the card (one row per position)
                 Column(
                   children:
-                      winners.map((entry) {
-                        final posTitle = entry['positionTitle'] as String;
-                        final winner = entry['winner'];
-                        final name = 'Chinedu Okafor';
-                        final party = 'Independent';
-                        final votes = 70;
-                        // compute percentage relative to all votes in that position
-                        final positionCandidates =
-                            state.election.positions
-                                .firstWhere((p) => p.title == posTitle)
-                                .candidates;
-                        final posTotal = positionCandidates.fold<int>(
-                          0,
-                          (t, c) => t + (c.totalVotes ?? 0),
-                        );
-                        final percent =
-                            posTotal == 0 ? 0.0 : ((votes) / posTotal) * 100;
+                      winnerList.where((entry) => entry["winner"] != null).map((
+                        entry,
+                      ) {
+                        final String posTitle =
+                            entry["positionTitle"] as String;
+                        final Candidate winner = entry["winner"] as Candidate;
+                        final int votes = winner.votes ?? 0;
+                        final int totalVotes = entry["totalVotes"] as int;
+
+                        final double percent =
+                            totalVotes == 0 ? 0.0 : (votes / totalVotes) * 100;
 
                         return _winnerCard(
                           winner: winner,
-                          name: name,
-                          party: party,
-                          imageUrl: '',
+                          name: winner.candidateName ?? "No winner",
+                          party: "",
+                          imageUrl: "",
                           votes: votes,
                           posTitle: posTitle,
                           percent: percent,
@@ -127,30 +129,25 @@ class SummaryResultTab extends StatelessWidget {
         // Section 3: Detailed per-position cards (one card per position showing top candidate with progress & "leading by X%")
         Column(
           children:
-              state.election.positions.map((p) {
-                final candidates = p.candidates;
-                final posTotal = candidates.fold<int>(
-                  0,
-                  (t, c) => t + (c.totalVotes ?? 0),
-                );
-                // sort by votes desc
-                final sorted = List.of(candidates)..sort(
-                  (a, b) => (b.totalVotes ?? 0).compareTo(a.totalVotes ?? 0),
-                );
-                final leader = sorted.isNotEmpty ? sorted.first : null;
-                final leaderVotes = leader?.totalVotes ?? 0;
-                final leaderPct =
-                    posTotal == 0 ? 0.0 : (leaderVotes / posTotal) * 100;
+              data.positions!
+                  .where(
+                    (p) =>
+                        (p.candidates?.any((c) => c.isWinner == true) ?? false),
+                  )
+                  .map((p) {
+                    final winner = p.candidates!.firstWhere(
+                      (c) => c.isWinner == true,
+                    );
 
-                return _eletionWinnerDetailesCard(
-                  leader: leader,
-                  p: p,
-                  leaderPct: leaderPct,
-                  leaderVotes: leaderVotes,
-                );
-              }).toList(),
+                    return _eletionWinnerDetailesCard(
+                      leader: winner,
+                      p: p,
+                      leaderPct: winner.percentage?.toDouble() ?? 0.0,
+                      leaderVotes: winner.votes ?? 0,
+                    );
+                  })
+                  .toList(),
         ),
-
         const SizedBox(height: 20),
 
         // Small stats row (bottom area)
@@ -158,17 +155,19 @@ class SummaryResultTab extends StatelessWidget {
           children: [
             Expanded(
               child: _turnBoxe(
+                valueColor: AppColors.instance.blue600,
                 title: "Total Votes Cast",
-                value: "300",
-                color: AppColors.instance.grey200.withOpacity(.4),
+                value: "${data.statistics?.totalVoted}",
+                color: AppColors.instance.yellow600.withOpacity(.1),
               ),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: _turnBoxe(
+                valueColor: AppColors.instance.yellow600,
                 title: "Voter Turnout",
-                value: "45%",
-                color: AppColors.instance.grey200.withOpacity(.4),
+                value: "${data.statistics?.turnoutPercentage}%",
+                color: AppColors.instance.blue600.withOpacity(.1),
               ),
             ),
           ],
@@ -181,6 +180,7 @@ class SummaryResultTab extends StatelessWidget {
     required String title,
     required String value,
     required Color color,
+    required Color valueColor,
   }) {
     return Container(
       padding: const EdgeInsets.all(12),
@@ -208,7 +208,7 @@ class SummaryResultTab extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontFamilies.bold,
               fontSize: 35,
-              color: AppColors.instance.teal400,
+              color: valueColor,
               fontFamily: FontFamilies.interDisplay,
             ),
           ),
@@ -218,7 +218,7 @@ class SummaryResultTab extends StatelessWidget {
   }
 
   Widget _winnerCard({
-    required Object? winner,
+    required Candidate? winner,
     required String name,
     required String party,
     required String imageUrl,
@@ -236,12 +236,8 @@ class SummaryResultTab extends StatelessWidget {
             CircleAvatar(
               backgroundColor: AppColors.instance.teal300,
               radius: 22,
-              backgroundImage:
-                  (("" ?? '').isNotEmpty) ? NetworkImage("") : null,
-              child:
-                  (winner == null || ("" ?? '').isEmpty)
-                      ? Text(name.substring(0, 1))
-                      : null,
+              backgroundImage: (('').isNotEmpty) ? NetworkImage("") : null,
+              child: name.isNotEmpty ? Text(name.substring(0, 1) ) : null,
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -304,7 +300,7 @@ class SummaryResultTab extends StatelessWidget {
 
   Widget _eletionWinnerDetailesCard({
     required Candidate? leader,
-    required PositionModel p,
+    required Position p,
     required double leaderPct,
     required int leaderVotes,
   }) {
@@ -336,7 +332,7 @@ class SummaryResultTab extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  p.title,
+                  p.positionTitle ?? "Unknown Position",
                   style: const TextStyle(
                     fontWeight: FontFamilies.bold,
                     fontFamily: FontFamilies.interDisplay,
@@ -363,15 +359,8 @@ class SummaryResultTab extends StatelessWidget {
               CircleAvatar(
                 backgroundColor: AppColors.instance.teal300,
                 radius: 22,
-                backgroundImage:
-                    (leader?.avatarUrl != null &&
-                            (leader!.avatarUrl ?? '').isNotEmpty)
-                        ? NetworkImage(leader.avatarUrl)
-                        : null,
-                child:
-                    (leader == null || (leader.avatarUrl ?? '').isEmpty)
-                        ? Text((leader?.name ?? 'U').substring(0, 1))
-                        : null,
+
+                child: Text((leader?.candidateName ?? 'U').substring(0, 1)),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -379,7 +368,7 @@ class SummaryResultTab extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      leader?.name ?? 'TBD',
+                      leader?.candidateName ?? 'TBD',
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontFamily: FontFamilies.interDisplay,

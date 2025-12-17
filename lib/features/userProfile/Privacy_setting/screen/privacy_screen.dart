@@ -8,7 +8,6 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:curnectgate/features/userProfile/Privacy_setting/provider/privacy_provider.dart';
 import 'package:curnectgate/features/userProfile/notification_setting/widget/reusabTile.dart';
 import 'package:flutter/material.dart';
@@ -248,12 +247,15 @@ class UserPrivacySettings extends ConsumerWidget {
               error: (error, stack) {
                 try {
                   // Handle session expiration
-                  if (error.toString().contains("Unauthenticated")) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      ref
-                          .read(authProvider.notifier)
-                          .seassionExpire(context, ref);
-                    });
+                  // if (error.toString().contains("Unauthenticated")) {
+                  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+                  //     ref
+                  //         .read(authProvider.notifier)
+                  //         .seassionExpire(context, ref);
+                  //   });
+                  //   return Expiresessionbody();
+                  // }
+                  if (error.toString().contains("Unauthorized")) {
                     return Expiresessionbody();
                   }
 

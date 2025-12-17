@@ -6,6 +6,7 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/comittee_model/committees_response_model.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -64,10 +65,9 @@ class GetCommitteNotifier
 
         return freshcommitte;
       } catch (e) {
-        if (e.toString().contains(
-          "Unauthenticated. Please login to continue.",
-        )) {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        if (e is DioException && e.response?.statusCode == 401) {
+          log(e.toString());
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else if (e.toString().contains("connection")) {
           showCustomSuccessToast(
             context: context,

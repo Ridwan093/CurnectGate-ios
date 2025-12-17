@@ -10,9 +10,11 @@ import 'package:curnectgate/features/operations/OTP_Activation/widget/custom_val
 import 'package:curnectgate/features/operations/OTP_Activation/widget/generateOTP_with_validity.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/scheduleOTPS.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_event_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/Event/resv_model/rsvp_event_history.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/EventCodes/event_code_model.dart';
 import 'package:curnectgate/features/operations/violation/widget/report_file_uplode.dart';
 import 'package:curnectgate/features/operations/violation/widget/violation_form_bottom_sheet.dart';
+import 'package:curnectgate/features/payment/state_model/payment_model/dashbord_Model/payment_dashboard_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -24,6 +26,13 @@ void showUserBottomSheet({
   required BottomSheetView bottom,
   CalendarEvent? event,
   EventCode? eventCode,
+  PaymentDashboardData? dashbordData,
+  RsvpEventHistory? rsvpdata,
+  String? digital_id_code,
+  String? access_type,
+  String? location,
+  String? additional_notes,
+  String? device_id,
   int? id,
 }) {
   ref.read(bottomSheetStateProvider.notifier).state =
@@ -48,7 +57,9 @@ void showUserBottomSheet({
                         bottom == BottomSheetView.optionForScan ||
                         bottom == BottomSheetView.events ||
                         bottom == BottomSheetView.eventsDetails ||
-                        bottom == BottomSheetView.workOderSeletion
+                        bottom == BottomSheetView.workOderSeletion ||
+                        bottom == BottomSheetView.eventRsvpDetails ||
+                        bottom == BottomSheetView.afterphoto
                     ? null
                     : EdgeInsets.all(20),
             margin: EdgeInsets.only(
@@ -69,7 +80,14 @@ void showUserBottomSheet({
                 bottom,
                 event,
                 eventCode,
+                dashbordData,
                 id,
+                digital_id_code,
+                access_type,
+                location,
+                additional_notes,
+                device_id,
+                rsvpdata,
               ),
             ),
           );
@@ -88,7 +106,14 @@ Widget _buildCurrentView(
   BottomSheetView bottom,
   CalendarEvent? vendor,
   EventCode? eventcode,
+  PaymentDashboardData? dashborddata,
   int? id,
+  String? digital_id_code,
+  String? access_type,
+  String? location,
+  String? additional_notes,
+  String? device_id,
+  RsvpEventHistory? event,
 ) {
   switch (view) {
     case BottomSheetView.userDetails:
@@ -99,6 +124,13 @@ Widget _buildCurrentView(
         bottom: bottom,
         eventCode: eventcode,
         id: id,
+        dashborddata: dashborddata,
+        digital_id_code: digital_id_code,
+        access_type: access_type,
+        location: location,
+        additional_notes: additional_notes,
+        device_id: device_id,
+        event: event,
       );
     case BottomSheetView.permissions:
       return BasicPermission(id: id ?? 0);
@@ -118,6 +150,23 @@ Widget _buildCurrentView(
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
+      );
+
+    case BottomSheetView.afterphoto:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+
+    case BottomSheetView.eventRsvpDetails:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+        event: event,
       );
     case BottomSheetView.eventSetting:
       return BottomsheetDetails(
@@ -222,6 +271,11 @@ Widget _buildCurrentView(
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
+        digital_id_code: digital_id_code ?? "",
+        access_type: access_type ?? "",
+        location: location ?? "",
+        additional_notes: additional_notes ?? "",
+        device_id: device_id ?? "",
       );
     case BottomSheetView.digitalIdConfirm:
       return BottomsheetDetails(
@@ -229,6 +283,11 @@ Widget _buildCurrentView(
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
+        digital_id_code: digital_id_code,
+        access_type: access_type,
+        location: location,
+        additional_notes: additional_notes,
+        device_id: device_id,
       );
 
     case BottomSheetView.cheoutPermitDenymessage:
@@ -556,6 +615,20 @@ Widget _buildCurrentView(
         headersubtitle: userRole,
         bottom: bottom,
       );
+
+    case BottomSheetView.fundingAmount:
+      return BottomsheetDetails(
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+
+    case BottomSheetView.paymentSuccess:
+      return BottomsheetDetails(
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
     case BottomSheetView.generateOtpwithperiod:
       return FractionallySizedBox(
         heightFactor: 0.6,
@@ -606,8 +679,16 @@ Widget _buildCurrentView(
         headersubtitle: userRole,
         bottom: bottom,
       );
+
     case BottomSheetView.payOustanding:
-      return Text('payoustanding');
+      return BottomsheetDetails(
+        eventData: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+        dashborddata: dashborddata,
+      );
+
     case BottomSheetView.validatedOTP:
       return FractionallySizedBox(
         heightFactor: 0.6,
@@ -648,7 +729,7 @@ Widget _buildCurrentView(
         headersubtitle: userRole,
         bottom: bottom,
       );
-    
+
     case BottomSheetView.workEmgencyContacts:
       return BottomsheetDetails(
         eventData: vendor,
@@ -684,11 +765,10 @@ Widget _buildCurrentView(
         headersubtitle: userRole,
         bottom: bottom,
       );
-  
-/// FROM HER------->
 
+    /// FROM HER------->
 
-case BottomSheetView.vendoraccesCodConfirm:
+    case BottomSheetView.vendoraccesCodConfirm:
       return BottomsheetDetails(
         eventData: vendor,
         headertitle: userName,
@@ -723,7 +803,8 @@ case BottomSheetView.vendoraccesCodConfirm:
         headersubtitle: userRole,
         bottom: bottom,
       );
-      /// to her
+
+    /// to her
     case BottomSheetView.vendoraccesCodeDeny:
       return BottomsheetDetails(
         eventData: vendor,
@@ -738,9 +819,10 @@ case BottomSheetView.vendoraccesCodConfirm:
         headersubtitle: userRole,
         bottom: bottom,
       );
-/// TO HER ----.
-      ///// from here 
-case BottomSheetView.vendorCodeCornfirm:
+
+    /// TO HER ----.
+    ///// from here
+    case BottomSheetView.vendorCodeCornfirm:
       return BottomsheetDetails(
         eventData: vendor,
         headertitle: userName,
@@ -775,7 +857,8 @@ case BottomSheetView.vendorCodeCornfirm:
         headersubtitle: userRole,
         bottom: bottom,
       );
-      /// to her
+
+    /// to her
     case BottomSheetView.remidermarks:
       return BottomsheetDetails(
         eventData: vendor,

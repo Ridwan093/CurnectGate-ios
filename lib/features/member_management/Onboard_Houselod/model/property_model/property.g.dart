@@ -17,7 +17,7 @@ _$PropertyImpl _$$PropertyImplFromJson(Map<String, dynamic> json) =>
       bathrooms: (json['bathrooms'] as num).toInt(),
       size: json['size'] as String,
       formattedSize: json['formatted_size'] as String?,
-      description: json['description'] as String,
+      description: json['description'] as String?,
       rentalAmount: json['rental_amount'] as String,
       formattedRentalAmount: json['formatted_rental_amount'] as String?,
       rentalFrequency: json['rental_frequency'] as String,

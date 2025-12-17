@@ -12,6 +12,7 @@ import 'package:curnectgate/features/operations/violation/report_provider/report
 import 'package:curnectgate/features/operations/violation/widget/category_dropdwon.dart';
 import 'package:curnectgate/features/operations/violation/widget/estate_dropdwon_Address.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -347,9 +348,10 @@ Widget _buildCategoryDropdown(
     error: (error, stack) {
       try {
         // Handle session expiration
-        if (error.toString().contains("Unauthenticated")) {
+
+        if (error is DioException && error.response?.statusCode == 401) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            ref.read(authProvider.notifier).seassionExpire(context, ref);
+            ref.read(authProvider.notifier).sessionExpire(context, ref);
           });
           return _buildSessionExpiredUI(
             () => ref

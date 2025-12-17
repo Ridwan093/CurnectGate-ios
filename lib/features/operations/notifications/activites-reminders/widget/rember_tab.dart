@@ -5,7 +5,7 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/widget/
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/reminder_card.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/remider/reminder_model.dart';
 import 'package:curnectgate/features/operations/notifications/provider/reminder_provider.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -92,11 +92,8 @@ class _ActivitiesTabState extends ConsumerState<ReminderTab> {
         error: (error, stack) {
           try {
             // Handle session expiration
-            if (error.toString().contains("Unauthenticated")) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                ref.read(authProvider.notifier).seassionExpire(context, ref);
-              });
-              return Expiresessionbody();
+           if (error.toString().contains("Unauthorized")) {
+              return const Expiresessionbody();
             }
 
             // Handle connection errors
@@ -303,25 +300,6 @@ class _ActivitiesTabState extends ConsumerState<ReminderTab> {
       child: Text(
         "Showing cached data. Error: $error",
         style: TextStyle(color: AppColors.instance.error500),
-      ),
-    );
-  }
-
-  Widget _buildSessionExpiredState(WidgetRef ref, BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text("Session expired. Please login again."),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed:
-                () => ref
-                    .read(authProvider.notifier)
-                    .logOut(context: context, ref: ref),
-            child: Text("Login Again"),
-          ),
-        ],
       ),
     );
   }

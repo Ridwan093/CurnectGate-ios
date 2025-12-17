@@ -108,12 +108,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                 error: (error, stack) {
                   try {
                     // Handle session expiration
-                    if (error.toString().contains("Unauthenticated")) {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        ref
-                            .read(authProvider.notifier)
-                            .seassionExpire(context, ref);
-                      });
+                    if (error.toString().contains("Unauthorized")) {
                       return Expiresessionbody();
                     }
 
@@ -192,10 +187,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
               role.when(
                 data: (data) {
                   if (data.isNotEmpty) {
-                    if (data.toLowerCase().contains("security") ||
-                        data.toLowerCase().contains("tenate")) {
-                      return SizedBox();
-                    } else {
+                    if (data.toLowerCase().contains("landlord") ||
+                        data.toLowerCase().contains("spouse")) {
                       return Column(
                         children: [
                           Divider(color: AppColors.instance.grey300),
@@ -215,6 +208,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                           ),
                         ],
                       );
+                    } else {
+                      return SizedBox();
                     }
                   } else {
                     return SizedBox();

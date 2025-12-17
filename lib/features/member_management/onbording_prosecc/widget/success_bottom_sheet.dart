@@ -117,7 +117,7 @@ Widget buildSuccessContent({
                   "userEmail": userEmail,
                   "userPhone": userPhone,
                   "firstName": firstName,
-                  "lastName":lastName,
+                  "lastName": lastName,
                 },
               );
             },
@@ -145,6 +145,9 @@ Widget _buildAddressCard({
   required String locationmark,
   required BuildContext context,
 }) {
+  String placHolder =
+      "https://img.icons8.com/ios-filled/100/000000/city-buildings.png";
+
   return Container(
     padding: EdgeInsets.all(10),
     height: 100,
@@ -165,7 +168,10 @@ Widget _buildAddressCard({
     child: Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Image.network(locationmark, width: 50),
+        Image.network(
+          locationmark.isNotEmpty ? locationmark : placHolder,
+          width: 50,
+        ),
         const SizedBox(width: 13.0),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,

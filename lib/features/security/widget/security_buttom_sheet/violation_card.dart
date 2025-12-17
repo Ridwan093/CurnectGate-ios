@@ -30,7 +30,7 @@ class ParkingViolationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(
@@ -106,31 +106,9 @@ class ParkingViolationCard extends StatelessWidget {
                       title: "Report Dismissing",
                     ),
                   ] else if (isInvestigation ?? false) ...[
-                    Row(
-                      children: [
-                        Flexible(
-                          child: _buildinvestigationButton(
-                            onTap: onDismiss,
-                            buttonText: "Resolved ",
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Flexible(
-                          child: InkWell(
-                            onTap: onAccept,
-                            child: Text(
-                              "Comment",
-                              style: TextStyle(
-                                fontFamily: FontFamilies.interDisplay,
-                                fontSize: 13,
-                                color: AppColors.instance.black600,
-                                decoration: TextDecoration.underline,
-                                decorationColor: AppColors.instance.black600,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                    _resolevedMarks(
+                      onTap: onDismiss,
+                      buttonText: "Marked as resolved ",
                     ),
                   ] else
                     Row(
@@ -147,7 +125,7 @@ class ParkingViolationCard extends StatelessWidget {
                         Flexible(
                           child: _buildButton(
                             onTap: onAccept,
-                            buttonText: "Accept",
+                            buttonText: "Resolved",
                             buttonColor: AppColors.instance.teal300,
                           ),
                         ),
@@ -230,6 +208,41 @@ class ParkingViolationCard extends StatelessWidget {
               fontWeight: FontFamilies.bold,
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _resolevedMarks({
+    required VoidCallback onTap,
+    required String buttonText,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 40,
+        decoration: BoxDecoration(
+          color: AppColors.instance.teal200,
+
+          borderRadius: BorderRadius.circular(6),
+        ),
+
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              buttonText,
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                color: AppColors.instance.black600,
+                fontSize: 12,
+                fontWeight: FontFamilies.bold,
+              ),
+            ),
+            Flexible(
+              child: Icon(Icons.done, color: AppColors.instance.black600),
+            ),
+          ],
         ),
       ),
     );

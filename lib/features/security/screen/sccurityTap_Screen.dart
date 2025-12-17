@@ -1,11 +1,12 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/navigation/back_manageent/back_widget/back_navigator.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/image_tab.dart';
+import 'package:curnectgate/features/member_management/screen/tab_screen/CommunityScreen.dart';
 import 'package:curnectgate/features/member_management/tabState/tab_state.dart';
 import 'package:curnectgate/features/security/provider/scanProvider.dart';
 import 'package:curnectgate/features/security/screen/SecurityAdminScreen.dart';
-import 'package:curnectgate/features/security/screen/securitymainScreen.dart';
 import 'package:curnectgate/features/userProfile/profile/screen/ProfilesScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,88 +22,91 @@ class SecurityTapScreen extends ConsumerWidget {
 
     final List<Widget> screens = [
       SecurityDashboard(),
-      const Securitymainscreen(),
-
+      const CommunityScreen(),
       const ProfileScreen(),
     ];
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(child: screens[currentIndex]),
-      bottomNavigationBar:
-          isScanning
-              ? null
-              : Container(
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, -2),
-                    ),
-                  ],
-                ),
-                child: Stack(
-                  children: [
-                    BottomNavigationBar(
-                      selectedItemColor: AppColors.instance.black600,
-
-                      selectedLabelStyle: TextStyle(
-                        fontFamily: FontFamilies.interDisplay,
-                        color: AppColors.instance.black600,
-                        fontWeight: FontFamilies.bold,
+    return BackButtonHandler(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: SafeArea(child: screens[currentIndex]),
+        bottomNavigationBar:
+            isScanning
+                ? null
+                : Container(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, -2),
                       ),
-                      currentIndex: currentIndex,
-                      onTap: (index) => tabController.setTab(index),
-                      type: BottomNavigationBarType.fixed,
-                      backgroundColor: Colors.white,
-                      elevation: 0,
-                      items: [
-                        _buildTabItem(
-                          context,
-                          index: 0,
-                          currentIndex: currentIndex,
-                          normalIcon: AssetPaths.navHome,
-                          activeIcon: AssetPaths.navHomefilled,
-                          label: 'Home',
-                        ),
-                        _buildTabItem(
-                          context,
-                          index: 1,
-                          currentIndex: currentIndex,
-                          normalIcon: AssetPaths.navVisitorLog,
-                          activeIcon: AssetPaths.navVisitorLogFilled,
-                          label: 'Visitor Logs',
-                        ),
+                    ],
+                  ),
+                  child: Stack(
+                    children: [
+                      BottomNavigationBar(
+                        selectedItemColor: AppColors.instance.black600,
 
-                        _buildTabItem(
-                          context,
-                          index: 2,
-                          currentIndex: currentIndex,
-                          normalIcon: AssetPaths.navProfileInactive,
-                          activeIcon: AssetPaths.navProfileActive,
-                          label: 'Profile',
+                        selectedLabelStyle: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          color: AppColors.instance.black600,
+                          fontWeight: FontFamilies.bold,
                         ),
-                      ],
-                    ),
-                    // Indicator above active tab
-                    Positioned(
-                      top: 0,
-                      left:
-                          MediaQuery.of(context).size.width / 3 * currentIndex +
-                          MediaQuery.of(context).size.width / 6 -
-                          (MediaQuery.of(context).size.width / 7) / 2,
+                        currentIndex: currentIndex,
+                        onTap: (index) => tabController.setTab(index),
+                        type: BottomNavigationBarType.fixed,
+                        backgroundColor: Colors.white,
+                        elevation: 0,
+                        items: [
+                          _buildTabItem(
+                            context,
+                            index: 0,
+                            currentIndex: currentIndex,
+                            normalIcon: AssetPaths.navHome,
+                            activeIcon: AssetPaths.navHomefilled,
+                            label: 'Home',
+                          ),
+                          _buildTabItem(
+                            context,
+                            index: 1,
+                            currentIndex: currentIndex,
+                            normalIcon: AssetPaths.navMessages,
+                            activeIcon: AssetPaths.navMessageactive,
+                            label: 'Community',
+                          ),
 
-                      child: Container(
-                        // margin: EdgeInsets.only(left: 33),
-                        width: MediaQuery.of(context).size.width / 7,
-                        height: 3,
-                        color: AppColors.instance.teal300,
+                          _buildTabItem(
+                            context,
+                            index: 2,
+                            currentIndex: currentIndex,
+                            normalIcon: AssetPaths.navProfileInactive,
+                            activeIcon: AssetPaths.navProfileActive,
+                            label: 'Profile',
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                      // Indicator above active tab
+                      Positioned(
+                        top: 0,
+                        left:
+                            MediaQuery.of(context).size.width /
+                                3 *
+                                currentIndex +
+                            MediaQuery.of(context).size.width / 6 -
+                            (MediaQuery.of(context).size.width / 7) / 2,
+
+                        child: Container(
+                          // margin: EdgeInsets.only(left: 33),
+                          width: MediaQuery.of(context).size.width / 7,
+                          height: 3,
+                          color: AppColors.instance.teal300,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+      ),
     );
   }
 

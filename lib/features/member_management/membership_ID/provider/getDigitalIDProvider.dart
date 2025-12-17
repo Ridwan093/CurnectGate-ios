@@ -4,9 +4,9 @@ import 'dart:developer';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/member_management/membership_ID/model/digital_member_id_response.dart';
-
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,15 +25,10 @@ class GetDigitalID extends AutoDisposeAsyncNotifier<DigitalMemberIdResponse?> {
 
     try {
       // Then try to fetch fresh data
-      final token = await ref.watch(accessTokenProvider.future);
-
-      if (token == null || token.isEmpty) {
-        throw Exception("Unauthenticated");
-      }
 
       final freshDigitalID = await ref
           .read(getApiServiceProvider)
-          .getDigitalID(bearerToken: token);
+          .getDigitalID(bearerToken: '');
 
       // Only update local storage if data is different
       if (localDigitalID?.toJson() != freshDigitalID.toJson()) {
@@ -72,11 +67,9 @@ class GetDigitalID extends AutoDisposeAsyncNotifier<DigitalMemberIdResponse?> {
         await SharedPrefsService.saveDigitalID(freshDigitalID);
         return freshDigitalID;
       } catch (e) {
-        if (e.toString().contains(
-          "Unauthenticated. Please login to continue.",
-        )) {
+        if (e is DioException && e.response?.statusCode == 401) {
           log(e.toString());
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else if (e.toString().contains("The connection errored")) {
           log(e.toString());
           showCustomSuccessToast(

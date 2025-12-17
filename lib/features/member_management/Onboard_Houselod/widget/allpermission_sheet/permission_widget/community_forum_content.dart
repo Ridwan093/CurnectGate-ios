@@ -72,7 +72,7 @@ class _VisitorInivitaitonCotentState
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(notificationProviders);
+
     final notifier = ref.read(notificationProviders.notifier);
     final providerstate = ref.read((formProvider.notifier));
     final isLoading = ref.watch(formProvider).communityAccessLoading ?? false;

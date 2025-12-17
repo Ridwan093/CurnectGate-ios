@@ -7,7 +7,7 @@ class DisplayFilecard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final filePath = chatState.selectedFilePath;
+    // final filePath = chatState.selectedFilePath;
     final fileName = chatState.selectedFileName;
     final fileSize = chatState.selectedFileSize;
     return Positioned(

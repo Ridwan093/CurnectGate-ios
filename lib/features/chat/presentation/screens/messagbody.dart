@@ -1,18 +1,18 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/operations/violation/screens/reportViolation.dart';
 import 'package:curnectgate/features/chat/data/chat_model/message_state.dart';
 import 'package:curnectgate/features/chat/data/provider/chat_provier.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/displayFileCard.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/displayimage.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/messagesBubbles.dart';
-import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/operations/violation/screens/reportViolation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:open_filex/open_filex.dart';
+
 
 class MessageScreens extends ConsumerStatefulWidget {
   const MessageScreens({super.key});
@@ -102,11 +102,18 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
             onPressed: () {
               showUserBottomSheet(
                 context: context,
-                headertitle: "Have an emergency?",
-                headersubtitle: "Call this emergency contact",
+                headertitle: "",
+                headersubtitle: "",
                 ref: ref,
-                bottom: BottomSheetView.messageEmergency,
+                bottom: BottomSheetView.residentEmgencyContacts,
               );
+              // showUserBottomSheet(
+              //   context: context,
+              //   headertitle: "Have an emergency?",
+              //   headersubtitle: "Call this emergency contact",
+              //   ref: ref,
+              //   bottom: BottomSheetView.messageEmergency,
+              // );
             },
           ),
           IconButton(
@@ -374,44 +381,44 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
     );
   }
 
-  Widget _buildFilePreview(ChatState chatState) {
-    final filePath = chatState.selectedFilePath;
-    final fileName = chatState.selectedFileName;
-    final fileSize = chatState.selectedFileSize;
+//   Widget _buildFilePreview(ChatState chatState) {
+//     final filePath = chatState.selectedFilePath;
+//     final fileName = chatState.selectedFileName;
+//     final fileSize = chatState.selectedFileSize;
 
-    if (filePath == null) return const SizedBox.shrink();
+//     if (filePath == null) return const SizedBox.shrink();
 
-    return GestureDetector(
-      onTap: () => OpenFilex.open(filePath),
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Icon(_getFileIcon(fileName), color: Colors.blueAccent, size: 32),
-            const SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  fileName ?? "Unknown file",
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  "    _formatFileSize(fileSize),",
-                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+//     return GestureDetector(
+//       onTap: () => OpenFilex.open(filePath),
+//       child: Container(
+//         padding: const EdgeInsets.all(12),
+//         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+//         decoration: BoxDecoration(
+//           color: Colors.grey[200],
+//           borderRadius: BorderRadius.circular(10),
+//         ),
+//         child: Row(
+//           mainAxisSize: MainAxisSize.min,
+//           children: [
+//             // Icon(_getFileIcon(fileName), color: Colors.blueAccent, size: 32),
+//             const SizedBox(width: 10),
+//             Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(
+//                   fileName ?? "Unknown file",
+//                   style: const TextStyle(fontWeight: FontWeight.w600),
+//                 ),
+//                 const SizedBox(height: 4),
+//                 Text(
+//                   "    _formatFileSize(fileSize),",
+//                   style: TextStyle(color: Colors.grey[600], fontSize: 12),
+//                 ),
+//               ],
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
 }

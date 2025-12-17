@@ -1,7 +1,8 @@
 import 'package:curnectgate/features/estate_management/elections/models/election_enum.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_state.dart';
-import 'package:curnectgate/features/estate_management/elections/widgets/tab/candidate.dart';
-import 'package:curnectgate/features/estate_management/elections/widgets/tab/liveResult.dart';
+import 'package:curnectgate/features/estate_management/elections/widgets/eletionData/candiate_live_resuilt_data.dart';
+import 'package:curnectgate/features/estate_management/elections/widgets/eletionData/candidate_data.dart';
+import 'package:curnectgate/features/estate_management/elections/widgets/eletionData/history_data.dart';
 import 'package:curnectgate/features/estate_management/elections/widgets/tab/vote_now.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,11 +16,11 @@ class Alltab extends ConsumerWidget {
     if (state.activeTab == ElectionTab.voteNow) {
       return const VoteNow();
     } else if (state.activeTab == ElectionTab.liveResult) {
-      return LiveResultTab(state: state);
+      return CandidateResultData(state: state);
     } else if (state.activeTab == ElectionTab.candidates) {
-      return const EletionCandidate();
+      return const CandidateData();
     } else if (state.activeTab == ElectionTab.history) {
-      return const Center(child: Text("History Coming Soon"));
+      return const HistoryData();
     }
 
     // Default -> Vote Now Tab

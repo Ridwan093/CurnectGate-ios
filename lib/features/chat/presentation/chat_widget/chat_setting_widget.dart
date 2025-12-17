@@ -17,11 +17,11 @@ class _ChatSettingsBottomSheetState extends State<ChatSettingsBottomSheet> {
   int? _selectedDurationIndex;
   Duration _customDuration = const Duration(hours: 1);
 
-  final List<Map<String, dynamic>> _durationOptions = [
-    {'label': '1 Hour', 'duration': const Duration(hours: 1)},
-    {'label': '1 Day', 'duration': const Duration(days: 1)},
-    {'label': 'Custom', 'duration': null},
-  ];
+  // final List<Map<String, dynamic>> _durationOptions = [
+  //   {'label': '1 Hour', 'duration': const Duration(hours: 1)},
+  //   {'label': '1 Day', 'duration': const Duration(days: 1)},
+  //   {'label': 'Custom', 'duration': null},
+  // ];
 
   void _showCustomDurationDialog() {
     final hoursController = TextEditingController(

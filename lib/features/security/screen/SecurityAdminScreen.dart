@@ -1,14 +1,18 @@
-import 'dart:developer';
-
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/estate_management/elections/widgets/eletionData/poll_data.dart';
+import 'package:curnectgate/features/estate_management/elections/widgets/votingSettingCheck.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/member_management/tabState/tab_state.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/widget/count_data.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
+import 'package:curnectgate/features/security/model/count_model/violation_count_response.dart';
 import 'package:curnectgate/features/security/provider/formState.dart';
+import 'package:curnectgate/features/security/provider/getViolaationCount.dart';
 import 'package:curnectgate/features/security/provider/scanProvider.dart';
 import 'package:curnectgate/features/security/widget/Scan_widget.dart';
 import 'package:flutter/material.dart';
@@ -170,6 +174,8 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
                       SizedBox(height: 20),
                       _buildViolationsCard(),
                       SizedBox(height: 15),
+                      Votingsettingcheck(child: PollDatas(canRoute: true)),
+                      SizedBox(height: 15),
                       _buildQuickActions(ref),
                       SizedBox(height: 80), // Extra space for FAB
                     ],
@@ -196,26 +202,11 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
             fontFamily: FontFamilies.interDisplay,
           ),
         ),
-        Row(
-          children: [
-            NotificationCount(
-              color: AppColors.instance.grey200,
-              onTap: () {
-                context.pushNamed(AppRoutes.securitynotification);
-              },
-            ),
-            SizedBox(width: 10),
-            InkWell(
-              onTap: () {
-                log("HELL NAH");
-              },
-              child: Image.asset(
-                AssetPaths.navProfileInactive,
-                color: Colors.white,
-                width: 25,
-              ),
-            ),
-          ],
+        NotificationCount(
+          color: AppColors.instance.grey200,
+          onTap: () {
+            context.pushNamed(AppRoutes.securitynotification);
+          },
         ),
       ],
     );
@@ -223,7 +214,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
 
   Widget _buildWelcomeCard(Size size) {
     final getusername = ref.watch(firstnameProvider);
-    final getmemberid = ref.watch(memberIdProvider);
+    final getmemberid = ref.watch(securityEmployeeID);
 
     return Card(
       color: Colors.white,
@@ -289,41 +280,61 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
             SizedBox(height: 8),
             Divider(color: AppColors.instance.grey400),
             SizedBox(height: 8),
-            _violationTrack(),
+            CountDataForAll<ViolationCountResponse>(
+              provider: violationCountProvider("used"),
+              emptyBody: _violationTrack("0"),
+              builder: (data) {
+                // Safely get the pending count
+                final pendingCount = data.data?.byStatus?['pending'] ?? 0;
+
+                return _violationTrack(pendingCount.toString());
+              },
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _violationTrack() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Text(
-              "Track Violations",
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                color: AppColors.instance.teal400,
-                fontWeight: FontFamilies.bold,
+  Widget _violationTrack(String count) {
+    return InkWell(
+      onTap: () {
+        showUserBottomSheet(
+          context: context,
+          headertitle: "Violations",
+          headersubtitle: "Track violation residents",
+          ref: ref,
+          bottom: BottomSheetView.securityViolationTrack,
+        );
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Text(
+                "Track Violations",
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  color: AppColors.instance.teal400,
+                  fontWeight: FontFamilies.bold,
+                ),
               ),
-            ),
-            SizedBox(width: 10),
-            _countContainer(),
-          ],
-        ),
-        Icon(
-          Icons.arrow_forward_ios,
-          size: 13,
-          color: AppColors.instance.black300,
-        ),
-      ],
+              SizedBox(width: 10),
+              _countContainer(count),
+            ],
+          ),
+          Icon(
+            Icons.arrow_forward_ios,
+            size: 13,
+            color: AppColors.instance.black300,
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _countContainer() {
+  Widget _countContainer(String count) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
@@ -331,7 +342,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
         borderRadius: BorderRadius.circular(3),
       ),
       child: Text(
-        "2",
+        count,
         style: TextStyle(
           fontFamily: FontFamilies.interDisplay,
           color: AppColors.instance.teal400,
@@ -381,26 +392,52 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
               ),
             ),
             SizedBox(height: 16),
-            _buildViolationItem(
-              () {
-                showUserBottomSheet(
-                  context: context,
-                  headertitle: "Violations",
-                  headersubtitle: "Track violation residents",
-                  ref: ref,
-                  bottom: BottomSheetView.securityViolationTrack,
+            CountDataForAll<ViolationCountResponse>(
+              provider: violationCountProvider("used"),
+              emptyBody: _buildViolationItem(
+                () {
+                  showUserBottomSheet(
+                    context: context,
+                    headertitle: "Violations",
+                    headersubtitle: "Track violation residents",
+                    ref: ref,
+                    bottom: BottomSheetView.securityViolationTrack,
+                  );
+                },
+                'You have new updates',
+                '0 Violations to attend to',
+                AssetPaths.vaolationIcon,
+                "0", // fallback count
+              ),
+              builder: (data) {
+                // Safely get the pending count
+                final pendingCount = data.data?.byStatus?['pending'] ?? 0;
+
+                return _buildViolationItem(
+                  () {
+                    showUserBottomSheet(
+                      context: context,
+                      headertitle: "Violations",
+                      headersubtitle: "Track violation residents",
+                      ref: ref,
+                      bottom: BottomSheetView.securityViolationTrack,
+                    );
+                  },
+                  'You have new updates',
+                  '$pendingCount Violations to attend to',
+                  AssetPaths.vaolationIcon,
+                  '$pendingCount', // only pending
                 );
               },
-              'You have new updates',
-              '2 Violations to attend to',
-              AssetPaths.vaolationIcon,
-              "2",
             ),
+
             SizedBox(height: 12),
             Divider(color: AppColors.instance.grey400),
             SizedBox(height: 12),
             _buildViolationItem(
-              () {},
+              () {
+                ref.read(tabStateProvider.notifier).resetTochat();
+              },
               'You have new updates',
               'New message from your estate',
               AssetPaths.discussion,
@@ -445,7 +482,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
                             ),
                           ),
                           SizedBox(width: 8),
-                          _countContainer(),
+                          _countContainer(count),
                         ],
                       ),
                       SizedBox(height: 4),
@@ -568,8 +605,15 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
                     headertitle: "",
                     headersubtitle: "",
                     ref: ref,
-                    bottom: BottomSheetView.workEmgencyContacts,
+                    bottom: BottomSheetView.residentEmgencyContacts,
                   );
+                  // showUserBottomSheet(
+                  //   context: context,
+                  //   headertitle: "",
+                  //   headersubtitle: "",
+                  //   ref: ref,
+                  //   bottom: BottomSheetView.workEmgencyContacts,
+                  // );
                 },
               ),
             ),

@@ -16,9 +16,8 @@ class ScheduleOTPinAdvance extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final activation = ref.watch(generateNotifierProvider);
-    final formProviders = ref.watch(formProvider);
     final activationNotifer = ref.watch(generateNotifierProvider.notifier);
-    final isLoading = formProviders.schedulOtpLoading;
+   
     final size = MediaQuery.sizeOf(context);
 
     return Padding(

@@ -1,11 +1,8 @@
 import 'package:curnectgate/features/chat/data/chat_model/message_model.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/messageBubble.dart';
-import 'package:curnectgate/features/chat/presentation/controllers/chat_controller.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 
 class MessageScreen extends ConsumerStatefulWidget {
   final String chatId;
@@ -38,11 +35,10 @@ class _MessageScreenState extends ConsumerState<MessageScreen> {
     super.dispose();
   }
 
-
   void _setupMessageListener() {
     // final messageStream = ref
-        // .read(chatControllerProvider)
-        // .chatStream(widget.chatId);
+    // .read(chatControllerProvider)
+    // .chatStream(widget.chatId);
 
     // messageStream.listen(
     //   (messages) {
@@ -59,14 +55,14 @@ class _MessageScreenState extends ConsumerState<MessageScreen> {
     // );
   }
 
-  void _scrollToBottomIfNeeded() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients &&
-          _scrollController.position.maxScrollExtent > 0) {
-        _scrollController.jumpTo(0);
-      }
-    });
-  }
+  // void _scrollToBottomIfNeeded() {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     if (_scrollController.hasClients &&
+  //         _scrollController.position.maxScrollExtent > 0) {
+  //       _scrollController.jumpTo(0);
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +70,7 @@ class _MessageScreenState extends ConsumerState<MessageScreen> {
       children: [
         Expanded(
           child: StreamBuilder<List<Messages>>(
-            stream:null,
+            stream: null,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
@@ -88,13 +84,14 @@ class _MessageScreenState extends ConsumerState<MessageScreen> {
 
               // Ensure messages are sorted oldest to newest
               messages.sort((a, b) => a.timeSend.compareTo(b.timeSend));
-               if (_scrollController.hasClients) {
-            ///Another exception was thrown: Looking up a deactivated widget's ancestor is unsafe.
-            SchedulerBinding.instance.addPostFrameCallback((_) {
-              return _scrollController
-                  .jumpTo(_scrollController.position.maxScrollExtent);
-            });
-          }
+              if (_scrollController.hasClients) {
+                ///Another exception was thrown: Looking up a deactivated widget's ancestor is unsafe.
+                SchedulerBinding.instance.addPostFrameCallback((_) {
+                  return _scrollController.jumpTo(
+                    _scrollController.position.maxScrollExtent,
+                  );
+                });
+              }
 
               return NotificationListener<ScrollNotification>(
                 onNotification: (notification) {

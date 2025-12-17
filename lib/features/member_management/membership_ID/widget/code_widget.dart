@@ -2,7 +2,6 @@ import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/membership_ID/model/digital_member_id_data.dart';
-import 'package:curnectgate/features/member_management/membership_ID/model/getDigitalModel.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -67,16 +66,16 @@ class CodeWidget extends StatelessWidget {
                 InkWell(
                   onTap: () {
                     Clipboard.setData(
-                      ClipboardData(text: data.digitalId?.digitalIdCode ??""),
+                      ClipboardData(text: data.digitalId?.digitalIdCode ?? ""),
                     );
                     showCustomSuccessToast(
-          context: context,
-          message: "Copied",
-          color: AppColors.instance.teal300,
-          icon: Icons.check_circle,
-          iconColors: AppColors.instance.black600,
-          positionNumber: 70,
-        );
+                      context: context,
+                      message: "Copied",
+                      color: AppColors.instance.teal300,
+                      icon: Icons.check_circle,
+                      iconColors: AppColors.instance.black600,
+                      positionNumber: 70,
+                    );
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,

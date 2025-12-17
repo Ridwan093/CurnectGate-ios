@@ -87,7 +87,8 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
-        physics: const NeverScrollableScrollPhysics(), // Disable over-scrolling
+        physics: const BouncingScrollPhysics(), // or default scroll physics
+        // Disable over-scrolling
         slivers: [
           // Image Carousel Section
           SliverAppBar(

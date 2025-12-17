@@ -10,6 +10,7 @@ import 'package:curnectgate/features/operations/OTP_Activation/provider/getActiv
 import 'package:curnectgate/features/operations/OTP_Activation/widget/ActiveData_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class Otpactivation extends ConsumerWidget {
   Otpactivation({super.key});
@@ -36,7 +37,12 @@ class Otpactivation extends ConsumerWidget {
     return AppBar(
       centerTitle: true,
       backgroundColor: Colors.transparent,
-      leading: const Icon(Icons.arrow_back_ios_new),
+      leading: InkWell(
+        onTap: () {
+          context.pop();
+        },
+        child: const Icon(Icons.arrow_back_ios_new),
+      ),
       actions: [
         IconButton(
           onPressed: () {

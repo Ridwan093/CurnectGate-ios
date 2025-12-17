@@ -1,23 +1,45 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/estate_management/elections/models/election_models.dart';
+import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate_result/candidate_data.dart';
+import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate_result/live_results_data.dart';
+import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate_result/position_data.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_state.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/eletion_provider.dart';
-import 'package:curnectgate/features/estate_management/elections/widgets/sub_tab/sumamry.dart';
+import 'package:curnectgate/features/estate_management/elections/widgets/eletionData/summary_result_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LiveResultTab extends ConsumerWidget {
+class LiveResultTab extends ConsumerStatefulWidget {
   final ElectionState state;
-  const LiveResultTab({super.key, required this.state});
+  final LiveResultsData data;
+  const LiveResultTab({super.key, required this.state, required this.data});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final positions = state.election.positions;
+  ConsumerState<LiveResultTab> createState() => _LiveResultTabState();
+}
+
+class _LiveResultTabState extends ConsumerState<LiveResultTab> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final firstPosition = widget.data.positions?.firstOrNull;
+      if (firstPosition != null) {
+        ref
+            .read(electionProvider.notifier)
+            .changeResultTab(firstPosition.positionTitle ?? "");
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // final positions = state.election.positions;
 
     // 🔹 Add "summary" as main manual tab
+
     const summaryTab = "summary";
-    final active = state.activeResultTab ?? summaryTab;
+    final active = widget.state.activeResultTab ?? summaryTab;
 
     final isSummary = active == summaryTab;
 
@@ -31,15 +53,13 @@ class LiveResultTab extends ConsumerWidget {
           child: Row(
             children: [
               /// ✅ Summary tab button
-
-              /// ✅ Remaining tabs from backend
-              ...positions.map((p) {
-                final isActive = !isSummary && active == p.id;
+              ...widget.data.positions!.map((p) {
+                final isActive = !isSummary && active == p.positionTitle;
                 return GestureDetector(
                   onTap:
                       () => ref
                           .read(electionProvider.notifier)
-                          .changeResultTab(p.id),
+                          .changeResultTab(p.positionTitle.toString()),
                   child: Container(
                     margin: const EdgeInsets.only(right: 10),
                     padding: const EdgeInsets.symmetric(
@@ -49,12 +69,12 @@ class LiveResultTab extends ConsumerWidget {
                     decoration: BoxDecoration(
                       color:
                           isActive
-                              ? AppColors.instance.teal300
+                              ? AppColors.instance.yellow600
                               : AppColors.instance.black200,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      p.title,
+                      p.positionTitle ?? "",
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: isActive ? Colors.white : Colors.black87,
@@ -63,6 +83,7 @@ class LiveResultTab extends ConsumerWidget {
                   ),
                 );
               }),
+
               GestureDetector(
                 onTap:
                     () => ref
@@ -77,7 +98,7 @@ class LiveResultTab extends ConsumerWidget {
                   decoration: BoxDecoration(
                     color:
                         isSummary
-                            ? AppColors.instance.teal300
+                            ? AppColors.instance.yellow600
                             : AppColors.instance.black200,
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -98,24 +119,35 @@ class LiveResultTab extends ConsumerWidget {
 
         // ✅ When Summary Tab is Active → show special UI
         if (isSummary)
-          SummaryResultTab(state: state)
+          SummaryResuiltData()
         // ✅ When a position tab is active → show candidate results
-        else
-          _candidateResultSection(state),
+        else ...[
+          _candidateResultSection(widget.state, widget.data),
+        ],
       ],
     );
   }
 
-  // 🔹 Existing Candidate UI moved here cleanly
-  Widget _candidateResultSection(ElectionState state) {
-    final active = state.activeResultTab!;
-    final position = state.election.positions.firstWhere((p) => p.id == active);
-    final candidates = position.candidates;
-    final totalVotes = candidates.fold(0, (s, c) => s + (c.totalVotes ?? 0));
+  Widget _candidateResultSection(ElectionState state, LiveResultsData data) {
+    final activeTab = state.activeResultTab;
 
+    if (activeTab == null) return const SizedBox();
+
+    // 🔹 Find the position user selected
+    final selectedPosition = data.positions?.firstWhere(
+      (pos) => pos.positionTitle == activeTab,
+      orElse: () => PositionData(),
+    );
+
+    // 🔹 Extract candidate list safely
+    final candidates = selectedPosition?.candidates ?? [];
+
+    // 🔹 Calculate total votes
+    final totalVotes = selectedPosition?.totalVotesCast ?? 0;
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ✅ Existing Total Votes Card
+        /// ✅ Total Votes Card
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(16),
@@ -142,24 +174,20 @@ class LiveResultTab extends ConsumerWidget {
             ],
           ),
         ),
+
         const SizedBox(height: 16),
 
-        /// ✅ Your candidate cards remain same
+        /// 🔥 Candidate Cards
         ...candidates.map((c) {
-          final maxVotes = candidates
-              .map((x) => x.totalVotes ?? 0)
-              .reduce((a, b) => a > b ? a : b);
-          final percent =
-              totalVotes == 0 ? 0 : ((c.totalVotes ?? 0) / totalVotes) * 100;
-          final leader = (c.totalVotes ?? 0) == maxVotes && maxVotes > 0;
+          final isLeader = c.isWinner ?? false;
 
-          return _candidateResultCard(c, percent.toDouble(), leader);
+          return _candidateResultCard(c, isLeader);
         }),
       ],
     );
   }
 
-  Widget _candidateResultCard(Candidate c, double percent, bool leader) {
+  Widget _candidateResultCard(CandidateData c, bool leader) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -169,9 +197,7 @@ class LiveResultTab extends ConsumerWidget {
         border: Border.all(
           width: 2,
           color:
-              leader
-                  ? getVoteColor(percent).withValues()
-                  : AppColors.instance.grey300,
+              leader ? getVoteColor(c.rank ?? 0) : AppColors.instance.grey300,
         ),
       ),
       child: Row(
@@ -180,8 +206,8 @@ class LiveResultTab extends ConsumerWidget {
             radius: 22,
             backgroundImage:
                 // ignore: unnecessary_null_comparison
-                c.avatarUrl != null ? NetworkImage(c.avatarUrl) : null,
-            child: c.avatarUrl == null ? Text(c.name[0]) : null,
+                c.mediaUrl != null ? NetworkImage(c.mediaUrl ?? "") : null,
+            child: c.mediaUrl == null ? Text(c.name![0]) : null,
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -189,27 +215,27 @@ class LiveResultTab extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  c.name,
+                  c.name ?? "",
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
                   ),
                 ),
                 Text(
-                  c.party ?? "Independent",
+                  c.partyAffiliation ?? "Independent",
                   style: const TextStyle(fontSize: 12, color: Colors.black54),
                 ),
                 const SizedBox(height: 10),
                 LinearProgressIndicator(
                   borderRadius: BorderRadius.circular(10),
-                  value: percent / 100,
+                  value: c.percentage,
                   minHeight: 8,
                   backgroundColor: Colors.grey.shade300,
-                  color: getVoteColor(percent),
+                  color: getVoteColor(c.rank ?? 0),
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  "${c.totalVotes} Votes",
+                  "${c.voteCount} Votes",
                   style: const TextStyle(fontSize: 12, color: Colors.black54),
                 ),
               ],
@@ -220,18 +246,20 @@ class LiveResultTab extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "${percent.toStringAsFixed(1)}%",
+                "${c.percentage?.toStringAsFixed(1)}%",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.instance.black600,
+                  color: getVoteColor(c.rank ?? 0),
                 ),
               ),
-              const Text(
-                "Leading",
-                style: TextStyle(fontSize: 10, color: Colors.black54),
-              ),
+              leader
+                  ? const Text(
+                    "Leading",
+                    style: TextStyle(fontSize: 10, color: Colors.black54),
+                  )
+                  : SizedBox(),
             ],
           ),
         ],
@@ -239,13 +267,13 @@ class LiveResultTab extends ConsumerWidget {
     );
   }
 
-  Color getVoteColor(double percent) {
+  Color getVoteColor(int percent) {
     switch (percent) {
-      case >= 45:
+      case 1:
         return AppColors.instance.teal500; // Strong lead
-      case >= 30:
+      case 2:
         return AppColors.instance.blue400; // Moderate lead
-      case >= 15:
+      case 3:
         return AppColors.instance.yellow500; // Competitive
       default:
         return AppColors.instance.error500; // Low votes

@@ -1,12 +1,35 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/payment/screen/ReviewPayment.dart';
+import 'package:curnectgate/features/payment/state_model/payment_model/due_model/outstanding_dues_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class DuePayment extends ConsumerWidget {
-  const DuePayment({super.key});
+  final OutstandingDuesData? data;
+
+  final String walletBalance;
+  final String totalDue;
+  const DuePayment({
+    super.key,
+    required this.data,
+    required this.walletBalance,
+    required this.totalDue,
+  });
+
+  String formatPrice(String price) {
+    final number = double.tryParse(price) ?? 0.0;
+    final formatter = NumberFormat('#,##0.00');
+    return formatter.format(number);
+  }
+
+  String formatDueDate(String isoDate) {
+    DateTime date = DateTime.parse(isoDate);
+    return DateFormat('dd MMM yyyy').format(date);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -15,7 +38,7 @@ class DuePayment extends ConsumerWidget {
     return Scaffold(
       bottomNavigationBar: SizedBox(
         height: 70,
-        child: _buildBottonsheet(ref, context),
+        child: _buildBottonsheet(ref, context, data),
       ),
       appBar: AppBar(
         leading: IconButton(
@@ -25,11 +48,16 @@ class DuePayment extends ConsumerWidget {
           icon: Icon(Icons.arrow_back_ios, color: AppColors.instance.black600),
         ),
       ),
-      body: _buildbody(size, ref),
+      body: _buildbody(size, ref, data, walletBalance, totalDue),
     );
   }
 
-  Widget _buildBottonsheet(WidgetRef ref, BuildContext context) {
+  Widget _buildBottonsheet(
+    WidgetRef ref,
+    BuildContext context,
+    OutstandingDuesData? data,
+  ) {
+    final listoutStanding = data?.dues ?? [];
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
       child: Row(
@@ -38,9 +66,10 @@ class DuePayment extends ConsumerWidget {
             child: GestureDetector(
               onTap: () {
                 // Navigate to next screen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ReviewPayment()),
+                context.pop();
+                context.pushNamed(
+                  AppRoutes.paymentReview,
+                  extra: {"list": listoutStanding, "wallet": walletBalance},
                 );
               },
 
@@ -93,7 +122,14 @@ class DuePayment extends ConsumerWidget {
     );
   }
 
-  Widget _buildbody(Size size, WidgetRef ref) {
+  Widget _buildbody(
+    Size size,
+    WidgetRef ref,
+    OutstandingDuesData? data,
+    String wallet,
+    String due,
+  ) {
+    final listoutStanding = data?.dues ?? [];
     return Container(
       width: size.width,
       padding: EdgeInsets.all(12),
@@ -122,50 +158,54 @@ class DuePayment extends ConsumerWidget {
               ),
             ),
             SizedBox(height: 13),
-            _buildNotifyerBox(),
+            _buildNotifyerBox(wallet, due),
             SizedBox(height: 20),
-            _buildPaymentClick(
-              amount: "₦32,587",
-              title: "Water bill",
-              subtitle: "May 2 2025",
-              iconPath: AssetPaths.waterDrop,
 
-              onTap: () {},
-            ),
-            SizedBox(height: 10),
-            _buildPaymentClick(
-              amount: "₦10,000",
-              title: "Service Fee",
-              subtitle: "April 2, 2024",
-              iconPath: AssetPaths.serviceFee,
+            ...listoutStanding.map(
+              (e) => _buildPaymentClick(
+                amount: '₦${formatPrice(e.amount ?? "")}',
+                title: e.feeCategory?.icon ?? "",
+                subtitle: formatDueDate(e.dueDate ?? ""),
+                iconPath: _iconLogo(e.feeCategory?.icon ?? ""),
 
-              onTap: () {},
+                onTap: () {},
+              ),
             ),
-            SizedBox(height: 10),
-            _buildPaymentClick(
-              amount: "₦10,000",
-              title: "Maintenance Fee",
-              subtitle: "April 2, 2024",
-              iconPath: AssetPaths.maintenance,
 
-              onTap: () {},
-            ),
-            SizedBox(height: 10),
-            _buildPaymentClick(
-              amount: "₦32,587",
-              title: "Light Fee",
-              subtitle: "April 2, 2024",
-              iconPath: AssetPaths.navCreditCardFilled,
+            // SizedBox(height: 10),
+            // _buildPaymentClick(
+            //   amount: "₦10,000",
+            //   title: "Service Fee",
+            //   subtitle: "April 2, 2024",
+            //   iconPath: AssetPaths.serviceFee,
 
-              onTap: () {},
-            ),
+            //   onTap: () {},
+            // ),
+            // SizedBox(height: 10),
+            // _buildPaymentClick(
+            //   amount: "₦10,000",
+            //   title: "Maintenance Fee",
+            //   subtitle: "April 2, 2024",
+            //   iconPath: AssetPaths.maintenance,
+
+            //   onTap: () {},
+            // ),
+            // SizedBox(height: 10),
+            // _buildPaymentClick(
+            //   amount: "₦32,587",
+            //   title: "Light Fee",
+            //   subtitle: "April 2, 2024",
+            //   iconPath: AssetPaths.navCreditCardFilled,
+
+            //   onTap: () {},
+            // ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildNotifyerBox() {
+  Widget _buildNotifyerBox(String wallet, String due) {
     return Container(
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -192,7 +232,7 @@ class DuePayment extends ConsumerWidget {
                 ),
               ),
               Text(
-                "₦97,989",
+                " ₦${formatPrice(wallet)}",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   fontSize: 12,
@@ -232,7 +272,7 @@ class DuePayment extends ConsumerWidget {
                 ),
               ),
               Text(
-                "₦85,174",
+                " ₦${formatPrice(due)}",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   fontSize: 12,
@@ -257,6 +297,7 @@ class DuePayment extends ConsumerWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
+        margin: EdgeInsets.only(bottom: 10),
         height: 70,
 
         decoration: BoxDecoration(
@@ -299,5 +340,22 @@ class DuePayment extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  String _iconLogo(String icon) {
+    switch (icon.toLowerCase()) {
+      case "water":
+        return AssetPaths.waterDrop;
+      case "service":
+        return AssetPaths.serviceFee;
+
+      case "maintenace":
+        return AssetPaths.maintenance;
+      case "light":
+        return AssetPaths.navCreditCardFilled;
+
+      default:
+        return AssetPaths.maintenance;
+    }
   }
 }

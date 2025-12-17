@@ -21,8 +21,8 @@ class PaginationLink with _$PaginationLink {
     if (json == null) return PaginationLink.empty();
     return PaginationLink(
       url: NullSafetyHelper.safeString(json['url']),
-      label: NullSafetyHelper.safeString(json['label']) ?? '',
-      active: NullSafetyHelper.safeBool(json['active']) ?? false,
+      label: NullSafetyHelper.safeString(json['label'])  ,
+      active: NullSafetyHelper.safeBool(json['active']),
     );
   }
 

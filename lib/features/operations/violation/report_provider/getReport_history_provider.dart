@@ -3,10 +3,11 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:curnectgate/features/operations/violation/model/GetReport_history_model.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -55,7 +56,11 @@ class GetReportNotifer
     }
   }
 
-  Future<void> refreshReports(BuildContext context, WidgetRef ref, int id) async {
+  Future<void> refreshReports(
+    BuildContext context,
+    WidgetRef ref,
+    int id,
+  ) async {
     ref.read(reportProvider.notifier).updateErrorShow(false);
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
@@ -64,15 +69,14 @@ class GetReportNotifer
         // final id = ref.watch(reportProvider).report.id;
         final freshReoprt = await ref
             .read(getApiServiceProvider)
-            .getreportHistor(bearerToken: token!, id: id );
+            .getreportHistor(bearerToken: token!, id: id);
         await SharedPrefsService.saveReportHistory(freshReoprt);
 
         return freshReoprt;
       } catch (e) {
-        if (e.toString().contains(
-          "Unauthenticated. Please login to continue.",
-        )) {
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+        if (e is DioException && e.response?.statusCode == 401) {
+          log(e.toString());
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else if (e.toString().contains("The connection errored")) {
           showCustomSuccessToast(
             context: context,

@@ -41,7 +41,7 @@ class _UpdateProfileDialogState extends ConsumerState<UpdateProfileDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Update your info',
+                    'Update your name',
                     style: TextStyle(
                       fontSize: 18,
                       fontFamily: FontFamilies.interDisplay,

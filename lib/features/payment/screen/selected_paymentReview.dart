@@ -1,6 +1,6 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/payment/screen/success_error_scren/success_error.dart';
+
 import 'package:curnectgate/features/payment/state_model/state_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,12 +45,15 @@ class SelectedReview extends ConsumerWidget {
           Expanded(
             child: GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PaymentSuccessScreen(isFaile: false),
-                  ),
-                );
+
+
+                
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => PaymentSuccessScreen(isFaile: false),
+                //   ),
+                // );
               },
               child: Container(
                 height: 50,

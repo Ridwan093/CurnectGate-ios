@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
 import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
@@ -8,7 +6,6 @@ import 'package:curnectgate/features/operations/notifications/event/model/Event/
 import 'package:curnectgate/features/operations/notifications/provider/eventprovider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/getCalender_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/getevent_provider.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -38,11 +35,8 @@ class CalenderData extends ConsumerWidget {
         },
         error: (error, stack) {
           try {
-            if (error.toString().contains("Unauthenticated")) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                ref.read(authProvider.notifier).seassionExpire(context, ref);
-              });
-              return Expiresessionbody();
+            if (error.toString().contains("Unauthorized")) {
+              return const Expiresessionbody();
             }
             final event = ref.read(getCalenderProvider).value;
             if (event!.data!.events!.isNotEmpty) {
@@ -72,7 +66,6 @@ class CalenderData extends ConsumerWidget {
     final state = ref.watch(eventsProvider);
     final notifier = ref.read(eventsProvider.notifier);
 
-    // Define date range
     final firstDay = DateTime.now().subtract(const Duration(days: 365));
     final lastDay = DateTime.now().add(const Duration(days: 365));
 
@@ -84,10 +77,9 @@ class CalenderData extends ConsumerWidget {
       onFormatChanged: notifier.changeCalendarFormat,
       onPageChanged: notifier.changeFocusedDay,
       onDaySelected: (selectedDay, focusedDay) {
-        ref.read(getEventProvider.notifier).refreshEvent(context, ref,selectedDay.toString());
-        log(
-          "SELECTEDDATE: ${selectedDay.toString()} FocusedDay: ${focusedDay.toString()}",
-        );
+        ref
+            .read(getEventProvider.notifier)
+            .refreshEvent(context, ref, selectedDay.toString());
       },
       eventLoader:
           (day) =>
@@ -95,45 +87,89 @@ class CalenderData extends ConsumerWidget {
                   .where((e) => isSameDay(DateTime.parse(e.start ?? ""), day))
                   .toList(),
       calendarBuilders: CalendarBuilders(
-        defaultBuilder: (context, date, focusedDay) {
-          final calendarEvents =
+        todayBuilder: (context, date, focusedDay) {
+          final dayEvents =
               events
                   .where((e) => isSameDay(DateTime.parse(e.start ?? ""), date))
                   .toList();
-          final hasEvents = calendarEvents.isNotEmpty;
-          final isToday = isSameDay(date, DateTime.now());
 
-          if (hasEvents || isToday) {
-            return Container(
-              margin: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: AppColors.instance.yellow300,
-                borderRadius: BorderRadius.circular(8),
+          // Decide color based on conditions
+          Color bgColor;
+          Color textColor = Colors.white;
+
+          if (dayEvents.isNotEmpty) {
+            // There’s an event today
+            final hasAddedToCalendar = dayEvents.any(
+              (e) => e.addedToCalendar ?? false,
+            );
+            bgColor =
+                hasAddedToCalendar
+                    ? AppColors
+                        .instance
+                        .yellow400 // added to calendar
+                    : AppColors.instance.teal400; // event exists but not added
+          } else {
+            // Today but no event
+            bgColor = AppColors.instance.black600;
+          }
+
+          return Container(
+            margin: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: bgColor,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Center(
+              child: Text(
+                '${date.day}',
+                style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
               ),
-              child: Center(
-                child: Text(
-                  '${date.day}',
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
+            ),
+          );
+        },
+        defaultBuilder: (context, date, focusedDay) {
+          final dayEvents =
+              events
+                  .where((e) => isSameDay(DateTime.parse(e.start ?? ""), date))
+                  .toList();
+
+          if (dayEvents.isEmpty) return null;
+
+          final hasAddedToCalendar = dayEvents.any(
+            (e) => e.addedToCalendar ?? false,
+          );
+          final bgColor =
+              hasAddedToCalendar
+                  ? AppColors.instance.yellow400
+                  : AppColors.instance.teal400;
+
+          return Container(
+            margin: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: bgColor,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Center(
+              child: Text(
+                '${date.day}',
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            );
-          }
-          return null;
-        },
-        markerBuilder: (context, date, events) {
-          final validEvents = events.whereType<Event>().toList();
-          if (validEvents.isEmpty) return null;
-
-          final hasUserRsvp = validEvents.any(
-            (event) => event.addedToCalendar ?? false,
+            ),
           );
+        },
+
+        markerBuilder: (context, date, events) {
+          final dayEvents = events.whereType<Event>().toList();
+          if (dayEvents.isEmpty) return null;
+
+          final hasUserRsvp = dayEvents.any((e) => e.addedToCalendar ?? false);
 
           if (hasUserRsvp) {
             return Positioned(
-              bottom: 8,
+              bottom: 6,
               child: Container(
                 width: 6,
                 height: 6,
@@ -144,7 +180,7 @@ class CalenderData extends ConsumerWidget {
               ),
             );
           }
-          return SizedBox();
+          return null;
         },
       ),
     );

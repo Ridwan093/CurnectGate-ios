@@ -1,3 +1,4 @@
+import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/co_dropdown.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/emergencyRelationShip_monthlyIncom.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/security_deposit_agentIncom.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/startDate_widget.dart';
@@ -11,15 +12,16 @@ class TenantAdditionalFields extends ConsumerWidget {
   final TextEditingController emergencyContactphnoe;
   final TextEditingController desgination;
 
-  const TenantAdditionalFields({
+  TenantAdditionalFields({
     super.key,
     required this.desgination,
     required this.emergencyContactname,
     required this.emergencyContactphnoe,
   });
-
+  final List<String> _rental_frequency = ['Monthly',];
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(formProvider);
     return Column(
       children: [
         ReusabelProfileForm(
@@ -81,13 +83,12 @@ class TenantAdditionalFields extends ConsumerWidget {
         ),
         const SizedBox(height: 16),
         ReusabelProfileForm(
-
           fieldKey: 'Employer',
           fieldType: FieldType.name,
           hintText: 'eg.(Amazon,Tech Solutions Inc.)',
           label: 'Employer',
           onChanged: (value) {
-              ref.read(formProvider.notifier).updateEmplyer(value);
+            ref.read(formProvider.notifier).updateEmplyer(value);
           },
           onValidationChanged: (validation) {
             ref
@@ -100,28 +101,39 @@ class TenantAdditionalFields extends ConsumerWidget {
           },
         ),
         const SizedBox(height: 16),
-        ReusabelProfileForm(
-        
-          fieldKey: 'Rental Frequency',
-          fieldType: FieldType.name,
-          hintText: 'e.g. (monthly, annually)',
+        CoDropdown(
+          item: _rental_frequency,
           label: 'Rental Frequency',
           onChanged: (value) {
-             ref.read(formProvider.notifier).updateRentFrequency(value);
+            ref.read(formProvider.notifier).updateRentFrequency(value ?? "");
           },
-          onValidationChanged: (validation) {
-            ref
-                .read(formProvider.notifier)
-                .updateField(
-                  field: 'rental_requency',
-                  isValid: validation.isValid,
-                  errorMessage: validation.error,
-                );
-          },
+          value:
+              _rental_frequency.contains(state.rentalfrequency)
+                  ? state.rentalfrequency
+                  : null,
+          errorKey: "rental_frequency",
         ),
+        // ReusabelProfileForm(
+
+        //   fieldKey: 'Rental Frequency',
+        //   fieldType: FieldType.name,
+        //   hintText: 'e.g. (monthly, annually)',
+        //   label: 'Rental Frequency',
+        //   onChanged: (value) {
+        //      ref.read(formProvider.notifier).updateRentFrequency(value);
+        //   },
+        //   onValidationChanged: (validation) {
+        //     ref
+        //         .read(formProvider.notifier)
+        //         .updateField(
+        //           field: 'rental_frequency',
+        //           isValid: validation.isValid,
+        //           errorMessage: validation.error,
+        //         );
+        //   },
+        // ),
         const SizedBox(height: 16),
         SecurityIncomAndAgentFess(),
-    
 
         const SizedBox(height: 16),
         DatePickerWidget(),

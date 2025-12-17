@@ -80,6 +80,13 @@ const String schedulOtp = "/api/v1/estates/general/visitor-otps/generate";
 const String createinstantPermit =
     "/api/v1/estates/general/clearance-permits/create-for-otp";
 
+/// PAYMENT POST API --------.
+
+const String payduePayment = "/api/v1/estates/general/payments/pay-custom";
+const String payFullPayment = "/api/v1/estates/general/payments/pay-full";
+const String initialFundWallet =
+    "/api/v1/estates/general/wallet/fund/initialize";
+
 //SECURITY POST API URL
 
 const String addviolationComment =
@@ -137,7 +144,7 @@ const String listOfViolation = "/api/v1/estates/general/violations";
 const String getSpesicificViolation = "/api/v1/estates/general/violations/1";
 const String getViolationLocation =
     "/api/v1/estates/general/violations/locations";
-
+const String getViolationCount = "/api/v1/estates/security/violations/counts";
 const String getViolationCategorys =
     "/api/v1/estates/general/violations/categories";
 const String getViolationComment =
@@ -155,6 +162,7 @@ const String getWorkpermit =
 
 const String getDigitalIDCode =
     "/api/v1/estates/general/digital-member-id/printable";
+const String activeCount = "/api/v1/estates/general/visitor-otps/counts/";
 
 const String getDigitalStatus =
     "/api/v1/estates/general/digital-member-id/my-digital-id";
@@ -164,12 +172,11 @@ const String getPropertya =
     "/api/v1/estates/owner-portal/households/properties";
 const String getPropeertyUser =
     "/api/v1/estates/owner-portal/households/property-users";
-const String getmemberpermission =
-    "/api/v1/estates/owner-portal/households/memebers/permission/9";
-const String getstatisticStatus =
-    "/api/v1/estates/owner-portal/households/members/permission/8/status";
-const String getstatistic =
-    "/api/v1/estates/owner-portal/households/members/permission/8/status";
+
+// VOTING UR
+const String getVoteHistory = "/api/v1/estates/general/voting/history";
+final String votingPoll = "/api/v1/estates/general/voting/polls?status=all";
+const String votingSetting = "/api/v1/estates/general/voting/settings";
 
 /// NOTIFICATION/REMINDER/EVENT
 const String createReminder = "/api/v1/estates/general/reminders";
@@ -178,6 +185,7 @@ const String requestEventCode = "/api/v1/estates/general/event-codes/request";
 const String notificationCount = "/api/v1/estates/general/notifications/count";
 const String getCalenders = "/api/v1/estates/general/events/calendar";
 const String getEventCodes = "/api/v1/estates/general/event-codes/my-codes";
+const String getEventRsvp = "/api/v1/estates/general/events/my-rsvp";
 
 /// REMOVE HOUSEOLD DELETE
 
@@ -207,3 +215,16 @@ const String getResinde = "/api/v1/estates/general/directory";
 const String getworkOrder = "/api/v1/estates/general/workorders";
 const String workOrdercategorie =
     "/api/v1/estates/general/workorders/categories";
+//// PAYMENT GET API
+
+const String getPaymentDashbords = "/api/v1/estates/general/payments/dashboard";
+const String getDuePayments =
+    "/api/v1/estates/general/payments/outstanding-dues";
+const String getWalletHistorys =
+    "/api/v1/estates/general/wallet/history?type=credit";
+const String getPaymentHistorys = "/api/v1/estates/general/payments/history";
+const String getPaymentMethod =
+    "/api/v1/estates/general/payment-config/methods";
+
+const String emergencyContact =
+    "/api/v1/estates/general/settings/user-management";

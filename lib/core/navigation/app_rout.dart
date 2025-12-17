@@ -10,6 +10,8 @@ import 'package:curnectgate/features/auth/presentation/screen/forgot_password.da
 import 'package:curnectgate/features/auth/presentation/screen/memeber_getstarted.dart';
 import 'package:curnectgate/features/auth/presentation/screen/rest_pass_otp_screen.dart';
 import 'package:curnectgate/features/auth/presentation/screen/sign_in.dart';
+import 'package:curnectgate/features/auth/presentation/screen/splac_screen.dart';
+import 'package:curnectgate/features/estate_management/elections/screens/election_dashboard.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_screen/vendor_log.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/screen/Dashborad.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/screen/add_member.dart';
@@ -26,6 +28,13 @@ import 'package:curnectgate/features/member_management/screen/password_screen.da
 import 'package:curnectgate/features/operations/OTP_Activation/screen/Activate_Otp_screen.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/activites_log.dart';
 import 'package:curnectgate/features/operations/violation/screens/reportViolation.dart';
+import 'package:curnectgate/features/payment/screen/Activites.dart';
+import 'package:curnectgate/features/payment/screen/ReviewPayment.dart';
+import 'package:curnectgate/features/payment/screen/payment_method_screen.dart';
+import 'package:curnectgate/features/payment/screen/success_error_scren/success_error.dart';
+import 'package:curnectgate/features/payment/state_model/payment_model/due_model/outstanding_due.dart';
+import 'package:curnectgate/features/payment/widget/payment_data/due_payement_data.dart';
+import 'package:curnectgate/features/payment/widget/payment_data/select_due_payment_data.dart';
 import 'package:curnectgate/features/security/screen/sccurityTap_Screen.dart';
 import 'package:curnectgate/features/security/screen/security_notifier/notification.dart';
 import 'package:curnectgate/features/security/screen/violation_details.dart';
@@ -37,15 +46,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
+    navigatorKey: navigatorKey,
     debugLogDiagnostics: true,
-    initialLocation: "/",
+    initialLocation: AppRoutes.splasScreen,
     routes: [
+      GoRoute(
+        name: '/Splac_screen', // Unique name for navigation
+        path: AppRoutes.splasScreen,
+        builder: (context, state) => SplashScreen(),
+      ),
       // Define routes with BOTH path and name
       GoRoute(
-        name: '/', // Unique name for navigation
-        path: AppRoutes.estatateOnbording,
+        name: AppRoutes.estatateOnbording,
+        path: '/',
         builder: (context, state) => AuthOnboardingScreen(),
       ),
       GoRoute(
@@ -165,6 +181,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: AppRoutes.vendorAccessCode,
         builder: (context, state) {
           // Safely cast the extra data
+
           final extra = state.extra as Map<String, dynamic>? ?? {};
 
           // Extract values with null checks
@@ -238,11 +255,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/security-dashboard',
         name: AppRoutes.securityguide,
         builder: (context, state) {
-          // final extra = state.extra as Map<String, dynamic>? ?? {};
-
-          // Extract values with null checks
-          // final token = extra['token'] as String? ?? '';
-
           return SecurityTapScreen();
         },
       ),
@@ -324,6 +336,16 @@ final routerProvider = Provider<GoRouter>((ref) {
           return VendorLog();
         },
       ),
+      GoRoute(
+        path: '/election_dash',
+        name: AppRoutes.electionDasbord,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+
+          // Extract values with null checks
+          return ElectionPage(id: extra["id"]);
+        },
+      ),
 
       GoRoute(
         path: '/manage_login',
@@ -335,13 +357,126 @@ final routerProvider = Provider<GoRouter>((ref) {
           return ManageLoging();
         },
       ),
+      // ReviewPayment
+      GoRoute(
+        path: '/pay_all',
+        name: AppRoutes.payallduePayment,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+
+          final totalDue = extra["totalDue"] as String;
+          final wallletBalance = extra["walletBalance"] as String;
+
+          // Extract values with null checks
+          return DuePaymentData(
+            totalDue: totalDue,
+            walletBalance: wallletBalance,
+          );
+        },
+      ),
+
+      GoRoute(
+        path: '/review_pay_due',
+        name: AppRoutes.paymentReview,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          final walletBalce = extra["wallet"] as String;
+
+          final lists =
+              (extra["list"] as Iterable?)
+                  ?.whereType<OutstandingDue>()
+                  .toList() ??
+              [];
+
+          // Extract values with null checks
+          return ReviewPayment(list: lists, wallet: walletBalce);
+        },
+      ),
+
+      GoRoute(
+        path: '/sletct_due',
+        name: AppRoutes.selectedDueTopay,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+
+          final totalDue = extra["totalDue"] as String;
+          final wallletBalance = extra["walletBalance"] as String;
+
+          // final lists =
+          //     (extra["list"] as Iterable?)
+          //         ?.whereType<OutstandingDue>()
+          //         .toList() ??
+          //     [];
+
+          // Extract values with null checks
+          return SelectDuePaymentData(
+            totalDue: totalDue,
+            walletBalance: wallletBalance,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/succes_file_screen',
+        name: AppRoutes.paymentSuccess,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+
+          final isFail = extra["fails_succs"] as bool;
+          final errorBody = extra["ErrorMessage"] as String;
+
+          // final lists =
+          //     (extra["list"] as Iterable?)
+          //         ?.whereType<OutstandingDue>()
+          //         .toList() ??
+          //     [];
+
+          // Extract values with null checks
+          return PaymentSuccessScreen(isFaile: isFail, error: errorBody);
+        },
+      ),
+
+      GoRoute(
+        path: '/payment_m',
+        name: AppRoutes.paymentMethod,
+        builder: (context, state) {
+          // final lists =
+          //     (extra["list"] as Iterable?)
+          //         ?.whereType<OutstandingDue>()
+          //         .toList() ??
+          //     [];
+
+          // Extract values with null checks
+          return PaymentMethodScreen();
+        },
+      ),
+
+      GoRoute(
+        path: '/payment_History',
+        name: AppRoutes.paymentHistory,
+        builder: (context, state) {
+          // final lists =
+          //     (extra["list"] as Iterable?)
+          //         ?.whereType<OutstandingDue>()
+          //         .toList() ??
+          //     [];
+
+          // Extract values with null checks
+          return Activites();
+        },
+      ),
     ],
 
     redirect: (BuildContext context, GoRouterState state) async {
       final currentPath = state.matchedLocation;
       debugPrint('Current path: $currentPath');
       final lastStep = await OnboardingProgressManager.getStep();
+      if (state.matchedLocation == AppRoutes.splasScreen) {
+        return null;
+      }
 
+      if (state.matchedLocation == "/Splac_screen") {
+        return null;
+      }
       // If user is mid-onboarding and not yet authenticated
       if (currentPath == "/" && lastStep != null) {
         switch (lastStep) {

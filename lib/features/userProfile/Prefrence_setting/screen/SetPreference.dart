@@ -3,12 +3,10 @@ import 'package:curnectgate/core/appErrorBody/buildEmptyBody.dart';
 import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
 import 'package:curnectgate/core/appErrorBody/emmergencyBody.dart';
 import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
-import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/model/option.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/provider/prefrence_provider.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/widget/Setting_widget.dart';
@@ -226,12 +224,15 @@ class PreferencesScreen extends ConsumerWidget {
                   error: (error, stack) {
                     try {
                       // Handle session expiration
-                      if (error.toString().contains("Unauthenticated")) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          ref
-                              .read(authProvider.notifier)
-                              .seassionExpire(context, ref);
-                        });
+                      // if (error.toString().contains("Unauthenticated")) {
+                      //   WidgetsBinding.instance.addPostFrameCallback((_) {
+                      //     ref
+                      //         .read(authProvider.notifier)
+                      //         .seassionExpire(context, ref);
+                      //   });
+                      //   return Expiresessionbody();
+                      // }
+                      if (error.toString().contains("Unauthorized")) {
                         return Expiresessionbody();
                       }
 

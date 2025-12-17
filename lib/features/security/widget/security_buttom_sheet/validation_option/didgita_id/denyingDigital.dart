@@ -11,9 +11,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DenyDigitalEntry extends ConsumerStatefulWidget {
-  final String id;
-  final String otpCode;
-  DenyDigitalEntry({super.key, required this.id, required this.otpCode});
+  final String digital_id_code;
+  final String access_type;
+  final String location;
+  final String additional_notes;
+  final String device_id;
+  
+  DenyDigitalEntry({
+    super.key,
+    required this.digital_id_code,
+    required this.access_type,
+    required this.location,
+    required this.device_id,
+    required this.additional_notes,
+  });
 
   @override
   ConsumerState<DenyDigitalEntry> createState() => _DenyEntryState();
@@ -92,7 +103,7 @@ class _DenyEntryState extends ConsumerState<DenyDigitalEntry> {
                 },
               ),
 
-              _buildBottomAction(ref, context, widget.id),
+              _buildBottomAction(ref, context),
             ],
           ),
         ),
@@ -108,7 +119,7 @@ class _DenyEntryState extends ConsumerState<DenyDigitalEntry> {
     );
   }
 
-  Widget _buildBottomAction(WidgetRef ref, BuildContext context, String id) {
+  Widget _buildBottomAction(WidgetRef ref, BuildContext context) {
     final formState = ref.watch(oTpformProvider);
     final providerState = ref.read(formProvider.notifier);
     // final isLoading = ref.watch(estateCodeSubmissionProvider).isLoading;
@@ -117,15 +128,18 @@ class _DenyEntryState extends ConsumerState<DenyDigitalEntry> {
       isLoading: formState.isLoading,
       label: 'Deny',
       onPressed:
-          formState.denyValid
+          formState.resonaValid
               ? () {
                 log(_securityNotedController.text);
-                providerState.denyEntry(
+
+                providerState.digitalIDApproveDeny(
                   context: context,
-                  denyReason: formState.reason ?? "",
-                  securityNote: formState.securityNoted ?? "",
-                  id: id,
+                  qrCodeData: widget.digital_id_code,
+                  accessTypes: widget.access_type,
+                  location: widget.location,
                   ref: ref,
+                  approveType: "deny-access",
+                  denial_reason: formState.reason ?? "",
                 );
 
                 _securityNotedController.clear();

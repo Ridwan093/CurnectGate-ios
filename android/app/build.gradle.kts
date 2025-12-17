@@ -1,6 +1,6 @@
 plugins {
     id("com.android.application")
-    id("kotlin-android")
+    id("org.jetbrains.kotlin.android") 
     // The Flutter Gradle Plugin must be applied after Android & Kotlin plugins
     id("dev.flutter.flutter-gradle-plugin")
     id("com.google.gms.google-services")
@@ -28,18 +28,24 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
-
-    buildTypes {
-        release {
-            // Replace with your own signing config for production
-            signingConfig = signingConfigs.getByName("debug")
-        }
+buildTypes {
+    getByName("release") {
+        isMinifyEnabled = false
+        isShrinkResources = false
+        signingConfig = signingConfigs.getByName("debug")
     }
+}
+
 }
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.20")
+
+
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+
+
+  
 }
 
 flutter {

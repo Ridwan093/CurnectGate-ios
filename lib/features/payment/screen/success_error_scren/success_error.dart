@@ -2,10 +2,16 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class PaymentSuccessScreen extends StatelessWidget {
   final bool isFaile;
-  const PaymentSuccessScreen({super.key, required this.isFaile});
+  final String error;
+  const PaymentSuccessScreen({
+    super.key,
+    required this.isFaile,
+    required this.error,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,15 +20,20 @@ class PaymentSuccessScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildsuccessContainer(isFaile),
-            ActionButton(label: isFaile? "Retry payment":"Ok, Got it!", onPressed: () {}),
+            _buildsuccessContainer(isFaile, error),
+            ActionButton(
+              label: isFaile ? "Retry payment" : "Ok, Got it!",
+              onPressed: () {
+                context.pop();
+              },
+            ),
           ],
         ),
       ),
     );
   }
 
-  _buildsuccessContainer(bool isFaile) {
+  _buildsuccessContainer(bool isFaile, String error) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -41,7 +52,8 @@ class PaymentSuccessScreen extends StatelessWidget {
           const SizedBox(height: 25),
           Text(
             isFaile
-                ? "We're sorry, we couldn't process your payment, please try later"
+                // ? "We're sorry, we couldn't process your payment, please try later"
+                ? error
                 : "Payment Successful",
             textAlign: TextAlign.center,
             style: TextStyle(

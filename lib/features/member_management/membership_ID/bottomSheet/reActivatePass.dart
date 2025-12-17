@@ -12,7 +12,7 @@ class Reactivatepass extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final form = ref.read(formProvider.notifier);
-    final state = ref.watch(formProvider);
+
     final isLoading = ref.watch(formProvider).generateMemberIdLoading;
     return Column(
       mainAxisSize: MainAxisSize.min,

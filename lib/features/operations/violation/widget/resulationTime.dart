@@ -9,7 +9,6 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/operations/violation/model/GetReport_history_model.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/getReport_history_provider.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -93,13 +92,13 @@ class ResolutionTimeline extends ConsumerWidget {
               final historyData = history?.data;
               if (history?.data != null && historyData?.history != null) {
                 final data = historyData?.history;
-                final sortedData = [...data!]..sort(
-                  (a, b) =>
-                      _getStatusPriority(a.status) -
-                      _getStatusPriority(b.status),
-                );
+                // final sortedData = [...data!]..sort(
+                //   (a, b) =>
+                //       _getStatusPriority(a.status) -
+                //       _getStatusPriority(b.status),
+                // );
 
-                return Column(children: [buildStatusTimeline(data)]);
+                return Column(children: [buildStatusTimeline(data!)]);
               } else {
                 return Text("");
               }
@@ -112,23 +111,21 @@ class ResolutionTimeline extends ConsumerWidget {
               final historyData = history?.data;
               if (history?.data != null && historyData?.history != null) {
                 final data = historyData?.history;
-                final sortedData = [...data!]..sort(
-                  (a, b) =>
-                      _getStatusPriority(a.status) -
-                      _getStatusPriority(b.status),
-                );
+                // final sortedData = [...data!]..sort(
+                //   (a, b) =>
+                //       _getStatusPriority(a.status) -
+                //       _getStatusPriority(b.status),
+                // );
 
-                return Column(children: [buildStatusTimeline(data)]);
+                return Column(children: [buildStatusTimeline(data!)]);
               }
               return const Loadingstates();
             },
             error: (error, stack) {
-              if (error.toString().contains("Unauthenticated")) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  ref.read(authProvider.notifier).seassionExpire(context, ref);
-                });
+              if (error.toString().contains("Unauthorized")) {
                 return const Expiresessionbody();
               }
+
               if (error.toString().contains("connection")) {
                 return Builderroul(
                   error: error.toString(),
@@ -145,15 +142,15 @@ class ResolutionTimeline extends ConsumerWidget {
               final historyData = history?.data;
               if (history?.data != null && historyData?.history != null) {
                 final data = historyData?.history;
-                final sortedData = [...data!]..sort(
-                  (a, b) =>
-                      _getStatusPriority(a.status) -
-                      _getStatusPriority(b.status),
-                );
+                // final sortedData = [...data!]..sort(
+                //   (a, b) =>
+                //       _getStatusPriority(a.status) -
+                //       _getStatusPriority(b.status),
+                // );
 
                 return Column(
                   children: [
-                    buildStatusTimeline(data),
+                    buildStatusTimeline(data!),
                     Emmergencybody(error: error.toString()),
                   ],
                 );
@@ -441,5 +438,4 @@ class ResolutionTimeline extends ConsumerWidget {
       ],
     );
   }
-
 }

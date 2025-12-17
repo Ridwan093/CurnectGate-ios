@@ -100,10 +100,13 @@ class Workoderlist extends ConsumerWidget {
       case "in_progress":
         return "IN PROGRESS";
       case "approved":
-        return "COMPLETED";
+        return "APPROVED";
 
       case "cancelled":
         return "CANCELLED";
+
+      case "completed":
+        return "COMPLETED";
 
       default:
         return "PENDING";
@@ -170,14 +173,16 @@ class Workoderlist extends ConsumerWidget {
       case "cancelled":
         return _buildStatusWidget(status, TaskStatus.complete);
       case "pending":
-        return _buildStatusWidget(status, TaskStatus.start);
+        return _buildStatusWidget(status, TaskStatus.pending);
 
       case "in_progress":
         return _buildStatusWidget(status, TaskStatus.inProgress);
-      case "approved":
+      case "completed":
         return _buildStatusWidget(status, TaskStatus.complete);
-      default:
+      case "approved":
         return _buildStatusWidget(status, TaskStatus.start);
+      default:
+        return _buildStatusWidget(status, TaskStatus.pending);
     }
   }
 
@@ -201,6 +206,15 @@ class Workoderlist extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            Text(
+              "Pending",
+              style: TextStyle(
+                color: getLabelColor(state, TaskStatus.pending),
+                fontWeight: FontFamilies.bold,
+                fontFamily: FontFamilies.interDisplay,
+                fontSize: 14,
+              ),
+            ),
             Text(
               "Start",
               style: TextStyle(
@@ -248,26 +262,54 @@ class Workoderlist extends ConsumerWidget {
             child: Image.asset(AssetPaths.waterDrop, height: 20, width: 20),
           ),
         ),
-        InkWell(
-          onTap:
-              () => showUserBottomSheet(
-                context: context,
-                headertitle: "Manage Vendor Log",
-                headersubtitle: "Manage  ${vendor?.category?.name ?? ""}",
-                ref: ref,
-                bottom: BottomSheetView.vendorLog,
-                id: vendor?.id ?? 0,
+        if (vendor!.status!.contains("approved")) ...[
+          _builduplodButton(ref, context, vendor),
+        ] else
+          InkWell(
+            onTap:
+                () => showUserBottomSheet(
+                  context: context,
+                  headertitle: "Manage Vendor Log",
+                  headersubtitle: "Manage  ${vendor.category?.name ?? ""}",
+                  ref: ref,
+                  bottom: BottomSheetView.vendorLog,
+                  id: vendor.id ?? 0,
+                ),
+            child: Text(
+              "Change",
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                fontWeight: FontFamilies.bold,
+                color: AppColors.instance.teal300,
               ),
-          child: Text(
-            "Change",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontWeight: FontFamilies.bold,
-              color: AppColors.instance.teal300,
             ),
           ),
-        ),
       ],
+    );
+  }
+
+  Widget _builduplodButton(
+    WidgetRef ref,
+    BuildContext context,
+    WorkOrder? vendor,
+  ) {
+    return IconButton(
+      onPressed: () {
+        showUserBottomSheet(
+          context: context,
+          headertitle: "Uploade After Photo",
+          headersubtitle:
+              "Upload after photo for  ${vendor?.category?.name ?? ""}",
+          ref: ref,
+          bottom: BottomSheetView.afterphoto,
+          id: vendor?.id ?? 0,
+        );
+      },
+      icon: Icon(
+        Icons.upload_file,
+        color: AppColors.instance.teal300,
+        size: 30,
+      ),
     );
   }
 }

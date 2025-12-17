@@ -73,7 +73,7 @@ class UserProfileNotifier extends AutoDisposeAsyncNotifier<GetUserProfile?> {
           "Unauthenticated. Please login to continue.",
         )) {
           log(e.toString());
-          ref.read(authProvider.notifier).seassionExpire(context, ref);
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else if (e.toString().contains("The connection errored")) {
           log(e.toString());
           showCustomSuccessToast(

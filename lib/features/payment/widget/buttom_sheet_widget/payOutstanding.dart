@@ -1,12 +1,24 @@
+import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/payment/screen/DuePayment.dart';
-import 'package:curnectgate/features/payment/screen/select_duetoPay.dart';
+import 'package:curnectgate/features/payment/state_model/payment_model/dashbord_Model/payment_dashboard_data.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class PayOutstanding extends StatelessWidget {
   final String headertitle;
-  const PayOutstanding({super.key, required this.headertitle});
+  final PaymentDashboardData? data;
+  const PayOutstanding({
+    super.key,
+    required this.headertitle,
+    required this.data,
+  });
+  String formatPrice(String price) {
+    final number = double.tryParse(price) ?? 0.0;
+    final formatter = NumberFormat('#,##0.00');
+    return formatter.format(number);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,23 +55,35 @@ class PayOutstanding extends StatelessWidget {
           _buildPrimaryOptionTile(
             title: "Pay full amount",
             subtitle: "Pay the total ",
-            second: "(#53,067)",
+            second: "(₦${formatPrice("${data?.totalOutstanding ?? 0}")})",
             last: "  now",
+            data: data,
             onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => DuePayment()),
+              context.pop();
+              context.pushNamed(
+                AppRoutes.payallduePayment,
+                extra: {
+                  "totalDue": data?.totalOutstanding.toString(),
+                  "walletBalance": data?.walletBalance ?? "",
+                },
               );
+              // Navigator.pop(context);
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => DuePayment()),
+              // );
             },
           ),
           const SizedBox(height: 5),
           _buildPrimaryOptionTile(
             onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => DuePaymentSelection()),
+              context.pop();
+              context.pushNamed(
+                AppRoutes.selectedDueTopay,
+                extra: {
+                  "totalDue": data?.totalOutstanding.toString(),
+                  "walletBalance": data?.walletBalance ?? "",
+                },
               );
             },
             title: "Pay custom amount",
@@ -74,6 +98,7 @@ class PayOutstanding extends StatelessWidget {
     required String title,
     required String subtitle,
     VoidCallback? onTap,
+    PaymentDashboardData? data,
     String? second,
     last,
   }) {
@@ -113,15 +138,27 @@ class PayOutstanding extends StatelessWidget {
               ),
               if (second != null) ...[
                 SizedBox(height: 5),
-                Text(
-                  "Low wallet balance:#0.00",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontWeight: FontFamilies.bold,
-                    fontSize: 11,
-                    color: AppColors.instance.error500,
+                if (data!.hasSufficientBalance!) ...[
+                  Text(
+                    "Wallet balance: ₦${formatPrice(data.walletBalance ?? "")}",
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontWeight: FontFamilies.bold,
+                      fontSize: 11,
+                      color: AppColors.instance.teal500,
+                    ),
                   ),
-                ),
+                ] else ...[
+                  Text(
+                    "Low wallet balance: ₦${formatPrice(data.walletBalance ?? "")}",
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontWeight: FontFamilies.bold,
+                      fontSize: 11,
+                      color: AppColors.instance.error500,
+                    ),
+                  ),
+                ],
               ],
             ],
           ),

@@ -1,50 +1,97 @@
+import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/payment/screen/success_error_scren/success_error.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/payment/state_model/payment_model/due_model/outstanding_due.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class ReviewPayment extends ConsumerWidget {
-  const ReviewPayment({super.key});
+  final List<OutstandingDue> list;
+  final String wallet;
+  const ReviewPayment({super.key, required this.list, required this.wallet});
+  String formatPrice(String price) {
+    final number = double.tryParse(price) ?? 0.0;
+    final formatter = NumberFormat('#,##0.00');
+    return formatter.format(number);
+  }
+
+  double calculateTotal(List<OutstandingDue> list) {
+    return list.fold(0.0, (total, item) {
+      final value = double.tryParse(item.amount ?? '0') ?? 0.0;
+      return total + value;
+    });
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
-
+    final isLoading = ref.watch(formProvider).generateMemberIdLoading;
     return Scaffold(
       bottomNavigationBar: SizedBox(
         height: 70,
-        child: _buildBottonsheet(ref, context),
+        child: _buildBottonsheet(ref, context, isLoading),
       ),
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            context.pop();
           },
           icon: Icon(Icons.arrow_back_ios, color: AppColors.instance.black600),
         ),
       ),
-      body: _buildbody(size, ref),
+      body: Stack(
+        children: [
+          _buildbody(size, ref, list, context),
+          if (isLoading)
+            Positioned.fill(
+              child: Container(
+                height: size.height,
+                color: AppColors.instance.grey300.withOpacity(.9),
+                child: Loadingstates(),
+              ),
+            ),
+        ],
+      ),
     );
   }
 
-  Widget _buildBottonsheet(WidgetRef ref, BuildContext context) {
+  Widget _buildBottonsheet(
+    WidgetRef ref,
+    BuildContext context,
+    bool isLoading,
+  ) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
       child: Row(
         children: [
           Expanded(
             child: GestureDetector(
-              onTap: () {
-                // Navigate to next screen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PaymentSuccessScreen(isFaile: true,),
-                  ),
-                );
-              },
+              onTap:
+                  isLoading
+                      ? null
+                      : () {
+                        final _selectedDueIds =
+                            list
+                                .map(
+                                  (payment) => payment.id,
+                                ) // get the id field
+                                .whereType<int>() // filter out nulls
+                                .toList();
+
+                        ref
+                            .read(formProvider.notifier)
+                            .payDueOutstanding(
+                              context: context,
+                              selected_dues: _selectedDueIds,
+                              totalAmout: calculateTotal(list),
+                              ref: ref,
+                            );
+                      },
 
               child: Container(
                 height: 50,
@@ -96,7 +143,12 @@ class ReviewPayment extends ConsumerWidget {
     );
   }
 
-  Widget _buildbody(Size size, WidgetRef ref) {
+  Widget _buildbody(
+    Size size,
+    WidgetRef ref,
+    List<OutstandingDue> list,
+    BuildContext context,
+  ) {
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -129,40 +181,43 @@ class ReviewPayment extends ConsumerWidget {
                   ),
 
                   SizedBox(height: 30),
-                  _buildPaymentClick(
-                    amount: "₦32,587",
-                    title: "Water bill",
+                  ...list.map(
+                    (e) => _buildPaymentClick(
+                      amount: "₦${formatPrice(e.amount ?? "")}",
+                      title: e.feeCategory?.icon ?? "",
 
-                    iconPath: AssetPaths.waterDrop,
+                      iconPath: AssetPaths.waterDrop,
+                    ),
                   ),
+
                   SizedBox(height: 2),
-                  _buildPaymentClick(
-                    amount: "₦10,000",
-                    title: "Service Fee",
+                  // _buildPaymentClick(
+                  //   amount: "₦10,000",
+                  //   title: "Service Fee",
 
-                    iconPath: AssetPaths.serviceFee,
-                  ),
-                  SizedBox(height: 2),
-                  _buildPaymentClick(
-                    amount: "₦10,000",
-                    title: "Maintenance Fee",
+                  //   iconPath: AssetPaths.serviceFee,
+                  // ),
+                  // SizedBox(height: 2),
+                  // _buildPaymentClick(
+                  //   amount: "₦10,000",
+                  //   title: "Maintenance Fee",
 
-                    iconPath: AssetPaths.maintenance,
-                  ),
-                  SizedBox(height: 2),
-                  _buildPaymentClick(
-                    amount: "₦32,587",
-                    title: "Light Fee",
+                  //   iconPath: AssetPaths.maintenance,
+                  // ),
+                  // SizedBox(height: 2),
+                  // _buildPaymentClick(
+                  //   amount: "₦32,587",
+                  //   title: "Light Fee",
 
-                    iconPath: AssetPaths.navCreditCardFilled,
-                  ),
+                  //   iconPath: AssetPaths.navCreditCardFilled,
+                  // ),
                   SizedBox(height: 25),
                   _buildTotalDue(),
                 ],
               ),
             ),
           ),
-          _buildPaymentMethodReview(size),
+          _buildPaymentMethodReview(size, ref, context),
           SizedBox(height: 20),
           _buildPaymentPolicy(),
         ],
@@ -170,7 +225,11 @@ class ReviewPayment extends ConsumerWidget {
     );
   }
 
-  Widget _buildPaymentMethodReview(Size size) {
+  Widget _buildPaymentMethodReview(
+    Size size,
+    WidgetRef ref,
+    BuildContext context,
+  ) {
     return Container(
       width: size.width,
       padding: EdgeInsets.all(12),
@@ -198,13 +257,15 @@ class ReviewPayment extends ConsumerWidget {
             ),
           ),
           SizedBox(height: 10),
-          _buildwalletSelect(),
+          _buildwalletSelect(ref, context),
         ],
       ),
     );
   }
 
-  Widget _buildwalletSelect() {
+  Widget _buildwalletSelect(WidgetRef ref, BuildContext context) {
+    final authState = ref.watch(authProvider);
+    final fullname = authState.fullname;
     return Container(
       decoration: BoxDecoration(
         color: AppColors.instance.grey300,
@@ -214,7 +275,7 @@ class ReviewPayment extends ConsumerWidget {
       child: Center(
         child: ListTile(
           title: Text(
-            "Your Wallet (Benjamin Ageh)",
+            "Your Wallet ($fullname)",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               color: AppColors.instance.black300,
@@ -222,13 +283,19 @@ class ReviewPayment extends ConsumerWidget {
             ),
           ),
           subtitle: Text(
-            "₦97,987",
+            "₦${formatPrice(wallet)}",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               fontWeight: FontFamilies.bold,
             ),
           ),
-          trailing: Icon(Icons.arrow_forward_ios, size: 14),
+          trailing: InkWell(
+            onTap: () {
+              context.pop();
+            },
+
+            child: Icon(Icons.arrow_forward_ios, size: 14),
+          ),
         ),
       ),
     );
@@ -279,14 +346,16 @@ class ReviewPayment extends ConsumerWidget {
             fontWeight: FontFamilies.bold,
           ),
         ),
-        Text(
-          "₦85,174",
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontSize: 20,
-            wordSpacing: 2,
-            color: AppColors.instance.teal300,
-            fontWeight: FontFamilies.bold,
+        Expanded(
+          child: Text(
+            " ₦${formatPrice(calculateTotal(list).toString())}",
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              fontSize: 20,
+              wordSpacing: 2,
+              color: AppColors.instance.teal300,
+              fontWeight: FontFamilies.bold,
+            ),
           ),
         ),
       ],
@@ -299,6 +368,7 @@ class ReviewPayment extends ConsumerWidget {
     required String amount,
   }) {
     return Container(
+      margin: EdgeInsets.only(bottom: 2),
       decoration: BoxDecoration(
         color: AppColors.instance.grey300,
 

@@ -1,5 +1,3 @@
-
-
 import 'package:curnectgate/features/estate_management/submit_works_order/model/enum/status_num.dart';
 import 'package:flutter/material.dart';
 
@@ -14,13 +12,15 @@ class ProgressLine extends StatelessWidget {
     required this.status,
     this.height = 8,
     this.backgroundColor = const Color(0xFFE0E0E0),
-   required this.progressColor,
+    required this.progressColor,
   });
 
   double _getProgress() {
     switch (status) {
+      case TaskStatus.pending:
+        return 0.2;
       case TaskStatus.start:
-        return 0.3;
+        return 0.4;
       case TaskStatus.inProgress:
         return 0.6; // You could make this dynamic if needed
       case TaskStatus.complete:

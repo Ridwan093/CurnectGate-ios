@@ -13,65 +13,29 @@ enum PaymentMethod { bankTransfer, debitCard, none }
 final paymentMethodProvider = StateProvider<PaymentMethod>(
   (ref) => PaymentMethod.none,
 );
+final amountTextProvider = StateProvider<String>((ref) => '');
 
-final duePaymentsProvider =
-    StateNotifierProvider<DuePaymentsNotifier, List<DuePaymentModel>>((ref) {
-      return DuePaymentsNotifier();
-    });
+/// Computed provider to check if amount is valid (>= 1000)
+final isAmountValidProvider = Provider<bool>((ref) {
+  final text = ref.watch(amountTextProvider);
+  final amount = double.tryParse(text.replaceAll(',', '')) ?? 0.0;
+  return amount >= 1000;
+});
+final selectedDueIdsProvider =
+    StateNotifierProvider<SelectedDueIdsNotifier, List<int>>((ref) {
+  return SelectedDueIdsNotifier();
+});
 
-class DuePaymentsNotifier extends StateNotifier<List<DuePaymentModel>> {
-  DuePaymentsNotifier()
-    : super([
-        DuePaymentModel(
-          id: '1',
-          title: 'Water bill',
-          amount: '₦32,587',
-          subtitle: 'May 2 2025',
-          iconPath: AssetPaths.waterDrop,
-        ),
-        DuePaymentModel(
-          id: '2',
-          title: 'Service Fee',
-          amount: '₦10,000',
-          subtitle: 'April 2, 2024',
-          iconPath: AssetPaths.serviceFee,
-        ),
-        DuePaymentModel(
-          id: '3',
-          title: 'Maintenance Fee',
-          amount: '₦10,000',
-          subtitle: 'April 2, 2024',
-          iconPath: AssetPaths.maintenance,
-        ),
-        DuePaymentModel(
-          id: '4',
-          title: 'Light Fee',
-          amount: '₦32,587',
-          subtitle: 'April 2, 2024',
-          iconPath: AssetPaths.navCreditCardFilled,
-        ),
-      ]);
+class SelectedDueIdsNotifier extends StateNotifier<List<int>> {
+  SelectedDueIdsNotifier() : super([]);
 
-  void togglePayment(String id) {
-    state =
-        state.map((payment) {
-          if (payment.id == id) {
-            return payment.copyWith(isSelected: !payment.isSelected);
-          }
-          return payment;
-        }).toList();
+  void toggleSelection(int id) {
+    if (state.contains(id)) {
+      state = List.from(state)..remove(id);
+    } else {
+      state = List.from(state)..add(id);
+    }
   }
-}
 
-extension DuePaymentExtension on DuePaymentModel {
-  DuePaymentModel copyWith({bool? isSelected}) {
-    return DuePaymentModel(
-      id: id,
-      title: title,
-      amount: amount,
-      subtitle: subtitle,
-      iconPath: iconPath,
-      isSelected: isSelected ?? this.isSelected,
-    );
-  }
+  bool isSelected(int id) => state.contains(id);
 }

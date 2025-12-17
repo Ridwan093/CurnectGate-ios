@@ -20,12 +20,8 @@ PrivacySettings _$PrivacySettingsFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$PrivacySettings {
-  @JsonKey(name: 'show_email', defaultValue: false)
-  bool? get showEmail => throw _privateConstructorUsedError;
-  @JsonKey(name: 'show_phone', defaultValue: false)
-  bool? get showPhone => throw _privateConstructorUsedError;
-  @JsonKey(name: 'profile_visibility', defaultValue: false)
-  bool? get profileVisibility => throw _privateConstructorUsedError;
+  @JsonKey(defaultValue: [])
+  List<PrivacyItem>? get items => throw _privateConstructorUsedError;
 
   /// Serializes this PrivacySettings to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -43,11 +39,7 @@ abstract class $PrivacySettingsCopyWith<$Res> {
           PrivacySettings value, $Res Function(PrivacySettings) then) =
       _$PrivacySettingsCopyWithImpl<$Res, PrivacySettings>;
   @useResult
-  $Res call(
-      {@JsonKey(name: 'show_email', defaultValue: false) bool? showEmail,
-      @JsonKey(name: 'show_phone', defaultValue: false) bool? showPhone,
-      @JsonKey(name: 'profile_visibility', defaultValue: false)
-      bool? profileVisibility});
+  $Res call({@JsonKey(defaultValue: []) List<PrivacyItem>? items});
 }
 
 /// @nodoc
@@ -65,23 +57,13 @@ class _$PrivacySettingsCopyWithImpl<$Res, $Val extends PrivacySettings>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? showEmail = freezed,
-    Object? showPhone = freezed,
-    Object? profileVisibility = freezed,
+    Object? items = freezed,
   }) {
     return _then(_value.copyWith(
-      showEmail: freezed == showEmail
-          ? _value.showEmail
-          : showEmail // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      showPhone: freezed == showPhone
-          ? _value.showPhone
-          : showPhone // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      profileVisibility: freezed == profileVisibility
-          ? _value.profileVisibility
-          : profileVisibility // ignore: cast_nullable_to_non_nullable
-              as bool?,
+      items: freezed == items
+          ? _value.items
+          : items // ignore: cast_nullable_to_non_nullable
+              as List<PrivacyItem>?,
     ) as $Val);
   }
 }
@@ -94,11 +76,7 @@ abstract class _$$PrivacySettingsImplCopyWith<$Res>
       __$$PrivacySettingsImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {@JsonKey(name: 'show_email', defaultValue: false) bool? showEmail,
-      @JsonKey(name: 'show_phone', defaultValue: false) bool? showPhone,
-      @JsonKey(name: 'profile_visibility', defaultValue: false)
-      bool? profileVisibility});
+  $Res call({@JsonKey(defaultValue: []) List<PrivacyItem>? items});
 }
 
 /// @nodoc
@@ -114,53 +92,42 @@ class __$$PrivacySettingsImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? showEmail = freezed,
-    Object? showPhone = freezed,
-    Object? profileVisibility = freezed,
+    Object? items = freezed,
   }) {
     return _then(_$PrivacySettingsImpl(
-      showEmail: freezed == showEmail
-          ? _value.showEmail
-          : showEmail // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      showPhone: freezed == showPhone
-          ? _value.showPhone
-          : showPhone // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      profileVisibility: freezed == profileVisibility
-          ? _value.profileVisibility
-          : profileVisibility // ignore: cast_nullable_to_non_nullable
-              as bool?,
+      items: freezed == items
+          ? _value._items
+          : items // ignore: cast_nullable_to_non_nullable
+              as List<PrivacyItem>?,
     ));
   }
 }
 
 /// @nodoc
 
-@JsonSerializable(explicitToJson: true, nullable: true, createToJson: true)
+@JsonSerializable(explicitToJson: true)
 class _$PrivacySettingsImpl implements _PrivacySettings {
   const _$PrivacySettingsImpl(
-      {@JsonKey(name: 'show_email', defaultValue: false) this.showEmail,
-      @JsonKey(name: 'show_phone', defaultValue: false) this.showPhone,
-      @JsonKey(name: 'profile_visibility', defaultValue: false)
-      this.profileVisibility});
+      {@JsonKey(defaultValue: []) final List<PrivacyItem>? items})
+      : _items = items;
 
   factory _$PrivacySettingsImpl.fromJson(Map<String, dynamic> json) =>
       _$$PrivacySettingsImplFromJson(json);
 
+  final List<PrivacyItem>? _items;
   @override
-  @JsonKey(name: 'show_email', defaultValue: false)
-  final bool? showEmail;
-  @override
-  @JsonKey(name: 'show_phone', defaultValue: false)
-  final bool? showPhone;
-  @override
-  @JsonKey(name: 'profile_visibility', defaultValue: false)
-  final bool? profileVisibility;
+  @JsonKey(defaultValue: [])
+  List<PrivacyItem>? get items {
+    final value = _items;
+    if (value == null) return null;
+    if (_items is EqualUnmodifiableListView) return _items;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   @override
   String toString() {
-    return 'PrivacySettings(showEmail: $showEmail, showPhone: $showPhone, profileVisibility: $profileVisibility)';
+    return 'PrivacySettings(items: $items)';
   }
 
   @override
@@ -168,18 +135,13 @@ class _$PrivacySettingsImpl implements _PrivacySettings {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PrivacySettingsImpl &&
-            (identical(other.showEmail, showEmail) ||
-                other.showEmail == showEmail) &&
-            (identical(other.showPhone, showPhone) ||
-                other.showPhone == showPhone) &&
-            (identical(other.profileVisibility, profileVisibility) ||
-                other.profileVisibility == profileVisibility));
+            const DeepCollectionEquality().equals(other._items, _items));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, showEmail, showPhone, profileVisibility);
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_items));
 
   /// Create a copy of PrivacySettings
   /// with the given fields replaced by the non-null parameter values.
@@ -200,23 +162,15 @@ class _$PrivacySettingsImpl implements _PrivacySettings {
 
 abstract class _PrivacySettings implements PrivacySettings {
   const factory _PrivacySettings(
-      {@JsonKey(name: 'show_email', defaultValue: false) final bool? showEmail,
-      @JsonKey(name: 'show_phone', defaultValue: false) final bool? showPhone,
-      @JsonKey(name: 'profile_visibility', defaultValue: false)
-      final bool? profileVisibility}) = _$PrivacySettingsImpl;
+          {@JsonKey(defaultValue: []) final List<PrivacyItem>? items}) =
+      _$PrivacySettingsImpl;
 
   factory _PrivacySettings.fromJson(Map<String, dynamic> json) =
       _$PrivacySettingsImpl.fromJson;
 
   @override
-  @JsonKey(name: 'show_email', defaultValue: false)
-  bool? get showEmail;
-  @override
-  @JsonKey(name: 'show_phone', defaultValue: false)
-  bool? get showPhone;
-  @override
-  @JsonKey(name: 'profile_visibility', defaultValue: false)
-  bool? get profileVisibility;
+  @JsonKey(defaultValue: [])
+  List<PrivacyItem>? get items;
 
   /// Create a copy of PrivacySettings
   /// with the given fields replaced by the non-null parameter values.

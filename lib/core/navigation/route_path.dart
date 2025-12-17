@@ -5,7 +5,6 @@ class AppRoutes {
   static const String estateCodeVerificationScreen = 'codeverify';
   static const String confirmInfomation = 'Onbordinfo';
   static const String estategetstart = 'estate';
-  
 
   // ------------------------------------------------------------------
   // Auth Flow (Grouped with prefix)
@@ -17,12 +16,14 @@ class AppRoutes {
   static const String activateOTP = 'auth_activateOtp';
   static const String passRestOtpVerify = 'pass_otp_verify';
 
+  static const String splasScreen = '/splac_page';
+
   // ------------------------------------------------------------------
   // Member Management (Your original names + slight grouping)
   static const String memberIdCheck = 'member_idCheck';
   static const String getMemberInfo = 'member_info';
   static const String memberPassCreated = 'pass_created';
-    static const String manageLoging = 'login_setting';
+  static const String manageLoging = 'login_setting';
   static const String selectedMemeber = 'member_selected';
   static const String filleMemberInfo = 'member_fillInfo';
   static const String residentDirectory = 'resident';
@@ -32,7 +33,7 @@ class AppRoutes {
   // Estate Operations (Keep your exact flat names)
   static const String addHoused_CoOnwner = 'addMembers';
   static const String dashbord = 'dashboard';
-
+  static const String electionDasbord = "election_dashbord";
   static const String eventSet = 'eventSet';
   static const String userNotificationSetting = "notification_settings";
   // static const String termsOfService = "termsOfservices";
@@ -58,14 +59,15 @@ class AppRoutes {
   static const String visitorAccessCode = 'visitor_accessCode';
   static const String violation = 'violation';
   static const String workSubmit = 'Add_workOrder';
-  static const String  workOrder = 'workOrder';
+  static const String workOrder = 'workOrder';
 
   // ------------------------------------------------------------------
   // Payments (Grouped)
   static const String paymentMethod = 'payment_method';
   static const String virtualAccount = 'payment_virtualAccount';
   static const String paymentReview = 'payment_review';
-  static const String revieAndPay = 'payment_reviewPay';
+  static const String payallduePayment = 'due_payAll';
+
   static const String paymentSuccess = 'payment_success';
   static const String selectedDueTopay = 'payment_due';
   static const String paymentHistory = 'payment_history';

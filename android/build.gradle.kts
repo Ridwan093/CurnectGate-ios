@@ -22,5 +22,12 @@ tasks.register<Delete>("clean") {
 
 }
 
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.jetbrains.kotlin") {
+            useVersion("2.2.21")
+        }
+    }
+}
 
 

@@ -5,7 +5,6 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/ResidentDirectory/provider/getResidentProvider.dart';
 import 'package:curnectgate/features/ResidentDirectory/provider/resident_provider_filter.dart';
 import 'package:curnectgate/features/ResidentDirectory/widget/resident_card.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -93,12 +92,7 @@ class Residentss extends ConsumerWidget {
             error: (error, stack) {
               try {
                 // Handle session expiration
-                if (error.toString().contains("Unauthenticated")) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    ref
-                        .read(authProvider.notifier)
-                        .seassionExpire(context, ref);
-                  });
+                if (error.toString().contains("Unauthorized")) {
                   return Expiresessionbody();
                 }
 

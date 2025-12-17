@@ -1,8 +1,10 @@
-import 'dart:convert';
+import 'dart:developer';
 
+import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_paystack_plus/flutter_paystack_plus.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:http/http.dart' as http;
 
 class PaystackService {
   static final PaystackService _instance = PaystackService._internal();
@@ -15,14 +17,20 @@ class PaystackService {
     required String email,
     required double amount, // amount in Naira
     required String reference,
+    required String privateKey,
+    required String publiceKey,
+    required String method,
+    required WidgetRef ref,
     String? accessToken, // optional backend auth
   }) async {
+    final form = ref.read(formProvider.notifier);
+
     try {
       await FlutterPaystackPlus.openPaystackPopup(
-        publicKey:
-            'pk_live_9d344d14666a05c0837352dd6848405f868fcba9', // ✅ replace with your test public key
-        secretKey: "sk_live_042ff27da97de504a81df18d6f2b089f28ddcfe6", // ✅ replace with your test secret key
+        publicKey: publiceKey, // ✅ replace with your test public key
+        secretKey: privateKey, // ✅ replace with your test secret key
         customerEmail: email,
+
         currency: "",
         amount: (amount * 100).toString(), // amount in kobo
         reference: reference,
@@ -33,8 +41,18 @@ class PaystackService {
           debugPrint('❌ Payment closed before completion');
         },
         onSuccess: () async {
-          debugPrint('✅ Payment successful: $reference');
-          await verifyPaymentOnServer(reference, accessToken);
+          log('✅ Payment successful: $reference');
+
+          // context.pop();
+          await form.initialisWalletFunding(
+            context: context,
+            paymentMethod: method,
+            refrence: reference,
+            totalAmout: amount,
+            ref: ref,
+          );
+
+          log('✅ Payment successful: End of the Api');
         },
       );
     } catch (e) {
@@ -43,31 +61,4 @@ class PaystackService {
   }
 
   /// Verify payment with your backend (important!)
-  Future<void> verifyPaymentOnServer(
-    String reference,
-    String? accessToken,
-  ) async {
-    // 🔧 Replace this with your real backend endpoint when ready
-    const String verifyUrl = 'https://yourapi.com/api/payment/verify';
-
-    try {
-      final url = Uri.parse(verifyUrl);
-      final res = await http.post(
-        url,
-        headers: {
-          'Authorization': 'Bearer ${accessToken ?? 'test_token'}',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({'reference': reference}),
-      );
-
-      if (res.statusCode == 200) {
-        debugPrint('✅ Server verified payment: ${res.body}');
-      } else {
-        debugPrint('⚠️ Server verification failed: ${res.body}');
-      }
-    } catch (e) {
-      debugPrint('💥 Error verifying payment on server: $e');
-    }
-  }
 }

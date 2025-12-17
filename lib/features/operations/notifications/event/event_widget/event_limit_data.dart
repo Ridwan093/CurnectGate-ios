@@ -12,7 +12,6 @@ import 'package:curnectgate/features/operations/notifications/event/model/Event/
 import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_user_rsvp_model.dart';
 import 'package:curnectgate/features/operations/notifications/provider/getevent_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/limit_event_provider.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -32,7 +31,9 @@ class EventLimitData extends ConsumerWidget {
     return RefreshIndicator(
       color: AppColors.instance.yellow500,
       onRefresh:
-          () => ref.read(getEventLimitProvider.notifier).refreshEvent(context, ref),
+          () => ref
+              .read(getEventLimitProvider.notifier)
+              .refreshEvent(context, ref),
 
       child: activeOtasync.when(
         data: (event) {
@@ -62,11 +63,8 @@ class EventLimitData extends ConsumerWidget {
         error: (error, stack) {
           try {
             // Handle session expiration
-            if (error.toString().contains("Unauthenticated")) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                ref.read(authProvider.notifier).seassionExpire(context, ref);
-              });
-              return Expiresessionbody();
+            if (error.toString().contains("Unauthorized")) {
+              return const Expiresessionbody();
             }
             final event = ref.read(getEventLimitProvider).value;
 
@@ -98,7 +96,7 @@ class EventLimitData extends ConsumerWidget {
               onTap:
                   () => ref
                       .read(getEventProvider.notifier)
-                      .refreshEvent(context, ref,""),
+                      .refreshEvent(context, ref, ""),
               firstMessae: "Faile to load Event?",
             );
           }

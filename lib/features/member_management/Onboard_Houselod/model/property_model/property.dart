@@ -4,15 +4,13 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'availability_status.dart';
 import 'estate.dart';
 import 'rental.dart';
+
 part 'property.freezed.dart';
 part 'property.g.dart';
 
 @freezed
 class Property with _$Property {
-  @JsonSerializable(
-    explicitToJson: true,
-    fieldRename: FieldRename.snake,
-  )
+  @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
   const factory Property({
     @JsonKey(name: 'id') required int id,
     @JsonKey(name: 'property_code') required String propertyCode,
@@ -23,7 +21,7 @@ class Property with _$Property {
     @JsonKey(name: 'bathrooms') required int bathrooms,
     @JsonKey(name: 'size') required String size,
     @JsonKey(name: 'formatted_size') String? formattedSize,
-    @JsonKey(name: 'description') required String description,
+    @JsonKey(name: 'description') required String? description,
     @JsonKey(name: 'rental_amount') required String rentalAmount,
     @JsonKey(name: 'formatted_rental_amount') String? formattedRentalAmount,
     @JsonKey(name: 'rental_frequency') required String rentalFrequency,
@@ -46,7 +44,8 @@ class Property with _$Property {
     @JsonKey(name: 'created_at') required String createdAt,
     @JsonKey(name: 'updated_at') required String updatedAt,
     @JsonKey(name: 'rental_yield') required double rentalYield,
-    @JsonKey(name: 'availability_status') required AvailabilityStatus availabilityStatus,
+    @JsonKey(name: 'availability_status')
+    required AvailabilityStatus availabilityStatus,
   }) = _Property;
 
   factory Property.fromJson(Map<String, dynamic> json) =>
@@ -99,15 +98,18 @@ class Property with _$Property {
       address: json['address'] as String?,
       bedrooms: NullSafetyHelper.safeInt(json['bedrooms']),
       bathrooms: NullSafetyHelper.safeInt(json['bathrooms']),
-      size: NullSafetyHelper.safeString(json['size'], ),
+      size: NullSafetyHelper.safeString(json['size']),
       formattedSize: json['formatted_size'] as String?,
-      description: NullSafetyHelper.safeString(json['description']),
-      rentalAmount: NullSafetyHelper.safeString(json['rental_amount'], ),
+      description: NullSafetyHelper.safeString(json['description']) as String?,
+      rentalAmount: NullSafetyHelper.safeString(json['rental_amount']),
       formattedRentalAmount: json['formatted_rental_amount'] as String?,
       rentalFrequency: NullSafetyHelper.safeString(json['rental_frequency']),
       monthlyRent: NullSafetyHelper.safeDouble(json['monthly_rent']),
       annualRent: NullSafetyHelper.safeDouble(json['annual_rent']),
-      amenities: (json['amenities'] as List<dynamic>? ?? []).map((e) => e.toString()).toList(),
+      amenities:
+          (json['amenities'] as List<dynamic>? ?? [])
+              .map((e) => e.toString())
+              .toList(),
       images: json['images'] as List<dynamic>? ?? [],
       status: NullSafetyHelper.safeString(json['status']),
       statusBadge: NullSafetyHelper.safeString(json['status_badge']),
@@ -120,13 +122,16 @@ class Property with _$Property {
       hasActiveRental: NullSafetyHelper.safeBool(json['has_active_rental']),
       estate: Estate.safeFromJson(json['estate']),
       currentTenant: json['current_tenant'],
-      activeRentals: (json['active_rentals'] as List<dynamic>? ?? [])
-          .map((e) => Rental.safeFromJson(e))
-          .toList(),
+      activeRentals:
+          (json['active_rentals'] as List<dynamic>? ?? [])
+              .map((e) => Rental.safeFromJson(e))
+              .toList(),
       createdAt: NullSafetyHelper.safeString(json['created_at']),
       updatedAt: NullSafetyHelper.safeString(json['updated_at']),
       rentalYield: NullSafetyHelper.safeDouble(json['rental_yield']),
-      availabilityStatus: AvailabilityStatus.safeFromJson(json['availability_status']),
+      availabilityStatus: AvailabilityStatus.safeFromJson(
+        json['availability_status'],
+      ),
     );
   }
 }

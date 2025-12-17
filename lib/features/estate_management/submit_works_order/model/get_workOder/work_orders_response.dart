@@ -24,8 +24,8 @@ class WorkOrderResponse with _$WorkOrderResponse {
     if (json == null) return WorkOrderResponse.empty();
     return WorkOrderResponse(
       status: NullSafetyHelper.safeBool(json['status']),
-      message: NullSafetyHelper.safeString(json['message']) ?? '',
-      code: NullSafetyHelper.safeInt(json['code']) ?? 0,
+      message: NullSafetyHelper.safeString(json['message']) ,
+      code: NullSafetyHelper.safeInt(json['code']),
       data: WorkOrderData.safeFromJson(json['data']),
     );
   }

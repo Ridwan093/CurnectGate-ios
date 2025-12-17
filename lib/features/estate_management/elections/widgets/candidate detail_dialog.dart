@@ -13,7 +13,7 @@ class CandidateDetailDialog extends StatelessWidget {
   final int voteShare;
   final int totalVotes;
   final String? imageUrl;
-  final VoidCallback onVote;
+  final void Function()? onVote;
 
   const CandidateDetailDialog({
     super.key,

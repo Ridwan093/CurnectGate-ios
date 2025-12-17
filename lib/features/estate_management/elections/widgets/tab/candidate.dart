@@ -1,6 +1,8 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/estate_management/elections/models/election_models.dart';
+import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate/candidate_item.dart';
+import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate/candidates_data.dart';
+import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate/position_item.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_state.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/eletion_provider.dart';
 import 'package:curnectgate/features/estate_management/elections/widgets/Candidate_dialog.dart';
@@ -8,16 +10,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class EletionCandidate extends ConsumerWidget {
-  const EletionCandidate({super.key});
+  final CandidatesData data;
+  const EletionCandidate({super.key, required this.data});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(electionProvider);
-    final election = state.election;
 
     return Column(
       children: [
-        ...election.positions
+        ...data.positions!
             .map((pos) => _positionCard(pos, state, ref, context))
             .toList(),
       ],
@@ -25,12 +27,12 @@ class EletionCandidate extends ConsumerWidget {
   }
 
   Widget _positionCard(
-    PositionModel pos,
+    PositionItem pos,
     ElectionState state,
     WidgetRef ref,
     BuildContext context,
   ) {
-    final selected = state.selections[pos.id];
+    // final selected = state.selections[pos.positionTitle ?? ""];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,7 +51,7 @@ class EletionCandidate extends ConsumerWidget {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                pos.title,
+                pos.positionTitle ?? "",
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
@@ -62,21 +64,23 @@ class EletionCandidate extends ConsumerWidget {
         const SizedBox(height: 12),
 
         // Candidates list
-        ...pos.candidates
-            .map((c) => _candidateTile(c, pos.id, selected, ref, context))
+        ...pos.candidates!
+            .map(
+              (c) =>
+                  _candidateTile(c, pos.positionTitle ?? "", pos, ref, context),
+            )
             .toList(),
       ],
     );
   }
 
   Widget _candidateTile(
-    Candidate c,
+    CandidateItem c,
     String positionId,
-    String? selectedId,
+    PositionItem pos,
     WidgetRef ref,
     BuildContext context,
   ) {
-    final isSelected = selectedId == c.id;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap:
@@ -87,14 +91,18 @@ class EletionCandidate extends ConsumerWidget {
             transitionDuration: const Duration(milliseconds: 300),
             pageBuilder:
                 (_, __, ___) => CandidateDialog(
-                  name: "Tunde Adeyemi",
-                  role: "President",
-                  party: "New Dawn",
-                  bio: "Engineer and urban planning specialist",
-                  voteShare: 22,
+                  name: c.name ?? "",
+                  role: pos.positionTitle ?? "",
+                  party: c.partyAffiliation ?? "",
+                  bio: c.bio ?? "",
+                  voteShare: 90,
                   totalVotes: 220,
-                  avatarUrl:
-                      "https://plus.unsplash.com/premium_photo-1683121366070-5ceb7e007a97?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8dXNlcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=500",
+                  avatarUrl: c.mediaUrl ?? "",
+                  magnifso: "",
+                  isvoted: false,
+                  cID: c.id?? 0,
+                  posID: pos.positionId.toString()
+                  ,
                 ),
             transitionBuilder: (_, anim, __, child) {
               return FadeTransition(opacity: anim, child: child);
@@ -112,7 +120,7 @@ class EletionCandidate extends ConsumerWidget {
           children: [
             CircleAvatar(
               child: Text(
-                c.name
+                c.name!
                     .split(' ')
                     .map((s) => s.isNotEmpty ? s[0] : '')
                     .take(2)
@@ -133,7 +141,7 @@ class EletionCandidate extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    c.name,
+                    c.name ?? "",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       color: AppColors.instance.black600,
@@ -143,7 +151,7 @@ class EletionCandidate extends ConsumerWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    c.party,
+                    c.partyAffiliation ?? "",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       color: AppColors.instance.black300,
@@ -151,7 +159,7 @@ class EletionCandidate extends ConsumerWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Banking professonal with investment expertis.",
+                    c.bio ?? "",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       color: AppColors.instance.black300,

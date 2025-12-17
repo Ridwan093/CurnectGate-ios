@@ -1,8 +1,5 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
-import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/model/mock_otp_data.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/pamit_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -68,38 +65,6 @@ class _CheckInOtpTabState extends ConsumerState<CheckInOtpTab> {
     );
   }
 
-  Widget _buildAddMemberButton(Size size, BuildContext context, WidgetRef ref) {
-    return InkWell(
-      onTap: () {
-        showUserBottomSheet(
-          context: context,
-          headertitle: "Select option",
-          headersubtitle: "Manage OTPs for Visitor Access",
-          ref: ref,
-          bottom: BottomSheetView.manageOTPforvisitor,
-        );
-      },
-      child: Container(
-        height: 50,
-        width: size.width,
-        decoration: BoxDecoration(
-          color: AppColors.instance.black600,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Center(
-          child: Text(
-            "Generate OTP",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.grey200,
-              fontSize: 12,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildContent(Size size, BuildContext context, WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,16 +75,6 @@ class _CheckInOtpTabState extends ConsumerState<CheckInOtpTab> {
 
         Expanded(child: PermitData()),
       ],
-    );
-  }
-
-  Widget _buildDynamicList() {
-    return ListView.builder(
-      itemCount: mockOtpList.length,
-      itemBuilder: (context, index) {
-        final otp = mockOtpList[index];
-        return Text("");
-      },
     );
   }
 }
