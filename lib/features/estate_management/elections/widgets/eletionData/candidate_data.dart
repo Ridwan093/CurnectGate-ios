@@ -4,7 +4,6 @@ import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
 import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/candidate_provider.dart';
 import 'package:curnectgate/features/estate_management/elections/widgets/tab/candidate.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,7 +55,6 @@ class CandidateData extends ConsumerWidget {
           try {
             // Handle session expiration
             if (error is DioException && error.response?.statusCode == 401) {
-            
               return Expiresessionbody();
             }
 

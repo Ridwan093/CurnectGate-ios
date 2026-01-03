@@ -3,6 +3,7 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/security/model/validation_model.dart';
 import 'package:curnectgate/features/security/provider/formState.dart';
+import 'package:curnectgate/features/security/provider/permmission_handler.dart';
 import 'package:curnectgate/features/security/provider/scanProvider.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/widget/featureNotavailableDialog.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +19,11 @@ class ScanOptions extends ConsumerWidget {
     final notifier = ref.read(oTpformProvider.notifier);
 
     final options = [
-      ValidationOption(label: 'Scan Digital ID', icon: AssetPaths.memberId),
-      ValidationOption(label: 'Scan OTP', icon: ''),
+      ValidationOption(
+        label: 'Scan Digital ID',
+        icon: AssetPaths.dashboardIdVerification,
+      ),
+      ValidationOption(label: 'Scan OTP', icon: AssetPaths.otpValidation),
       // ValidationOption(label: 'Scan Work Order', icon: ''),
     ];
 
@@ -135,7 +139,10 @@ class ScanOptions extends ConsumerWidget {
       child: Container(
         width: MediaQuery.sizeOf(context).width / 2 - 20,
         height: 120,
-        // Added margin
+        // margin: const EdgeInsets.symmetric(
+        //   horizontal: 8,
+        //   vertical: 8,
+        // ), // Added margin
         decoration: BoxDecoration(
           color: AppColors.instance.grey200,
           borderRadius: BorderRadius.circular(12),
@@ -147,11 +154,20 @@ class ScanOptions extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 50),
+            Image.asset(
+              icon,
+              width: 40,
+              height: 40,
+              // color:
+              //     isSelected ? AppColors.instance.black600 : Colors.grey[600],
+            ),
             const SizedBox(height: 8),
             Text(
               label,
               textAlign: TextAlign.center,
+
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
@@ -172,12 +188,21 @@ class ScanOptions extends ConsumerWidget {
     BuildContext context,
     String selectedType,
     WidgetRef ref,
-  ) {
+  ) async {
     final notifier = ref.read(oTpformProvider.notifier);
     switch (selectedType) {
       case 'Scan Digital ID':
         context.pop();
         notifier.updateValidationType("");
+        final hasPermission = await checkCameraPermission(context);
+
+        if (!hasPermission) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Camera permission required")),
+          );
+          return;
+        }
+
         ref.read(qrScanProvider.notifier).state = true;
         break;
       case 'Scan OTP':

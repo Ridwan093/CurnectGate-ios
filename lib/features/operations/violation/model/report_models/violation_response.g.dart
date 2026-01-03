@@ -21,5 +21,5 @@ Map<String, dynamic> _$$ViolationResponseImplToJson(
       'status': instance.status,
       'message': instance.message,
       'code': instance.code,
-      'data': instance.data,
+      'data': instance.data.toJson(),
     };

@@ -17,7 +17,6 @@ class AssetPaths {
   static const _onboarding = '${_images}onboarding/';
   static const _logo = '${_images}logo/';
 
-
   // Navbar Icons
   static const String navCreditCardFilled = '${_nav}credit_card_active.png';
   static const String navCreditCard = '${_nav}credit_card_inactive.png';
@@ -29,7 +28,7 @@ class AssetPaths {
   static const String navProfileInactive = '${_nav}profile_inactive.png';
   static const String navVisitorLog = '${_nav}visitorLogTab.png';
   static const String navVisitorLogFilled = '${_nav}visitorLogTabFilled.png';
-static const String appLogos = 'assets/icons/app_icon.png';
+  static const String appLogos = 'assets/icons/app_icon.png';
   // Action Icons
   static const String addMember = '${_actions}add_member.png';
   static const String chat = '${_actions}chat.png';
@@ -63,8 +62,9 @@ static const String appLogos = 'assets/icons/app_icon.png';
   static const String verifiedCard = '${_actions}VerifiedCard.png';
   static const String vaolationIcon = '${_actions}violationIcon.png';
   static const String emgencySecurity = '${_actions}emgencySecurity.png';
-    static const String loginSetting = '${_actions}password-access-key.png';
-      static const String terms = '${_actions}terms_condition.png';
+  static const String loginSetting = '${_actions}password-access-key.png';
+  static const String terms = '${_actions}terms_condition.png';
+  static const String newPoll = '${_action}voted_BG.jpg';
   // Auth Icons
   static const String checkId = '${_auth}checks_id.png';
   static const String clipboard = '${_auth}clipboard.png';

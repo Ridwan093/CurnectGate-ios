@@ -54,92 +54,94 @@ class _ReportFormState extends ConsumerState<ReportForm> {
               right: 0,
               top: 0,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              // mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: 20),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 20),
 
-                // 1. Category dropdown (no Expanded!)
-                _buildCategoryDropdown(ref, report.category ?? "", context),
-                const SizedBox(height: 20),
+                  // 1. Category dropdown (no Expanded!)
+                  _buildCategoryDropdown(ref, report.category ?? "", context),
+                  const SizedBox(height: 20),
 
-                // 2. Description field (no Expanded!)
-                TextFormField(
-                  controller: decController,
-                  decoration: InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
+                  // 2. Description field (no Expanded!)
+                  TextFormField(
+                    controller: decController,
+                    decoration: InputDecoration(
+                      labelText: 'Description',
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: AppColors.instance.black500,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: AppColors.instance.black500,
+                        ),
+                      ),
+                      labelStyle: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
                         color: AppColors.instance.black500,
                       ),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: AppColors.instance.black500,
-                      ),
+                    maxLines: 3,
+                    onChanged:
+                        (value) => ref
+                            .read(reportProvider.notifier)
+                            .setDescription(value),
+                  ),
+
+                  const SizedBox(height: 8.0),
+                  Text(
+                    "Maximum 100 characters",
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      color: AppColors.instance.black300,
+                      fontSize: 13,
                     ),
-                    labelStyle: TextStyle(
+                  ),
+
+                  const SizedBox(height: 20),
+                  // Replace your existing dropdown with:
+                  const CustomSearchDropdown(),
+                  const SizedBox(height: 25),
+                  Text(
+                    "Uploade image Proof",
+                    style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       color: AppColors.instance.black500,
+                      fontWeight: FontFamilies.bold,
                     ),
                   ),
-                  maxLines: 3,
-                  onChanged:
-                      (value) => ref
-                          .read(reportProvider.notifier)
-                          .setDescription(value),
-                ),
-
-                const SizedBox(height: 8.0),
-                Text(
-                  "Maximum 100 characters",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    color: AppColors.instance.black300,
-                    fontSize: 13,
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      _buildImagePicker(
+                        ref,
+                        index: 0,
+                        imagePaths: report.imagePaths,
+                        files: report.files,
+                      ),
+                      const SizedBox(width: 20),
+                      _buildImagePicker(
+                        ref,
+                        index: 1,
+                        imagePaths: report.imagePaths,
+                        files: report.files,
+                      ),
+                    ],
                   ),
-                ),
+                  const SizedBox(height: 20),
+                  // 3. Optional anonymous toggle
+                  _buildanonymousHide(report, ref),
 
-                const SizedBox(height: 20),
-                // Replace your existing dropdown with:
-                const CustomSearchDropdown(),
-                const SizedBox(height: 25),
-                Text(
-                  "Uploade image Proof",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    color: AppColors.instance.black500,
-                    fontWeight: FontFamilies.bold,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    _buildImagePicker(
-                      ref,
-                      index: 0,
-                      imagePaths: report.imagePaths,
-                      files: report.files,
-                    ),
-                    const SizedBox(width: 20),
-                    _buildImagePicker(
-                      ref,
-                      index: 1,
-                      imagePaths: report.imagePaths,
-                      files: report.files,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                // 3. Optional anonymous toggle
-                _buildanonymousHide(report, ref),
+                  const SizedBox(height: 20),
 
-                const SizedBox(height: 20),
-
-                // 4. Submit button
-                _buildSubmitButton(size: size, ref: ref, context: context),
-              ],
+                  // 4. Submit button
+                  _buildSubmitButton(size: size, ref: ref, context: context),
+                ],
+              ),
             ),
           ),
           if (isLoading)
@@ -174,13 +176,16 @@ Widget _buildanonymousHide(Report report, WidgetRef ref) {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          'Submit anonymously',
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontSize: 14,
-            color: AppColors.instance.black600,
-            fontWeight: FontFamilies.bold,
+        Flexible(
+          child: Text(
+            'Submit anonymously',
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              fontSize: 14,
+              color: AppColors.instance.black600,
+              fontWeight: FontFamilies.bold,
+            ),
           ),
         ),
         Switch(
@@ -214,6 +219,8 @@ Widget _buildSubmitButton({
 }) {
   final valid = ref.watch(reportProvider);
   final report = valid.report;
+  final pickedImages =
+      report.imagePaths.values.where((path) => path.isNotEmpty == true).length;
   return InkWell(
     onTap: () {
       if (report.category!.isEmpty) {
@@ -252,19 +259,16 @@ Widget _buildSubmitButton({
           iconColors: AppColors.instance.black600,
           positionNumber: 70,
         );
-      }
-      if (report.imagePaths.isEmpty) {
-        log("File: ${report.imagePaths[1] ?? ""}");
-        log(report.imagePaths[0] ?? "");
-
+      } else if (pickedImages != 2) {
         showCustomSuccessToast(
           context: context,
-          message: "at least one proof required!",
+          message: "Please upload at least 2 evidence photo!",
           color: AppColors.instance.grey200,
           icon: Icons.error,
           iconColors: AppColors.instance.black600,
           positionNumber: 70,
         );
+        return;
       } else {
         ref
             .read(formProvider.notifier)

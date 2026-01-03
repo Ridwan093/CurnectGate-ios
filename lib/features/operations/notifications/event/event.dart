@@ -27,20 +27,29 @@ class EventsBottomSheet extends ConsumerWidget {
           padding: const EdgeInsets.all(16),
           child: Stack(
             children: [
-              Column(
-                children: [
-                  _buildHeader(notifier, context),
-                  const SizedBox(height: 16), // Reduced spacing
-                  _buildTitleSection(),
-                  const SizedBox(height: 12), // Reduced spacing
-                  // Calendar with fixed height
-                  CalenderData(),
+              CustomScrollView(
+                slivers: [
+                  // Header
+                  SliverToBoxAdapter(child: _buildHeader(notifier, context)),
+                  const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
-                  const SizedBox(height: 12), // Reduced spacing
-                  _buildTabBar(ref, context),
-                  const SizedBox(height: 12), // Reduced spacing
-                  // Content area - THIS IS THE KEY FIX
-                  Expanded(child: _buildContent(ref, context)),
+                  // Title Section
+                  SliverToBoxAdapter(child: _buildTitleSection()),
+                  const SliverToBoxAdapter(child: SizedBox(height: 20)),
+
+                  // Calendar (fixed height is OK here since it's a calendar)
+                  SliverToBoxAdapter(child: CalenderData()),
+                  const SliverToBoxAdapter(child: SizedBox(height: 20)),
+
+                  // Tab Bar
+                  SliverToBoxAdapter(child: _buildTabBar(ref, context)),
+                  const SliverToBoxAdapter(child: SizedBox(height: 16)),
+
+                  // Tab Content — takes all remaining space without overflow
+                  SliverFillRemaining(
+                    hasScrollBody: true, // Allows inner ListView to scroll
+                    child: _buildContent(ref, context),
+                  ),
                 ],
               ),
               if (state.isLoading)
@@ -108,13 +117,66 @@ class EventsBottomSheet extends ConsumerWidget {
 
   Widget _buildTabBar(WidgetRef ref, BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        eventtabLegnt(ref, context),
-
-        goinglegnt(ref, context),
-        cancledEventlegnt(ref, context),
+        Expanded(child: eventtabLegnt(ref, context)),
+        Expanded(child: goinglegnt(ref, context)),
+        Expanded(child: cancledEventlegnt(ref, context)),
       ],
+    );
+  }
+
+  Widget _buildTabButton(
+    int index,
+    String title,
+    int currentTab,
+    EventsNotifier notifier,
+    WidgetRef ref,
+    BuildContext context,
+  ) {
+    final bool isSelected = currentTab == index;
+
+    return InkWell(
+      onTap: () {
+        if (index == 0) {
+          ref.read(getEventProvider.notifier).refreshEvent(context, ref, "");
+        } else if (index == 2) {
+          ref
+              .read(canceledEventProvider.notifier)
+              .refreshEvent(context, ref, "cancelled");
+        }
+        notifier.changeTab(index);
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis, // ← Critical: prevents overflow
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              fontSize: 13,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+              color:
+                  isSelected
+                      ? AppColors.instance.black600
+                      : AppColors.instance.black300,
+            ),
+          ),
+          const SizedBox(height: 6),
+          if (isSelected)
+            Container(
+              height: 3,
+              width: 40,
+              decoration: BoxDecoration(
+                color: AppColors.instance.yellow500,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+        ],
+      ),
     );
   }
 
@@ -262,49 +324,6 @@ class EventsBottomSheet extends ConsumerWidget {
           context,
         );
       },
-    );
-  }
-
-  Widget _buildTabButton(
-    int index,
-    String title,
-    int currentTab,
-    EventsNotifier notifier,
-    WidgetRef ref,
-    BuildContext context,
-  ) {
-    return Column(
-      children: [
-        TextButton(
-          onPressed: () {
-            if (index == 0) {
-              ref
-                  .read(getEventProvider.notifier)
-                  .refreshEvent(context, ref, "");
-            } else if (index == 1) {
-            } else if (index == 2) {
-              ref
-                  .read(canceledEventProvider.notifier)
-                  .refreshEvent(context, ref, "cancelled");
-            }
-            notifier.changeTab(index);
-          },
-          style: TextButton.styleFrom(
-            foregroundColor:
-                currentTab == index
-                    ? AppColors.instance.black600
-                    : AppColors.instance.black300,
-          ),
-          child: Text(title),
-        ),
-        currentTab == index
-            ? Container(
-              height: 1,
-              width: 50,
-              color: AppColors.instance.yellow500,
-            )
-            : const SizedBox(),
-      ],
     );
   }
 

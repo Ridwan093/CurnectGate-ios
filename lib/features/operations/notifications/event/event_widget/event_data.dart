@@ -62,7 +62,7 @@ class EventData extends ConsumerWidget {
         error: (error, stack) {
           try {
             // Handle session expiration
-           if (error.toString().contains("Unauthorized")){
+            if (error.toString().contains("Unauthorized")) {
               return const Expiresessionbody();
             }
             final event = ref.read(getEventProvider).value;
@@ -130,7 +130,7 @@ class EventData extends ConsumerWidget {
               headersubtitle: "",
               ref: ref,
               bottom: BottomSheetView.eventsDetails,
-
+    
               event: data,
             );
           },

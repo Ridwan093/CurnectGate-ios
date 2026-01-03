@@ -67,12 +67,15 @@ class SummaryResultTab extends StatelessWidget {
                       color: AppColors.instance.yellow600,
                     ),
                     const SizedBox(width: 8),
-                    Text(
-                      "Election Winners",
-                      style: TextStyle(
-                        fontWeight: FontFamilies.bold,
-                        fontFamily: FontFamilies.interDisplay,
-                        fontSize: 18,
+                    Flexible(
+                      child: Text(
+                        "Election Winners",
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontFamilies.bold,
+                          fontFamily: FontFamilies.interDisplay,
+                          fontSize: 18,
+                        ),
                       ),
                     ),
                   ],
@@ -237,7 +240,7 @@ class SummaryResultTab extends StatelessWidget {
               backgroundColor: AppColors.instance.teal300,
               radius: 22,
               backgroundImage: (('').isNotEmpty) ? NetworkImage("") : null,
-              child: name.isNotEmpty ? Text(name.substring(0, 1) ) : null,
+              child: name.isNotEmpty ? Text(name.substring(0, 1)) : null,
             ),
             const SizedBox(width: 12),
             Expanded(

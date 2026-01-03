@@ -2,12 +2,13 @@ import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/getHouseHold_provider.dart';
-import 'package:curnectgate/features/member_management/Onboard_Houselod/screen/add_member.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/BuildHouseHold_Data.dart';
 import 'package:curnectgate/features/operations/notifications/screen/notification_permission.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import 'add_member.dart';
 
 class AllMemberListScreen extends ConsumerWidget {
   const AllMemberListScreen({super.key});
@@ -64,6 +65,7 @@ class AllMemberListScreen extends ConsumerWidget {
   Widget _buildAddMemberButton(Size size, BuildContext context) {
     return InkWell(
       onTap: () {
+        // context.pushNamed(AppRoutes.addHoused_CoOnwner);
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => AddNewMember()),

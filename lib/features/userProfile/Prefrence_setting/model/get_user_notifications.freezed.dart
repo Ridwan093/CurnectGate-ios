@@ -152,7 +152,8 @@ class __$$GetuserNotificationsImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$GetuserNotificationsImpl implements _GetuserNotifications {
   const _$GetuserNotificationsImpl(
       {required this.status,

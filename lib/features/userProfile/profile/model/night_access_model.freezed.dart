@@ -133,7 +133,8 @@ class __$$NightAccessImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$NightAccessImpl implements _NightAccess {
   const _$NightAccessImpl({this.enabled = false, this.conditions});
 

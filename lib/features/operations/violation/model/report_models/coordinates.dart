@@ -5,6 +5,7 @@ part 'coordinates.g.dart';
 
 @freezed
 class Coordinates with _$Coordinates {
+   @JsonSerializable(explicitToJson: true)
   const factory Coordinates({
     required double latitude,
     required double longitude,

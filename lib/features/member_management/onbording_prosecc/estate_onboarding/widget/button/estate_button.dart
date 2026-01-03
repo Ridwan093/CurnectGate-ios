@@ -14,7 +14,7 @@ class ActionButton extends StatelessWidget {
     return InkWell(
       onTap: onPressed,
       child: Container(
-        margin: const EdgeInsets.fromLTRB(23, 16, 23, 10),
+        margin: const EdgeInsets.fromLTRB(23, 0, 23, 10),
         height: 50,
         width: size.width,
         decoration: BoxDecoration(
@@ -23,19 +23,20 @@ class ActionButton extends StatelessWidget {
                   ? AppColors.instance.black600
                   : AppColors.instance.grey400,
 
-                  borderRadius: BorderRadius.circular(10)
+          borderRadius: BorderRadius.circular(10),
         ),
 
         child: Center(
           child: Text(
             label,
-            style:  TextStyle(
+            style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               fontSize: 15,
               fontWeight: FontFamilies.medium,
-              color: onPressed != null
-                  ? AppColors.instance.black100
-                  : AppColors.instance.black300, 
+              color:
+                  onPressed != null
+                      ? AppColors.instance.black100
+                      : AppColors.instance.black300,
             ),
           ),
         ),

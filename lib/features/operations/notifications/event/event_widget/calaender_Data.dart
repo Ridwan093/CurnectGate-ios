@@ -69,120 +69,162 @@ class CalenderData extends ConsumerWidget {
     final firstDay = DateTime.now().subtract(const Duration(days: 365));
     final lastDay = DateTime.now().add(const Duration(days: 365));
 
-    return TableCalendar(
-      firstDay: firstDay,
-      lastDay: lastDay,
-      focusedDay: state.focusedDay,
-      calendarFormat: state.calendarFormat,
-      onFormatChanged: notifier.changeCalendarFormat,
-      onPageChanged: notifier.changeFocusedDay,
-      onDaySelected: (selectedDay, focusedDay) {
-        ref
-            .read(getEventProvider.notifier)
-            .refreshEvent(context, ref, selectedDay.toString());
-      },
-      eventLoader:
-          (day) =>
-              events
-                  .where((e) => isSameDay(DateTime.parse(e.start ?? ""), day))
-                  .toList(),
-      calendarBuilders: CalendarBuilders(
-        todayBuilder: (context, date, focusedDay) {
-          final dayEvents =
-              events
-                  .where((e) => isSameDay(DateTime.parse(e.start ?? ""), date))
-                  .toList();
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double availableWidth = constraints.maxWidth;
+        final bool isSmallScreen = availableWidth < 360;
 
-          // Decide color based on conditions
-          Color bgColor;
-          Color textColor = Colors.white;
-
-          if (dayEvents.isNotEmpty) {
-            // There’s an event today
-            final hasAddedToCalendar = dayEvents.any(
-              (e) => e.addedToCalendar ?? false,
-            );
-            bgColor =
-                hasAddedToCalendar
-                    ? AppColors
-                        .instance
-                        .yellow400 // added to calendar
-                    : AppColors.instance.teal400; // event exists but not added
-          } else {
-            // Today but no event
-            bgColor = AppColors.instance.black600;
-          }
-
-          return Container(
-            margin: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: bgColor,
-              borderRadius: BorderRadius.circular(8),
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minWidth: availableWidth, // At least full width
+              maxWidth:
+                  isSmallScreen
+                      ? 380
+                      : double
+                          .infinity, // Slightly wider on small for breathing
             ),
-            child: Center(
-              child: Text(
-                '${date.day}',
-                style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
-              ),
-            ),
-          );
-        },
-        defaultBuilder: (context, date, focusedDay) {
-          final dayEvents =
-              events
-                  .where((e) => isSameDay(DateTime.parse(e.start ?? ""), date))
-                  .toList();
-
-          if (dayEvents.isEmpty) return null;
-
-          final hasAddedToCalendar = dayEvents.any(
-            (e) => e.addedToCalendar ?? false,
-          );
-          final bgColor =
-              hasAddedToCalendar
-                  ? AppColors.instance.yellow400
-                  : AppColors.instance.teal400;
-
-          return Container(
-            margin: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: bgColor,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Center(
-              child: Text(
-                '${date.day}',
-                style: const TextStyle(
-                  color: Colors.black,
+            child: TableCalendar(
+              firstDay: firstDay,
+              lastDay: lastDay,
+              focusedDay: state.focusedDay,
+              calendarFormat: state.calendarFormat,
+              onFormatChanged: notifier.changeCalendarFormat,
+              onPageChanged: notifier.changeFocusedDay,
+              onDaySelected: (selectedDay, focusedDay) {
+                ref
+                    .read(getEventProvider.notifier)
+                    .refreshEvent(context, ref, selectedDay.toString());
+              },
+              eventLoader:
+                  (day) =>
+                      events
+                          .where(
+                            (e) =>
+                                isSameDay(DateTime.parse(e.start ?? ""), day),
+                          )
+                          .toList(),
+              headerStyle: HeaderStyle(
+                formatButtonVisible:
+                    !isSmallScreen, // Hide format button on small screens
+                titleCentered: true,
+                formatButtonShowsNext: false,
+                titleTextStyle: const TextStyle(
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-          );
-        },
-
-        markerBuilder: (context, date, events) {
-          final dayEvents = events.whereType<Event>().toList();
-          if (dayEvents.isEmpty) return null;
-
-          final hasUserRsvp = dayEvents.any((e) => e.addedToCalendar ?? false);
-
-          if (hasUserRsvp) {
-            return Positioned(
-              bottom: 6,
-              child: Container(
-                width: 6,
-                height: 6,
-                decoration: BoxDecoration(
-                  color: AppColors.instance.yellow600,
+              daysOfWeekStyle: DaysOfWeekStyle(
+                weekdayStyle: TextStyle(fontSize: isSmallScreen ? 11 : 13),
+                weekendStyle: TextStyle(fontSize: isSmallScreen ? 11 : 13),
+              ),
+              calendarStyle: CalendarStyle(
+                cellMargin: EdgeInsets.all(isSmallScreen ? 3 : 6),
+                todayDecoration: BoxDecoration(
+                  color: AppColors.instance.black600,
                   shape: BoxShape.circle,
                 ),
               ),
-            );
-          }
-          return null;
-        },
-      ),
+              calendarBuilders: CalendarBuilders(
+                todayBuilder: (context, date, focusedDay) {
+                  final dayEvents =
+                      events
+                          .where(
+                            (e) =>
+                                isSameDay(DateTime.parse(e.start ?? ""), date),
+                          )
+                          .toList();
+                  final hasAdded = dayEvents.any(
+                    (e) => e.addedToCalendar ?? false,
+                  );
+                  final bgColor =
+                      dayEvents.isNotEmpty
+                          ? (hasAdded
+                              ? AppColors.instance.yellow400
+                              : AppColors.instance.teal400)
+                          : AppColors.instance.black600;
+
+                  return Container(
+                    margin: EdgeInsets.all(isSmallScreen ? 3 : 6),
+                    decoration: BoxDecoration(
+                      color: bgColor,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '${date.day}',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: isSmallScreen ? 12 : 14,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                defaultBuilder: (context, date, focusedDay) {
+                  final dayEvents =
+                      events
+                          .where(
+                            (e) =>
+                                isSameDay(DateTime.parse(e.start ?? ""), date),
+                          )
+                          .toList();
+                  if (dayEvents.isEmpty) return null;
+
+                  final hasAdded = dayEvents.any(
+                    (e) => e.addedToCalendar ?? false,
+                  );
+                  final bgColor =
+                      hasAdded
+                          ? AppColors.instance.yellow400
+                          : AppColors.instance.teal400;
+
+                  return Container(
+                    margin: EdgeInsets.all(isSmallScreen ? 3 : 6),
+                    decoration: BoxDecoration(
+                      color: bgColor,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '${date.day}',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: isSmallScreen ? 12 : 14,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                markerBuilder: (context, date, events) {
+                  final dayEvents = events.whereType<Event>().toList();
+                  if (dayEvents.isEmpty) return null;
+
+                  final hasUserRsvp = dayEvents.any(
+                    (e) => e.addedToCalendar ?? false,
+                  );
+                  if (!hasUserRsvp) return null;
+
+                  return Positioned(
+                    bottom: isSmallScreen ? 4 : 6,
+                    child: Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: AppColors.instance.yellow600,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

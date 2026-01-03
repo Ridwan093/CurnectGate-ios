@@ -228,3 +228,25 @@ const String getPaymentMethod =
 
 const String emergencyContact =
     "/api/v1/estates/general/settings/user-management";
+/// CHATING URL
+
+/// GET API
+const String getAvailableAdmin = "/api/v1/estates/general/messaging/contacts/admins";
+const String getAvailabeCommeti =
+    "/api/v1/estates/general/messaging/contacts/committee";
+const String getAvailableScurity =
+    "/api/v1/estates/general/messaging/contacts/security";
+const String getAvailableConversation = "/api/v1/estates/general/messaging/conversations";
+const String getUnredCounts =
+    "/api/v1/estates/general/messaging/unread-counts";
+
+/// POST API
+const String startConversation = "/api/v1/estates/general/messaging/conversations/start";
+const String markUnreadCount =
+    "/api/v1/estates/general/messaging/mark-all-read";
+// const String getPaymentHistorys = "/api/v1/estates/general/payments/history";
+// const String getPaymentMethod =
+//     "/api/v1/estates/general/payment-config/methods";
+// const String getPaymentHistorys = "/api/v1/estates/general/payments/history";
+// const String getPaymentMethod =
+//     "/api/v1/estates/general/payment-config/methods";

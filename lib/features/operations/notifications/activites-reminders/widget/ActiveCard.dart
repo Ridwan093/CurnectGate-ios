@@ -67,7 +67,7 @@ class ActivityCard extends ConsumerWidget {
       case "assigned":
         icon = Icons.assignment_turned_in;
         skinColors = AppColors.instance.yellow100;
-        iconColors = AppColors.instance.yellow500;
+        iconColors = AppColors.instance.teal200;
         break;
       case "resolved":
         icon = Icons.mark_chat_read;
@@ -99,6 +99,7 @@ class ActivityCard extends ConsumerWidget {
         children: [
           // Avatar and Text Column
           CircleAvatar(
+            backgroundColor: AppColors.instance.yellow600,
             radius: 18,
             child: Icon(icon, color: iconColors, size: 19),
           ),

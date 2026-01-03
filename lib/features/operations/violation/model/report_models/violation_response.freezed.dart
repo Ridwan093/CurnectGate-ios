@@ -151,7 +151,8 @@ class __$$ViolationResponseImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$ViolationResponseImpl implements _ViolationResponse {
   const _$ViolationResponseImpl(
       {required this.status,

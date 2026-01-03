@@ -50,6 +50,7 @@ class Dashborad extends ConsumerWidget {
     final role = ref.watch(userRoleProvider);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: _buildAppBar(context, ref),
       body: SizedBox(
         height: size.height,
@@ -235,21 +236,23 @@ class Dashborad extends ConsumerWidget {
           color: AppColors.instance.grey300,
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Column(
-          spacing: 10,
+        child: SingleChildScrollView(
+          child: Column(
+            spacing: 10,
 
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.asset(imagepath, width: 20),
-            Text(
-              title,
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                color: AppColors.instance.black600,
-                fontWeight: FontFamilies.bold,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.asset(imagepath, width: 20),
+              Text(
+                title,
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  color: AppColors.instance.black600,
+                  fontWeight: FontFamilies.bold,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -302,7 +305,7 @@ class Dashborad extends ConsumerWidget {
               headertitle: "",
               headersubtitle: "",
               ref: ref,
-              bottom: BottomSheetView.seletctEvent,
+              bottom: BottomSheetView.events,
             );
           },
         ),
@@ -315,6 +318,7 @@ class Dashborad extends ConsumerWidget {
     final notifier = ref.read(workOrderFormProvider.notifier);
     final profileFile = ref.watch(profilePicProvider);
     return AppBar(
+      backgroundColor: Colors.white,
       leadingWidth: 50,
       leading: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -327,21 +331,41 @@ class Dashborad extends ConsumerWidget {
         ),
       ),
       actions: [
-        InkWell(
-          onTap: () {
-            reminderprovider.resetAll();
-            notifier.updateEndDate(null);
-            notifier.updateStartDate(null);
-            notifier.updateWorkType("", 0);
-            showUserBottomSheet(
-              context: context,
-              headertitle: "",
-              headersubtitle: "",
-              ref: ref,
-              bottom: BottomSheetView.seletctEvent,
-            );
-          },
-          child: Image.asset(AssetPaths.dashboardcalenderSetting, width: 20),
+        Tooltip(
+    message: "Polls",
+    preferBelow: false,
+    child: InkWell(
+      onTap: () {
+        context.pushNamed(AppRoutes.newPoll);
+      },
+      child: const Padding(
+        padding: EdgeInsets.all(12.0),
+        child: Icon(
+          Icons.poll_outlined,
+          size: 26,
+        ),
+      ),
+    ),
+  ),
+        Tooltip(
+          message: "Events", // Clear label
+          preferBelow: false,
+          child: InkWell(
+            onTap: () {
+              reminderprovider.resetAll();
+              notifier.updateEndDate(null);
+              notifier.updateStartDate(null);
+              notifier.updateWorkType("", 0);
+              showUserBottomSheet(
+                context: context,
+                headertitle: "",
+                headersubtitle: "",
+                ref: ref,
+                bottom: BottomSheetView.seletctEvent,
+              );
+            },
+            child: Image.asset(AssetPaths.dashboardcalenderSetting, width: 20),
+          ),
         ),
         SizedBox(width: 15),
         NotificationCount(
@@ -398,12 +422,15 @@ class Dashborad extends ConsumerWidget {
                   fontSize: 13,
                 ),
               )
-              : Text(
-                "Amount Due:  ₦${formatPrice(amount ?? "")}",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black600,
-                  fontWeight: FontFamilies.bold,
+              : Flexible(
+                child: Text(
+                  "Amount Due:  ₦${formatPrice(amount ?? "")}",
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    color: AppColors.instance.black600,
+                    fontWeight: FontFamilies.bold,
+                  ),
                 ),
               ),
           isDue

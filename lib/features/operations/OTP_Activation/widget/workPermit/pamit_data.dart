@@ -104,10 +104,11 @@ class PermitData extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(AssetPaths.dashboardWorkOrder, height: 100, width: 100),
+            Image.asset(AssetPaths.setCurfew, height: 100, width: 100),
             SizedBox(height: 10),
             Text(
-              "Your Active Otp detailes appears here",
+              "Your Active Otp permit appears here",
+              textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
                 color: AppColors.instance.black300,

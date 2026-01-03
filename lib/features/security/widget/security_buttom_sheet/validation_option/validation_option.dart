@@ -157,17 +157,22 @@ class ValidationTypeSelector extends ConsumerWidget {
               //     isSelected ? AppColors.instance.black600 : Colors.grey[600],
             ),
             const SizedBox(height: 8),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                fontFamily: FontFamilies.interDisplay,
-                color:
-                    isSelected
-                        ? AppColors.instance.black600
-                        : AppColors.instance.black300,
+            Flexible(
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  fontFamily: FontFamilies.interDisplay,
+                  color:
+                      isSelected
+                          ? AppColors.instance.black600
+                          : AppColors.instance.black300,
+                ),
               ),
             ),
           ],

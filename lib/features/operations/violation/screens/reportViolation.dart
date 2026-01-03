@@ -5,7 +5,6 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/vendor_fileter.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/screen/Activate_Otp_screen.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/getReport_provider.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
 import 'package:curnectgate/features/operations/violation/widget/report_body.dart';
@@ -80,15 +79,10 @@ class _ReportviolationState extends ConsumerState<ReportViolation> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Otpactivation()),
-                  );
-                },
+              Expanded(
                 child: Text(
                   "Report violation",
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     fontSize: 25,
@@ -106,9 +100,7 @@ class _ReportviolationState extends ConsumerState<ReportViolation> {
                   log(newStatus);
                   ref
                       .read(reportProvider.notifier)
-                      .setReportFilter(
-                        newStatus.toLowerCase(),
-                      );
+                      .setReportFilter(newStatus.toLowerCase());
                   ref
                       .read(userReportProvider.notifier)
                       .refreshReports(context, ref);

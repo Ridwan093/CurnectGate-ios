@@ -231,8 +231,8 @@ class DeviceInfoHelper {
     return {
       "token": token,
       'device_id': deviceId,
-      'device_type': deviceType,
-      'platform': platform,
+      'device_type': platform,
+      'platform': deviceType,
       'os_version': osVersion,
       'app_version': appVersion,
     };

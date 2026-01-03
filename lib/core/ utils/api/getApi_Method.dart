@@ -4,6 +4,8 @@ import 'dart:developer';
 import 'package:curnectgate/core/%20utils/api/api_url.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/comittee_model/committees_response_model.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resident_directory_respond.dart';
+import 'package:curnectgate/features/chat/data/chat_model/availableAdmin/estate_admins_response.dart';
+import 'package:curnectgate/features/chat/data/chat_model/availableCommitte/committee_members_response.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate/candidates_response.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate_result/live_results_response.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/election_Setting/voting_settings_response.dart';
@@ -1166,6 +1168,48 @@ class GetApiService {
       log(response.data.toString());
 
       return PaymentMethodsResponse.safeFromJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<EstateAdminsResponse> getAdminList() async {
+    try {
+      final response = await _dio.get(
+        getAvailableAdmin, // Update with your actual endpoint
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
+      );
+      log(response.data.toString());
+
+      return EstateAdminsResponse.safeFromJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<CommitteeMembersResponse> getComitteList() async {
+    try {
+      final response = await _dio.get(
+        getAvailabeCommeti, // Update with your actual endpoint
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
+      );
+      log(response.data.toString());
+
+      return CommitteeMembersResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);

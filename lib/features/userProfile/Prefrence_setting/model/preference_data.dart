@@ -9,6 +9,7 @@ part 'preference_data.g.dart';
 
 @freezed
 class PreferenceData with _$PreferenceData {
+    @JsonSerializable(explicitToJson: true)
   const factory PreferenceData({
     Preferences? preferences,
   }) = _PreferenceData;

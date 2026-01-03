@@ -107,18 +107,27 @@ class _VoteProgressCardState extends ConsumerState<VoteProgressCard> {
               ),
             ),
             const SizedBox(height: 12),
-            Row(
-              children: [
-                const Icon(Icons.access_time, size: 18),
-                const SizedBox(width: 8),
-                Text(timeLeft),
-                const SizedBox(width: 12),
-                const Icon(Icons.people, size: 18),
-                const SizedBox(width: 8),
-                Text(
-                  '${data.statistics?.totalVoted.toString()} / ${data.statistics?.totalVoters.toString()} voted',
-                ),
-              ],
+            IntrinsicWidth(
+              // Only as wide as content
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.access_time, size: 18),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(timeLeft, overflow: TextOverflow.ellipsis),
+                  ),
+                  const SizedBox(width: 12),
+                  const Icon(Icons.people, size: 18),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      '${data.statistics?.totalVoted ?? 0} / ${data.statistics?.totalVoters ?? 0} voted',
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 12),
             // Progress bar

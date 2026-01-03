@@ -22,43 +22,72 @@ class Daytimewindow extends ConsumerWidget {
         fontSize: 15,
       ),
       decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 14,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.instance.black400),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.instance.black400),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.instance.error600),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.instance.error600),
-        ),
-        border: const OutlineInputBorder(),
+        contentPadding: const EdgeInsets.fromLTRB(
+          16,
+          16,
+          12,
+          16,
+        ), // ← Key: less right padding for icon
         labelText: 'Daily Time Window',
-      ),
-      value: state.selectedTimeWindow,
-      items:
-          timeWindows.map((String value) {
-            return DropdownMenuItem<String>(value: value, child: Text(value));
-          }).toList(),
-      onChanged: (value) {
-        notifier.updateTimeWindow(value);
-        onChanged?.call(value);
-
-      },
-      hint: Text(
-        'e.g (9:00 AM - 5:00 PM)',
-        style: TextStyle(
+        labelStyle: TextStyle(
+          fontFamily: FontFamilies.interDisplay,
+          color: AppColors.instance.black500,
+          fontSize: 14,
+        ),
+        hintText:
+            'e.g (9:00 AM - 5:00 PM)', // ← Use hintText instead of hint widget
+        hintStyle: TextStyle(
           fontFamily: FontFamilies.interDisplay,
           color: AppColors.instance.black300,
           fontSize: 13,
         ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: AppColors.instance.black400),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: AppColors.instance.black400),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: AppColors.instance.black400, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: AppColors.instance.error600),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: AppColors.instance.error600, width: 2),
+        ),
       ),
+      dropdownColor: Colors.white,
+      icon: Icon(
+        Icons.keyboard_arrow_down_rounded,
+        color: AppColors.instance.black600,
+        size: 24,
+      ),
+      isExpanded: true, // ← Critical: makes dropdown take full width
+      value: state.selectedTimeWindow,
+      items:
+          timeWindows.map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(
+                value,
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  fontSize: 15,
+                  color: AppColors.instance.black600,
+                ),
+              ),
+            );
+          }).toList(),
+      onChanged: (value) {
+        notifier.updateTimeWindow(value);
+        onChanged?.call(value);
+      },
     );
   }
 }

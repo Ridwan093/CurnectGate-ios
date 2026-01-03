@@ -62,24 +62,31 @@ class DatePickerWidget extends ConsumerWidget {
             color: AppColors.instance.black600,
           ),
         ),
-        GestureDetector(
-          onTap: () => _selectDate(context, ref),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                state.startdate!.isNotEmpty
-                    ? state.startdate ?? ''
-                    : 'Select Date',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black600,
+        Flexible(
+          child: GestureDetector(
+            onTap: () => _selectDate(context, ref),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: Text(
+                    state.startdate!.isNotEmpty
+                        ? state.startdate ?? ''
+                        : 'Select Date',
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontFamily: FontFamilies.interDisplay,
+                      color: AppColors.instance.black600,
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              const Icon(Icons.keyboard_arrow_down, size: 20),
-            ],
+                const SizedBox(width: 8),
+                Flexible(
+                  child: const Icon(Icons.keyboard_arrow_down, size: 20),
+                ),
+              ],
+            ),
           ),
         ),
       ],

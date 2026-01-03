@@ -332,7 +332,8 @@ class __$$DataImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$DataImpl implements _Data {
   const _$DataImpl(
       {this.id = 0,

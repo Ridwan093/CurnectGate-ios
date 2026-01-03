@@ -1,0 +1,39 @@
+import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+Future<bool> checkCameraPermission(BuildContext context) async {
+  final status = await Permission.camera.status;
+
+  if (status.isGranted) {
+    return true;
+  }
+
+  if (status.isDenied) {
+    final result = await Permission.camera.request();
+    return result.isGranted;
+  }
+
+  if (status.isPermanentlyDenied) {
+    showDialog(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            title: const Text("Camera Permission"),
+            content: const Text(
+              "Camera permission is permanently denied. Please enable it from settings.",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  openAppSettings();
+                  Navigator.pop(context);
+                },
+                child: const Text("Open Settings"),
+              ),
+            ],
+          ),
+    );
+  }
+
+  return false;
+}

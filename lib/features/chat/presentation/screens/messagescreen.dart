@@ -1,5 +1,6 @@
 import 'package:curnectgate/features/chat/data/chat_model/message_model.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/messageBubble.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,6 +34,16 @@ class _MessageScreenState extends ConsumerState<MessageScreen> {
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void readMessage() {
+    ref.read(formProvider.notifier).markUnreadMessage(ref: ref);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    readMessage();
   }
 
   void _setupMessageListener() {

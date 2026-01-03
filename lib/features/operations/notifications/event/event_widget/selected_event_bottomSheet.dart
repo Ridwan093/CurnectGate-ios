@@ -28,7 +28,7 @@ class EventSelected extends ConsumerWidget {
                 ),
               ),
               Text(
-                "manage your event",
+                "Manage your event",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   fontWeight: FontFamilies.bold,
@@ -38,7 +38,7 @@ class EventSelected extends ConsumerWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                "create and attend to event from community!",
+                "Create and attend to event from community!",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   fontSize: 12,
@@ -49,7 +49,7 @@ class EventSelected extends ConsumerWidget {
           ),
           const SizedBox(height: 50),
           _buildButton(
-            title: "Community Event",
+            title: "Community event",
             onTap: () {
               showUserBottomSheet(
                 context: context,

@@ -23,130 +23,134 @@ class Profilecard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      elevation: .7,
+      elevation: 0.7,
       color: Colors.white,
       borderRadius: BorderRadius.circular(20),
-      child: Container(
-        padding: EdgeInsets.all(12),
-        height: 100,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final bool isSmallScreen =
+                constraints.maxWidth < 400; // Covers iPhone SE and similar
 
-          children: [
-            Expanded(
-              child: Row(
-                spacing: 10,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    height: 80,
-                    width: 80,
-                    decoration: BoxDecoration(
-                      color: AppColors.instance.teal300,
-                      image: DecorationImage(
-                        image:
-                            userProfileUrl.isNotEmpty
-                                ? NetworkImage(userProfileUrl)
-                                : AssetImage(AssetPaths.navProfileActive),
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          username,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontFamily: FontFamilies.interDisplay,
-                            fontSize: 18,
-                            fontWeight: FontFamilies.bold,
-                            color: AppColors.instance.black600,
-                          ),
-                        ),
-
-                        Text(
-                          estateName,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontFamily: FontFamilies.interDisplay,
-                            fontSize: 10,
-                            fontWeight: FontFamilies.bold,
-                            color: AppColors.instance.black600,
-                          ),
-                        ),
-                        SizedBox(height: 3),
-                        Text(
-                          role,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontFamily: FontFamilies.interDisplay,
-                            fontSize: 12,
-                            fontWeight: FontFamilies.bold,
-                            color: AppColors.instance.black300,
-                          ),
-                        ),
-                        SizedBox(height: 3),
-                        Expanded(
-                          child: Text(
-                            memberId,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontFamily: FontFamilies.interDisplay,
-                              fontSize: 12,
-                              fontWeight: FontFamilies.bold,
-                              color: AppColors.instance.grey500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Column(
-              spacing: 5,
-              mainAxisAlignment: MainAxisAlignment.center,
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Material(
-                  elevation: 1,
-                  borderRadius: BorderRadius.circular(5),
-                  child: Container(
-                    padding: EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
+                // Profile Image — fixed size
+                Container(
+                  height: 80,
+                  width: 80,
+                  decoration: BoxDecoration(
+                    color: AppColors.instance.teal300,
+                    image: DecorationImage(
+                      image:
+                          userProfileUrl.isNotEmpty
+                              ? NetworkImage(userProfileUrl)
+                              : AssetImage(AssetPaths.navProfileActive)
+                                  as ImageProvider,
+                      fit: BoxFit.cover,
                     ),
-                    child: Image.asset(
-                      AssetPaths.qr,
-                      color: AppColors.instance.teal300,
-                      width: 25,
-                    ),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                Text(
-                  "My QR",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontSize: 12,
-                    fontWeight: FontFamilies.bold,
-                    color: AppColors.instance.grey400,
+
+                const SizedBox(width: 12),
+
+                // Text info — takes remaining space safely
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        username,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          fontSize: 18,
+                          fontWeight: FontFamilies.bold,
+                          color: AppColors.instance.black600,
+                        ),
+                      ),
+                      Text(
+                        estateName,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          fontSize: 10,
+                          fontWeight: FontFamilies.bold,
+                          color: AppColors.instance.black600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        role,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          fontSize: 12,
+                          fontWeight: FontFamilies.bold,
+                          color: AppColors.instance.black300,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        memberId,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          fontSize: 12,
+                          fontWeight: FontFamilies.bold,
+                          color: AppColors.instance.grey500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // QR section — fixed width, never squeezed
+                Padding(
+                  padding: EdgeInsets.only(left: isSmallScreen ? 8 : 16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Material(
+                        elevation: 1,
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Image.asset(
+                            AssetPaths.qr,
+                            color: AppColors.instance.teal300,
+                            width: 30,
+                            height: 30,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        "My QR",
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          fontSize: 12,
+                          fontWeight: FontFamilies.bold,
+                          color: AppColors.instance.grey400,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
-            ),
-          ],
+            );
+          },
         ),
       ),
     );

@@ -397,7 +397,8 @@ class __$$NotificationsImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$NotificationsImpl implements _Notifications {
   const _$NotificationsImpl(
       {required this.email,

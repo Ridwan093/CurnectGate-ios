@@ -56,6 +56,7 @@ class _OtpTabsPageState extends State<OtpTabsPage>
                   onTap: () => setState(() => _selectedIndex = index),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
+                    padding: EdgeInsets.only(left: 5, right: 5),
                     curve: Curves.easeInOut,
                     decoration: BoxDecoration(
                       color:
@@ -67,6 +68,7 @@ class _OtpTabsPageState extends State<OtpTabsPage>
                     alignment: Alignment.center,
                     child: AnimatedDefaultTextStyle(
                       duration: const Duration(milliseconds: 250),
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: isSelected ? Colors.white : Colors.grey.shade800,
                         fontWeight:

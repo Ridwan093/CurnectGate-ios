@@ -273,11 +273,14 @@ class EventDetaile extends ConsumerWidget {
         const SizedBox(width: 8),
         isRichText
             ? child
-            : Text(
-              text,
-              style: TextStyle(
-                fontSize: 16,
-                color: AppColors.instance.black400,
+            : Flexible(
+              child: Text(
+                text,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppColors.instance.black400,
+                ),
               ),
             ),
       ],
@@ -296,55 +299,61 @@ class EventDetaile extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          TextButton(
-            onPressed:
-                () => shareEvent(
-                  title: data.title ?? "",
-                  description: data.description ?? "",
-                  startDateTime: data.startDatetime ?? "",
-                  endDateTime: data.endDatetime ?? "",
-                  location: data.location ?? "",
-                  venue: data.venue ?? "",
+          Flexible(
+            flex: 1,
+            child: TextButton(
+              onPressed:
+                  () => shareEvent(
+                    title: data.title ?? "",
+                    description: data.description ?? "",
+                    startDateTime: data.startDatetime ?? "",
+                    endDateTime: data.endDatetime ?? "",
+                    location: data.location ?? "",
+                    venue: data.venue ?? "",
+                  ),
+              child: Text(
+                "Share event",
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  fontWeight: FontFamilies.bold,
+                  color: AppColors.instance.black600,
                 ),
-            child: Text(
-              "Share event",
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontWeight: FontFamilies.bold,
-                color: AppColors.instance.black600,
               ),
             ),
           ),
           const SizedBox(width: 10),
-          _buildAddToCalendarButton(
-            () {
-              log(addedToCalendar.toString());
-              if (isUserGoing(data.userRsvp)) {
-                if (addedToCalendar == false) {
-                  form.addToCCalender(
+          Flexible(
+            flex: 2,
+            child: _buildAddToCalendarButton(
+              () {
+                log(addedToCalendar.toString());
+                if (isUserGoing(data.userRsvp)) {
+                  if (addedToCalendar == false) {
+                    form.addToCCalender(
+                      context: context,
+            
+                      id: data.id.toString(),
+                      ref: ref,
+                    );
+                  }
+                } else {
+                  showCustomSuccessToast(
                     context: context,
-
-                    id: data.id.toString(),
-                    ref: ref,
+                    message:
+                        "Please RSVP 'Yes' or 'No' before adding to your calendar.",
+                    color: AppColors.instance.grey200, // Fallback to grey200
+                    icon: Icons.warning,
+                    iconColors: AppColors.instance.black600,
+                    positionNumber: 70,
+            
+                    duration: Duration(seconds: 4), // If supported
                   );
                 }
-              } else {
-                showCustomSuccessToast(
-                  context: context,
-                  message:
-                      "Please RSVP 'Yes' or 'No' before adding to your calendar.",
-                  color: AppColors.instance.grey200, // Fallback to grey200
-                  icon: Icons.warning,
-                  iconColors: AppColors.instance.black600,
-                  positionNumber: 70,
-
-                  duration: Duration(seconds: 4), // If supported
-                );
-              }
-            },
-
-            context,
-            addedToCalendar,
+              },
+            
+              context,
+              addedToCalendar,
+            ),
           ),
         ],
       ),
@@ -375,12 +384,15 @@ class EventDetaile extends ConsumerWidget {
                   ? Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontFamily: FontFamilies.interDisplay,
-                          fontWeight: FontFamilies.bold,
-                          color: AppColors.instance.black600,
+                      Flexible(
+                        child: Text(
+                          title,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontFamily: FontFamilies.interDisplay,
+                            fontWeight: FontFamilies.bold,
+                            color: AppColors.instance.black600,
+                          ),
                         ),
                       ),
                       SizedBox(width: 5),
@@ -393,6 +405,7 @@ class EventDetaile extends ConsumerWidget {
                   )
                   : Text(
                     title,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontWeight: FontFamilies.bold,
@@ -412,39 +425,44 @@ class EventDetaile extends ConsumerWidget {
   ) {
     return InkWell(
       onTap: onPressed,
-      child: Container(
-        height: 50,
-        width: MediaQuery.sizeOf(context).width / 2,
-        decoration: BoxDecoration(
-          color:
-              !canAddTocallender
-                  ? AppColors.instance.black600
-                  : AppColors.instance.black100,
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              !canAddTocallender ? Icons.add : Icons.done,
-              color:
-                  !canAddTocallender
-                      ? AppColors.instance.grey200
-                      : AppColors.instance.black600,
-            ),
-            const SizedBox(width: 10),
-            Text(
-              'Add to Calendar',
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontWeight: FontFamilies.medium,
+      child: Expanded(
+        child: Container(
+          height: 50,
+          width: MediaQuery.sizeOf(context).width / 2,
+          decoration: BoxDecoration(
+            color:
+                !canAddTocallender
+                    ? AppColors.instance.black600
+                    : AppColors.instance.black100,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                !canAddTocallender ? Icons.add : Icons.done,
                 color:
                     !canAddTocallender
                         ? AppColors.instance.grey200
                         : AppColors.instance.black600,
               ),
-            ),
-          ],
+              const SizedBox(width: 10),
+              Flexible(
+                child: Text(
+                  'Add to Calendar',
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontWeight: FontFamilies.medium,
+                    color:
+                        !canAddTocallender
+                            ? AppColors.instance.grey200
+                            : AppColors.instance.black600,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

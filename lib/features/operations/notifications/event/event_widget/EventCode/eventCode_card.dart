@@ -105,15 +105,14 @@ class EventcodeCard extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 📅 Date Column
+          // Date Column
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                eventDate.split(" ").first, // e.g. "Oct"
+                eventDate.split(" ").first,
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   fontSize: 20,
@@ -122,7 +121,7 @@ class EventcodeCard extends ConsumerWidget {
                 ),
               ),
               Text(
-                eventDate.split(" ")[1].replaceAll(",", ""), // e.g. "20"
+                eventDate.split(" ")[1].replaceAll(",", ""),
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   fontSize: 30,
@@ -133,85 +132,55 @@ class EventcodeCard extends ConsumerWidget {
             ],
           ),
 
-          const SizedBox(width: 10),
+          const SizedBox(width: 12),
 
-          // Vertical Divider
-          Container(width: 2, height: 90, color: AppColors.instance.teal300),
+          // Divider
+          Container(width: 2, height: 80, color: AppColors.instance.teal300),
 
-          const SizedBox(width: 10),
+          const SizedBox(width: 12),
 
-          // 🏠 Event Details Column
+          // Main content — takes remaining space
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                // Title
                 Text(
                   eventTitle,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     color: AppColors.instance.teal300,
                     fontWeight: FontFamilies.bold,
-                    fontSize: 20,
+                    fontSize: 18,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 6),
+
+                // Description — takes available space
                 Text(
                   dec,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     color: AppColors.instance.black400,
                     fontSize: 13,
                     height: 1.3,
                   ),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
                 ),
 
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
 
-                // 🟩 Code + Expired Row (NEW)
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                // Bottom Row: Code + Status — min size, no wrapping issues
+                Wrap(
+                  direction: Axis.vertical,
                   children: [
-                    // Event Code Container
                     _codeRow(code, context),
-                    const SizedBox(width: 8),
-
-                    // Expired/Active Badge
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _Color(
-                          isExpired,
-                          red: Colors.red.withOpacity(0.1),
-                          green: Colors.green.withOpacity(0.1),
-                          grey: Colors.grey.withOpacity(0.1),
-                        ),
-
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        isExpired,
-                        style: TextStyle(
-                          fontFamily: FontFamilies.interDisplay,
-                          color: _Color(
-                            isExpired,
-                            red: Colors.red,
-                            green: Colors.green,
-                            grey: Colors.grey,
-                          ),
-                          fontSize: 12,
-                          fontWeight: FontFamilies.medium,
-                        ),
-                      ),
-                    ),
+                    // const SizedBox(width: 10),
+                    // Direct badge — no Flexible, no IntrinsicWidth
+                    _buildStatusBadge(isExpired),
                   ],
                 ),
               ],
@@ -222,20 +191,42 @@ class EventcodeCard extends ConsumerWidget {
     );
   }
 
-  Color _Color(
-    String status, {
-    required Color red,
-    required Color green,
-    required Color grey,
-  }) {
-    switch (status.toLowerCase()) {
-      case "revoked":
-        return red;
-      case "pending":
-        return grey;
+  // Keep your status badge simple
+  Widget _buildStatusBadge(String isExpired) {
+    Color bgColor;
+    Color textColor;
+
+    switch (isExpired.toLowerCase()) {
+      case 'active':
+        bgColor = Colors.green.withOpacity(0.1);
+        textColor = Colors.green;
+        break;
+      case 'expired':
+      case 'revoked':
+        bgColor = Colors.red.withOpacity(0.1);
+        textColor = Colors.red;
+        break;
       default:
-        return green;
+        bgColor = Colors.grey.withOpacity(0.1);
+        textColor = Colors.grey;
     }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        isExpired,
+        style: TextStyle(
+          fontFamily: FontFamilies.interDisplay,
+          color: textColor,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
   }
 
   Widget _codeRow(String code, BuildContext context) {
@@ -244,6 +235,7 @@ class EventcodeCard extends ConsumerWidget {
       children: [
         Text(
           code,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,
             fontSize: 13,

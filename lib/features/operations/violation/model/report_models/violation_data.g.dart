@@ -15,5 +15,5 @@ _$ViolationDataImpl _$$ViolationDataImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$ViolationDataImplToJson(_$ViolationDataImpl instance) =>
     <String, dynamic>{
-      'violations': instance.violations,
+      'violations': instance.violations.map((e) => e.toJson()).toList(),
     };

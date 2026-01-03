@@ -5,6 +5,7 @@ part 'facility_access_model.g.dart';
 
 @freezed
 class FacilityAccess with _$FacilityAccess {
+   @JsonSerializable(explicitToJson: true)
   const factory FacilityAccess({
     @Default(false) bool enabled,
   }) = _FacilityAccess;

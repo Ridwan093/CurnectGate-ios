@@ -160,7 +160,8 @@ class __$$GetUserPrivacySettingsImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$GetUserPrivacySettingsImpl implements _GetUserPrivacySettings {
   const _$GetUserPrivacySettingsImpl(
       {this.status, this.message, this.code, this.data});

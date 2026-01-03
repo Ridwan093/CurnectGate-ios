@@ -23,9 +23,9 @@ class AccessPermissions with _$AccessPermissions {
 
   factory AccessPermissions.safeFromJson(Map<String, dynamic>? json) {
     return AccessPermissions(
-      gateAccess: NullSafetyHelper.safeBool(json?['gate_access'],),
-      nightAccess: NullSafetyHelper.safeBool(json?['night_access'],),
-      facilityAccess: NullSafetyHelper.safeBool(json?['facility_access'],),
+      gateAccess: NullSafetyHelper.safeBool(json?['gate_access']),
+      nightAccess: NullSafetyHelper.safeBool(json?['night_access']),
+      facilityAccess: NullSafetyHelper.safeBool(json?['facility_access']),
       emergencyAccess: NullSafetyHelper.safeBool(json?['emergency_access']),
     );
   }

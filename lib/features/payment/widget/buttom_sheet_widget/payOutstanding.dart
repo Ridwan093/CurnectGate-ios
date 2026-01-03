@@ -100,76 +100,105 @@ class PayOutstanding extends StatelessWidget {
     VoidCallback? onTap,
     PaymentDashboardData? data,
     String? second,
-    last,
+    String? last,
   }) {
+    final bool hasBalanceInfo = second != null && data != null;
+
     return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
       child: Container(
-        height: 100,
-        color: AppColors.instance.grey300,
-        child: ListTile(
-          contentPadding: const EdgeInsets.all(16),
-
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              RichText(
-                text: TextSpan(
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontWeight: FontFamilies.bold,
-                    color: AppColors.instance.black300,
-                    fontSize: 13,
+        // No fixed height → adapts to content
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.instance.grey300,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Main content — takes available space
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Title
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: AppColors.instance.black600,
+                    ),
                   ),
-                  children: [
-                    TextSpan(text: subtitle),
-                    TextSpan(
+                  const SizedBox(height: 8),
+
+                  // Subtitle with highlighted part
+                  RichText(
+                    text: TextSpan(
                       style: TextStyle(
                         fontFamily: FontFamilies.interDisplay,
-                        fontWeight: FontFamilies.bold,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.instance.black300,
                         fontSize: 13,
-                        color: AppColors.instance.black600,
                       ),
-                      text: second,
+                      children: [
+                        TextSpan(text: subtitle),
+                        if (second != null)
+                          TextSpan(
+                            text: second,
+                            style: TextStyle(
+                              color: AppColors.instance.black600,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        if (last != null) TextSpan(text: last),
+                      ],
                     ),
-                    TextSpan(text: last),
+                  ),
+
+                  // Balance info — conditional
+                  if (hasBalanceInfo) ...[
+                    const SizedBox(height: 10),
+                    Text(
+                      data.hasSufficientBalance!
+                          ? "Wallet balance: ₦${formatPrice(data.walletBalance ?? "")}"
+                          : "Low wallet balance: ₦${formatPrice(data.walletBalance ?? "")}",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                        color:
+                            data.hasSufficientBalance!
+                                ? AppColors.instance.teal500
+                                : AppColors.instance.error500,
+                      ),
+                    ),
                   ],
+                ],
+              ),
+            ),
+
+            // Optional arrow indicator
+            if (onTap != null)
+              Padding(
+                padding: EdgeInsets.only(left: 8),
+                child: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 18,
+                  color: AppColors.instance.black400,
                 ),
               ),
-              if (second != null) ...[
-                SizedBox(height: 5),
-                if (data!.hasSufficientBalance!) ...[
-                  Text(
-                    "Wallet balance: ₦${formatPrice(data.walletBalance ?? "")}",
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      fontWeight: FontFamilies.bold,
-                      fontSize: 11,
-                      color: AppColors.instance.teal500,
-                    ),
-                  ),
-                ] else ...[
-                  Text(
-                    "Low wallet balance: ₦${formatPrice(data.walletBalance ?? "")}",
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      fontWeight: FontFamilies.bold,
-                      fontSize: 11,
-                      color: AppColors.instance.error500,
-                    ),
-                  ),
-                ],
-              ],
-            ],
-          ),
-          title: Text(
-            title,
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontWeight: FontFamilies.bold,
-              fontSize: 15,
-            ),
-          ),
+          ],
         ),
       ),
     );

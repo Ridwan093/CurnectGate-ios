@@ -11,6 +11,8 @@ import 'package:curnectgate/features/auth/presentation/screen/memeber_getstarted
 import 'package:curnectgate/features/auth/presentation/screen/rest_pass_otp_screen.dart';
 import 'package:curnectgate/features/auth/presentation/screen/sign_in.dart';
 import 'package:curnectgate/features/auth/presentation/screen/splac_screen.dart';
+import 'package:curnectgate/features/estate_management/elections/poll/poll.dart';
+import 'package:curnectgate/features/estate_management/elections/poll/poll_success.dart';
 import 'package:curnectgate/features/estate_management/elections/screens/election_dashboard.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_screen/vendor_log.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/screen/Dashborad.dart';
@@ -462,6 +464,22 @@ final routerProvider = Provider<GoRouter>((ref) {
 
           // Extract values with null checks
           return Activites();
+        },
+      ),
+
+      GoRoute(
+        path: '/lates_poll',
+        name: AppRoutes.newPoll,
+        builder: (context, state) {
+          return PollScreen();
+        },
+      ),
+
+      GoRoute(
+        path: '/vote_confirm',
+        name: AppRoutes.voteSubmited,
+        builder: (context, state) {
+          return voteSubmited();
         },
       ),
     ],

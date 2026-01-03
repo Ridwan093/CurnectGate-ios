@@ -14,5 +14,5 @@ _$DataImpl _$$DataImplFromJson(Map<String, dynamic> json) => _$DataImpl(
 
 Map<String, dynamic> _$$DataImplToJson(_$DataImpl instance) =>
     <String, dynamic>{
-      'privacy': instance.privacy,
+      'privacy': instance.privacy?.toJson(),
     };

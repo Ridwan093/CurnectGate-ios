@@ -11,6 +11,7 @@ import 'package:curnectgate/features/operations/violation/report_provider/getRep
 import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class ResolutionTimeline extends ConsumerWidget {
@@ -54,6 +55,7 @@ class ResolutionTimeline extends ConsumerWidget {
             child: InkWell(
               onTap: () {
                 // Navigator.pop(context);
+                context.pop();
 
                 log(id.toString());
               },
@@ -168,19 +170,6 @@ class ResolutionTimeline extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  int _getStatusPriority(String status) {
-    switch (status) {
-      case 'Pending':
-        return 1;
-      case 'investigating':
-        return 2;
-      case 'resolved':
-        return 3;
-      default:
-        return 0;
-    }
   }
 
   String _getNextStatus(String currentStatus) {

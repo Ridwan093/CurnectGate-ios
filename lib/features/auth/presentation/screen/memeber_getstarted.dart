@@ -35,6 +35,10 @@ class _AuthOnboardingScreenState extends State<AuthOnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+
+    final bool isSmallScreen = screenHeight < 700; // iPhone SE, small Androids
+
     return BackButtonHandler(
       child: Scaffold(
         body: Stack(
@@ -49,13 +53,11 @@ class _AuthOnboardingScreenState extends State<AuthOnboardingScreen> {
                 });
               },
               itemBuilder: (context, index) {
-                return Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(onboardingData[index]['image']!),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                return Image.asset(
+                  onboardingData[index]['image']!,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
                 );
               },
             ),
@@ -66,14 +68,14 @@ class _AuthOnboardingScreenState extends State<AuthOnboardingScreen> {
               left: 0,
               right: 0,
               child: Container(
-                height: 300,
+                height: screenHeight * 0.45, // Adaptive height
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
                     colors: [
                       Colors.black.withOpacity(0.9),
-                      Colors.black.withOpacity(0.8),
+                      Colors.black.withOpacity(0.7),
                       Colors.black.withOpacity(0.3),
                       Colors.transparent,
                     ],
@@ -82,90 +84,89 @@ class _AuthOnboardingScreenState extends State<AuthOnboardingScreen> {
               ),
             ),
 
-            // Logo and Description
-            Positioned(
-              top: MediaQuery.of(context).size.height * 0.5 + 50,
-              left: 0,
-              right: 0,
-              child: Column(
-                children: [
-                  // Logo
-                  Image.asset(
-                    AssetPaths.appLogo,
-                    width: 200,
-                    fit: BoxFit.cover,
+            // Main Content (Logo, Text, Buttons) - Now in SafeArea Column
+            SafeArea(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: isSmallScreen ? 20 : 40,
                   ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Logo
+                      Image.asset(
+                        AssetPaths.appLogo,
+                        width: isSmallScreen ? 160 : 200,
+                        fit: BoxFit.contain,
+                      ),
 
-                  const SizedBox(height: 15),
-                  Text(
-                    "Estate manangement made simple",
-                    style: TextStyle(
-                      color: AppColors.instance.black100,
-                      fontSize: 15,
-                      fontWeight: FontFamilies.medium,
-                    ),
-                  ),
+                      const SizedBox(height: 15),
 
-                  // Description
-                ],
-              ),
-            ),
+                      // Title
+                      Text(
+                        "Estate management made simple",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: isSmallScreen ? 15 : 15,
+                          fontWeight: FontFamilies.medium,
+                          fontFamily: FontFamilies.interDisplay,
+                        ),
+                      ),
 
-            // Page Indicator (3 dots)
-            Positioned(
-              bottom: 200,
-              left: 0,
-              right: 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  onboardingData.length,
-                  (index) => Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color:
-                          _currentPage == index
-                              ? AppColors.instance.yellow500
-                              : Colors.white.withOpacity(0.5),
-                    ),
+                      const SizedBox(height: 40), // Space before buttons
+                      // Page Indicator
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          onboardingData.length,
+                          (index) => Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 6),
+                            width: 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color:
+                                  _currentPage == index
+                                      ? AppColors.instance.yellow500
+                                      : Colors.white.withOpacity(0.6),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 30),
+
+                      // Buttons
+                      SizedBox(
+                        width: double.infinity,
+                        child: _containerButton(
+                          onPressed: () {
+                            context.pushNamed(
+                              AppRoutes.estateCodeVerificationScreen,
+                            );
+                          },
+                          buttontitle: 'Create a new account',
+                          iscreate: false,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: double.infinity,
+                        child: _containerButton(
+                          onPressed: () {
+                            context.pushNamed(AppRoutes.signIN);
+                          },
+                          buttontitle: "Sign in to continue",
+                          iscreate: true,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ),
-
-            // Bottom Buttons
-            Positioned(
-              bottom: 50,
-              left: 20,
-              right: 20,
-              child: Column(
-                children: [
-                  // Create Account Button
-
-                  // Sign In Button
-                  _containerButton(
-                    onPressed: () {
-                      context.pushNamed(AppRoutes.estateCodeVerificationScreen);
-                    },
-                    buttontitle: 'Create a new account',
-                    iscreate: false,
-                  ),
-                  const SizedBox(height: 15),
-                  _containerButton(
-                    onPressed: () {
-                      context.pushNamed(AppRoutes.signIN);
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => SignIn()),
-                      // );
-                    },
-                    buttontitle: "Sign in to continue",
-                    iscreate: true,
-                  ),
-                ],
               ),
             ),
           ],
@@ -181,30 +182,24 @@ class _AuthOnboardingScreenState extends State<AuthOnboardingScreen> {
   }) {
     return InkWell(
       onTap: onPressed,
+      borderRadius: BorderRadius.circular(8),
       child: Container(
-        height: 50,
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        width: double.infinity,
+        height: 52,
         decoration: BoxDecoration(
-          border:
-              iscreate
-                  ? null
-                  : Border.fromBorderSide(
-                    const BorderSide(color: Colors.white),
-                  ),
-          color: iscreate ? AppColors.instance.grey200 : null,
-          borderRadius: BorderRadius.circular(5),
+          color: iscreate ? AppColors.instance.grey200 : Colors.transparent,
+          border: iscreate ? null : Border.all(color: Colors.white, width: 1.5),
+          borderRadius: BorderRadius.circular(8),
         ),
         child: Center(
           child: Text(
             buttontitle,
+            textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 15,
               fontFamily: FontFamilies.interDisplay,
-              color:
-                  iscreate
-                      ? AppColors.instance.black600
-                      : AppColors.instance.grey200,
-              fontWeight: FontFamilies.medium,
+              fontWeight: FontWeight.w600,
+              color: iscreate ? AppColors.instance.black600 : Colors.white,
             ),
           ),
         ),

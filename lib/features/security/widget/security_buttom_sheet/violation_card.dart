@@ -221,63 +221,69 @@ class ParkingViolationCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         height: 40,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+        ), // Consistent padding
         decoration: BoxDecoration(
           color: AppColors.instance.teal200,
-
           borderRadius: BorderRadius.circular(6),
         ),
-
         child: Row(
+          mainAxisSize: MainAxisSize.min, // ← Key: Only as wide as needed
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              buttonText,
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                color: AppColors.instance.black600,
-                fontSize: 12,
-                fontWeight: FontFamilies.bold,
+            Flexible(
+              // ← Allows text to shrink/clip if needed
+              child: Text(
+                buttonText,
+                overflow:
+                    TextOverflow.ellipsis, // ← Graceful clipping for long text
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  color: AppColors.instance.black600,
+                  fontSize: 12,
+                  fontWeight: FontFamilies.bold,
+                ),
               ),
             ),
-            Flexible(
-              child: Icon(Icons.done, color: AppColors.instance.black600),
-            ),
+            const SizedBox(width: 8), // ← Fixed space instead of Flexible icon
+            Icon(Icons.done, size: 18, color: AppColors.instance.black600),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildinvestigationButton({
-    required VoidCallback onTap,
-    required String buttonText,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        width: 100,
-        height: 40,
-        decoration: BoxDecoration(
-          color: AppColors.instance.teal300,
-          border: Border.all(
-            style: BorderStyle.solid,
-            color: AppColors.instance.black600,
-          ),
-          borderRadius: BorderRadius.circular(6),
-        ),
+  // Widget _buildinvestigationButton({
+  //   required VoidCallback onTap,
+  //   required String buttonText,
+  // }) {
+  //   return InkWell(
+  //     onTap: onTap,
+  //     child: Container(
+  //       width: 100,
+  //       height: 40,
+  //       decoration: BoxDecoration(
+  //         color: AppColors.instance.teal300,
+  //         border: Border.all(
+  //           style: BorderStyle.solid,
+  //           color: AppColors.instance.black600,
+  //         ),
+  //         borderRadius: BorderRadius.circular(6),
+  //       ),
 
-        child: Center(
-          child: Text(
-            buttonText,
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.black600,
-              fontSize: 12,
-              fontWeight: FontFamilies.bold,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  //       child: Center(
+  //         child: Text(
+  //           buttonText,
+  //           style: TextStyle(
+  //             fontFamily: FontFamilies.interDisplay,
+  //             color: AppColors.instance.black600,
+  //             fontSize: 12,
+  //             fontWeight: FontFamilies.bold,
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }

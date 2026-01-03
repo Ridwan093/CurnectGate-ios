@@ -18,9 +18,15 @@ class OptionForCodes extends ConsumerWidget {
     final notifier = ref.read(oTpformProvider.notifier);
 
     final options = [
-      ValidationOption(label: 'Validate Digital ID', icon: AssetPaths.memberId),
-      ValidationOption(label: 'Validate OTP', icon: ''),
-      ValidationOption(label: 'Validate Work Order', icon: ''),
+      ValidationOption(
+        label: 'Validate Digital ID',
+        icon: AssetPaths.dashboardIdVerification,
+      ),
+      ValidationOption(label: 'Validate OTP', icon: AssetPaths.otpValidation),
+      ValidationOption(
+        label: 'Validate Work Order',
+        icon: AssetPaths.dashboardWorkOrder,
+      ),
     ];
 
     return Padding(
@@ -135,7 +141,10 @@ class OptionForCodes extends ConsumerWidget {
       child: Container(
         width: MediaQuery.sizeOf(context).width / 2 - 20,
         height: 120,
-        // Added margin
+        // margin: const EdgeInsets.symmetric(
+        //   horizontal: 8,
+        //   vertical: 8,
+        // ), // Added margin
         decoration: BoxDecoration(
           color: AppColors.instance.grey200,
           borderRadius: BorderRadius.circular(12),
@@ -147,19 +156,30 @@ class OptionForCodes extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 50),
+            Image.asset(
+              icon,
+              width: 40,
+              height: 40,
+              // color:
+              //     isSelected ? AppColors.instance.black600 : Colors.grey[600],
+            ),
             const SizedBox(height: 8),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                fontFamily: FontFamilies.interDisplay,
-                color:
-                    isSelected
-                        ? AppColors.instance.black600
-                        : AppColors.instance.black300,
+            Flexible(
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  fontFamily: FontFamilies.interDisplay,
+                  color:
+                      isSelected
+                          ? AppColors.instance.black600
+                          : AppColors.instance.black300,
+                ),
               ),
             ),
           ],

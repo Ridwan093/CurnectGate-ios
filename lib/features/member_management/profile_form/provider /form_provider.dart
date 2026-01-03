@@ -5,7 +5,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:math' as math;
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:curnectgate/core/%20utils/api/api_Service.dart';
 import 'package:curnectgate/core/%20utils/api/api_method.dart';
 import 'package:curnectgate/core/config/biometric_faceID/Helper/biometric_signature_helper.dart';
@@ -19,6 +21,9 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/auth/data/auth_model/OnboardingProgressManager.dart';
 import 'package:curnectgate/features/auth/data/auth_model/onbording_enum.dart';
 import 'package:curnectgate/features/auth/widget/tmporarypassword_dialog.dart';
+import 'package:curnectgate/features/chat/data/model/chat_message.dart';
+import 'package:curnectgate/features/chat/data/provider/chat_local_repository_provider.dart';
+import 'package:curnectgate/features/chat/data/provider/chat_messages_provider.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/candidate_provider.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/eletion_provider.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/afterImage_provider.dart';
@@ -317,7 +322,7 @@ class FormNotifier extends StateNotifier<FormStates> {
   void updatePrivacyLoading(bool isLoading) {
     ///loading state if (optioner)
     log(isLoading.toString());
-    state = state.copyWith(privacyLoading: isLoading);
+    state = state.copyWith(chattingLoading: isLoading);
   }
 
   void updatePrevencyLoading(bool isLoading) {
@@ -602,6 +607,10 @@ class FormNotifier extends StateNotifier<FormStates> {
 
   void updatePrivacy(bool value) {
     state = state.copyWith(privacysettingerror: value);
+  }
+
+  void updateChatingLoading(bool value) {
+    state = state.copyWith(chattingLoading: value);
   }
 
   void clearProfileImage() {
@@ -912,64 +921,76 @@ class FormNotifier extends StateNotifier<FormStates> {
             },
           );
         } else {
-          registerToken(context: context, ref: ref);
-          log("TRUE------->");
-          await SharedPrefsService().saveAuthData(response['data']);
+          final isRegistered = await registerToken(context: context, ref: ref);
 
-          showCustomSuccessToast(
-            context: context,
-            message: response["message"],
-            color: AppColors.instance.teal300,
-            icon: Icons.check_circle,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-          final userData = response['data'] as Map<String, dynamic>?;
+          if (isRegistered) {
+            log("TRUE------->");
+            await SharedPrefsService().saveAuthData(response['data']);
 
-          if (userData != null) {
-            log("UserLoging Token: ${userData["access_token"]}");
-            prefs.saveUserToken(userData["access_token"]);
-            final user = userData['user'] as Map<String, dynamic>?;
-            final firstName = user?['firstname'] as String?;
-            final lastName = user!["lastname"] as String?;
-            final email = user["email"] as String?;
-            final medUrl = user["media_url"] as String?;
-            ref.read(authState.authProvider.notifier).loadAuthData();
+            showCustomSuccessToast(
+              context: context,
+              message: response["message"],
+              color: AppColors.instance.teal300,
+              icon: Icons.check_circle,
+              iconColors: AppColors.instance.grey200,
+              positionNumber: 70,
+            );
+            final userData = response['data'] as Map<String, dynamic>?;
 
-            if (medUrl != null) {
-              await SharedPrefsService().saveMedialUrl(medUrl);
-              ref.read(profilePicProvider.notifier).refreshProfilePic();
-              ref.read(profilePicProvider.notifier).loadProfilePic();
+            if (userData != null) {
+              log("UserLoging Token: ${userData["access_token"]}");
+              prefs.saveUserToken(userData["access_token"]);
+              final user = userData['user'] as Map<String, dynamic>?;
+              final firstName = user?['firstname'] as String?;
+              final lastName = user!["lastname"] as String?;
+              final email = user["email"] as String?;
+              final medUrl = user["media_url"] as String?;
+              ref.read(authState.authProvider.notifier).loadAuthData();
+
+              if (medUrl != null) {
+                await SharedPrefsService().saveMedialUrl(medUrl);
+                ref.read(profilePicProvider.notifier).refreshProfilePic();
+                ref.read(profilePicProvider.notifier).loadProfilePic();
+              }
+              if (firstName != null) {
+                await SharedPrefsService().saveSingleUserName(firstName);
+                await SharedPrefsService().saveFullName(
+                  "${firstName} ${lastName}",
+                );
+                ref.read(authState.authProvider.notifier).loadfullName();
+              }
+
+              if (email != null) {
+                await DeviceInfoHelper.saveUserEmail(email);
+              }
             }
-            if (firstName != null) {
-              await SharedPrefsService().saveSingleUserName(firstName);
-              await SharedPrefsService().saveFullName(
-                "${firstName} ${lastName}",
-              );
-              ref.read(authState.authProvider.notifier).loadfullName();
+
+            final user = response['data']["user"];
+            final userRole = user['role'];
+            final biometricenabled = user["biometric_enabled"];
+
+            if (biometricenabled) {
+              await DeviceInfoHelper.saveFirstTimeCheck(false);
+              isBiometricEnabled.toggleBiometric(true);
+            } else {
+              await DeviceInfoHelper.saveFirstTimeCheck(true);
+              isBiometricEnabled.toggleBiometric(false);
             }
-
-            if (email != null) {
-              await DeviceInfoHelper.saveUserEmail(email);
-            }
-          }
-
-          final user = response['data']["user"];
-          final userRole = user['role'];
-          final biometricenabled = user["biometric_enabled"];
-
-          if (biometricenabled) {
-            await DeviceInfoHelper.saveFirstTimeCheck(false);
-            isBiometricEnabled.toggleBiometric(true);
+            log(userRole.toString());
+            getUserRoleFromString(context, userRole.toString());
+            // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+            //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+            // context.goNamed(AppRoutes.dashbord);
           } else {
-            await DeviceInfoHelper.saveFirstTimeCheck(true);
-            isBiometricEnabled.toggleBiometric(false);
+            showCustomSuccessToast(
+              context: context,
+              message: "Error Somthing wrong",
+              color: AppColors.instance.error500,
+              icon: Icons.error,
+              iconColors: AppColors.instance.grey200,
+              positionNumber: 70,
+            );
           }
-          log(userRole.toString());
-          getUserRoleFromString(context, userRole.toString());
-          // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-          //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
-          // context.goNamed(AppRoutes.dashbord);
         }
       } else {
         updateloginLodaing(false);
@@ -1028,41 +1049,42 @@ class FormNotifier extends StateNotifier<FormStates> {
     }
   }
 
-  Future<void> registerToken({
+  Future<bool> registerToken({
     required BuildContext context,
     required WidgetRef ref,
   }) async {
     log("🚀 START registerToken()");
 
     try {
-      // 2️⃣ Gather all needed data for the login request
       final data = await DeviceInfoHelper.deviceInfo();
 
-      // 3️⃣ Call API to log in using stored biometric credentials
       final response = await ref
           .read(profileRepositoryProvider)
           .registerDeviceTokens(requestData: data, context: context);
 
-      if (!context.mounted) return;
+      if (!context.mounted) return false;
 
-      // 4️⃣ Handle response
       if (response["status"] == true) {
+        log("✅ Token registered successfully");
+        return true; // ✅ registered
       } else {
-        final message = response["message"] ?? "Token Register failed.";
-        log("❌ Regester Token  failed: $message");
+        final message = response["message"] ?? "Token not registered yet.";
+        log("❌ Register Token failed: $message");
 
         _handleLoginError(context, ref, message);
+        return false; // ❌ not registered
       }
     } on DioException catch (e) {
-      log("🌐 DIO ERROR during biometric login: $e");
+      log("🌐 DIO ERROR: $e");
       showCustomSuccessToast(
         context: context,
-        message: "Network error occurred while logging in.",
+        message: "Network error occurred.",
         color: AppColors.instance.error500,
         icon: Icons.error,
         iconColors: AppColors.instance.grey200,
         positionNumber: 70,
       );
+      return false;
     } catch (e) {
       log("💥 Unexpected ERROR: $e");
       showCustomSuccessToast(
@@ -1073,9 +1095,10 @@ class FormNotifier extends StateNotifier<FormStates> {
         iconColors: AppColors.instance.grey200,
         positionNumber: 70,
       );
+      return false;
     } finally {
       updateloginLodaing(false);
-      log("🏁 END signInwithFaceID()");
+      log("🏁 END registerToken()");
     }
   }
 
@@ -2322,8 +2345,14 @@ class FormNotifier extends StateNotifier<FormStates> {
             location: report.category ?? "",
             isAnonymouse: report.isAnonymous,
             priority: "high",
-            evidence1: File(report.imagePaths[0] ?? ""),
-            evidence2: File(report.imagePaths[1] ?? ""),
+            evidence1:
+                report.imagePaths[0] != null
+                    ? File(report.imagePaths[0]!)
+                    : File(''),
+            evidence2:
+                report.imagePaths[1] != null
+                    ? File(report.imagePaths[1]!)
+                    : File(''),
           );
       log(response.toString());
       if (!context.mounted) return; // Always check first
@@ -9510,7 +9539,9 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateGenrateMemberIdLoading(false);
 
         context.pop();
-
+        ref
+            .read(paymentDashbordProvider.notifier)
+            .refreshPaymentDashbord(context, ref);
         context.pushNamed(
           AppRoutes.paymentSuccess,
           extra: {"fails_succs": false, "ErrorMessage": response["message"]},
@@ -9727,6 +9758,259 @@ class FormNotifier extends StateNotifier<FormStates> {
       );
     } finally {
       log("END------->");
+    }
+  }
+
+  Future<void> initialisMessage({
+    required BuildContext context,
+    required String message,
+    required String id,
+    required String type,
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+
+    log("Mounted? ${context.mounted}");
+
+    try {
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .sendInitialMessage(
+            message: message,
+            type: type,
+            id: id,
+            context: context,
+          );
+
+      log("befor isMouted------->");
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+      log("after isMouted------->");
+      if (response['status'] == true) {
+        ref
+            .read(paymentDashbordProvider.notifier)
+            .refreshPaymentDashbord(context, ref);
+        context.pop();
+        // ref
+        //     .read(paymentHistoryProvider.notifier)
+        //     .refreshPaymentHistory(context, ref);
+        // showUserBottomSheet(
+        //   context: context,
+        //   headertitle: response["message"].toString(),
+        //   headersubtitle: "",
+        //   ref: ref,
+        //   bottom: BottomSheetView.paymentSuccess,
+        // );
+      } else {
+        updateGenrateMemberIdLoading(false);
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+      }
+    } on DioException catch (e) {
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+      context.pop();
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      log("END------->");
+    }
+  }
+
+  Future<void> sendMessage({
+    required BuildContext context,
+    required String message,
+    File? file,
+    required WidgetRef ref,
+    required int id,
+  }) async {
+    log("CHAT SEND START");
+
+    // 1️⃣ Create local message
+    final localId =
+        '${DateTime.now().millisecondsSinceEpoch}_${math.Random().nextInt(999)}';
+
+    final localMessage = ChatMessage(
+      localId: localId,
+      content: message,
+      senderId: "current_user_id", // replace with actual user id
+      createdAt: DateTime.now(),
+      isSynced: false,
+    );
+
+    // 2️⃣ Save locally & update UI immediately
+    await ref.read(chatLocalRepositoryProvider).save(localMessage);
+    ref.read(chatMessagesProvider.notifier).addLocalMessage(localMessage);
+
+    try {
+      // 3️⃣ Check connectivity (optional but recommended)
+      final connectivity = await Connectivity().checkConnectivity();
+      final isOnline = connectivity != ConnectivityResult.none;
+
+      if (!isOnline) {
+        log("OFFLINE — message queued");
+        return;
+      }
+
+      // 4️⃣ Attempt API send
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .sendMessage(message: message, context: context, file: file, id: id);
+
+      if (!context.mounted) return;
+
+      if (response['status'] == true) {
+        // 5️⃣ Mark message as synced
+        await ref
+            .read(chatLocalRepositoryProvider)
+            .markSynced(
+              localId: localId,
+              serverId: response['data']['id'].toString(),
+            );
+
+        ref.read(chatMessagesProvider.notifier).refresh();
+
+        log("CHAT MESSAGE SYNCED");
+      } else {
+        if (response["message"] ==
+            "Unauthenticated. Please login to continue.") {
+          ref.read(authProvider.notifier).sessionExpire(context, ref);
+        }
+      }
+    } on DioException catch (e) {
+      log("NETWORK ERROR — message kept offline");
+      log(e.toString());
+    } catch (e) {
+      log("UNEXPECTED ERROR");
+      log(e.toString());
+    } finally {
+      log("CHAT SEND END");
+    }
+  }
+
+  Future<void> markUnreadMessage({required WidgetRef ref}) async {
+    log("START------->");
+
+    try {
+      final response =
+          await ref.read(profileRepositoryProvider).markMessagCount();
+
+      log("befor isMouted------->");
+      log(response.toString());
+
+      log("after isMouted------->");
+      if (response['status'] == true) {
+      } else {}
+    } on DioException catch (e) {
+      if (e.error is SocketException) {
+        log(e.error.toString());
+      }
+      log(e.toString());
+    } catch (e) {
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+    } finally {
+      log("END------->");
+    }
+  }
+
+  Future<void> chattingSetting({
+    required BuildContext context,
+    required int id,
+    required bool do_not_disturb,
+    required int dnd_duration_hours,
+    required WidgetRef ref,
+  }) async {
+    updateChatingLoading(true);
+    try {
+      // 3️⃣ Check connectivity (optional but recommended)
+
+      // 4️⃣ Attempt API send
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .chattingSetting(
+            id: id,
+            dnd_duration_hours: dnd_duration_hours,
+            do_not_disturb: do_not_disturb,
+            context: context,
+          );
+
+      if (!context.mounted) return;
+
+      if (response['status'] == true) {
+        // 5️⃣ Mark message as synced
+        updateChatingLoading(false);
+        log("CHAT MESSAGE SYNCED");
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      } else {
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+        updateChatingLoading(false);
+      }
+    } on DioException catch (e) {
+      log("NETWORK ERROR — message kept offline");
+      updateChatingLoading(false);
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } catch (e) {
+      log("UNEXPECTED ERROR");
+      updateChatingLoading(false);
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log(e.toString());
+    } finally {
+      log("CHAT SEND END");
+      updateChatingLoading(false);
     }
   }
 

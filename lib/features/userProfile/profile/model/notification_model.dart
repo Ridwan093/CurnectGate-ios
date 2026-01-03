@@ -6,6 +6,7 @@ part 'notification_model.g.dart';
 
 @freezed
 class AppNotification with _$AppNotification {
+   @JsonSerializable(explicitToJson: true)
   const factory AppNotification({
     @Default('') String key,
     @Default('') String name,

@@ -8,6 +8,7 @@ part 'privacy_data.g.dart';
 
 @freezed
 class Data with _$Data {
+   @JsonSerializable(explicitToJson: true)
   const factory Data({
     Privacy? privacy,
   }) = _Data;

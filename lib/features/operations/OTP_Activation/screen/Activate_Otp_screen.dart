@@ -69,30 +69,36 @@ class Otpactivation extends ConsumerWidget {
           _buildAddMemberButton(size, context, ref),
           const SizedBox(height: 30),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "Active OTPs",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  fontSize: 25,
-                  fontWeight: FontFamilies.bold,
-                  color: AppColors.instance.black600,
+              // Title — takes available space safely
+              Expanded(
+                child: Text(
+                  "Active OTPs",
+                  overflow:
+                      TextOverflow
+                          .ellipsis, // ← Safety for very long titles (rare but pro)
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.instance.black600,
+                  ),
                 ),
               ),
+
+              const SizedBox(width: 16), // Consistent gap
+              // Dropdown — fixed compact size
               CustomStatusDropdown(
                 statusOptions: _statusOptions,
                 initialStatus: 'All',
                 onStatusChanged: (newStatus) {
                   log('Selected status: $newStatus');
-
                   filterPovider.setFilter(
                     newStatus == "All" ? "" : newStatus.toLowerCase(),
                   );
                   ref
                       .read(getActiveOtpProvider.notifier)
                       .refreshActive(context, ref);
-                  // Handle status change
                 },
               ),
             ],

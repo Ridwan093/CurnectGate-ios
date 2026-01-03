@@ -16,5 +16,5 @@ _$PreferenceDataImpl _$$PreferenceDataImplFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$PreferenceDataImplToJson(
         _$PreferenceDataImpl instance) =>
     <String, dynamic>{
-      'preferences': instance.preferences,
+      'preferences': instance.preferences?.toJson(),
     };

@@ -8,6 +8,7 @@ part 'latest_comment.g.dart';
 
 @freezed
 class LatestComment with _$LatestComment {
+   @JsonSerializable(explicitToJson: true)
   const factory LatestComment({
     @Default('') String comment,
     @Default('') String user,

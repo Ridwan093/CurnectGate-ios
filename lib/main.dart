@@ -3,11 +3,11 @@ import 'dart:developer';
 import 'package:curnectgate/core/%20utils/service/notification_service.dart';
 import 'package:curnectgate/core/navigation/app_rout.dart';
 import 'package:curnectgate/core/style/colors.dart';
-import 'package:curnectgate/features/chat/data/chat_model/message_model.dart';
-import 'package:curnectgate/features/chat/data/chat_model/messages_Enum/M_enum.dart';
 import 'package:curnectgate/features/chat/data/hive_migration.dart';
+import 'package:curnectgate/features/chat/data/model/chat_message.dart';
 import 'package:curnectgate/features/signOut/errorWidget/sesional_expired.dart';
 import 'package:curnectgate/firebase_options.dart';
+import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
@@ -22,26 +22,24 @@ void main() async {
   await NotificationService().initialize();
   // Initialize Hive with your app's documents directory
   await Hive.initFlutter();
-
-  // Register adapters (generated files)
-
-  Hive.registerAdapter(MessageEnumAdapter()); // From M_enum.dart
-  Hive.registerAdapter(MessagesAdapter()); // Your generated adapter
+  // Hive.registerAdapter(MessagesAdapter());
   try {
     await HiveMigration.migrateMessages();
   } catch (e) {
     log('Migration error: $e');
   }
   // Open message boxes
-  await Hive.openBox<Messages>('chat_messages'); // Active messages
-  await Hive.openBox<Messages>('pending_messages');
+  await Hive.openBox<ChatMessage>('messages');
 
   // SharedPreferences preferences = await SharedPreferences.getInstance();
 
   runApp(
     ProviderScope(
       // Wrap your app with ProviderScope
-      child: MyApp(),
+      child: DevicePreview(
+        enabled: true,
+        builder: (context) => MyApp(), // Wrap your app
+      ),
     ),
   );
 }
@@ -80,7 +78,9 @@ class MyApp extends ConsumerWidget {
           ),
         ),
         routerConfig: router,
-
+        useInheritedMediaQuery: true,
+        locale: DevicePreview.locale(context),
+        builder: DevicePreview.appBuilder,
         // GoRouter integration
         debugShowCheckedModeBanner: false,
         title: 'CurnectGate',

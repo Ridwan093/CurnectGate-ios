@@ -222,11 +222,14 @@ class EventRsvpDetaile extends ConsumerWidget {
         const SizedBox(width: 8),
         isRichText
             ? child
-            : Text(
-              text,
-              style: TextStyle(
-                fontSize: 16,
-                color: AppColors.instance.black400,
+            : Flexible(
+              child: Text(
+                text,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppColors.instance.black400,
+                ),
               ),
             ),
       ],
@@ -245,55 +248,61 @@ class EventRsvpDetaile extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          TextButton(
-            onPressed:
-                () => shareEvent(
-                  title: data.event?.title ?? "",
-                  description: data.event?.description ?? "",
-                  startDateTime: data.event?.startDatetime ?? "",
-                  endDateTime: data.event?.endDatetime ?? "",
-                  location: data.event?.location ?? "",
-                  venue: data.event?.venue ?? "",
+          Flexible(
+            flex: 1,
+            child: TextButton(
+              onPressed:
+                  () => shareEvent(
+                    title: data.event?.title ?? "",
+                    description: data.event?.description ?? "",
+                    startDateTime: data.event?.startDatetime ?? "",
+                    endDateTime: data.event?.endDatetime ?? "",
+                    location: data.event?.location ?? "",
+                    venue: data.event?.venue ?? "",
+                  ),
+              child: Text(
+                "Share event",
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  fontWeight: FontFamilies.bold,
+                  color: AppColors.instance.black600,
                 ),
-            child: Text(
-              "Share event",
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontWeight: FontFamilies.bold,
-                color: AppColors.instance.black600,
               ),
             ),
           ),
           const SizedBox(width: 10),
-          _buildAddToCalendarButton(
-            () {
-              log(addedToCalendar.toString());
-              if (data.response!.contains("going")) {
-                if (addedToCalendar == false) {
-                  form.addToCCalender(
-                    context: context,
+          Flexible(
+            flex: 2,
+            child: _buildAddToCalendarButton(
+              () {
+                log(addedToCalendar.toString());
+                if (data.response!.contains("going")) {
+                  if (addedToCalendar == false) {
+                    form.addToCCalender(
+                      context: context,
 
-                    id: data.event!.id.toString(),
-                    ref: ref,
+                      id: data.event!.id.toString(),
+                      ref: ref,
+                    );
+                  }
+                } else {
+                  showCustomSuccessToast(
+                    context: context,
+                    message:
+                        "Please RSVP 'Yes' or 'No' before adding to your calendar.",
+                    color: AppColors.instance.grey200, // Fallback to grey200
+                    icon: Icons.warning,
+                    iconColors: AppColors.instance.black600,
+                    positionNumber: 70,
+
+                    duration: Duration(seconds: 4), // If supported
                   );
                 }
-              } else {
-                showCustomSuccessToast(
-                  context: context,
-                  message:
-                      "Please RSVP 'Yes' or 'No' before adding to your calendar.",
-                  color: AppColors.instance.grey200, // Fallback to grey200
-                  icon: Icons.warning,
-                  iconColors: AppColors.instance.black600,
-                  positionNumber: 70,
+              },
 
-                  duration: Duration(seconds: 4), // If supported
-                );
-              }
-            },
-
-            context,
-            addedToCalendar,
+              context,
+              addedToCalendar,
+            ),
           ),
         ],
       ),
@@ -364,6 +373,7 @@ class EventRsvpDetaile extends ConsumerWidget {
       child: Container(
         height: 50,
         width: MediaQuery.sizeOf(context).width / 2,
+        padding: EdgeInsets.all(3),
         decoration: BoxDecoration(
           color:
               !canAddTocallender
@@ -382,15 +392,18 @@ class EventRsvpDetaile extends ConsumerWidget {
                       : AppColors.instance.black600,
             ),
             const SizedBox(width: 10),
-            Text(
-              'Add to Calendar',
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontWeight: FontFamilies.medium,
-                color:
-                    !canAddTocallender
-                        ? AppColors.instance.grey200
-                        : AppColors.instance.black600,
+            Flexible(
+              child: Text(
+                'Add to Calendar',
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  fontWeight: FontFamilies.medium,
+                  color:
+                      !canAddTocallender
+                          ? AppColors.instance.grey200
+                          : AppColors.instance.black600,
+                ),
               ),
             ),
           ],

@@ -103,7 +103,8 @@ class __$$FacilityAccessImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$FacilityAccessImpl implements _FacilityAccess {
   const _$FacilityAccessImpl({this.enabled = false});
 

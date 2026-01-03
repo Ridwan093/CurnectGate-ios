@@ -67,78 +67,84 @@ class ReviewPayment extends ConsumerWidget {
   ) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap:
-                  isLoading
-                      ? null
-                      : () {
-                        final _selectedDueIds =
-                            list
-                                .map(
-                                  (payment) => payment.id,
-                                ) // get the id field
-                                .whereType<int>() // filter out nulls
-                                .toList();
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap:
+                        isLoading
+                            ? null
+                            : () {
+                              final _selectedDueIds =
+                                  list
+                                      .map(
+                                        (payment) => payment.id,
+                                      ) // get the id field
+                                      .whereType<int>() // filter out nulls
+                                      .toList();
 
-                        ref
-                            .read(formProvider.notifier)
-                            .payDueOutstanding(
-                              context: context,
-                              selected_dues: _selectedDueIds,
-                              totalAmout: calculateTotal(list),
-                              ref: ref,
-                            );
-                      },
+                              ref
+                                  .read(formProvider.notifier)
+                                  .payDueOutstanding(
+                                    context: context,
+                                    selected_dues: _selectedDueIds,
+                                    totalAmout: calculateTotal(list),
+                                    ref: ref,
+                                  );
+                            },
 
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color: AppColors.instance.black600,
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: AppColors.instance.black600,
 
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Center(
-                  child: Text(
-                    "Pay",
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      color: Colors.white,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Pay",
+                          style: TextStyle(
+                            fontFamily: FontFamilies.interDisplay,
+                            color: Colors.white,
 
-                      fontSize: 14,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
+                SizedBox(width: 15),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Next step:",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        color: AppColors.instance.black300,
+                        fontSize: 12,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      "2:Confirmation",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        color: AppColors.instance.black300,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ),
-          SizedBox(width: 15),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Next step:",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black300,
-                  fontSize: 12,
-                ),
-              ),
-              SizedBox(height: 5),
-              Text(
-                "2:Confirmation",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black300,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

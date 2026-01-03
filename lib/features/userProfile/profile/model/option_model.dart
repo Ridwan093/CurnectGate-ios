@@ -5,6 +5,7 @@ part 'option_model.g.dart';
 
 @freezed
 class Option with _$Option {
+   @JsonSerializable(explicitToJson: true)
   const factory Option({
     @Default('') String key,
     @Default('') String name,

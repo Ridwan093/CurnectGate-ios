@@ -8,6 +8,7 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as path;
 
 class AppApiMethod {
   final Dio _dio;
@@ -1108,99 +1109,82 @@ class AppApiMethod {
     required String des,
     required String location,
     required String priority,
-
     required bool isAnonymouse,
     required String token,
     required File evidence1,
     required File evidence2,
     required BuildContext context,
   }) async {
-    log(evidence1.path);
-    //     final List<MultipartFile> evidenceList = [
-    //   await MultipartFile.fromFile(file1.path, filename: file1.path.split('/').last),
-    //   await MultipartFile.fromFile(file2.path, filename: file2.path.split('/').last),
-    // ];
-    List<File> evidenceFiles = [evidence1, evidence2];
-    // Convert Files to MultipartFile
-    final List<MultipartFile> evidenceMultipartFiles = [];
-    for (var file in evidenceFiles) {
-      if (await file.exists()) {
-        evidenceMultipartFiles.add(
-          await MultipartFile.fromFile(
-            file.path,
-            filename: file.path.split('/').last,
-          ),
-        );
-      }
-    }
-    if (!await evidence1.exists()) {
-      print("❌ File does not exist");
-    }
-
-    final MultipartFile multipartFile = await MultipartFile.fromFile(
-      evidence1.path,
-      filename: evidence1.path.split('/').last,
-    );
-    final MultipartFile multipartFile2 = await MultipartFile.fromFile(
-      evidence2.path,
-      filename: evidence2.path.split('/').last,
-    );
-
     try {
-      final requestData = FormData.fromMap({
+      // Collect only valid files that actually exist
+      final List<MultipartFile> evidenceMultipartFiles = [];
+
+      for (var file in [evidence1, evidence2]) {
+        if (file.path.isNotEmpty && await file.exists()) {
+          evidenceMultipartFiles.add(
+            await MultipartFile.fromFile(
+              file.path,
+              filename: path.basename(
+                file.path,
+              ), // ✅ FIXED: Use path.basename()
+            ),
+          );
+        }
+      }
+
+      final FormData requestData = FormData.fromMap({
         "violation_category_id": categoryID,
         "estate_address_id": estateaddressID,
         "description": des,
         "location": location,
         "priority": priority,
-        "is_anonymous": isAnonymouse ? "0" : "1",
-        "evidence[]": [multipartFile, multipartFile2],
+        "is_anonymous": isAnonymouse ? "1" : "0",
+        if (evidenceMultipartFiles.isNotEmpty)
+          "evidence[]": evidenceMultipartFiles,
       });
-      // final Map<String, dynamic> requestData = {
-      //   "violation_category_id": categoryID,
-      //   "estate_address_id": estateaddressID,
-      //   "description": des,
-      //   "location": location,
-      //   "priority": priority,
-      //   "is_anonymous": isAnonymouse ? "0" : "1",
-      //   "evidence[]": [multipartFile],
-      //   // Make it default (required)
-      // };
 
-      // Log the exact request being sent
+      log('Sending ${evidenceMultipartFiles.length} image(s)');
       log('Request payload: $requestData');
-      log(_dio.options.baseUrl + creatViolation);
+
       final response = await _dio.post(
         creatViolation,
         data: requestData,
         options: Options(
-          // headers: {
-          //   'Accept': 'application/json',
-          //   'Authorization': 'Bearer $token',
-          //   'X-Requested-With': 'XMLHttpRequest',
-          // },
-          validateStatus: (status) => status! < 500, // Accept 422 as valid
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/json',
+          },
+          validateStatus: (status) => status! < 500,
         ),
       );
-
-      log('Request payload: $requestData');
 
       log('Response: ${response.data}');
       return response.data;
     } on DioException catch (e) {
-      log('Error details:');
-      log('Status: ${e.response?.statusCode}');
+      log('Dio Error: ${e.message}');
+      if (e.response != null) {
+        log('Status: ${e.response?.statusCode}');
+        log('Response data: ${e.response?.data}');
+      }
       showCustomSuccessToast(
         context: context,
-        message: "",
-        color: AppColors.instance.teal400,
-        icon: Icons.close,
+        message: "Failed to submit report. Please try again.",
+        color: AppColors.instance.error500,
+        icon: Icons.error,
         iconColors: AppColors.instance.grey200,
         positionNumber: 70,
       );
-      log('Headers: ${e.response?.headers}');
-      log('Response: ${e.response?.data}');
-      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    } catch (e) {
+      log('Unexpected error: $e');
+      showCustomSuccessToast(
+        context: context,
+        message: "An error occurred.",
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
       rethrow;
     }
   }
@@ -4381,6 +4365,153 @@ class AppApiMethod {
       log('Headers: ${e.response?.headers}');
       log('Response: ${e.response?.data}');
       log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> sendMessage({
+    required String message,
+    File? file,
+    required BuildContext context,
+    required int id,
+  }) async {
+    try {
+      dynamic requestData;
+
+      // ✅ CASE 1: FILE MESSAGE
+      if (file != null) {
+        final formData = FormData.fromMap({
+          "message_text": message,
+          "attachments[]": await MultipartFile.fromFile(
+            file.path,
+            filename: file.path.split('/').last,
+          ),
+        });
+
+        requestData = formData;
+      }
+      // ✅ CASE 2: TEXT MESSAGE
+      else {
+        requestData = {"message_text": message};
+      }
+
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        "/api/v1/estates/general/messaging/conversations/id/messages",
+        data: requestData,
+        options: Options(
+          validateStatus: (status) => status != null && status < 500,
+          headers: {"Accept": "application/json"},
+        ),
+      );
+
+      log('Response: ${response.data}');
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      log('Dio Error');
+      log('Status: ${e.response?.statusCode}');
+      log('Response: ${e.response?.data}');
+      log('Headers: ${e.response?.headers}');
+      log('Request Data: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> chattingSetting({
+    required bool do_not_disturb,
+    required int dnd_duration_hours,
+    required int id,
+    required BuildContext context,
+  }) async {
+    try {
+      final requestData = {
+        "do_not_disturb": do_not_disturb,
+        "dnd_duration_hours": dnd_duration_hours,
+      };
+
+      log('Request payload: $requestData');
+      log('Request payload: $id');
+
+      final response = await _dio.post(
+        "/api/v1/estates/general/messaging/conversations/$id/settings",
+        data: requestData,
+        options: Options(
+          validateStatus: (status) => status != null && status < 500,
+          headers: {"Accept": "application/json"},
+        ),
+      );
+
+      log('Response: ${response.data}');
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      log('Dio Error');
+      log('Status: ${e.response?.statusCode}');
+      log('Response: ${e.response?.data}');
+      log('Headers: ${e.response?.headers}');
+      log('Request Data: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> sendInitialMessage({
+    required String message,
+    required String id,
+    required String type,
+    required BuildContext context,
+  }) async {
+    try {
+      // ✅ CASE 1: FILE MESSAGE
+      final requestData = {
+        "type": type,
+        "recipient_id": id,
+        "initial_message": message,
+      };
+
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        startConversation,
+        data: requestData,
+        options: Options(
+          validateStatus: (status) => status != null && status < 500,
+          headers: {"Accept": "application/json"},
+        ),
+      );
+
+      log('Response: ${response.data}');
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      log('Dio Error');
+      log('Status: ${e.response?.statusCode}');
+      log('Response: ${e.response?.data}');
+      log('Headers: ${e.response?.headers}');
+      log('Request Data: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> markMessagCount() async {
+    try {
+      // ✅ CASE 1: FILE MESSAGE
+
+      final response = await _dio.post(
+        markUnreadCount,
+
+        options: Options(
+          validateStatus: (status) => status != null && status < 500,
+          headers: {"Accept": "application/json"},
+        ),
+      );
+
+      log('Response: ${response.data}');
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      log('Dio Error');
+      log('Status: ${e.response?.statusCode}');
+      log('Response: ${e.response?.data}');
+      log('Headers: ${e.response?.headers}');
+      log('Request Data: ${e.requestOptions.data}');
       rethrow;
     }
   }

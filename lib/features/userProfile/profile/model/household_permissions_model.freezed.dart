@@ -215,7 +215,8 @@ class __$$HouseholdPermissionsImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$HouseholdPermissionsImpl implements _HouseholdPermissions {
   const _$HouseholdPermissionsImpl(
       {this.gateAccess,

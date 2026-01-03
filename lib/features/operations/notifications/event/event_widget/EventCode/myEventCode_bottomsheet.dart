@@ -34,7 +34,7 @@ class MyEventCode extends ConsumerWidget {
             const SizedBox(height: 30),
 
             Text(
-              "Event Code",
+              "Event code",
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
                 fontWeight: FontFamilies.bold,
@@ -71,7 +71,7 @@ class MyEventCode extends ConsumerWidget {
         ),
         child: Center(
           child: Text(
-            "Request New Code",
+            "Request new code",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               color: AppColors.instance.grey200,

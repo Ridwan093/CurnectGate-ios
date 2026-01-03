@@ -84,6 +84,7 @@ class _VisitorInivitaitonCotentState
           // Title
           Text(
             "Visitor invitation",
+
             style: TextStyle(
               fontSize: 18,
               color: AppColors.instance.black600,
@@ -130,13 +131,16 @@ class _VisitorInivitaitonCotentState
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Maximum Visitors Per day",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontFamily: FontFamilies.interDisplay,
-                        fontWeight: FontFamilies.bold,
-                        color: AppColors.instance.black600,
+                    Flexible(
+                      child: Text(
+                        "Maximum Visitors Per day",
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontFamily: FontFamilies.interDisplay,
+                          fontWeight: FontFamilies.bold,
+                          color: AppColors.instance.black600,
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -280,13 +284,16 @@ class _VisitorInivitaitonCotentState
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12,
-              fontFamily: FontFamilies.interDisplay,
-              fontWeight: FontFamilies.bold,
-              color: AppColors.instance.black600,
+          Flexible(
+            child: Text(
+              title,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 12,
+                fontFamily: FontFamilies.interDisplay,
+                fontWeight: FontFamilies.bold,
+                color: AppColors.instance.black600,
+              ),
             ),
           ),
           Switch(

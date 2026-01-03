@@ -6,6 +6,7 @@ part 'night_access_model.freezed.dart';
 part 'night_access_model.g.dart';
 @freezed
 class NightAccess with _$NightAccess {
+   @JsonSerializable(explicitToJson: true)
   const factory NightAccess({
     @Default(false) bool enabled,
     Conditions? conditions,

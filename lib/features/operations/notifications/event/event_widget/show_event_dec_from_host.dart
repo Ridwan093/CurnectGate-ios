@@ -105,12 +105,15 @@ class ShowEventDecFromHost extends ConsumerWidget {
         child: Row(
           children: [
             Icon(Icons.arrow_right, color: AppColors.instance.blue500),
-            Text(
-              "Event description from host",
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontWeight: FontFamilies.medium,
-                color: AppColors.instance.black400,
+            Flexible(
+              child: Text(
+                "Event description from host",
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  fontWeight: FontFamilies.medium,
+                  color: AppColors.instance.black400,
+                ),
               ),
             ),
           ],

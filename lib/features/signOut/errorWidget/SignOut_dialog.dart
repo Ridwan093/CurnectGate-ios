@@ -20,148 +20,126 @@ Future<bool?> showSignOutDialog(BuildContext context) async {
         backgroundColor: Colors.transparent,
         elevation: 0,
         insetPadding: const EdgeInsets.all(24),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                // AppColors.instance.teal300.withOpacity(0.9),
-                Colors.white,
-                Colors.white.withOpacity(0.9),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                blurRadius: 20,
-                spreadRadius: 2,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // Detect if screen is small (available dialog height is limited)
+            final bool isSmallScreen = constraints.maxHeight < 500;
+            final double screenWidth = MediaQuery.of(context).size.width;
+            final bool isTablet = screenWidth >= 600;
+            return Container(
+              width: isTablet ? 500 : screenWidth * 0.9,
+              constraints: const BoxConstraints(maxWidth: 500, minWidth: 300),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Colors.white, Colors.white.withOpacity(0.9)],
+                ),
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 20,
+                    spreadRadius: 2,
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Animated icon
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child: Icon(
-                    Icons.logout_rounded,
-                    key: ValueKey<bool>(true),
-                    size: 64,
-                    color: AppColors.instance.black500,
-                  ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: isSmallScreen ? 16 : 24, // Less vertical on small
                 ),
-                const SizedBox(height: 20),
-
-                // Title with text scaling animation
-                TweenAnimationBuilder<double>(
-                  tween: Tween(begin: 0.8, end: 1.0),
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.elasticOut,
-                  builder: (context, value, child) {
-                    return Transform.scale(scale: value, child: child);
-                  },
-                  child: Text(
-                    'Sign Out?',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: FontFamilies.interDisplay,
-                      color: AppColors.instance.black500,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-
-                // Subtitle with fade animation
-                FadeTransition(
-                  opacity: CurvedAnimation(
-                    parent: animation,
-                    curve: Curves.easeIn,
-                  ),
-                  child: Text(
-                    'Are you sure you want to sign out?',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppColors.instance.black300,
-                      fontFamily: FontFamilies.interDisplay,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 32),
-
-                // Buttons row with staggered animation
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Cancel button
-                    TweenAnimationBuilder<double>(
-                      tween: Tween(begin: 0, end: 1),
-                      duration: const Duration(milliseconds: 600),
-                      curve: Curves.easeOutBack,
-                      builder: (context, value, child) {
-                        return Transform.scale(scale: value, child: child);
-                      },
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.instance.black400,
-                          side: BorderSide(color: AppColors.instance.black400),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 32,
-                            vertical: 14,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          Navigator.of(context).pop(false);
-                        },
-                        child: const Text('Cancel'),
+                    // Icon — smaller on small screens
+                    Icon(
+                      Icons.logout_rounded,
+                      size: isSmallScreen ? 48 : 64,
+                      color: AppColors.instance.black500,
+                    ),
+                    SizedBox(height: isSmallScreen ? 12 : 20),
+
+                    // Title — adaptive font
+                    Text(
+                      'Sign Out?',
+                      style: TextStyle(
+                        fontSize: isSmallScreen ? 24 : 28,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: FontFamilies.interDisplay,
+                        color: AppColors.instance.black500,
+                        letterSpacing: 0.5,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    SizedBox(height: isSmallScreen ? 8 : 12),
 
-                    // Sign out button
-                    TweenAnimationBuilder<double>(
-                      tween: Tween(begin: 0, end: 1),
-                      duration: const Duration(milliseconds: 800),
-                      curve: Curves.easeOutBack,
-                      builder: (context, value, child) {
-                        return Transform.scale(scale: value, child: child);
-                      },
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.instance.teal300,
-                          foregroundColor: AppColors.instance.teal400,
-                          elevation: 4,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 32,
-                            vertical: 14,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                    // Subtitle
+                    Text(
+                      'Are you sure you want to sign out?',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: isSmallScreen ? 14 : 16,
+                        color: AppColors.instance.black300,
+                        fontFamily: FontFamilies.interDisplay,
+                      ),
+                    ),
+                    SizedBox(height: isSmallScreen ? 20 : 32),
+
+                    // Buttons — tighter on small screens
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppColors.instance.black400,
+                              side: BorderSide(
+                                color: AppColors.instance.black400,
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: isSmallScreen ? 24 : 32,
+                                vertical: isSmallScreen ? 10 : 14,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: () {
+                              HapticFeedback.lightImpact();
+                              Navigator.of(context).pop(false);
+                            },
+                            child: const Text('Cancel'),
                           ),
                         ),
-                        onPressed: () {
-                          HapticFeedback.mediumImpact();
-                          Navigator.of(context).pop(true);
-                        },
-                        child: const Text('Sign Out'),
-                      ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.instance.teal300,
+                              foregroundColor: AppColors.instance.teal400,
+                              elevation: 4,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: isSmallScreen ? 24 : 32,
+                                vertical: isSmallScreen ? 10 : 14,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: () {
+                              HapticFeedback.mediumImpact();
+                              Navigator.of(context).pop(true);
+                            },
+                            child: const Text('Sign Out'),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       );
     },

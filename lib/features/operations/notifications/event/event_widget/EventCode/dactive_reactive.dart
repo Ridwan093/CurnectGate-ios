@@ -42,7 +42,7 @@ class DeactiveEventCode extends ConsumerWidget {
 
             const SizedBox(height: 20),
             Text(
-              'Deactivate Code?',
+              'Deactivate code?',
               style: TextStyle(
                 fontSize: 18,
                 fontFamily: FontFamilies.interDisplay,

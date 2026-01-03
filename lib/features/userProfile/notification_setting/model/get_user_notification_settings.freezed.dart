@@ -162,7 +162,8 @@ class __$$GetUserNotificationSettingsImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$GetUserNotificationSettingsImpl
     implements _GetUserNotificationSettings {
   const _$GetUserNotificationSettingsImpl(

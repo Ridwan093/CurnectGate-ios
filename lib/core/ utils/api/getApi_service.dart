@@ -48,14 +48,24 @@ final dioProvider = Provider<Dio>((ref) {
       InterceptorsWrapper(
         onError: (DioException error, ErrorInterceptorHandler handler) async {
           if (error.response?.statusCode == 401) {
+            final prefs = SharedPrefsService();
             log("Session expired (401 detected)");
-
+            final token = await prefs.getAuthData();
             // ✅ Correct way – just set the state
-            ref.read(sessionExpiredProvider.notifier).expire();
-            log(
-              "HERE WE CAN CHECK THE STATUS>" +
-                  ref.read(sessionExpiredProvider).toString(),
-            );
+
+            if (token != null) {
+              ref.read(sessionExpiredProvider.notifier).expire();
+              log(
+                "HERE WE CAN CHECK THE STATUS>" +
+                    ref.read(sessionExpiredProvider).toString(),
+              );
+            } else {
+              log(
+                "AUTH WAS NOT AVAILABLE " +
+                    ref.read(sessionExpiredProvider).toString(),
+              );
+            }
+
             // Optional: clear stored auth data immediately
 
             // ref.read(sessionExpiredProvider.notifier).reset();

@@ -5,7 +5,7 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/widget/
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/reminder_card.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/remider/reminder_model.dart';
 import 'package:curnectgate/features/operations/notifications/provider/reminder_provider.dart';
-import 'package:dio/dio.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -92,7 +92,7 @@ class _ActivitiesTabState extends ConsumerState<ReminderTab> {
         error: (error, stack) {
           try {
             // Handle session expiration
-           if (error.toString().contains("Unauthorized")) {
+            if (error.toString().contains("Unauthorized")) {
               return const Expiresessionbody();
             }
 

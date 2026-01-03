@@ -6,6 +6,7 @@ part 'conditions_model.freezed.dart';
 part 'conditions_model.g.dart';
 @freezed
 class Conditions with _$Conditions {
+   @JsonSerializable(explicitToJson: true)
   const factory Conditions({
     @Default([]) List<dynamic> timeRestrictions,
   }) = _Conditions;

@@ -216,51 +216,74 @@ class WorkpermitCard extends ConsumerWidget {
     String? status,
   }) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontSize: 13,
-            color: AppColors.instance.black300,
+        // Title — fixed width to prevent pushing
+        SizedBox(
+          width: 80, // Keeps "Type", "End", "Code" aligned
+          child: Text(
+            title,
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              fontSize: 13,
+              color: AppColors.instance.black300,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
-        Row(
-          spacing: isCode ? 7 : 0,
-          children: [
-            if (isCode)
-              Text(
-                expired != null
-                    ? "Expired in $expired"
-                    : statusCheck(status ?? ""),
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: color(status ?? ""),
-                  fontSize: 10,
-                  fontWeight: FontFamilies.bold,
+
+        const SizedBox(width: 12),
+
+        // Trailing content — takes remaining space safely
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              if (isCode && expired?.isNotEmpty == true)
+                Flexible(
+                  child: Text(
+                    "Expired in $expired",
+                    textAlign: TextAlign.end,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontSize: 11,
+                      color: color(status ?? ""),
+                      fontWeight: FontFamilies.bold,
+                    ),
+                  ),
+                )
+              else if (isCode)
+                Text(
+                  statusCheck(status ?? ""),
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontSize: 11,
+                    color: color(status ?? ""),
+                    fontWeight: FontFamilies.bold,
+                  ),
+                ),
+
+              if (isCode) const SizedBox(width: 8),
+
+              // Main trailing text
+              Expanded(
+                child: Text(
+                  isEndDate ? "$trailing - $time" : trailing,
+                  textAlign: TextAlign.end,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontSize: 14,
+                    color: AppColors.instance.black600,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
-            if (isEndDate) ...[
-              Text(
-                "$trailing - $time",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  fontSize: 13,
-                  color: AppColors.instance.black600,
-                ),
-              ),
-            ] else
-              Text(
-                trailing,
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  fontSize: 13,
-                  color: AppColors.instance.black600,
-                ),
-              ),
-            isCode
-                ? InkWell(
+
+              if (isCode) ...[
+                const SizedBox(width: 8),
+                InkWell(
                   onTap: () {
                     Clipboard.setData(ClipboardData(text: trailing));
                     showCustomSuccessToast(
@@ -274,12 +297,14 @@ class WorkpermitCard extends ConsumerWidget {
                   },
                   child: Image.asset(
                     AssetPaths.clipboard,
-                    height: 15,
-                    width: 15,
+                    height: 18,
+                    width: 18,
+                    color: AppColors.instance.teal400,
                   ),
-                )
-                : SizedBox(),
-          ],
+                ),
+              ],
+            ],
+          ),
         ),
       ],
     );

@@ -66,7 +66,7 @@ class ReportCard extends ConsumerWidget {
                   _buildHeaderRow(
                     truncateWithEllipsis(
                       violation.locationDetails.additionalLocation,
-                      maxLength: 30,
+                      maxLength: 20,
                     ),
 
                     violation.status,

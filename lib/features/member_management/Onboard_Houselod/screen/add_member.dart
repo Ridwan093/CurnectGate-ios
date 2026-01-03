@@ -4,6 +4,7 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/onboard_button.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/screen/RoleSelection.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class AddNewMember extends StatelessWidget {
   const AddNewMember({super.key});
@@ -13,7 +14,7 @@ class AddNewMember extends StatelessWidget {
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
       backgroundColor: AppColors.instance.black600,
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: Container(
         height: size.height,
         width: size.width,
@@ -28,13 +29,18 @@ class AddNewMember extends StatelessWidget {
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      leading: Icon(
-        Icons.arrow_back_ios_new,
-        color: AppColors.instance.grey200,
+      leading: InkWell(
+        onTap: (){
+            context.pop();
+        },
+        child: Icon(
+          Icons.arrow_back_ios_new,
+          color: AppColors.instance.grey200,
+        ),
       ),
     );
   }

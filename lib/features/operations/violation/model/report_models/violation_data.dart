@@ -10,6 +10,7 @@ part 'violation_data.g.dart';
 
 @freezed
 class ViolationData with _$ViolationData {
+   @JsonSerializable(explicitToJson: true)
   const factory ViolationData({
     required List<Violation> violations,
   }) = _ViolationData;

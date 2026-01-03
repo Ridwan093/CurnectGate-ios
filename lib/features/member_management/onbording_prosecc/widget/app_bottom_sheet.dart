@@ -44,11 +44,16 @@ void showUserBottomSheet({
     isDismissible: true,
     useRootNavigator: true,
     backgroundColor: Colors.transparent,
+    constraints: const BoxConstraints(
+      maxWidth: double.infinity,
+      minWidth: double.infinity,
+    ),
     builder: (BuildContext context) {
       return Consumer(
         builder: (context, ref, wid) {
           final currentView = ref.watch(bottomSheetStateProvider);
           return Container(
+            width: MediaQuery.sizeOf(context).width,
             padding:
                 bottom == BottomSheetView.securityViolationTrack ||
                         bottom == BottomSheetView.mentainLog ||
@@ -157,6 +162,36 @@ Widget _buildCurrentView(
         id: id,
         headertitle: userName,
         headersubtitle: userRole,
+        bottom: bottom,
+      );
+
+    case BottomSheetView.selectedAdminforChat:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.selectedCommitteeChat:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.selectedSecurityChat:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+    case BottomSheetView.initChat:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        location: location,
         bottom: bottom,
       );
 

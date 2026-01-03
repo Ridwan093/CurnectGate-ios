@@ -78,13 +78,16 @@ class DashbordContent extends ConsumerWidget {
               : Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Total dua amount is ₦${formatPrice(amount)}",
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      color: AppColors.instance.black400,
-                      fontWeight: FontFamilies.medium,
-                      fontSize: 13,
+                  Flexible(
+                    child: Text(
+                      "Total dua amount is ₦${formatPrice(amount)}",
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        color: AppColors.instance.black400,
+                        fontWeight: FontFamilies.medium,
+                        fontSize: 13,
+                      ),
                     ),
                   ),
                   isDue
@@ -160,6 +163,7 @@ class DashbordContent extends ConsumerWidget {
 
             Text(
               "₦${formatPrice(data?.walletBalance ?? "")}",
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
                 color: AppColors.instance.black600,
@@ -219,27 +223,33 @@ class DashbordContent extends ConsumerWidget {
     required String data,
     required VoidCallback onTap,
   }) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(5),
-        height: 35,
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          border: Border.all(
-            style: BorderStyle.solid,
-            color: AppColors.instance.black600,
+    return Expanded(
+      // ← Now correctly placed
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          height: 35, // Keep your exact height
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+          ), // Horizontal only
+          decoration: BoxDecoration(
+            border: Border.all(color: AppColors.instance.black600, width: 1.5),
+            borderRadius: BorderRadius.circular(8),
+            color: Colors.transparent,
           ),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(
-          child: Text(
-            data,
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.black600,
-              fontWeight: FontFamilies.bold,
-              fontSize: 12,
+          child: Center(
+            child: Text(
+              data,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                color: AppColors.instance.black600,
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+              ),
             ),
           ),
         ),

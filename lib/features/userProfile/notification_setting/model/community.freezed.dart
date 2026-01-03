@@ -156,7 +156,8 @@ class __$$CommunityImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$CommunityImpl implements _Community {
   const _$CommunityImpl(
       {required this.name,

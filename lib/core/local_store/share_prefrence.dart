@@ -4,6 +4,8 @@ import 'dart:developer';
 
 import 'package:curnectgate/features/ResidentDirectory/model/comittee_model/committees_response_model.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resident_directory_respond.dart';
+import 'package:curnectgate/features/chat/data/chat_model/availableAdmin/estate_admins_response.dart';
+import 'package:curnectgate/features/chat/data/chat_model/availableCommitte/committee_members_response.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate/candidates_response.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate_result/live_results_response.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/election_Setting/voting_settings_response.dart';
@@ -70,12 +72,10 @@ final firstnameProvider = FutureProvider<String>((ref) async {
 });
 // Digital ID Status Provider - CORRECTED
 
-
 final memberIdProvider = FutureProvider.autoDispose<String>((ref) async {
   final authData = await SharedPrefsService().getAuthData();
   return authData?['user']?['member_code'] ?? ""; // Fixed path
 });
-
 
 final securityEmployeeID = FutureProvider.autoDispose<String>((ref) async {
   final authData = await SharedPrefsService().getAuthData();
@@ -148,6 +148,40 @@ class SharedPrefsService {
   static const String _paymentDashbordKey = "Payment_das";
   static const String _paymentMethodKey = "Payment_method";
   static const String _emergencyContact = "Emergency_key";
+  static const String _getAdminList = "_admin_key";
+  static const String _committeKey = "Com_key";
+
+  //// CHATTING SERVECE
+
+  static Future<void> saveAdminList(EstateAdminsResponse privacy) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_getAdminList, jsonEncode(privacy.toJson()));
+  }
+
+  //  flutter pub run build_runner build --delete-conflicting-outputs --build-filter="lib/features/userProfile/notification_setting/model**"
+  static Future<EstateAdminsResponse?> getAdminList() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_getAdminList);
+    if (data != null) {
+      return EstateAdminsResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> saveComitteeList(CommitteeMembersResponse privacy) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_committeKey, jsonEncode(privacy.toJson()));
+  }
+
+  //  flutter pub run build_runner build --delete-conflicting-outputs --build-filter="lib/features/userProfile/notification_setting/model**"
+  static Future<CommitteeMembersResponse?> getComitteeList() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_committeKey);
+    if (data != null) {
+      return CommitteeMembersResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
 
   static Future<void> saveNotificationSettings(
     GetUserNotificationSettings notification,
@@ -1188,6 +1222,16 @@ class SharedPrefsService {
     await prefs.remove(_candidateResultKey);
   }
 
+  static Future<void> clearCommitteeList() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_committeKey);
+  }
+
+  static Future<void> clearAdminList() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_getAdminList);
+  }
+
   static Future<void> clearViolationCount() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_violationCountKey);
@@ -1287,6 +1331,8 @@ class SharedPrefsService {
     clearLiveResultSummary();
     clearEventRsvp();
     clearSecurfew();
+    clearCommitteeList();
+    clearAdminList();
     await prefs.remove(_keyAuthData);
   }
 }

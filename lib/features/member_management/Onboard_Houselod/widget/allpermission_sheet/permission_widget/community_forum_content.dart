@@ -72,7 +72,6 @@ class _VisitorInivitaitonCotentState
 
   @override
   Widget build(BuildContext context) {
-
     final notifier = ref.read(notificationProviders.notifier);
     final providerstate = ref.read((formProvider.notifier));
     final isLoading = ref.watch(formProvider).communityAccessLoading ?? false;
@@ -129,13 +128,16 @@ class _VisitorInivitaitonCotentState
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Maximum daily posts",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontFamily: FontFamilies.interDisplay,
-                        fontWeight: FontFamilies.bold,
-                        color: AppColors.instance.black600,
+                    Flexible(
+                      child: Text(
+                        "Maximum daily posts",
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontFamily: FontFamilies.interDisplay,
+                          fontWeight: FontFamilies.bold,
+                          color: AppColors.instance.black600,
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -188,13 +190,16 @@ class _VisitorInivitaitonCotentState
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Maximum daily comments",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontFamily: FontFamilies.interDisplay,
-                        fontWeight: FontFamilies.bold,
-                        color: AppColors.instance.black600,
+                    Flexible(
+                      child: Text(
+                        "Maximum daily comments",
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontFamily: FontFamilies.interDisplay,
+                          fontWeight: FontFamilies.bold,
+                          color: AppColors.instance.black600,
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -308,7 +313,7 @@ class _VisitorInivitaitonCotentState
                               id: widget.id,
                               ref: ref,
                             );
-                             restform();
+                            restform();
                           }
                         } else {
                           providerstate.setcommnunityForumPermission(
@@ -316,9 +321,8 @@ class _VisitorInivitaitonCotentState
                             id: widget.id,
                             ref: ref,
                           );
-                           restform();
+                          restform();
                         }
-                       
                       },
               child:
                   isLoading
@@ -348,13 +352,16 @@ class _VisitorInivitaitonCotentState
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12,
-              fontFamily: FontFamilies.interDisplay,
-              fontWeight: FontFamilies.bold,
-              color: AppColors.instance.black600,
+          Flexible(
+            child: Text(
+              title,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 12,
+                fontFamily: FontFamilies.interDisplay,
+                fontWeight: FontFamilies.bold,
+                color: AppColors.instance.black600,
+              ),
             ),
           ),
           Switch(

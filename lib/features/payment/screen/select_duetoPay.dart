@@ -87,75 +87,83 @@ class DuePaymentSelection extends ConsumerWidget {
   ) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap:
-                  hasSelection
-                      ? () {
-                        final selectedIds = ref.read(selectedDueIdsProvider);
-                        final selectedPayments =
-                            listData
-                                .where((p) => selectedIds.contains(p.id))
-                                .toList();
-                        context.pop();
-                        context.pushNamed(
-                          AppRoutes.paymentReview,
-                          extra: {
-                            "list": selectedPayments,
-                            "wallet": walletBalance,
-                          },
-                        );
-                      }
-                      : null,
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color:
-                      hasSelection
-                          ? AppColors.instance.black600
-                          : AppColors.instance.grey400,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Center(
-                  child: Text(
-                    "Next",
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      color: Colors.white,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap:
+                        hasSelection
+                            ? () {
+                              final selectedIds = ref.read(
+                                selectedDueIdsProvider,
+                              );
+                              final selectedPayments =
+                                  listData
+                                      .where((p) => selectedIds.contains(p.id))
+                                      .toList();
+                              context.pop();
+                              context.pushNamed(
+                                AppRoutes.paymentReview,
+                                extra: {
+                                  "list": selectedPayments,
+                                  "wallet": walletBalance,
+                                },
+                              );
+                            }
+                            : null,
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color:
+                            hasSelection
+                                ? AppColors.instance.black600
+                                : AppColors.instance.grey400,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Next",
+                          style: TextStyle(
+                            fontFamily: FontFamilies.interDisplay,
+                            color: Colors.white,
 
-                      fontSize: 14,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
+                SizedBox(width: 10),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Next step:",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        color: AppColors.instance.black300,
+                        fontSize: 12,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      "2:Review",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        color: AppColors.instance.black300,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ),
-          SizedBox(width: 10),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Next step:",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black300,
-                  fontSize: 12,
-                ),
-              ),
-              SizedBox(height: 5),
-              Text(
-                "2:Review",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black300,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -290,65 +298,99 @@ class DuePaymentSelection extends ConsumerWidget {
   }
 
   Widget _buildPaymentItem(OutstandingDue payment, WidgetRef ref) {
-    final isSelected = ref.watch(selectedDueIdsProvider).contains(payment.id);
+    final isSelected = ref
+        .watch(selectedDueIdsProvider)
+        .contains(payment.id ?? 0);
 
     return InkWell(
       onTap:
           () => ref
               .read(selectedDueIdsProvider.notifier)
               .toggleSelection(payment.id ?? 0),
+
       child: Container(
-        height: 70,
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
         decoration: BoxDecoration(
           color: AppColors.instance.grey300,
-          borderRadius: BorderRadius.circular(10),
+
           border:
               isSelected
                   ? Border.all(color: AppColors.instance.black600, width: 2)
+                  : Border.all(color: Colors.transparent),
+          boxShadow:
+              isSelected
+                  ? [
+                    BoxShadow(
+                      color: AppColors.instance.black600.withOpacity(0.2),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ]
                   : null,
         ),
-        child: ListTile(
-          leading: CircleAvatar(
-            backgroundColor: AppColors.instance.teal300,
-
-            child: Center(
+        child: Row(
+          children: [
+            // Leading Icon
+            CircleAvatar(
+              radius: 22,
+              backgroundColor: AppColors.instance.teal300,
               child: Image.asset(
                 _iconLogo(payment.feeCategory?.icon ?? ""),
-                width: 15,
+                width: 28,
+                height: 28,
+                fit: BoxFit.contain,
               ),
             ),
-          ),
-          title: Text(
-            payment.feeCategory?.icon ?? "",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontWeight: FontFamilies.bold,
-              color: AppColors.instance.black600,
-              fontSize: 14,
-            ),
-          ),
-          trailing:
-              isSelected
-                  ? Icon(
-                    Icons.radio_button_checked,
 
-                    color: AppColors.instance.black600,
-                    size: 20,
-                  )
-                  : Icon(
-                    Icons.radio_button_unchecked,
-                    color: AppColors.instance.black300,
-                    size: 20,
+            const SizedBox(width: 16),
+
+            // Title + Subtitle — takes available space
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    payment.feeCategory?.name ?? "Unknown Fee",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.instance.black600,
+                      fontSize: 15,
+                    ),
                   ),
-          subtitle: Text(
-            formatDueDate(payment.dueDate ?? ""),
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontWeight: FontFamilies.light,
-              color: AppColors.instance.black400,
-              fontSize: 11,
+                  const SizedBox(height: 4),
+                  Text(
+                    formatDueDate(payment.dueDate ?? ""),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.instance.black400,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+
+            const SizedBox(width: 16),
+
+            // Trailing Radio Button
+            Icon(
+              isSelected
+                  ? Icons.radio_button_checked
+                  : Icons.radio_button_unchecked,
+              color:
+                  isSelected
+                      ? AppColors.instance.black600
+                      : AppColors.instance.black300,
+              size: 26,
+            ),
+          ],
         ),
       ),
     );

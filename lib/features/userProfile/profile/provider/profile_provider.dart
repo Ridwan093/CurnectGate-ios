@@ -40,9 +40,9 @@ class UserProfileNotifier extends AutoDisposeAsyncNotifier<GetUserProfile?> {
       return freshProfile;
     } catch (e) {
       // If error occurs, return local data if available
-      log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");
+      log("${e} THIS IS PROFILE SCREEN THAT LOADING AFTER LOGOUT THE APP");
       if (localProfile != null) {
-        log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");
+        log("${e} HERE IS PROFILE LOCAL STORAGE DATA");
         // Show error toast but still return local data
         // WidgetsBinding.instance.addPostFrameCallback((_) {
         //   ScaffoldMessenger.of(context).showSnackBar(

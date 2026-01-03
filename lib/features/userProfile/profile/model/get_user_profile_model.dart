@@ -8,6 +8,7 @@ part 'get_user_profile_model.g.dart';
 
 @freezed
 class GetUserProfile with _$GetUserProfile {
+   @JsonSerializable(explicitToJson: true)
   const factory GetUserProfile({
     @Default(false) bool status,
     @Default('') String message,

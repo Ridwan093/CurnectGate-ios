@@ -127,6 +127,63 @@ class PaymentMethodScreen extends ConsumerWidget {
     );
   }
 
+  // Widget _buildPaymentClick({
+  //   required String iconPath,
+  //   required String title,
+  //   required bool isSelected,
+  //   required String subtitle,
+  //   required VoidCallback onTap,
+  // }) {
+  //   return InkWell(
+  //     onTap: onTap,
+  //     child: Container(
+  //       height: 70,
+
+  //       decoration: BoxDecoration(
+  //         color: AppColors.instance.grey300,
+  //         border:
+  //             isSelected
+  //                 ? Border.all(color: AppColors.instance.black500, width: 2)
+  //                 : null,
+  //         borderRadius: BorderRadius.circular(10),
+  //       ),
+  //       child: ListTile(
+  //         leading: CircleAvatar(
+  //           backgroundColor: AppColors.instance.teal300,
+  //           child: Center(
+  //             child:
+  //                 iconPath.isEmpty
+  //                     ? Icon(
+  //                       Icons.account_balance,
+  //                       size: 15,
+  //                       color: AppColors.instance.black600,
+  //                     )
+  //                     : Image.asset(iconPath, width: 15),
+  //           ),
+  //         ),
+  //         title: Text(
+  //           title,
+  //           style: TextStyle(
+  //             fontFamily: FontFamilies.interDisplay,
+  //             fontWeight: FontFamilies.bold,
+  //             color: AppColors.instance.black600,
+  //             fontSize: 14,
+  //           ),
+  //         ),
+  //         subtitle: Text(
+  //           subtitle,
+  //           style: TextStyle(
+  //             fontFamily: FontFamilies.interDisplay,
+  //             fontWeight: FontFamilies.light,
+  //             color: AppColors.instance.black300,
+  //             fontSize: 12,
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
   Widget _buildPaymentClick({
     required String iconPath,
     required String title,
@@ -136,49 +193,87 @@ class PaymentMethodScreen extends ConsumerWidget {
   }) {
     return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
       child: Container(
-        height: 70,
-
+        // Remove fixed height — let it adapt
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         decoration: BoxDecoration(
           color: AppColors.instance.grey300,
           border:
               isSelected
                   ? Border.all(color: AppColors.instance.black500, width: 2)
+                  : Border.all(color: Colors.transparent),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow:
+              isSelected
+                  ? [
+                    BoxShadow(
+                      color: AppColors.instance.black500.withOpacity(0.2),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ]
                   : null,
-          borderRadius: BorderRadius.circular(10),
         ),
-        child: ListTile(
-          leading: CircleAvatar(
-            backgroundColor: AppColors.instance.teal300,
-            child: Center(
+        child: Row(
+          children: [
+            // Icon
+            CircleAvatar(
+              radius: 22,
+              backgroundColor: AppColors.instance.teal300,
               child:
                   iconPath.isEmpty
                       ? Icon(
                         Icons.account_balance,
-                        size: 15,
+                        size: 20,
                         color: AppColors.instance.black600,
                       )
-                      : Image.asset(iconPath, width: 15),
+                      : Image.asset(iconPath, width: 24, height: 24),
             ),
-          ),
-          title: Text(
-            title,
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontWeight: FontFamilies.bold,
-              color: AppColors.instance.black600,
-              fontSize: 14,
+
+            const SizedBox(width: 16),
+
+            // Text content — takes remaining space safely
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.instance.black600,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.instance.black400,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          subtitle: Text(
-            subtitle,
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontWeight: FontFamilies.light,
-              color: AppColors.instance.black300,
-              fontSize: 12,
-            ),
-          ),
+
+            // Optional: arrow or indicator if needed
+            if (isSelected)
+              Icon(
+                Icons.check_circle,
+                color: AppColors.instance.teal400,
+                size: 24,
+              ),
+          ],
         ),
       ),
     );

@@ -21,8 +21,7 @@ class CurfewContent extends ConsumerStatefulWidget {
 }
 
 class _CurfewContentState extends ConsumerState<CurfewContent> {
-  bool? get isCurfewEnabled =>
-      ref.watch(notificationProviders).isCurfewEnabled;
+  bool? get isCurfewEnabled => ref.watch(notificationProviders).isCurfewEnabled;
   @override
   void initState() {
     super.initState();
@@ -39,12 +38,12 @@ class _CurfewContentState extends ConsumerState<CurfewContent> {
     final endTimes = <String, TimeOfDay?>{};
 
     // Convert List<CurfewRestriction> to start/end time maps
- curfewAccess.restrictions?.forEach((restriction) {
+    curfewAccess.restrictions?.forEach((restriction) {
       final day = _capitalize(restriction.day ?? '');
       startTimes[day] = _parseTimeString(restriction.startTime ?? '00:00');
       endTimes[day] = _parseTimeString(restriction.endTime ?? '00:00');
     });
-   
+
     // ignore: invalid_use_of_protected_member
     notifier.state = notifier.state.copyWith(
       startTimes: startTimes,
@@ -279,16 +278,19 @@ class _CurfewContentState extends ConsumerState<CurfewContent> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             // Day name on the left
-            Text(
-              day,
-              style: TextStyle(
-                fontSize: 14,
-                fontFamily: FontFamilies.interDisplay,
-                color:
-                    state.isCurfewEnabled
-                        ? AppColors.instance.black600
-                        : AppColors.instance.black300,
-                fontWeight: FontFamilies.bold,
+            Flexible(
+              child: Text(
+                day,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontFamily: FontFamilies.interDisplay,
+                  color:
+                      state.isCurfewEnabled
+                          ? AppColors.instance.black600
+                          : AppColors.instance.black300,
+                  fontWeight: FontFamilies.bold,
+                ),
               ),
             ),
             // Time pickers on the right

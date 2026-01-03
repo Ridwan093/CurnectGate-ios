@@ -112,14 +112,14 @@ class CommitteeCard extends StatelessWidget {
                   children: [
                     Text(
                       committee.name ?? "Unnamed Committee",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontFamily: FontFamilies.interDisplay,
                         fontWeight: FontWeight.bold,
                         color: AppColors.instance.black600,
                         fontSize: 18,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
                     if (committee.category?.name != null)
                       Text(
@@ -156,18 +156,19 @@ class CommitteeCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (committee.category?.description != null)
-                  Text(
-                    committee.category!.description!,
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      color: AppColors.instance.black600,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
+                  Expanded(
+                    child: Text(
+                      committee.category!.description!,
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        color: AppColors.instance.black600,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                   ),
-                
               ],
             ),
           ),
@@ -307,15 +308,18 @@ class CommitteeCard extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
+
         Text(
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+
+          softWrap: true,
           committee.description!,
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,
             fontSize: 13,
             color: AppColors.instance.black500,
           ),
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
         ),
       ],
     );

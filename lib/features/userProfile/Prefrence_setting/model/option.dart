@@ -6,6 +6,7 @@ part 'option.g.dart';
 
 @freezed
 class Option with _$Option {
+    @JsonSerializable(explicitToJson: true)
   const factory Option({
     String? key,
     String? name,

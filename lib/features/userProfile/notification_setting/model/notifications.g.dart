@@ -45,14 +45,14 @@ _$NotificationsImpl _$$NotificationsImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$NotificationsImplToJson(_$NotificationsImpl instance) =>
     <String, dynamic>{
-      'email': instance.email,
-      'sms': instance.sms,
-      'push': instance.push,
-      'payments': instance.payments,
-      'security': instance.security,
-      'community': instance.community,
-      'maintenance': instance.maintenance,
-      'payment_reminders': instance.paymentReminders,
-      'community_updates': instance.communityUpdates,
-      'maintenance_alerts': instance.maintenanceAlerts,
+      'email': instance.email?.toJson(),
+      'sms': instance.sms?.toJson(),
+      'push': instance.push?.toJson(),
+      'payments': instance.payments?.toJson(),
+      'security': instance.security?.toJson(),
+      'community': instance.community?.toJson(),
+      'maintenance': instance.maintenance?.toJson(),
+      'payment_reminders': instance.paymentReminders?.toJson(),
+      'community_updates': instance.communityUpdates?.toJson(),
+      'maintenance_alerts': instance.maintenanceAlerts?.toJson(),
     };

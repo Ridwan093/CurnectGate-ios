@@ -157,7 +157,8 @@ class __$$ProfileVisibilityImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$ProfileVisibilityImpl implements _ProfileVisibility {
   const _$ProfileVisibilityImpl(
       {this.name, this.description, this.type, this.key, this.value});

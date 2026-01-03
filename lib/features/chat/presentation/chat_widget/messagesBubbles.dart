@@ -2,13 +2,13 @@ import 'dart:io';
 
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/chat/data/chat_model/message_state.dart';
+
 import 'package:curnectgate/features/chat/presentation/chat_widget/showFile.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ChatBubble extends StatelessWidget {
-  final ChatMessage message;
+  final  message;
 
   const ChatBubble({super.key, required this.message});
 

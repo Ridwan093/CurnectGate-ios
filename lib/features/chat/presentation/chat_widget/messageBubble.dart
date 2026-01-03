@@ -1,11 +1,10 @@
-import 'package:curnectgate/features/chat/data/chat_model/message_model.dart';
-import 'package:curnectgate/features/chat/data/chat_model/messages_Enum/M_enum.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 class MessageBubble extends ConsumerWidget {
-  final Messages message;
+  final  message;
   final bool isCurrentUser;
 
   const MessageBubble({
@@ -160,8 +159,8 @@ class MessageBubble extends ConsumerWidget {
 
   Widget _buildMessageContent() {
     return switch (message.type) {
-      MessageEnum.text => Text(message.text),
-      MessageEnum.image => ClipRRect(
+        ''  => Text(message.text),
+      '' => ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: Image.network(
           message.text,
@@ -222,7 +221,7 @@ class MessageBubble extends ConsumerWidget {
     );
   }
 
-  (IconData, Color, String) _getMessageStatus(Messages message) {
+  (IconData, Color, String) _getMessageStatus( message) {
     return switch (message.isReceiverCopy) {
       // ignore: constant_pattern_never_matches_value_type
       'failed' => (Icons.error_outline, Colors.red, 'Failed'),

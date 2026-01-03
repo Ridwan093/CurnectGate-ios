@@ -125,7 +125,8 @@ class __$$LatestCommentImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$LatestCommentImpl implements _LatestComment {
   const _$LatestCommentImpl(
       {this.comment = '', this.user = '', required this.createdAt});

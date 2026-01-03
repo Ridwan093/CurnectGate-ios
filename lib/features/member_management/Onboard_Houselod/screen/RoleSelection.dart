@@ -8,6 +8,7 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/estate_
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/radios_widget/customradioTile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class MemberSelection extends BaseVerificationScreen {
   const MemberSelection({super.key})
@@ -65,9 +66,14 @@ class _PasswordScreenState extends ConsumerState<MemberSelection> {
   }
 
   PreferredSizeWidget _buildAppBar() {
-    return AppBar(leading: const Icon(Icons.arrow_back_ios_new), actions: [
-      
-      ],
+    return AppBar(
+      leading: InkWell(
+        onTap: () {
+          context.pop();
+        },
+        child: const Icon(Icons.arrow_back_ios_new),
+      ),
+      actions: [],
     );
   }
 

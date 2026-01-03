@@ -17,5 +17,5 @@ _$NightAccessImpl _$$NightAccessImplFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$NightAccessImplToJson(_$NightAccessImpl instance) =>
     <String, dynamic>{
       'enabled': instance.enabled,
-      'conditions': instance.conditions,
+      'conditions': instance.conditions?.toJson(),
     };

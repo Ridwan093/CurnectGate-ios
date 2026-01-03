@@ -8,6 +8,7 @@ part 'get_user_privacy_settings.g.dart';
 
 @freezed
 class GetUserPrivacySettings with _$GetUserPrivacySettings {
+   @JsonSerializable(explicitToJson: true)
   const factory GetUserPrivacySettings({
     bool? status,
     String? message,

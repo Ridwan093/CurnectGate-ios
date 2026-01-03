@@ -242,13 +242,16 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Sub Worker Codes:",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontWeight: FontFamilies.bold,
-                    fontSize: 14,
-                    color: AppColors.instance.black600,
+                Flexible(
+                  child: Text(
+                    "Sub Worker Codes:",
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontWeight: FontFamilies.bold,
+                      fontSize: 14,
+                      color: AppColors.instance.black600,
+                    ),
                   ),
                 ),
 

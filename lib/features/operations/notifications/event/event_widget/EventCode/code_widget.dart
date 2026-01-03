@@ -28,7 +28,7 @@ class EventCodeWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                "Event Code Details",
+                "Event code details",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   fontWeight: FontFamilies.bold,
@@ -45,17 +45,18 @@ class EventCodeWidget extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.location_city,
-                    size: 20,
-                    color: AppColors.instance.teal300,
-                  ),
-                  const SizedBox(width: 6),
-                  Flexible(
-                    child: Text(
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+           
+                  children: [
+                    Icon(
+                      Icons.location_city,
+                      size: 20,
+                      color: AppColors.instance.teal300,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
                       data.eventLocation?.toUpperCase() ?? 'UNKNOWN LOCATION',
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
@@ -66,8 +67,8 @@ class EventCodeWidget extends StatelessWidget {
                         color: AppColors.instance.black600,
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
 
               SizedBox(height: 30),
@@ -95,24 +96,28 @@ class EventCodeWidget extends StatelessWidget {
                     positionNumber: 70,
                   );
                 },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(width: 15),
-                    Text(
-                      data.eventCode ?? "",
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontFamilies.medium,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(width: 15),
+                      Text(
+                        data.eventCode ?? "",
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontFamilies.medium,
 
-                        fontFamily: FontFamilies.interDisplay,
-                        color: AppColors.instance.black600,
-                        letterSpacing: 2,
+                          fontFamily: FontFamilies.interDisplay,
+                          color: AppColors.instance.black600,
+                          letterSpacing: 2,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    Image.asset(AssetPaths.clipboard, height: 20, width: 20),
-                  ],
+                      const SizedBox(width: 10),
+                      Image.asset(AssetPaths.clipboard, height: 20, width: 20),
+                    ],
+                  ),
                 ),
               ),
 

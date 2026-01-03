@@ -56,21 +56,30 @@ class ActivitOtpCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
     return Container(
-      margin: EdgeInsets.only(top: 20),
-
-      width: size.width,
+      margin: const EdgeInsets.only(top: 20), // Responsive side margins
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
         color: AppColors.instance.grey300,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(15),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
         child: Column(
-          spacing: 10,
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
+            // Header: Avatar + Name + Change button
             _buildvendorcardHead(ref, context, generated),
 
+            const SizedBox(height: 16),
+
+            // Reusable rows — now safe from overflow
             _buildreUsableListTile(
               context: context,
               isEndDate: false,
@@ -78,6 +87,8 @@ class ActivitOtpCard extends ConsumerWidget {
               trailing: generated.purpose,
               isCode: false,
             ),
+            const SizedBox(height: 12),
+
             _buildreUsableListTile(
               context: context,
               time: formatToTime(generated.validUntil),
@@ -86,6 +97,7 @@ class ActivitOtpCard extends ConsumerWidget {
               trailing: _formatDate(generated.validUntil),
               isCode: false,
             ),
+            const SizedBox(height: 12),
 
             _buildreUsableListTile(
               context: context,
@@ -197,51 +209,74 @@ class ActivitOtpCard extends ConsumerWidget {
     String? status,
   }) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontSize: 13,
-            color: AppColors.instance.black300,
+        // Title — fixed width to prevent pushing
+        SizedBox(
+          width: 80, // Keeps "Type", "End", "Code" aligned
+          child: Text(
+            title,
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              fontSize: 13,
+              color: AppColors.instance.black300,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
-        Row(
-          spacing: isCode ? 7 : 0,
-          children: [
-            if (isCode)
-              Text(
-                expired!.isNotEmpty
-                    ? "Expired in $expired"
-                    : statusCheck(status ?? ""),
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: color(status ?? ""),
-                  fontSize: 10,
-                  fontWeight: FontFamilies.bold,
+
+        const SizedBox(width: 12),
+
+        // Trailing content — takes remaining space safely
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              if (isCode && expired?.isNotEmpty == true)
+                Flexible(
+                  child: Text(
+                    "Expired in $expired",
+                    textAlign: TextAlign.end,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontSize: 11,
+                      color: color(status ?? ""),
+                      fontWeight: FontFamilies.bold,
+                    ),
+                  ),
+                )
+              else if (isCode)
+                Text(
+                  statusCheck(status ?? ""),
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontSize: 11,
+                    color: color(status ?? ""),
+                    fontWeight: FontFamilies.bold,
+                  ),
+                ),
+
+              if (isCode) const SizedBox(width: 8),
+
+              // Main trailing text
+              Expanded(
+                child: Text(
+                  isEndDate ? "$trailing - $time" : trailing,
+                  textAlign: TextAlign.end,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontSize: 14,
+                    color: AppColors.instance.black600,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
-            if (isEndDate) ...[
-              Text(
-                "$trailing - $time",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  fontSize: 13,
-                  color: AppColors.instance.black600,
-                ),
-              ),
-            ] else
-              Text(
-                trailing,
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  fontSize: 13,
-                  color: AppColors.instance.black600,
-                ),
-              ),
-            isCode
-                ? InkWell(
+
+              if (isCode) ...[
+                const SizedBox(width: 8),
+                InkWell(
                   onTap: () {
                     Clipboard.setData(ClipboardData(text: trailing));
                     showCustomSuccessToast(
@@ -255,12 +290,14 @@ class ActivitOtpCard extends ConsumerWidget {
                   },
                   child: Image.asset(
                     AssetPaths.clipboard,
-                    height: 15,
-                    width: 15,
+                    height: 18,
+                    width: 18,
+                    color: AppColors.instance.teal400,
                   ),
-                )
-                : SizedBox(),
-          ],
+                ),
+              ],
+            ],
+          ),
         ),
       ],
     );
@@ -272,27 +309,44 @@ class ActivitOtpCard extends ConsumerWidget {
     Otp generated,
   ) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          spacing: 5,
-          children: [
-            CircleAvatar(
-              backgroundColor: AppColors.instance.teal300,
-              child: Center(
+        // Left: Avatar + Name — takes available space safely
+        Expanded(
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 18,
+                backgroundColor: AppColors.instance.teal300,
                 child: Text(
                   getInitialsFromFullName(generated.visitorName),
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     color: AppColors.instance.black600,
-                    fontWeight: FontFamilies.bold,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
                   ),
                 ),
               ),
-            ),
-            _buildheaderText(generated.visitorName),
-          ],
+              const SizedBox(width: 12),
+              Expanded(
+                // ← Critical: name takes remaining space
+                child: Text(
+                  generated.visitorName,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.instance.black600,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
+
+        // Right: Change button — fixed size, never pushed off
         changeButton(
           context: context,
           ref: ref,

@@ -7,6 +7,7 @@ part 'preference_model.freezed.dart';
 part 'preference_model.g.dart';
 @freezed
 class Preference with _$Preference {
+   @JsonSerializable(explicitToJson: true)
   const factory Preference({
     @Default('') String key,
     @Default('') String name,

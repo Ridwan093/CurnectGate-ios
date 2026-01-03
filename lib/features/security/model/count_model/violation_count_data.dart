@@ -6,6 +6,7 @@ part 'violation_count_data.g.dart';
 
 @freezed
 class ViolationCountData with _$ViolationCountData {
+   @JsonSerializable(explicitToJson: true)
   const factory ViolationCountData({
     int? total,
     Map<String, int>? byStatus,

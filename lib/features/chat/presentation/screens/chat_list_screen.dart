@@ -2,13 +2,12 @@ import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/auth/widget/conversation_tile.dart';
-import 'package:curnectgate/features/chat/data/chat_model/%20chat_user.dart';
-import 'package:curnectgate/features/chat/data/chat_model/message_state.dart';
 import 'package:curnectgate/features/chat/data/provider/%20chat_list_provider.dart';
 import 'package:curnectgate/features/chat/data/provider/chat_provier.dart';
 import 'package:curnectgate/features/chat/data/provider/search_provider.dart';
-import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/chat/presentation/screens/messagbody.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -71,9 +70,7 @@ class ChatListScreen extends ConsumerWidget {
                             final conversation = conversations[index];
                             return ConversationTile(
                               conversation: conversation,
-                              onTap:
-                                  () =>
-                                      _navigateToChat(conversation, chatState),
+                              onTap: () => _navigateToChat(context),
                             );
                           },
                         ),
@@ -95,26 +92,32 @@ class ChatListScreen extends ConsumerWidget {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-    
-      title: const SizedBox.shrink(), // Empty title
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(30), // Height for the bottom text
+      // backgroundColor: Colors.white,
+      elevation: 0,
+      automaticallyImplyLeading: true, // Keeps back button if needed
+      flexibleSpace: SafeArea(
         child: Align(
-          alignment: Alignment.centerLeft,
+          alignment: Alignment.bottomLeft,
           child: Padding(
-            padding: const EdgeInsets.only(left: 16, bottom: 12, top: 20),
+            padding: const EdgeInsets.fromLTRB(
+              16,
+              0,
+              16,
+              16,
+            ), // Bottom padding for title
             child: Text(
               "All messages",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 fontFamily: FontFamilies.interDisplay,
-                color: AppColors.instance.black500,
+                color: AppColors.instance.black600,
               ),
             ),
           ),
         ),
       ),
+      toolbarHeight: 80, // Gives space for large title
     );
   }
 
@@ -210,8 +213,9 @@ class ChatListScreen extends ConsumerWidget {
                               onTap: () {
                                 ref.read(searchProvider.notifier).clearSearch();
                                 _navigateToChat(
-                                  conversation,
-                                  ref.read(chatProvider),
+                                  context,
+                                  // conversation,
+                                  // ref.read(chatProvider),
                                 );
                               },
                             ),
@@ -225,20 +229,20 @@ class ChatListScreen extends ConsumerWidget {
     );
   }
 
-  void _navigateToChat(Conversation conversation, ChatState chatState) {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) =>
-    // );
+  void _navigateToChat(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MessageScreens(id: 8)),
+    );
   }
+
   Widget _buildSearchEnging(WidgetRef ref) {
     return InkWell(
       onTap: () => ref.read(searchProvider.notifier).toggleSearch(),
       child: Container(
         margin: EdgeInsets.all(12),
         padding: EdgeInsets.all(8),
-        height: 40,
+        // height: 40,
         decoration: BoxDecoration(
           color: AppColors.instance.grey300,
           borderRadius: BorderRadius.circular(8),

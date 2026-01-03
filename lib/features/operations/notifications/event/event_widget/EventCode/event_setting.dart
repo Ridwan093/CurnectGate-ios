@@ -30,7 +30,7 @@ class EventSettings extends ConsumerWidget {
                 ),
               ),
               Text(
-                "Event Settings",
+                "Event settings",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   fontWeight: FontFamilies.bold,
@@ -51,7 +51,7 @@ class EventSettings extends ConsumerWidget {
           ),
           const SizedBox(height: 50),
           _buildButton(
-            title: "Check Event Code",
+            title: "Check event code",
             onTap: () {
               showUserBottomSheet(
                 context: context,
@@ -68,7 +68,7 @@ class EventSettings extends ConsumerWidget {
 
           const SizedBox(height: 5),
           _buildButton(
-            title: "Deactive Event Code",
+            title: "Deactive event code",
             onTap: () {
               context.pop();
               showUserBottomSheet(

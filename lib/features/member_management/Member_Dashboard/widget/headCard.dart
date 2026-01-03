@@ -6,7 +6,6 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/eletion_provider.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/poll_provider.dart';
 import 'package:curnectgate/features/estate_management/elections/widgets/votingSettingCheck.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -18,115 +17,121 @@ import 'package:go_router/go_router.dart';
 /// jerel47960@besenica.com
 class Headcard extends ConsumerWidget {
   Headcard({super.key});
-  String firstWord = "";
-  String lastWord = "";
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pollAsync = ref.watch(pollProvider);
     final authState = ref.watch(authProvider);
 
     final user = authState.user;
-    final fullname = authState.fullname;
+    final fullname = authState.fullname ?? "";
     final memberID = user?["member_code"] ?? "";
     final estateName = user?['estate_name'] ?? "";
 
+    // Extract first and last word logic
     String firstWord = "";
     String lastWord = "";
 
     if (estateName.trim().isNotEmpty) {
       final parts = estateName.trim().split(RegExp(r"\s+"));
-
       final containsEstate = parts.contains("Estate");
 
       if (containsEstate) {
-        lastWord = "Estate";
-
+        lastWord = "ESTATE";
         final filtered = parts.where((w) => w != "Estate").toList();
-
-        firstWord = filtered.isNotEmpty ? filtered.first : "";
+        firstWord = filtered.isNotEmpty ? "${filtered.first}." : "";
       } else {
-        firstWord = parts.first;
-        lastWord = parts.length > 1 ? parts.last : parts.first;
+        firstWord = parts.isNotEmpty ? "${parts.first}." : "";
+        lastWord =
+            parts.length > 1
+                ? parts.last.toUpperCase()
+                : parts.first.toUpperCase();
       }
     }
 
-    final size = MediaQuery.sizeOf(context);
+    // Detect screen size
+    final size = MediaQuery.of(context).size;
+    final bool isSmallScreen = size.height < 700;
+
     return Column(
       children: [
+        // Top teal section
         Material(
           color: AppColors.instance.teal400,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10),
-            topRight: Radius.circular(10),
-          ),
-          child: Container(
-            padding: EdgeInsets.all(12),
-            height: 100,
-            decoration: BoxDecoration(
-              color: AppColors.instance.teal400,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-              ),
-            ),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Padding(
+            padding: EdgeInsets.all(isSmallScreen ? 10 : 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "$firstWord.",
-                      style: TextStyle(
-                        fontFamily: FontFamilies.interDisplay,
-                        fontSize: 25,
-                        color: AppColors.instance.grey200,
-                        fontWeight: FontFamilies.bold,
+                Flexible(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        firstWord,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          fontSize: isSmallScreen ? 22 : 26,
+                          color: AppColors.instance.grey200,
+                          fontWeight: FontFamilies.bold,
+                        ),
                       ),
-                    ),
-                    Text(
-                      lastWord.toUpperCase(),
-                      style: TextStyle(
-                        fontFamily: FontFamilies.interDisplay,
-                        fontSize: 14,
-                        wordSpacing: 10,
-                        letterSpacing: 10,
-                        color: AppColors.instance.grey400,
-                        fontWeight: FontFamilies.medium,
+                      Text(
+                        lastWord,
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          fontSize: isSmallScreen ? 13 : 15,
+                          letterSpacing: isSmallScreen ? 6 : 8,
+                          color: AppColors.instance.grey400,
+                          fontWeight: FontFamilies.medium,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-                Column(
-                  children: [
-                    Image.asset(AssetPaths.qrCode, width: 40, height: 40),
-                    SizedBox(height: 10),
-                    _memberID(memberID),
-                  ],
+                Flexible(
+                  flex: 1,
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        AssetPaths.qrCode,
+                        width: isSmallScreen ? 35 : 40,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        memberID,
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          fontSize: isSmallScreen ? 10 : 11,
+                          color: AppColors.instance.grey200,
+                          fontWeight: FontFamilies.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
         ),
+
+        // Bottom section
         Material(
-          elevation: 3,
-          color: AppColors.instance.teal200.withOpacity(.9),
-          // ignore: deprecated_member_use
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(10),
-            bottomRight: Radius.circular(10),
+          elevation: 4,
+          color: AppColors.instance.teal200.withOpacity(0.9),
+          borderRadius: const BorderRadius.vertical(
+            bottom: Radius.circular(12),
           ),
           child: Container(
-            padding: EdgeInsets.all(12),
-            height: 100,
-            width: size.width,
+            width: double.infinity,
+            padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
             decoration: BoxDecoration(
-              // ignore: deprecated_member_use
-              color: AppColors.instance.teal400.withOpacity(.8),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10),
+              color: AppColors.instance.teal400.withOpacity(0.8),
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(12),
               ),
             ),
             child: Row(
@@ -134,23 +139,24 @@ class Headcard extends ConsumerWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         "MEMBER",
                         style: TextStyle(
                           fontFamily: FontFamilies.interDisplay,
-                          fontSize: 14,
-
+                          fontSize: isSmallScreen ? 13 : 14,
                           color: AppColors.instance.grey400,
                           fontWeight: FontFamilies.medium,
                         ),
                       ),
+                      const SizedBox(height: 4),
                       Text(
-                        fullname ?? "",
+                        fullname,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
                         style: TextStyle(
                           fontFamily: FontFamilies.interDisplay,
-                          fontSize: 19,
+                          fontSize: isSmallScreen ? 17 : 19,
                           color: AppColors.instance.grey200,
                           fontWeight: FontFamilies.bold,
                         ),
@@ -159,56 +165,32 @@ class Headcard extends ConsumerWidget {
                   ),
                 ),
 
+                // Voting icon
                 Votingsettingcheck(
-                  child: Align(
-                    alignment: Alignment.bottomRight,
-                    child: pollAsync.when(
-                      data: (data) {
-                        if (data?.data != null &&
-                            data!.data!.polls!.isNotEmpty) {
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children:
-                                data.data!.polls!
-                                    .map(
-                                      (e) => InkWell(
-                                        onTap: () {
-                                          ref
-                                              .read(formProvider.notifier)
-                                              .updateGenrateMemberIdLoading(
-                                                false,
-                                              );
-                                          ref
-                                              .read(electionProvider.notifier)
-                                              .addId(e.id.toString());
-                                          context.pushNamed(
-                                            AppRoutes.electionDasbord,
-                                            extra: {"id": e.id.toString()},
-                                          );
-                                          // Navigator.push(
-                                          //   context,
-                                          //   MaterialPageRoute(builder: (context) => ElectionPage()),
-                                          // );
-                                        },
-                                        child: Icon(
-                                          Icons.how_to_vote,
-                                          color: AppColors.instance.yellow500,
-                                          size: 30,
-                                        ),
-                                      ),
-                                    )
-                                    .toList(),
-                          );
-                        }
-                        return null;
-                      },
-                      error: (err, stack) {
-                        return SizedBox.shrink();
-                      },
-                      loading: () {
-                        return SizedBox.shrink();
-                      },
-                    ),
+                  child: pollAsync.when(
+                    data: (data) {
+                      if (data?.data != null && data!.data!.polls!.isNotEmpty) {
+                        return InkWell(
+                          onTap: () {
+                            final pollId =
+                                data.data!.polls!.first.id.toString();
+                            ref.read(electionProvider.notifier).addId(pollId);
+                            context.pushNamed(
+                              AppRoutes.electionDasbord,
+                              extra: {"id": pollId},
+                            );
+                          },
+                          child: Icon(
+                            Icons.how_to_vote,
+                            color: AppColors.instance.yellow500,
+                            size: isSmallScreen ? 26 : 30,
+                          ),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                    loading: () => const SizedBox.shrink(),
+                    error: (_, __) => const SizedBox.shrink(),
                   ),
                 ),
               ],
@@ -216,18 +198,6 @@ class Headcard extends ConsumerWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _memberID(String memberId) {
-    return Text(
-      memberId,
-      style: TextStyle(
-        fontFamily: FontFamilies.interDisplay,
-        fontSize: 11,
-        color: AppColors.instance.grey200,
-        fontWeight: FontFamilies.bold,
-      ),
     );
   }
 }

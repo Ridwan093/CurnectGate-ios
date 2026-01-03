@@ -23,6 +23,7 @@ class CodeWidget extends StatelessWidget {
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 30),
 
@@ -39,13 +40,16 @@ class CodeWidget extends StatelessWidget {
                       color: AppColors.instance.teal300,
                     ),
                     const SizedBox(width: 5),
-                    Text(
-                      data.user?.estateName?.toUpperCase() ?? "",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontFamilies.bold,
-                        fontFamily: FontFamilies.interDisplay,
-                        color: AppColors.instance.black600,
+                    Flexible(
+                      child: Text(
+                        data.user?.estateName?.toUpperCase() ?? "",
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontFamilies.bold,
+                          fontFamily: FontFamilies.interDisplay,
+                          color: AppColors.instance.black600,
+                        ),
                       ),
                     ),
                   ],
@@ -142,6 +146,7 @@ class CodeWidget extends StatelessWidget {
                 const SizedBox(height: 3),
                 Text(
                   "${data.user?.firstname?.toUpperCase()} ${data.user?.lastname?.toUpperCase()}",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontFamilies.bold,

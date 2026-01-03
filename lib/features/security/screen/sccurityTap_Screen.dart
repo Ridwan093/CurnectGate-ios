@@ -21,17 +21,56 @@ class SecurityTapScreen extends ConsumerWidget {
     final isScanning = ref.watch(qrScanProvider);
 
     final List<Widget> screens = [
-      SecurityDashboard(),
+      SecurityDashboard(), // Your existing dashboard
       const CommunityScreen(),
       const ProfileScreen(),
     ];
 
+    // Detect if we're on tablet (width >= 600 is Material Design recommendation)
+    final bool isTablet = MediaQuery.of(context).size.width >= 600;
+
     return BackButtonHandler(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        body: SafeArea(child: screens[currentIndex]),
+        body: SafeArea(
+          child: Row(
+            children: [
+              // === Tablet: Show NavigationRail on the left ===
+              if (isTablet)
+                Container(
+                  width: 80,
+                  color: Colors.white,
+                  child: _buildNavigationRail(currentIndex, tabController),
+                ),
+
+              // === Main Content Area ===
+              Expanded(
+                child: Builder(
+        builder: (context) {
+          final bool isTablet = MediaQuery.of(context).size.width >= 600;
+
+          if (!isTablet) {
+            // Phone: keep phone-like centered width (optional, or remove if you want full on phone too)
+            return Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: screens[currentIndex],
+              ),
+            );
+          }
+
+          // Tablet: FULL WIDTH — no constraints!
+          return screens[currentIndex];
+        },
+      ),
+              ),
+            ],
+          ),
+        ),
+
+        // === Phone: Show BottomNavigationBar ===
         bottomNavigationBar:
-            isScanning
+            isTablet || isScanning
                 ? null
                 : Container(
                   decoration: BoxDecoration(
@@ -47,7 +86,6 @@ class SecurityTapScreen extends ConsumerWidget {
                     children: [
                       BottomNavigationBar(
                         selectedItemColor: AppColors.instance.black600,
-
                         selectedLabelStyle: TextStyle(
                           fontFamily: FontFamilies.interDisplay,
                           color: AppColors.instance.black600,
@@ -75,7 +113,6 @@ class SecurityTapScreen extends ConsumerWidget {
                             activeIcon: AssetPaths.navMessageactive,
                             label: 'Community',
                           ),
-
                           _buildTabItem(
                             context,
                             index: 2,
@@ -86,7 +123,7 @@ class SecurityTapScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      // Indicator above active tab
+                      // Indicator
                       Positioned(
                         top: 0,
                         left:
@@ -95,9 +132,7 @@ class SecurityTapScreen extends ConsumerWidget {
                                 currentIndex +
                             MediaQuery.of(context).size.width / 6 -
                             (MediaQuery.of(context).size.width / 7) / 2,
-
                         child: Container(
-                          // margin: EdgeInsets.only(left: 33),
                           width: MediaQuery.of(context).size.width / 7,
                           height: 3,
                           color: AppColors.instance.teal300,
@@ -110,6 +145,74 @@ class SecurityTapScreen extends ConsumerWidget {
     );
   }
 
+  // New: NavigationRail for tablets
+  Widget _buildNavigationRail(int currentIndex, dynamic tabController) {
+    return NavigationRail(
+      selectedIndex: currentIndex,
+      onDestinationSelected: (index) => tabController.setTab(index),
+      labelType: NavigationRailLabelType.all,
+      backgroundColor: Colors.white,
+      indicatorColor: AppColors.instance.teal100,
+      selectedIconTheme: IconThemeData(color: AppColors.instance.teal400),
+      unselectedIconTheme: IconThemeData(color: AppColors.instance.black400),
+      minWidth: 80, // Keeps it compact and clean
+      // leading: const SizedBox(height: 20), // Top padding
+      // trailing: const SizedBox(
+      //   height: 20,
+      // ), // Bottom padding (optional, can add safe area)
+      // This is the key: distribute items evenly with space between
+      groupAlignment:
+          .9, //  -1 = top, 0 = center, 1 = bottom → we want centered like mobile
+
+      destinations: [
+        _buildRailDestination(
+          AssetPaths.navHomefilled,
+          AssetPaths.navHome,
+          "Home",
+        ),
+        _buildRailDestination(
+          AssetPaths.navMessageactive,
+          AssetPaths.navMessages,
+          "Community",
+        ),
+        _buildRailDestination(
+          AssetPaths.navProfileActive,
+          AssetPaths.navProfileInactive,
+          "Profile",
+        ),
+      ],
+    );
+  }
+
+  NavigationRailDestination _buildRailDestination(
+    String activeIcon,
+    String inactiveIcon,
+    String label,
+  ) {
+    return NavigationRailDestination(
+      icon: ImageTab(
+        normalImage: inactiveIcon,
+        activeImage: inactiveIcon,
+        isActive: false,
+        size: 28,
+      ),
+      selectedIcon: ImageTab(
+        normalImage: activeIcon,
+        activeImage: activeIcon,
+        isActive: true,
+        size: 28,
+      ),
+      label: Text(
+        label,
+        style: TextStyle(
+          fontFamily: FontFamilies.interDisplay,
+          fontWeight: FontFamilies.bold,
+        ),
+      ),
+    );
+  }
+
+  // Your existing _buildTabItem remains unchanged
   BottomNavigationBarItem _buildTabItem(
     BuildContext context, {
     required int index,
@@ -121,7 +224,6 @@ class SecurityTapScreen extends ConsumerWidget {
     return BottomNavigationBarItem(
       icon: Column(
         children: [
-          // Transparent space for the indicator
           Container(height: 3, color: const Color.fromRGBO(0, 0, 0, 0)),
           const SizedBox(height: 4),
           ImageTab(

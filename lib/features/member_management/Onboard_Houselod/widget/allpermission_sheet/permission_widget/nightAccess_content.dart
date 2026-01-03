@@ -199,13 +199,16 @@ class _PackingAccessContentState extends ConsumerState<NightAccessContent> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12,
-              fontFamily: FontFamilies.interDisplay,
-              fontWeight: FontFamilies.bold,
-              color: AppColors.instance.black600,
+          Flexible(
+            child: Text(
+              title,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 12,
+                fontFamily: FontFamilies.interDisplay,
+                fontWeight: FontFamilies.bold,
+                color: AppColors.instance.black600,
+              ),
             ),
           ),
           Switch(

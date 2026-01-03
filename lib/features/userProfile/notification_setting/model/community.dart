@@ -6,6 +6,7 @@ part 'community.g.dart';
 
 @freezed
 class Community with _$Community {
+   @JsonSerializable(explicitToJson: true)
   const factory Community({
     required String? name,
     required String? description,

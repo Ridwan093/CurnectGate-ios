@@ -1,7 +1,7 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/chat/data/chat_model/message_state.dart';
+import 'package:curnectgate/features/chat/data/model/chat_message.dart';
 import 'package:curnectgate/features/chat/data/provider/chat_provier.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/displayFileCard.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/displayimage.dart';
@@ -13,9 +13,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-
 class MessageScreens extends ConsumerStatefulWidget {
-  const MessageScreens({super.key});
+  final int id;
+  const MessageScreens({super.key, required this.id});
 
   @override
   ConsumerState<MessageScreens> createState() => _MessageScreenState();
@@ -72,7 +72,7 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
           children: [
             Column(
               children: [
-                Expanded(child: _buildMessageList(chatState)),
+                // Expanded(child: _buildMessageList(chatState)),
                 _buildMessageInput(chatNotifier),
               ],
             ),
@@ -105,6 +105,7 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
                 headertitle: "",
                 headersubtitle: "",
                 ref: ref,
+                id: widget.id,
                 bottom: BottomSheetView.residentEmgencyContacts,
               );
               // showUserBottomSheet(
@@ -206,7 +207,7 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
     );
   }
 
-  Widget _buildMessageList(ChatState chatState) {
+  Widget _buildMessageList(chatState) {
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
 
     final groupedMessages = <String, List<ChatMessage>>{};
@@ -230,7 +231,7 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
     );
   }
 
-  Widget _buildImagePreview(ChatState chatState) {
+  Widget _buildImagePreview(chatState) {
     final image = chatState.selectedImage;
     final fileName = chatState.selectedFileName;
 
@@ -381,44 +382,44 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
     );
   }
 
-//   Widget _buildFilePreview(ChatState chatState) {
-//     final filePath = chatState.selectedFilePath;
-//     final fileName = chatState.selectedFileName;
-//     final fileSize = chatState.selectedFileSize;
+  //   Widget _buildFilePreview(ChatState chatState) {
+  //     final filePath = chatState.selectedFilePath;
+  //     final fileName = chatState.selectedFileName;
+  //     final fileSize = chatState.selectedFileSize;
 
-//     if (filePath == null) return const SizedBox.shrink();
+  //     if (filePath == null) return const SizedBox.shrink();
 
-//     return GestureDetector(
-//       onTap: () => OpenFilex.open(filePath),
-//       child: Container(
-//         padding: const EdgeInsets.all(12),
-//         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-//         decoration: BoxDecoration(
-//           color: Colors.grey[200],
-//           borderRadius: BorderRadius.circular(10),
-//         ),
-//         child: Row(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             // Icon(_getFileIcon(fileName), color: Colors.blueAccent, size: 32),
-//             const SizedBox(width: 10),
-//             Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 Text(
-//                   fileName ?? "Unknown file",
-//                   style: const TextStyle(fontWeight: FontWeight.w600),
-//                 ),
-//                 const SizedBox(height: 4),
-//                 Text(
-//                   "    _formatFileSize(fileSize),",
-//                   style: TextStyle(color: Colors.grey[600], fontSize: 12),
-//                 ),
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
+  //     return GestureDetector(
+  //       onTap: () => OpenFilex.open(filePath),
+  //       child: Container(
+  //         padding: const EdgeInsets.all(12),
+  //         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  //         decoration: BoxDecoration(
+  //           color: Colors.grey[200],
+  //           borderRadius: BorderRadius.circular(10),
+  //         ),
+  //         child: Row(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             // Icon(_getFileIcon(fileName), color: Colors.blueAccent, size: 32),
+  //             const SizedBox(width: 10),
+  //             Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Text(
+  //                   fileName ?? "Unknown file",
+  //                   style: const TextStyle(fontWeight: FontWeight.w600),
+  //                 ),
+  //                 const SizedBox(height: 4),
+  //                 Text(
+  //                   "    _formatFileSize(fileSize),",
+  //                   style: TextStyle(color: Colors.grey[600], fontSize: 12),
+  //                 ),
+  //               ],
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     );
+  //   }
 }

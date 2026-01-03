@@ -2,8 +2,8 @@ import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
 import 'package:curnectgate/features/security/provider/scanProvider.dart';
 import 'package:curnectgate/features/security/widget/Scan_widget.dart';
@@ -124,9 +124,13 @@ class Securitymainscreen extends ConsumerWidget {
           ),
         ],
       ),
-      actions: [ NotificationCount(onTap: (){
-          context.pushNamed(AppRoutes.notification);
-       },),],
+      actions: [
+        NotificationCount(
+          onTap: () {
+            context.pushNamed(AppRoutes.notification);
+          },
+        ),
+      ],
     );
   }
 
@@ -136,8 +140,19 @@ class Securitymainscreen extends ConsumerWidget {
     WidgetRef ref,
     int selectedTab,
   ) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isTablet = screenWidth >= 600;
+
     return SingleChildScrollView(
-      padding: EdgeInsets.only(left: 10, right: 10),
+      // Adaptive padding: small on phone, none (or minimal) on tablet
+      padding: EdgeInsets.symmetric(
+        horizontal:
+            isTablet
+                ? 20
+                : 10, // More breathing room on tablet, but not shrinking too much
+        // Or use 0 on tablet if you want full edge-to-edge
+        // horizontal: isTablet ? 0 : 10,
+      ),
       child: Column(
         children: [
           _buildOTPAccessCard(context, ref),
@@ -146,7 +161,6 @@ class Securitymainscreen extends ConsumerWidget {
       ),
     );
   }
-
 
   Widget _buildAccessLogSection(
     BuildContext context,

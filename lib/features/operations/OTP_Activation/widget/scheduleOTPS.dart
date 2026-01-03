@@ -1,12 +1,12 @@
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/active_provider.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/ScheduleTime_widget.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/additionalInfo.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/scheduleDate_widget.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/validation_message_box.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,7 +17,7 @@ class ScheduleOTPinAdvance extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final activation = ref.watch(generateNotifierProvider);
     final activationNotifer = ref.watch(generateNotifierProvider.notifier);
-   
+
     final size = MediaQuery.sizeOf(context);
 
     return Padding(
@@ -149,46 +149,65 @@ Widget _buildPurposeDropdown(WidgetRef ref, String currentValue) {
   // Ensure currentValue is either null or a valid key from the purpose map
   final validValue = purpose.containsKey(currentValue) ? currentValue : null;
 
-  return SizedBox(
-    child: DropdownButtonFormField<String>(
-      icon: Icon(
-        Icons.keyboard_arrow_down_rounded,
-        color: AppColors.instance.black600,
+  return DropdownButtonFormField<String>(
+    value: validValue,
+    icon: Icon(
+      // Keep icon but give it space
+      Icons.keyboard_arrow_down_rounded,
+      color: AppColors.instance.black600,
+      size: 24,
+    ),
+    iconSize: 24,
+    dropdownColor: Colors.white,
+    borderRadius: BorderRadius.circular(12),
+    decoration: InputDecoration(
+      labelText: 'Purpose of Visit',
+      labelStyle: TextStyle(
+        fontFamily: FontFamilies.interDisplay,
+        color: AppColors.instance.black500,
+        fontSize: 14,
       ),
-      value: validValue,
-      decoration: InputDecoration(
-        labelText: 'Purpose of Visit',
-        border: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.instance.black500),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.instance.black500),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.instance.black500),
-        ),
-        labelStyle: TextStyle(
-          fontFamily: FontFamilies.interDisplay,
-          color: AppColors.instance.black500,
-        ),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 16,
+      ), // ← Key: more breathing room
+      border: OutlineInputBorder(
+        borderSide: BorderSide(color: AppColors.instance.black500),
       ),
-      selectedItemBuilder: (BuildContext context) {
-        return purpose.keys.map((String key) {
-          return Text(
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: AppColors.instance.black500),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: AppColors.instance.black500, width: 2),
+      ),
+    ),
+    selectedItemBuilder: (context) {
+      return purpose.keys.map((key) {
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
             key,
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               color: AppColors.instance.black600,
+              fontWeight: FontWeight.w600,
+              fontSize: 15,
             ),
-          );
-        }).toList();
-      },
-      items:
-          purpose.entries.map((entry) {
-            return DropdownMenuItem<String>(
-              value: entry.key,
+          ),
+        );
+      }).toList();
+    },
+    items:
+        purpose.entries.map((entry) {
+          return DropdownMenuItem<String>(
+            value: entry.key,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 8,
+              ), // Space inside menu items
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     entry.key,
@@ -205,19 +224,19 @@ Widget _buildPurposeDropdown(WidgetRef ref, String currentValue) {
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       color: AppColors.instance.black500,
-                      fontSize: 12,
+                      fontSize: 13,
                     ),
                   ),
                 ],
               ),
-            );
-          }).toList(),
-      onChanged: (value) {
-        if (value != null) {
-          ref.read(generateNotifierProvider.notifier).setPurpose(value);
-        }
-      },
-    ),
+            ),
+          );
+        }).toList(),
+    onChanged: (value) {
+      if (value != null) {
+        ref.read(generateNotifierProvider.notifier).setPurpose(value);
+      }
+    },
   );
 }
 

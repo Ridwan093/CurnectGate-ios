@@ -103,7 +103,8 @@ class __$$ViolationDataImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$ViolationDataImpl implements _ViolationData {
   const _$ViolationDataImpl({required final List<Violation> violations})
       : _violations = violations;

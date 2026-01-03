@@ -182,13 +182,16 @@ class _FacilityContetState extends ConsumerState<FacilityContet> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "Enable Facility Access",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontFamilies.bold,
-                          fontFamily: FontFamilies.interDisplay,
-                          color: AppColors.instance.black600,
+                      Flexible(
+                        child: Text(
+                          "Enable Facility Access",
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontFamilies.bold,
+                            fontFamily: FontFamilies.interDisplay,
+                            color: AppColors.instance.black600,
+                          ),
                         ),
                       ),
                       Switch(
@@ -396,13 +399,19 @@ class _FacilityContetState extends ConsumerState<FacilityContet> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              day,
-              style: TextStyle(
-                fontSize: 14,
-                fontFamily: FontFamilies.interDisplay,
-                color: AppColors.instance.black600,
-                fontWeight: FontFamilies.bold,
+            Flexible(
+              child: Text(
+                day,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontFamily: FontFamilies.interDisplay,
+                  color:
+                      state.isCurfewEnabled
+                          ? AppColors.instance.black600
+                          : AppColors.instance.black300,
+                  fontWeight: FontFamilies.bold,
+                ),
               ),
             ),
             Row(

@@ -1,4 +1,3 @@
-
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -118,13 +117,16 @@ class EventCard extends StatelessWidget {
       children: [
         Icon(icon, size: 18, color: AppColors.instance.black300),
         const SizedBox(width: 5),
-        Text(
-          title,
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontSize: 12,
-            fontWeight: FontFamilies.medium,
-            color: AppColors.instance.black300,
+        Flexible(
+          child: Text(
+            title,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              fontSize: 12,
+              fontWeight: FontFamilies.medium,
+              color: AppColors.instance.black300,
+            ),
           ),
         ),
       ],

@@ -117,9 +117,12 @@ class _OverlayMultiSelectContentState
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Select ${widget.label}',
-                        style: const TextStyle(color: Colors.grey),
+                      Flexible(
+                        child: Text(
+                          'Select ${widget.label}',
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(color: Colors.grey),
+                        ),
                       ),
                       Icon(
                         Icons.keyboard_arrow_down,

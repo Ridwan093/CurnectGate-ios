@@ -117,12 +117,14 @@ class PaymentMethodData extends ConsumerWidget {
     bool isMethodSelected,
   ) {
     final listData = data?.paymentMethods;
-    return Column(
-      children: [
-        ...listData!.map(
-          (e) => _buildBottonsheet(ref, isMethodSelected, context, e),
-        ),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          ...listData!.map(
+            (e) => _buildBottonsheet(ref, isMethodSelected, context, e),
+          ),
+        ],
+      ),
     );
   }
 

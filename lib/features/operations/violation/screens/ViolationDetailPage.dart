@@ -157,16 +157,31 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
                         const SizedBox(height: 6),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            _buildAnonymouswidget(
-                              widget.violation.isAnonymous,
-                              widget.violation.reporter.name,
+                            Flexible(
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  maxWidth:
+                                      200, // ← Adjust this: 180-220 feels perfect on most devices
+                                ),
+                                child: _buildAnonymouswidget(
+                                  widget.violation.isAnonymous,
+                                  widget.violation.reporter.name,
+                                ),
+                              ),
                             ),
-                            _buildActionButtons(widget.violation.updatedAt),
+                            const SizedBox(width: 12),
+
+                            IntrinsicWidth(
+                              child: _buildActionButtons(
+                                widget.violation.updatedAt,
+                              ),
+                            ),
                           ],
                         ),
-                        const SizedBox(height: 12), // Space before new section
-                        // Report User Info Section
+                        const SizedBox(height: 12),
+
                         Divider(color: AppColors.instance.grey300),
                         const SizedBox(height: 12),
                         Text(
@@ -296,17 +311,15 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
 
   String checkCount(String value) {
     try {
-      // Convert string to integer
       int number = int.parse(value);
-      // Check if number is greater than 99
+
       if (number > 99) {
         return "99+";
       }
-      // Return original value if 99 or less
+
       return value;
     } catch (e) {
-      // Handle invalid input (non-numeric string)
-      return value; // or return "0" or another fallback based on your needs
+      return value;
     }
   }
 
@@ -319,28 +332,31 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            // Icon(icon, color: color),
-            // SizedBox(width: 10),
-            Text(
-              title,
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontWeight: FontFamilies.medium,
-                color: AppColors.instance.black300,
-              ),
+        Expanded(
+          child: Text(
+            title,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              fontWeight: FontFamilies.medium,
+              color: AppColors.instance.black300,
             ),
-          ],
+          ),
         ),
 
-        Text(
-          leading,
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontWeight: FontFamilies.bold,
-            color: AppColors.instance.black600,
-            fontSize: 12,
+        const SizedBox(width: 16),
+
+        Flexible(
+          child: Text(
+            leading,
+            textAlign: TextAlign.end,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              fontWeight: FontFamilies.bold,
+              color: AppColors.instance.black600,
+              fontSize: 12,
+            ),
           ),
         ),
       ],
@@ -352,22 +368,36 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
       borderRadius: BorderRadius.circular(6),
       elevation: 1,
       child: Container(
-        padding: EdgeInsets.all(4),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 8,
+          vertical: 6,
+        ), // Better padding
         decoration: BoxDecoration(
           color: AppColors.instance.grey200,
           border: Border.all(
             style: BorderStyle.solid,
             color: AppColors.instance.teal300,
+            width: 1,
           ),
           borderRadius: BorderRadius.circular(6),
         ),
-        child: Text(
-          "${formatToShortMonthDay(date)}, ${formatToTime(date)}",
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            color: AppColors.instance.teal400,
-            fontWeight: FontFamilies.bold,
-            fontSize: 12,
+        child: IntrinsicWidth(
+          // ← Key: Only as wide as text needs
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              minWidth: 80,
+            ), // Optional: prevent too narrow
+            child: Text(
+              "${formatToShortMonthDay(date)}, ${formatToTime(date)}",
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                color: AppColors.instance.teal400,
+                fontWeight: FontFamilies.bold,
+                fontSize: 12,
+              ),
+            ),
           ),
         ),
       ),
@@ -377,9 +407,15 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
   Widget _buildAnonymouswidget(bool isAnonymous, String reporterName) {
     return Card(
       color: Colors.white,
+      elevation: 1, // Optional: tiny shadow for depth (matches Material style)
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 8.0,
+          vertical: 4.0,
+        ), // Slightly more comfortable
         child: Row(
+          mainAxisSize: MainAxisSize.min, // ← Key: Only as wide as needed
           children: [
             Image.asset(
               isAnonymous ? AssetPaths.anonymous : AssetPaths.navProfileActive,
@@ -387,13 +423,20 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
               width: 16,
               color: AppColors.instance.teal300,
             ),
-            SizedBox(width: 4),
-            Text(
-              isAnonymous ? "Anonymous" : reporterName,
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                color: AppColors.instance.black500,
-                fontSize: 12,
+            const SizedBox(width: 6),
+            Flexible(
+              // ← Allows text to shrink/clip if too long
+              child: Text(
+                isAnonymous ? "Anonymous" : reporterName,
+                overflow:
+                    TextOverflow.ellipsis, // ← Clean clipping for long names
+                maxLines: 1,
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  color: AppColors.instance.black500,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ],

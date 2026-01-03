@@ -16,34 +16,42 @@ class DatePickerTile extends ConsumerWidget {
 
     return InkWell(
       onTap: () => _showDatePicker(context, ref),
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(10),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          // Label — fixed part
           Text(
             'Schedule date',
             style: TextStyle(
-              fontWeight: FontFamilies.medium,
+              fontWeight: FontWeight.w500,
               fontFamily: FontFamilies.interDisplay,
               color: AppColors.instance.black400,
               fontSize: 14,
             ),
           ),
-          const Spacer(),
-          Text(
-            selectedDate != null
-                ? DateFormat('dd/MM/yyyy').format(selectedDate)
-                : "Select date",
-            style: TextStyle(
-              fontSize: 14,
-              fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.black500,
+
+          const Spacer(), // Pushes date + icon to right
+          // Selected date — safe from overflow
+          Flexible(
+            child: Text(
+              selectedDate != null
+                  ? DateFormat('dd/MM/yyyy').format(selectedDate)
+                  : "Select date",
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.end,
+              style: TextStyle(
+                fontSize: 14,
+                fontFamily: FontFamilies.interDisplay,
+                fontWeight: FontWeight.w600,
+                color:
+                    selectedDate != null
+                        ? AppColors.instance.black600
+                        : AppColors.instance.black400,
+              ),
             ),
-          ),
-          const SizedBox(width: 4),
-          Icon(
-            Icons.calendar_today_outlined,
-            size: 20,
-            color: AppColors.instance.black500,
           ),
         ],
       ),

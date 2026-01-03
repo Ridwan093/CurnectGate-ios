@@ -162,7 +162,8 @@ class __$$ViolationCountResponseImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$ViolationCountResponseImpl implements _ViolationCountResponse {
   const _$ViolationCountResponseImpl(
       {this.status, this.message, this.code, this.data});

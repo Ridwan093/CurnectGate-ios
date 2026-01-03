@@ -15,6 +15,8 @@ class AppRoutes {
   static const String oTPCode = 'auth_otpCode';
   static const String activateOTP = 'auth_activateOtp';
   static const String passRestOtpVerify = 'pass_otp_verify';
+  static const String newPoll = 'New_poll';
+  static const String voteSubmited = 'vote_submited';
 
   static const String splasScreen = '/splac_page';
 

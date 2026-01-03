@@ -111,7 +111,8 @@ class __$$OptionImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$OptionImpl implements _Option {
   const _$OptionImpl({this.key, this.name});
 

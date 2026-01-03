@@ -3,10 +3,9 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_screen/work_requst_screen.dart';
 import 'package:curnectgate/features/member_management/membership_ID/bottomSheet/member_Digital_buttomSeet.dart';
-
+import 'package:curnectgate/features/member_management/membership_ID/provider/provider.dart';
 import 'package:curnectgate/features/member_management/membership_ID/tab/DigitCodeTab.dart';
 import 'package:curnectgate/features/member_management/membership_ID/tab/QRCodeTab.dart';
-import 'package:curnectgate/features/member_management/membership_ID/provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -81,15 +80,18 @@ class DigitalCardScreen extends ConsumerWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            'QR Code',
-                            style: TextStyle(
-                              fontFamily: FontFamilies.interDisplay,
+                          Flexible(
+                            child: Text(
+                              'QR Code',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontFamily: FontFamilies.interDisplay,
 
-                              color:
-                                  tabIndex == 0
-                                      ? AppColors.instance.black600
-                                      : AppColors.instance.black600,
+                                color:
+                                    tabIndex == 0
+                                        ? AppColors.instance.black600
+                                        : AppColors.instance.black600,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 5),
@@ -120,14 +122,17 @@ class DigitalCardScreen extends ConsumerWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            '5-Digit Code',
-                            style: TextStyle(
-                              fontFamily: FontFamilies.interDisplay,
-                              color:
-                                  tabIndex == 1
-                                      ? AppColors.instance.black600
-                                      : AppColors.instance.black600,
+                          Flexible(
+                            child: Text(
+                              '5-Digit Code',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontFamily: FontFamilies.interDisplay,
+                                color:
+                                    tabIndex == 1
+                                        ? AppColors.instance.black600
+                                        : AppColors.instance.black600,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 5),

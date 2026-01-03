@@ -1,6 +1,9 @@
+import 'package:curnectgate/core/style/colors.dart';
+import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class FacilitySelector extends ConsumerWidget {
   final bool? isEnable;
@@ -90,6 +93,10 @@ class FacilitySelector extends ConsumerWidget {
                             facility,
                           );
                           return CheckboxListTile(
+                            checkColor: AppColors.instance.teal300,
+                            fillColor: WidgetStatePropertyAll(
+                              AppColors.instance.teal300,
+                            ),
                             title: Text(_formatName(facility)),
                             value: isSelected,
                             onChanged: (_) {
@@ -107,8 +114,14 @@ class FacilitySelector extends ConsumerWidget {
                 ),
                 actions: [
                   TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("Cancel"),
+                    onPressed: () => context.pop(),
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        color: AppColors.instance.black300,
+                      ),
+                    ),
                   ),
                   TextButton(
                     onPressed: () {
@@ -122,7 +135,13 @@ class FacilitySelector extends ConsumerWidget {
                       );
                       Navigator.pop(context);
                     },
-                    child: const Text("Save"),
+                    child: Text(
+                      "Save",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        color: AppColors.instance.teal300,
+                      ),
+                    ),
                   ),
                 ],
               );

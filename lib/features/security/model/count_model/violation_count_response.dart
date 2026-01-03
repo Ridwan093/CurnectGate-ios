@@ -8,6 +8,7 @@ part 'violation_count_response.g.dart';
 
 @freezed
 class ViolationCountResponse with _$ViolationCountResponse {
+   @JsonSerializable(explicitToJson: true)
   const factory ViolationCountResponse({
     bool? status,
     String? message,

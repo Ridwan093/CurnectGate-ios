@@ -149,7 +149,8 @@ class __$$AppNotificationImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$AppNotificationImpl implements _AppNotification {
   const _$AppNotificationImpl(
       {this.key = '',

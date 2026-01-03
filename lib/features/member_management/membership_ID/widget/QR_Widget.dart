@@ -71,14 +71,16 @@ class _QrWidgetState extends State<QrWidget> {
                       color: AppColors.instance.teal300,
                     ),
                     const SizedBox(width: 5),
-                    Text(
-                      widget.data.user?.estateName?.toUpperCase() ?? "",
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontFamilies.bold,
-                        fontFamily: FontFamilies.interDisplay,
-                        color: AppColors.instance.black600,
+                    Flexible(
+                      child: Text(
+                        widget.data.user?.estateName?.toUpperCase() ?? "",
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontFamilies.bold,
+                          fontFamily: FontFamilies.interDisplay,
+                          color: AppColors.instance.black600,
+                        ),
                       ),
                     ),
                   ],
@@ -150,6 +152,7 @@ class _QrWidgetState extends State<QrWidget> {
             const SizedBox(height: 3),
             Text(
               "${widget.data.user?.firstname?.toUpperCase()} ${widget.data.user?.lastname?.toUpperCase()}",
+              textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontFamilies.bold,

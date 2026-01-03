@@ -28,8 +28,8 @@ _$HouseholdPermissionsImpl _$$HouseholdPermissionsImplFromJson(
 Map<String, dynamic> _$$HouseholdPermissionsImplToJson(
         _$HouseholdPermissionsImpl instance) =>
     <String, dynamic>{
-      'gateAccess': instance.gateAccess,
-      'nightAccess': instance.nightAccess,
-      'facilityAccess': instance.facilityAccess,
-      'visitorInvitation': instance.visitorInvitation,
+      'gateAccess': instance.gateAccess?.toJson(),
+      'nightAccess': instance.nightAccess?.toJson(),
+      'facilityAccess': instance.facilityAccess?.toJson(),
+      'visitorInvitation': instance.visitorInvitation?.toJson(),
     };

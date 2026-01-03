@@ -9,6 +9,7 @@ part 'household_permissions_model.g.dart';
 
 @freezed
 class HouseholdPermissions with _$HouseholdPermissions {
+   @JsonSerializable(explicitToJson: true)
   const factory HouseholdPermissions({
     FacilityAccess? gateAccess,
     NightAccess? nightAccess,

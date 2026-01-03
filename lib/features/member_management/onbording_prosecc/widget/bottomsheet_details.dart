@@ -2,9 +2,10 @@ import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/chat/data/provider/chat_provier.dart';
+import 'package:curnectgate/features/chat/presentation/chat_widget/admin_seletion.dart';
+import 'package:curnectgate/features/chat/presentation/chat_widget/chatInit.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/chat_setting_widget.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/emergency_widget.dart';
-import 'package:curnectgate/features/chat/presentation/screens/messagbody.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/managevendorlog.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/uplodeAfterWork/uplodeAfterWork.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/Set_restrictions.dart';
@@ -142,7 +143,7 @@ class BottomsheetDetails extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     switch (bottom) {
       case BottomSheetView.chatSettings:
-        return ChatSettingsBottomSheet();
+        return ChatSettingsBottomSheet(id: id ?? 0);
       case BottomSheetView.messageEmergency:
         return EmergencyWidget();
 
@@ -435,7 +436,23 @@ class BottomsheetDetails extends ConsumerWidget {
           title: headertitle,
           subtitle: headersubtitle,
         );
+      case BottomSheetView.selectedAdminforChat:
+        return EstateAdminSelectionSheet(type: headertitle);
 
+      case BottomSheetView.selectedCommitteeChat:
+        return EstateAdminSelectionSheet(type: headertitle);
+
+      case BottomSheetView.selectedSecurityChat:
+        return EstateAdminSelectionSheet(type: headertitle);
+
+      case BottomSheetView.initChat:
+        return ChatInitialMessage(
+          id: id.toString(),
+          type: access_type ?? "",
+          recipientName: headertitle,
+          recipientRole: headersubtitle,
+          estateName: location ?? "",
+        );
       default:
         return SingleChildScrollView(
           child: Column(
@@ -484,7 +501,8 @@ class BottomsheetDetails extends ConsumerWidget {
                 _buildSetrestrictions(bottom, ref, context),
 
               if (bottom == BottomSheetView.messageuplodefile ||
-                  bottom == BottomSheetView.permissions) ...[
+                  bottom == BottomSheetView.permissions ||
+                  bottom == BottomSheetView.startConversation) ...[
                 const SizedBox(height: 5),
                 _buildthirdaryOptionTile(bottom, ref, context),
               ],
@@ -552,17 +570,21 @@ class BottomsheetDetails extends ConsumerWidget {
         break;
       case BottomSheetView.startConversation:
         onTap = () {
-          Navigator.of(context).pop();
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MessageScreens()),
+          context.pop();
+          showUserBottomSheet(
+            context: context,
+            headertitle: "admin",
+            headersubtitle: "",
+            ref: ref,
+            bottom: BottomSheetView.selectedAdminforChat,
+            id: id,
           );
         };
         leading = CircleAvatar(
           backgroundColor: AppColors.instance.grey400,
           backgroundImage: AssetImage(AssetPaths.searchUser),
         );
-        title = "Reach out to an estate Comittee";
+        title = "Reach out to an estate Admin";
         break;
       case BottomSheetView.manageOTPforvisitor:
         onTap = () async {
@@ -696,17 +718,21 @@ class BottomsheetDetails extends ConsumerWidget {
         break;
       case BottomSheetView.startConversation:
         onTap = () {
-          Navigator.of(context).pop();
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MessageScreens()),
+          context.pop();
+          showUserBottomSheet(
+            context: context,
+            headertitle: "committee",
+            headersubtitle: "",
+            ref: ref,
+            bottom: BottomSheetView.selectedCommitteeChat,
+            id: id,
           );
         };
         leading = CircleAvatar(
           backgroundColor: AppColors.instance.error300,
           backgroundImage: AssetImage(AssetPaths.reachout),
         );
-        title = "Reach out to an estate Security";
+        title = "Reach out to an estate Comittee";
         break;
       case BottomSheetView.messageuplodefile:
         onTap = () async {
@@ -815,7 +841,25 @@ class BottomsheetDetails extends ConsumerWidget {
           backgroundImage: AssetImage(AssetPaths.remove),
         );
         title = "Remove family member";
+      case BottomSheetView.startConversation:
+        onTap = () {
+          context.pop();
+          showUserBottomSheet(
+            context: context,
+            headertitle: "security",
+            headersubtitle: "",
+            ref: ref,
+            bottom: BottomSheetView.selectedSecurityChat,
+            id: id,
+          );
+        };
+        leading = CircleAvatar(
+          backgroundColor: AppColors.instance.error300,
+          backgroundImage: AssetImage(AssetPaths.reachout),
+        );
+        title = "Reach out to an estate Security";
         break;
+
       default:
         onTap = () async {
           Navigator.of(context).pop();

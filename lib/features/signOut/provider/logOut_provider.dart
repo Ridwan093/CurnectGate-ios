@@ -45,6 +45,7 @@ class SignOutNotifier extends StateNotifier<SharedPrefsService> {
           final responses = await ref
               .read(profileRepositoryProvider)
               .removedDeviceTokens(requestData: data, context: context);
+
           if (responses["status"] = true) {
             showCustomSuccessToast(
               context: context,
@@ -59,6 +60,7 @@ class SignOutNotifier extends StateNotifier<SharedPrefsService> {
             await ref.read(profilePicProvider.notifier).clearAllProfilePics();
             ref.read(tabStateProvider.notifier).resetToMainTab();
             context.goNamed(AppRoutes.signIN);
+            ref.read(sessionExpiredProvider.notifier).reset();
             ref.read(formProvider.notifier).updateLogOutLoadin(false);
           }
 
@@ -129,13 +131,14 @@ class SignOutNotifier extends StateNotifier<SharedPrefsService> {
     if (shouldLogout) {
       // 2. Clear states only after user confirms
       state.clearAuthData();
-      ref.read(sessionExpiredProvider.notifier).reset();
+      await ref.read(profilePicProvider.notifier).clearAllProfilePics();
       ref.read(tabStateProvider.notifier).resetToMainTab();
-
       // 3. Navigate to login screen
       if (context.mounted) {
         context.goNamed(AppRoutes.signIN);
       }
+
+      ref.read(sessionExpiredProvider.notifier).reset();
     } else {
       ref.read(sessionExpiredProvider.notifier).reset();
     }

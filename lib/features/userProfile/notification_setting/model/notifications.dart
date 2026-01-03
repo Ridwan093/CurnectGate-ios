@@ -8,6 +8,7 @@ part 'notifications.g.dart';
 
 @freezed
 class Notifications with _$Notifications {
+ @JsonSerializable(explicitToJson: true)
   const factory Notifications({
     required Community? email,
     required Community? sms,

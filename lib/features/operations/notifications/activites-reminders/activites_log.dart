@@ -93,13 +93,59 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
               },
             ),
             if (tabIndex == 0) ...[
-              _buildSearchAppBar(context),
-              _buildSearchBody(searchQuery),
+              SafeArea(
+                child: Column(
+                  children: [
+                    // Search bar with bottom padding for gap
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      child: _buildSearchAppBar(context),
+                    ),
+
+                    // Consistent gap — this 12px will look the same on ALL devices
+                    const SizedBox(height: 12),
+
+                    // Results card — takes remaining space
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: _buildSearchBody(searchQuery),
+                      ),
+                    ),
+
+                    // Optional bottom padding
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              ),
             ],
 
             if (tabIndex == 1) ...[
-              _buildSearchAppBar(context),
-              _buildSearchBodyReminder(searchQuery),
+              SafeArea(
+                child: Column(
+                  children: [
+                    // Search bar with bottom padding for gap
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      child: _buildSearchAppBar(context),
+                    ),
+
+                    // Consistent gap — this 12px will look the same on ALL devices
+                    const SizedBox(height: 12),
+
+                    // Results card — takes remaining space
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: _buildSearchBodyReminder(searchQuery),
+                      ),
+                    ),
+
+                    // Optional bottom padding
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              ),
             ],
           ],
         ],
@@ -165,8 +211,6 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
   Widget _buildSearchAppBar(BuildContext context) {
     return SafeArea(
       child: Container(
-        margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-        height: 50,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -329,43 +373,55 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
   Widget _buildSearchBody(String searchQuery) {
     final activities = _filterActivities(searchQuery);
 
-    return Container(
-      margin: EdgeInsets.fromLTRB(10, 90, 10, 0),
-      width: MediaQuery.sizeOf(context).width,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Calculate safe top margin based on screen height
 
-      height: activities.isEmpty ? 150 : null,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child:
-          activities.isEmpty
-              ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 100),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'No results found for "$searchQuery"',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: FontFamilies.interDisplay,
-                        fontWeight: FontFamilies.bold,
-                        color: AppColors.instance.black300,
-                      ),
-                    ),
-                  ),
-                ],
-              )
-              : ListView.builder(
-                itemCount: activities.length,
-                itemBuilder: (context, index) {
-                  final activity = activities[index];
-                  return ActivityCard(activity: activity);
-                },
+        return Container(
+          width: MediaQuery.sizeOf(context).width,
+
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, -2),
               ),
+            ],
+          ),
+          child:
+              activities.isEmpty
+                  ? Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      // const SizedBox(height: 100),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0, 100, 8.0, 8.0),
+                        child: Text(
+                          'No results found for "$searchQuery"',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: FontFamilies.interDisplay,
+                            fontWeight: FontFamilies.bold,
+                            color: AppColors.instance.black300,
+                          ),
+                        ),
+                      ),
+                      // const SizedBox(height: 50),
+                    ],
+                  )
+                  : ListView.builder(
+                    padding: const EdgeInsets.all(8),
+                    itemCount: activities.length,
+                    itemBuilder: (context, index) {
+                      final activity = activities[index];
+                      return ActivityCard(activity: activity);
+                    },
+                  ),
+        );
+      },
     );
   }
 
@@ -401,43 +457,55 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
   Widget _buildSearchBodyReminder(String searchQuery) {
     final activities = _filterActivitiesreminder(searchQuery);
 
-    return Container(
-      margin: EdgeInsets.fromLTRB(10, 90, 10, 0),
-      width: MediaQuery.sizeOf(context).width,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Calculate safe top margin based on screen height
 
-      height: activities.isEmpty ? 150 : null,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child:
-          activities.isEmpty
-              ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 100),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'No results found for "$searchQuery"',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: FontFamilies.interDisplay,
-                        fontWeight: FontFamilies.bold,
-                        color: AppColors.instance.black300,
-                      ),
-                    ),
-                  ),
-                ],
-              )
-              : ListView.builder(
-                itemCount: activities.length,
-                itemBuilder: (context, index) {
-                  final activity = activities[index];
-                  return ReminderCard(activity: activity);
-                },
+        return Container(
+          width: MediaQuery.sizeOf(context).width,
+
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, -2),
               ),
+            ],
+          ),
+          child:
+              activities.isEmpty
+                  ? Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      // const SizedBox(height: 100),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0, 100, 8.0, 8.0),
+                        child: Text(
+                          'No results found for "$searchQuery"',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: FontFamilies.interDisplay,
+                            fontWeight: FontFamilies.bold,
+                            color: AppColors.instance.black300,
+                          ),
+                        ),
+                      ),
+                      // const SizedBox(height: 50),
+                    ],
+                  )
+                  : ListView.builder(
+                    padding: const EdgeInsets.all(8),
+                    itemCount: activities.length,
+                    itemBuilder: (context, index) {
+                      final activity = activities[index];
+                      return ReminderCard(activity: activity);
+                    },
+                  ),
+        );
+      },
     );
   }
 

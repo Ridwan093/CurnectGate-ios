@@ -7,6 +7,7 @@ part 'data_model.g.dart';
 
 @freezed
 class Data with _$Data {
+   @JsonSerializable(explicitToJson: true)
   const factory Data({
     @Default(0) int id,
     @Default('') String firstname,

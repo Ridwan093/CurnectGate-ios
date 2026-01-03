@@ -151,7 +151,8 @@ class __$$GetUserProfileImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$GetUserProfileImpl implements _GetUserProfile {
   const _$GetUserProfileImpl(
       {this.status = false,

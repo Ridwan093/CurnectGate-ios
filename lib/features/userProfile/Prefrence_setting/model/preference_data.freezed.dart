@@ -122,7 +122,8 @@ class __$$PreferenceDataImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$PreferenceDataImpl implements _PreferenceData {
   const _$PreferenceDataImpl({this.preferences});
 

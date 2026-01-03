@@ -26,5 +26,5 @@ Map<String, dynamic> _$$PreferenceImplToJson(_$PreferenceImpl instance) =>
       'type': instance.type,
       'value': instance.value,
       'description': instance.description,
-      'options': instance.options,
+      'options': instance.options.map((e) => e.toJson()).toList(),
     };

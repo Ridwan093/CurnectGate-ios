@@ -6,6 +6,7 @@ part 'profile_visibility.g.dart';
 
 @freezed
 class ProfileVisibility with _$ProfileVisibility {
+   @JsonSerializable(explicitToJson: true)
   const factory ProfileVisibility({
     String? name,
     String? description,

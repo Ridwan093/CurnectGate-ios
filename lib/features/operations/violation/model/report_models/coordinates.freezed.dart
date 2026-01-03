@@ -114,7 +114,8 @@ class __$$CoordinatesImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$CoordinatesImpl implements _Coordinates {
   const _$CoordinatesImpl({required this.latitude, required this.longitude});
 

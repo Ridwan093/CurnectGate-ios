@@ -8,6 +8,7 @@ part 'get_user_notification_settings.g.dart';
 
 @freezed
 class GetUserNotificationSettings with _$GetUserNotificationSettings {
+    @JsonSerializable(explicitToJson: true)
   const factory GetUserNotificationSettings({
     required bool? status,
     required String? message,

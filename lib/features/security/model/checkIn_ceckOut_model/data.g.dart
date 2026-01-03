@@ -7,6 +7,13 @@ part of 'data.dart';
 // **************************************************************************
 
 
+Map<String, dynamic> _$DataPayloadToJson(DataPayload instance) =>
+    <String, dynamic>{
+      'visitors': instance.visitors?.map((e) => e.toJson()).toList(),
+      'count': instance.count,
+      'estate_id': instance.estateId,
+      'showing_my_visitors_only': instance.showingMyVisitorsOnly,
+    };
 
 _$DataPayloadImpl _$$DataPayloadImplFromJson(Map<String, dynamic> json) =>
     _$DataPayloadImpl(

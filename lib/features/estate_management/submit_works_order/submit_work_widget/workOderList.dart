@@ -187,12 +187,12 @@ class Workoderlist extends ConsumerWidget {
   }
 
   Widget _buildStatusWidget(String status, TaskStatus state) {
-    Color getLabelColor(TaskStatus current, TaskStatus target) {
-      if (current.index >= target.index) {
-        return AppColors.instance.black600; // highlighted (or use custom color)
-      }
-      return AppColors.instance.black300; // dimmed
-    }
+    // Color getLabelColor(TaskStatus current, TaskStatus target) {
+    //   if (current.index >= target.index) {
+    //     return AppColors.instance.black600; // highlighted (or use custom color)
+    //   }
+    //   return AppColors.instance.black300; // dimmed
+    // }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,45 +206,39 @@ class Workoderlist extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              "Pending",
-              style: TextStyle(
-                color: getLabelColor(state, TaskStatus.pending),
-                fontWeight: FontFamilies.bold,
-                fontFamily: FontFamilies.interDisplay,
-                fontSize: 14,
-              ),
-            ),
-            Text(
-              "Start",
-              style: TextStyle(
-                color: getLabelColor(state, TaskStatus.start),
-                fontWeight: FontFamilies.bold,
-                fontFamily: FontFamilies.interDisplay,
-                fontSize: 14,
-              ),
-            ),
-            Text(
-              "In Progress",
-              style: TextStyle(
-                color: getLabelColor(state, TaskStatus.inProgress),
-                fontWeight: FontFamilies.bold,
-                fontFamily: FontFamilies.interDisplay,
-                fontSize: 14,
-              ),
-            ),
-            Text(
-              "Completed",
-              style: TextStyle(
-                color: getLabelColor(state, TaskStatus.complete),
-                fontWeight: FontFamilies.bold,
-                fontFamily: FontFamilies.interDisplay,
-                fontSize: 14,
-              ),
-            ),
+            _buildStatusLabel("Pending", state, TaskStatus.pending),
+            _buildStatusLabel("Start", state, TaskStatus.start),
+            _buildStatusLabel("In Progress", state, TaskStatus.inProgress),
+            _buildStatusLabel("Completed", state, TaskStatus.complete),
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildStatusLabel(
+    String label,
+    TaskStatus currentState,
+    TaskStatus targetState,
+  ) {
+    final bool isActive = currentState.index >= targetState.index;
+    final Color textColor =
+        isActive ? AppColors.instance.black600 : AppColors.instance.black300;
+
+    return Flexible(
+      // ← Key: allows shrinking + clipping
+      child: Text(
+        label,
+        overflow: TextOverflow.ellipsis, // ← Clips long text safely
+        maxLines: 1,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: textColor,
+          fontWeight: FontFamilies.bold,
+          fontFamily: FontFamilies.interDisplay,
+          fontSize: 14,
+        ),
+      ),
     );
   }
 

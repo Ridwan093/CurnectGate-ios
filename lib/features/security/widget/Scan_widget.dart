@@ -215,8 +215,9 @@
 //     );
 //   }
 // }
+
 import 'dart:convert';
-import 'dart:developer';
+import 'dart:io';
 
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -239,13 +240,21 @@ class ScanWidget extends ConsumerStatefulWidget {
 class _ScanWidgetState extends ConsumerState<ScanWidget> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? qrController;
-  bool _isFlashOn = false;
 
+  bool _hasScanned = false;
   @override
   void initState() {
     super.initState();
     // _isFlashOn = ref.read(torchStateProvider);
   }
+@override
+void reassemble() {
+  super.reassemble();
+  if (Platform.isAndroid) {
+    qrController?.pauseCamera();
+  }
+  qrController?.resumeCamera();
+}
 
   @override
   void dispose() {
@@ -253,55 +262,102 @@ class _ScanWidgetState extends ConsumerState<ScanWidget> {
     super.dispose();
   }
 
-  void _onQRViewCreated(QRViewController controller) {
-    setState(() {
-      qrController = controller;
-    });
+  // void _onQRViewCreated(QRViewController controller) {
+  //   setState(() {
+  //     qrController = controller;
+  //   });
 
-    controller.scannedDataStream.listen((scanData) {
-      final barcode = scanData.code;
-      if (barcode != null) {
-        try {
-          final decodedString = utf8.decode(base64.decode(barcode));
-          log('🔓 DECODED STRING: $decodedString');
+  //   controller.scannedDataStream.listen((scanData) {
+  //     final barcode = scanData.code;
+  //     if (_hasScanned) return;
+  //     _hasScanned = true;
 
-          // Parse and log JSON
-          final jsonData = json.decode(decodedString);
-          log('📦 JSON STRUCTURE: ${jsonData.toString()}');
-          log('🆔 Digital ID: ${jsonData['digital_id_code']}');
-          log('🏠 Estate ID: ${jsonData['estate_id']}');
-          log('👤 User ID: ${jsonData['user_id']}');
-          log('⏰ Generated At: ${jsonData['generated_at']}');
+  //     if (barcode == null || barcode.isEmpty) {
+  //       _hasScanned = false;
+  //       return;
+  //     }
 
-          ref.read(qrScanProvider.notifier).state = false;
+  //     controller.pauseCamera();
+  //     try {
+  //       final decodedString = utf8.decode(base64.decode(barcode));
+  //       log('🔓 DECODED STRING: $decodedString');
 
-          log(barcode);
-          showUserBottomSheet(
-            context: context,
-            headertitle: barcode,
-            headersubtitle: jsonData['type'],
-            ref: ref,
-            bottom: BottomSheetView.additionForScan,
-          );
+  //       // Parse and log JSON
+  //       final jsonData = json.decode(decodedString);
+  //       log('📦 JSON STRUCTURE: ${jsonData.toString()}');
+  //       log('🆔 Digital ID: ${jsonData['digital_id_code']}');
+  //       log('🏠 Estate ID: ${jsonData['estate_id']}');
+  //       log('👤 User ID: ${jsonData['user_id']}');
+  //       log('⏰ Generated At: ${jsonData['generated_at']}');
 
-          // Pause camera after successful scan to prevent multiple scans
-          controller.pauseCamera();
-        } catch (e) {
-          log('Error processing QR code: $e');
-          // Handle non-base64 QR codes or other formats
-          ref.read(qrScanProvider.notifier).state = false;
-          showUserBottomSheet(
-            context: context,
-            headertitle: barcode,
-            headersubtitle: "Direct QR Code",
-            ref: ref,
-            bottom: BottomSheetView.additionForScan,
-          );
-          controller.pauseCamera();
-        }
-      }
-    });
+  //       ref.read(qrScanProvider.notifier).state = false;
+
+  //       log(barcode);
+  //       showUserBottomSheet(
+  //         context: context,
+  //         headertitle: barcode,
+  //         headersubtitle: jsonData['type'],
+  //         ref: ref,
+  //         bottom: BottomSheetView.additionForScan,
+  //       );
+
+  //       // Pause camera after successful scan to prevent multiple scans
+  //       controller.pauseCamera();
+  //     } catch (e) {
+  //       log('Error processing QR code: $e');
+  //       // Handle non-base64 QR codes or other formats
+  //       ref.read(qrScanProvider.notifier).state = false;
+  //       showUserBottomSheet(
+  //         context: context,
+  //         headertitle: barcode,
+  //         headersubtitle: "Direct QR Code",
+  //         ref: ref,
+  //         bottom: BottomSheetView.additionForScan,
+  //       );
+  //       controller.pauseCamera();
+  //     }
+  //   });
+  // }
+void _onQRViewCreated(QRViewController controller) {
+  if (!mounted) {
+    controller.dispose();
+    return;
   }
+
+  qrController?.dispose();
+  qrController = controller;
+
+  controller.scannedDataStream.listen((scanData) {
+    if (_hasScanned) return;
+
+    final barcode = scanData.code;
+    if (barcode == null || barcode.isEmpty) return;
+
+    _hasScanned = true;
+    controller.pauseCamera();
+
+    try {
+      final decodedString = utf8.decode(base64.decode(barcode));
+      final jsonData = json.decode(decodedString);
+
+      showUserBottomSheet(
+        context: context,
+        headertitle: barcode,
+        headersubtitle: jsonData['type'],
+        ref: ref,
+        bottom: BottomSheetView.additionForScan,
+      );
+    } catch (_) {
+      showUserBottomSheet(
+        context: context,
+        headertitle: barcode,
+        headersubtitle: "Direct QR Code",
+        ref: ref,
+        bottom: BottomSheetView.additionForScan,
+      );
+    }
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -382,9 +438,6 @@ class _ScanWidgetState extends ConsumerState<ScanWidget> {
                   final newState = !torchEnabled;
                   ref.read(torchStateProvider.notifier).state = newState;
                   qrController?.toggleFlash();
-                  setState(() {
-                    _isFlashOn = newState;
-                  });
                 },
               ),
               const SizedBox(height: 10),
@@ -392,7 +445,7 @@ class _ScanWidgetState extends ConsumerState<ScanWidget> {
               // Enter ID Button
               InkWell(
                 onTap: () {
-                  qrController?.dispose();
+                  qrController?.pauseCamera();
                   ref.read(qrScanProvider.notifier).state = false;
                   notifier.updateValidationType("");
 
@@ -426,7 +479,7 @@ class _ScanWidgetState extends ConsumerState<ScanWidget> {
           child: IconButton(
             icon: const Icon(Icons.close, size: 32, color: Colors.white),
             onPressed: () {
-              qrController?.dispose();
+              qrController?.pauseCamera();
               ref.read(qrScanProvider.notifier).state = false;
             },
           ),
@@ -435,35 +488,4 @@ class _ScanWidgetState extends ConsumerState<ScanWidget> {
     );
   }
 
-  void _showManualIDEntry(BuildContext context) {
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text("Enter ID Manually"),
-            content: TextField(
-              decoration: const InputDecoration(
-                hintText: "Enter the ID number",
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text("Cancel"),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("ID submitted successfully")),
-                  );
-                },
-                child: const Text("Submit"),
-              ),
-            ],
-          ),
-    );
-  }
 }

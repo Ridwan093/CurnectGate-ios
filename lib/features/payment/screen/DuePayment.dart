@@ -60,64 +60,73 @@ class DuePayment extends ConsumerWidget {
     final listoutStanding = data?.dues ?? [];
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: () {
-                // Navigate to next screen
-                context.pop();
-                context.pushNamed(
-                  AppRoutes.paymentReview,
-                  extra: {"list": listoutStanding, "wallet": walletBalance},
-                );
-              },
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      // Navigate to next screen
+                      context.pop();
+                      context.pushNamed(
+                        AppRoutes.paymentReview,
+                        extra: {
+                          "list": listoutStanding,
+                          "wallet": walletBalance,
+                        },
+                      );
+                    },
 
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color: AppColors.instance.black600,
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: AppColors.instance.black600,
 
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Center(
-                  child: Text(
-                    "Next",
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      color: Colors.white,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Next",
+                          style: TextStyle(
+                            fontFamily: FontFamilies.interDisplay,
+                            color: Colors.white,
 
-                      fontSize: 14,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
+                SizedBox(width: 10),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Next step:",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        color: AppColors.instance.black300,
+                        fontSize: 12,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      "2:Review",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        color: AppColors.instance.black300,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ),
-          SizedBox(width: 10),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Next step:",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black300,
-                  fontSize: 12,
-                ),
-              ),
-              SizedBox(height: 5),
-              Text(
-                "2:Review",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black300,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -207,7 +216,7 @@ class DuePayment extends ConsumerWidget {
 
   Widget _buildNotifyerBox(String wallet, String due) {
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
         border: Border.all(
           style: BorderStyle.solid,
@@ -216,71 +225,84 @@ class DuePayment extends ConsumerWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Your Wallet",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  fontSize: 12,
-                  wordSpacing: 2,
-                  color: AppColors.instance.black600,
+          // Left: Wallet
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Your Wallet",
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontSize: 13,
+                    color: AppColors.instance.black600,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
-              Text(
-                " ₦${formatPrice(wallet)}",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  fontSize: 12,
-                  wordSpacing: 2,
-                  color: AppColors.instance.black300,
+                const SizedBox(height: 4),
+                Text(
+                  "₦${formatPrice(wallet)}",
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontSize: 15,
+                    color: AppColors.instance.black300,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          Container(
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                style: BorderStyle.solid,
-                color: AppColors.instance.grey300,
-              ),
-            ),
-
-            child: Icon(
-              Icons.arrow_forward,
-              color: AppColors.instance.black600,
-              size: 12,
+              ],
             ),
           ),
 
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                "Your Total due",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  fontSize: 12,
-                  wordSpacing: 2,
-                  color: AppColors.instance.black600,
-                ),
+          // Center: Arrow Icon
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.instance.grey200,
               ),
-              Text(
-                " ₦${formatPrice(due)}",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  fontSize: 12,
-                  wordSpacing: 2,
-                  color: AppColors.instance.black300,
-                ),
+              child: Icon(
+                Icons.arrow_forward_rounded,
+                size: 18,
+                color: AppColors.instance.black600,
               ),
-            ],
+            ),
+          ),
+
+          // Right: Total Due
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Your Total due",
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontSize: 13,
+                    color: AppColors.instance.black600,
+                    fontWeight: FontFamilies.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "₦${formatPrice(due)}",
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontSize: 15,
+                    color: AppColors.instance.black300,
+                    fontWeight: FontFamilies.bold,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -296,47 +318,83 @@ class DuePayment extends ConsumerWidget {
   }) {
     return InkWell(
       onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.only(bottom: 10),
-        height: 70,
 
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         decoration: BoxDecoration(
           color: AppColors.instance.grey300,
 
-          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
-        child: ListTile(
-          leading: CircleAvatar(
-            backgroundColor: AppColors.instance.teal300,
-            child: Center(child: Image.asset(iconPath, width: 15)),
-          ),
-          title: Text(
-            title,
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontWeight: FontFamilies.bold,
-              color: AppColors.instance.black600,
-              fontSize: 14,
+        child: Row(
+          children: [
+            // Icon
+            CircleAvatar(
+              radius: 22,
+              backgroundColor: AppColors.instance.teal300,
+              child: Image.asset(
+                iconPath,
+                width: 28,
+                height: 28,
+                fit: BoxFit.contain,
+              ),
             ),
-          ),
-          trailing: Text(
-            amount,
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontWeight: FontFamilies.bold,
-              color: AppColors.instance.black600,
-              fontSize: 13,
+
+            const SizedBox(width: 16),
+
+            // Title + Subtitle — takes available space
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.instance.black600,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.instance.black400,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          subtitle: Text(
-            subtitle,
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontWeight: FontFamilies.light,
-              color: AppColors.instance.black400,
-              fontSize: 11,
+
+            const SizedBox(width: 16),
+
+            // Amount — aligned right
+            Text(
+              amount,
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                fontWeight: FontWeight.bold,
+                color: AppColors.instance.black600,
+                fontSize: 15,
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

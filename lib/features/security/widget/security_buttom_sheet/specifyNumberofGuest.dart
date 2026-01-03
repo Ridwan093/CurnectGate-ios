@@ -211,30 +211,33 @@ class _SpecifyumberOfGuestState extends ConsumerState<SpecifyumberOfGuest> {
         borderRadius: BorderRadius.circular(10),
       ),
 
-      child: Column(
-        spacing: 5,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "Name",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontSize: 12,
-              fontWeight: FontFamilies.bold,
-              color: AppColors.instance.teal400,
+      child: SingleChildScrollView(
+        child: Column(
+          spacing: 5,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Name",
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                fontSize: 12,
+                fontWeight: FontFamilies.bold,
+                color: AppColors.instance.teal400,
+              ),
             ),
-          ),
 
-          Text(
-            userName,
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
+            Text(
+              userName,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
 
-              fontWeight: FontFamilies.bold,
-              color: AppColors.instance.black600,
+                fontWeight: FontFamilies.bold,
+                color: AppColors.instance.black600,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -256,7 +259,6 @@ class _SpecifyumberOfGuestState extends ConsumerState<SpecifyumberOfGuest> {
       onPressed:
           numberOfGust.isNotEmpty
               ? () {
-          
                 formprovider.grantAccess(
                   context: context,
                   numberofguest: numberOfGust,

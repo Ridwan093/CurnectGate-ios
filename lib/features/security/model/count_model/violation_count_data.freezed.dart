@@ -248,7 +248,8 @@ class __$$ViolationCountDataImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$ViolationCountDataImpl implements _ViolationCountData {
   const _$ViolationCountDataImpl(
       {this.total,

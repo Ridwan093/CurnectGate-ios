@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-
+///585099 digita id
+/// 110582
 class OtpInputField extends StatefulWidget {
   final int length;
   final Color activeColor;

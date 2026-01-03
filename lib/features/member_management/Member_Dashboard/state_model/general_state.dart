@@ -312,7 +312,7 @@ class FormStates {
     bool? logOutLoading,
     bool? notificationSettingLoading,
     bool? prevencyLoading,
-    bool? privacyLoading,
+    bool? chattingLoading,
     bool? reportLoading,
     bool? commentLoading,
     bool? changProfileInfoLoading,
@@ -444,7 +444,7 @@ class FormStates {
       notificationSettingLoading:
           notificationSettingLoading ?? this.notificationSettingLoading,
       prevencyLoading: prevencyLoading ?? this.prevencyLoading,
-      privacyLoading: privacyLoading ?? this.privacyLoading,
+      privacyLoading: chattingLoading ?? this.privacyLoading,
       reportLoading: reportLoading ?? this.reportLoading,
       commentLoading: commentLoading ?? this.commentLoading,
       changProfileInfoLoading:

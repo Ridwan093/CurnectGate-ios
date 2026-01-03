@@ -117,21 +117,23 @@ class GoingEvents extends ConsumerWidget {
 
   Widget _buildEmtyBody() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(AssetPaths.dashboardEvents, height: 100, width: 100),
-          SizedBox(height: 10),
-          Text(
-            "Your Evente detailes appears here",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.black300,
-              fontSize: 12,
-              fontWeight: FontFamilies.medium,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(AssetPaths.dashboardEvents, height: 100, width: 100),
+            SizedBox(height: 10),
+            Text(
+              "Your Evente detailes appears here",
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                color: AppColors.instance.black300,
+                fontSize: 12,
+                fontWeight: FontFamilies.medium,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

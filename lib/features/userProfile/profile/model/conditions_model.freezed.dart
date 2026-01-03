@@ -103,7 +103,8 @@ class __$$ConditionsImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$ConditionsImpl implements _Conditions {
   const _$ConditionsImpl({final List<dynamic> timeRestrictions = const []})
       : _timeRestrictions = timeRestrictions;

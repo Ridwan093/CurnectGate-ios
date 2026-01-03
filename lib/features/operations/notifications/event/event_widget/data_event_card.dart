@@ -214,13 +214,16 @@ class DataEventCard extends ConsumerWidget {
       children: [
         Icon(icon, size: 18, color: AppColors.instance.black300),
         const SizedBox(width: 5),
-        Text(
-          title,
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontSize: 12,
-            fontWeight: FontFamilies.medium,
-            color: AppColors.instance.black300,
+        Flexible(
+          child: Text(
+            title,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              fontSize: 12,
+              fontWeight: FontFamilies.medium,
+              color: AppColors.instance.black300,
+            ),
           ),
         ),
       ],

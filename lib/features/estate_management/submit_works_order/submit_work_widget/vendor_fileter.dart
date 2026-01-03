@@ -8,13 +8,11 @@ class CustomStatusDropdown extends StatefulWidget {
 
   final List<String> statusOptions;
 
-
-
   const CustomStatusDropdown({
     super.key,
     required this.onStatusChanged,
     required this.statusOptions,
-   required  this.initialStatus,
+    required this.initialStatus,
   });
 
   @override
@@ -87,27 +85,36 @@ class _CustomStatusDropdownState extends State<CustomStatusDropdown> {
       key: _buttonKey,
       onTap: _showDropdownMenu,
       child: Container(
-        height: 48, // You can adjust height here
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        height: 48,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        constraints: const BoxConstraints(
+          minWidth: 120,
+        ), // Prevents too small on large screens
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.instance.black500),
+          border: Border.all(color: AppColors.instance.black500, width: 1.5),
           borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              _selectedStatus,
-              style: TextStyle(
-                fontSize: 12,
-                fontFamily: FontFamilies.interDisplay,
-                fontWeight: FontFamilies.bold,
-                color: AppColors.instance.black600,
+            // Selected text — safe from overflow
+            Flexible(
+              child: Text(
+                _selectedStatus,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontFamily: FontFamilies.interDisplay,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.instance.black600,
+                ),
               ),
             ),
             const SizedBox(width: 8),
             Icon(
-              Icons.keyboard_arrow_down,
+              Icons.keyboard_arrow_down_rounded,
               size: 20,
               color: AppColors.instance.black600,
             ),

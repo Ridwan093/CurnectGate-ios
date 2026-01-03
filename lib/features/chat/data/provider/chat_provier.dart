@@ -1,6 +1,5 @@
 // Riverpod provider for chat state
 import 'dart:developer';
-
 import 'package:curnectgate/features/chat/data/chat_model/message_state.dart';
 import 'package:curnectgate/features/chat/data/provider/%20chat_list_provider.dart';
 import 'package:file_picker/file_picker.dart';
