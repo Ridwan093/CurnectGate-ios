@@ -2,6 +2,7 @@
 import 'dart:developer';
 
 import 'package:curnectgate/core/%20utils/api/api_url.dart';
+import 'package:curnectgate/features/%20operations/property_agreement/model/agreements_response.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/comittee_model/committees_response_model.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resident_directory_respond.dart';
 import 'package:curnectgate/features/chat/data/chat_model/availableAdmin/estate_admins_response.dart';
@@ -1199,17 +1200,24 @@ class GetApiService {
     try {
       final response = await _dio.get(
         getAvailabeCommeti, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
       );
       log(response.data.toString());
 
       return CommitteeMembersResponse.safeFromJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<AgreementsResponse> getAgreement() async {
+    try {
+      final response = await _dio.get(
+        aGREEMENT, // Update with your actual endpoint
+      );
+      log(response.data.toString());
+
+      return AgreementsResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);

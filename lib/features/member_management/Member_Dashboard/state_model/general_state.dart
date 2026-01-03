@@ -58,6 +58,7 @@ class FormStates {
   final bool? parkingAccessLoading;
   final bool? visitorAccessLoading;
   final bool? basicPermissionLoading;
+  final bool? termsAndCondintionLoading;
   final bool schedulOtpLoading;
   final bool generateOtpWithValidatorLoading;
   final bool revokOtpLoading;
@@ -210,6 +211,7 @@ class FormStates {
     this.changPassLoading = false,
     this.forgetPaSsLoading = false,
     this.forgotOtpLoading = false,
+    this.termsAndCondintionLoading = false,
     this.changTemporyPassLoading = false,
     this.firstNameError,
     this.lastNameError,
@@ -276,6 +278,7 @@ class FormStates {
     bool? nightAccessLoading,
 
     bool? parkingAccessLoading,
+    bool? termsAndCondintionLoading,
     bool? workOderLoading,
     bool? visitorAccessLoading,
     bool? basicPermissionLoading,
@@ -377,6 +380,8 @@ class FormStates {
     int? resendCountdownTime,
   }) {
     return FormStates(
+      termsAndCondintionLoading:
+          termsAndCondintionLoading ?? this.termsAndCondintionLoading,
       workOderLoading: workOderLoading ?? this.workOderLoading,
       facilityLoading: facilityLoading ?? this.facilityLoading,
       curfewLoading: curfewLoading ?? this.curfewLoading,

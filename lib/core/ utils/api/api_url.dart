@@ -15,9 +15,16 @@ const String registerDeviceToken = "/api/v1/auth/device-tokens/register";
 const String refresToken = "/api/v1/auth/refresh-token";
 const String setUpBiometri = "/api/v1/auth/biometric/setup";
 const String enableBiometric = "/api/v1/auth/biometric/disable";
-//NEXT CREATE NEW PASSWORD API URL
+
+// AGREEMENT POST'
+
 const String onboardingHouseHold =
     "/api/v1/estates/owner-portal/households/onboarding";
+//NEXT CREATE NEW PASSWORD API URL
+const String aGREEMENT = "/api/v1/estates/general/agreements";
+const String agreementSign = "/api/v1/estates/general/agreements/sign-property";
+const String termAccept = "/api/v1/estates/general/agreements/accept-terms";
+const String decline = "/api/v1/estates/general/agreements/decline";
 
 const String markNotificationAsRead =
     "/api/v1/estates/general/notifications/mark-all-read";
@@ -228,20 +235,23 @@ const String getPaymentMethod =
 
 const String emergencyContact =
     "/api/v1/estates/general/settings/user-management";
+
 /// CHATING URL
 
 /// GET API
-const String getAvailableAdmin = "/api/v1/estates/general/messaging/contacts/admins";
+const String getAvailableAdmin =
+    "/api/v1/estates/general/messaging/contacts/admins";
 const String getAvailabeCommeti =
     "/api/v1/estates/general/messaging/contacts/committee";
 const String getAvailableScurity =
     "/api/v1/estates/general/messaging/contacts/security";
-const String getAvailableConversation = "/api/v1/estates/general/messaging/conversations";
-const String getUnredCounts =
-    "/api/v1/estates/general/messaging/unread-counts";
+const String getAvailableConversation =
+    "/api/v1/estates/general/messaging/conversations";
+const String getUnredCounts = "/api/v1/estates/general/messaging/unread-counts";
 
 /// POST API
-const String startConversation = "/api/v1/estates/general/messaging/conversations/start";
+const String startConversation =
+    "/api/v1/estates/general/messaging/conversations/start";
 const String markUnreadCount =
     "/api/v1/estates/general/messaging/mark-all-read";
 // const String getPaymentHistorys = "/api/v1/estates/general/payments/history";

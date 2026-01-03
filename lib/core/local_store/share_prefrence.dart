@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:curnectgate/features/%20operations/property_agreement/model/agreements_response.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/comittee_model/committees_response_model.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resident_directory_respond.dart';
 import 'package:curnectgate/features/chat/data/chat_model/availableAdmin/estate_admins_response.dart';
@@ -150,6 +151,7 @@ class SharedPrefsService {
   static const String _emergencyContact = "Emergency_key";
   static const String _getAdminList = "_admin_key";
   static const String _committeKey = "Com_key";
+  static const String _agreement_Key = "agreement_key";
 
   //// CHATTING SERVECE
 
@@ -891,6 +893,20 @@ class SharedPrefsService {
     return null;
   }
 
+  static Future<void> saveAgreement(AgreementsResponse profile) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_agreement_Key, jsonEncode(profile.toJson()));
+  }
+
+  static Future<AgreementsResponse?> getAgreement() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_agreement_Key);
+    if (data != null) {
+      return AgreementsResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
   static Future<void> saveProfile(GetUserProfile profile) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_profileKey, jsonEncode(profile.toJson()));
@@ -1232,6 +1248,11 @@ class SharedPrefsService {
     await prefs.remove(_getAdminList);
   }
 
+  static Future<void> clearAgreement() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_agreement_Key);
+  }
+
   static Future<void> clearViolationCount() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_violationCountKey);
@@ -1333,6 +1354,7 @@ class SharedPrefsService {
     clearSecurfew();
     clearCommitteeList();
     clearAdminList();
+    clearAgreement();
     await prefs.remove(_keyAuthData);
   }
 }

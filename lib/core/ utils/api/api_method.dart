@@ -24,7 +24,7 @@ class AppApiMethod {
   }
 
   // Future<Map<String, dynamic>> submitMemberCode({
-  //   required String code,
+  //   required String  code,
   //   required String estateCode,
   // }) async {
   //   // Implementation for member code
@@ -4435,6 +4435,98 @@ class AppApiMethod {
 
       final response = await _dio.post(
         "/api/v1/estates/general/messaging/conversations/$id/settings",
+        data: requestData,
+        options: Options(
+          validateStatus: (status) => status != null && status < 500,
+          headers: {"Accept": "application/json"},
+        ),
+      );
+
+      log('Response: ${response.data}');
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      log('Dio Error');
+      log('Status: ${e.response?.statusCode}');
+      log('Response: ${e.response?.data}');
+      log('Headers: ${e.response?.headers}');
+      log('Request Data: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> agreementsiging({
+    required File signatur,
+    required String fullName,
+
+    required BuildContext context,
+  }) async {
+    try {
+      final requestData = {"signature": signatur, "full_name": fullName};
+
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        agreementSign,
+        data: requestData,
+        options: Options(
+          validateStatus: (status) => status != null && status < 500,
+          headers: {"Accept": "application/json"},
+        ),
+      );
+
+      log('Response: ${response.data}');
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      log('Dio Error');
+      log('Status: ${e.response?.statusCode}');
+      log('Response: ${e.response?.data}');
+      log('Headers: ${e.response?.headers}');
+      log('Request Data: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> termsAndCondition({
+    required BuildContext context,
+  }) async {
+    try {
+      final response = await _dio.post(
+        termAccept,
+
+        options: Options(
+          validateStatus: (status) => status != null && status < 500,
+          headers: {"Accept": "application/json"},
+        ),
+      );
+
+      log('Response: ${response.data}');
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      log('Dio Error');
+      log('Status: ${e.response?.statusCode}');
+      log('Response: ${e.response?.data}');
+      log('Headers: ${e.response?.headers}');
+      log('Request Data: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> agreementAndTermsDecline({
+    required bool isProperty,
+    required String reason,
+    required BuildContext context,
+  }) async {
+    try {
+      final requestData = {
+        "agreement_type":
+            isProperty ? "property_agreement" : "terms_and_conditions",
+        "reason": reason,
+      };
+
+      log('Request payload: $requestData');
+
+      final response = await _dio.post(
+        decline,
         data: requestData,
         options: Options(
           validateStatus: (status) => status != null && status < 500,

@@ -109,16 +109,16 @@ class _SignInState extends ConsumerState<SignIn> {
   }
 
   PreferredSizeWidget _buildAppBar() {
-    final backPressNotifier = ref.read(backPressProvider.notifier);
-    final router = GoRouter.of(context);
+    // final backPressNotifier = ref.read(backPressProvider.notifier);
+    // final router = GoRouter.of(context);
     return AppBar(
-      leading: InkWell(
-        onTap: () {
-          backPressNotifier.reset();
-          router.pop();
-        },
-        child: const Icon(Icons.arrow_back_ios_new),
-      ),
+      // leading: InkWell(
+      //   onTap: () {
+      //     backPressNotifier.reset();
+      //     router.pop();
+      //   },
+      //   child: const Icon(Icons.arrow_back_ios_new),
+      // ),
       actions: [_buildTextButton()],
     );
   }

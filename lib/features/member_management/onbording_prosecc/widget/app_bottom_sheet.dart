@@ -156,6 +156,13 @@ Widget _buildCurrentView(
         headersubtitle: userRole,
         bottom: bottom,
       );
+    case BottomSheetView.termsAndCondition:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
 
     case BottomSheetView.afterphoto:
       return BottomsheetDetails(

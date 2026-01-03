@@ -1,6 +1,7 @@
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/widgets/GetYourCode.dart';
+import 'package:curnectgate/features/%20operations/property_agreement/agreement_sign_screen.dart';
 import 'package:curnectgate/features/ResidentDirectory/Screen/ResidentTab.dart';
 import 'package:curnectgate/features/auth/data/auth_model/OnboardingProgressManager.dart';
 import 'package:curnectgate/features/auth/data/auth_model/onbording_enum.dart';
@@ -480,6 +481,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: AppRoutes.voteSubmited,
         builder: (context, state) {
           return voteSubmited();
+        },
+      ),
+      GoRoute(
+        path: '/propery_agremment',
+        name: AppRoutes.propertyAgreement,
+        builder: (context, state) {
+          return AgreementSignScreen();
         },
       ),
     ],

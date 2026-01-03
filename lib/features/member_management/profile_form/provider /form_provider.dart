@@ -609,6 +609,10 @@ class FormNotifier extends StateNotifier<FormStates> {
     state = state.copyWith(privacysettingerror: value);
   }
 
+  void updateTermsAndPropertyLoading(bool value) {
+    state = state.copyWith(termsAndCondintionLoading: value);
+  }
+
   void updateChatingLoading(bool value) {
     state = state.copyWith(chattingLoading: value);
   }
@@ -10011,6 +10015,223 @@ class FormNotifier extends StateNotifier<FormStates> {
     } finally {
       log("CHAT SEND END");
       updateChatingLoading(false);
+    }
+  }
+
+  Future<void> signAgreement({
+    required BuildContext context,
+    required File signatur,
+    required String fullName,
+    required WidgetRef ref,
+  }) async {
+    updateTermsAndPropertyLoading(true);
+    try {
+      // 3️⃣ Check connectivity (optional but recommended)
+
+      // 4️⃣ Attempt API send
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .agreementsiging(
+            signatur: signatur,
+            fullName: fullName,
+            context: context,
+          );
+
+      if (!context.mounted) return;
+
+      if (response['status'] == true) {
+        // 5️⃣ Mark message as synced
+        updateTermsAndPropertyLoading(false);
+        log("CHAT MESSAGE SYNCED");
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      } else {
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+        updateTermsAndPropertyLoading(false);
+      }
+    } on DioException catch (e) {
+      log("NETWORK ERROR — message kept offline");
+      updateTermsAndPropertyLoading(false);
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } catch (e) {
+      log("UNEXPECTED ERROR");
+      updateTermsAndPropertyLoading(false);
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log(e.toString());
+    } finally {
+      log("CHAT SEND END");
+      updateTermsAndPropertyLoading(false);
+    }
+  }
+
+  Future<void> rejectAgreement({
+    required BuildContext context,
+    required bool isProperty,
+    required String reason,
+    required WidgetRef ref,
+  }) async {
+    updateTermsAndPropertyLoading(true);
+    try {
+      // 3️⃣ Check connectivity (optional but recommended)
+
+      // 4️⃣ Attempt API send
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .agreementAndTermsDecline(
+            reason: reason,
+            isProperty: isProperty,
+            context: context,
+          );
+
+      if (!context.mounted) return;
+
+      if (response['status'] == true) {
+        // 5️⃣ Mark message as synced
+        updateTermsAndPropertyLoading(false);
+        log("CHAT MESSAGE SYNCED");
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      } else {
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+        updateTermsAndPropertyLoading(false);
+      }
+    } on DioException catch (e) {
+      log("NETWORK ERROR — message kept offline");
+      updateTermsAndPropertyLoading(false);
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } catch (e) {
+      log("UNEXPECTED ERROR");
+      updateTermsAndPropertyLoading(false);
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log(e.toString());
+    } finally {
+      log("CHAT SEND END");
+      updateTermsAndPropertyLoading(false);
+    }
+  }
+
+  Future<void> termsAndConditon({
+    required BuildContext context,
+
+    required WidgetRef ref,
+  }) async {
+    updateTermsAndPropertyLoading(true);
+    try {
+      // 3️⃣ Check connectivity (optional but recommended)
+
+      // 4️⃣ Attempt API send
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .termsAndCondition(context: context);
+
+      if (!context.mounted) return;
+
+      if (response['status'] == true) {
+        // 5️⃣ Mark message as synced
+        updateTermsAndPropertyLoading(false);
+        log("CHAT MESSAGE SYNCED");
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      } else {
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+        updateTermsAndPropertyLoading(false);
+      }
+    } on DioException catch (e) {
+      log("NETWORK ERROR — message kept offline");
+      updateTermsAndPropertyLoading(false);
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } catch (e) {
+      log("UNEXPECTED ERROR");
+      updateTermsAndPropertyLoading(false);
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log(e.toString());
+    } finally {
+      log("CHAT SEND END");
+      updateTermsAndPropertyLoading(false);
     }
   }
 

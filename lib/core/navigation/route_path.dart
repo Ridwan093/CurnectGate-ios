@@ -43,6 +43,7 @@ class AppRoutes {
   static const String setPrivacy = "setPrivacy";
   static const String notification = "notification";
   static const String securitynotification = "securitynotification";
+    static const String propertyAgreement  ="property";
   // ------------------------------------------------------------------
 
   //SECUTIY PATH

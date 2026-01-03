@@ -1,6 +1,7 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/%20operations/property_agreement/widget/decline_Reason.dart';
 import 'package:curnectgate/features/chat/data/provider/chat_provier.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/admin_seletion.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/chatInit.dart';
@@ -453,6 +454,8 @@ class BottomsheetDetails extends ConsumerWidget {
           recipientRole: headersubtitle,
           estateName: location ?? "",
         );
+      case BottomSheetView.termsAndCondition:
+        return DeclineReason(isProperty: headertitle);
       default:
         return SingleChildScrollView(
           child: Column(

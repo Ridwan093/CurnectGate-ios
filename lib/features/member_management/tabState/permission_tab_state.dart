@@ -121,6 +121,7 @@ vendorAccessCodeDeyMessage,
   eventDeactive,
   fundingAmount,
   paymentSuccess,
+  termsAndCondition,
 }
 
 // State notifier for permissions
