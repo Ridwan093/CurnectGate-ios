@@ -1,14 +1,21 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/chat/data/model/chat_message.dart';
 import 'package:curnectgate/features/chat/data/provider/chat_provier.dart';
+import 'package:curnectgate/features/chat/data/provider/reverb_provider.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/displayFileCard.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/displayimage.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/messagesBubbles.dart';
+import 'package:curnectgate/features/chat/services/reverb_service.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/violation/screens/reportViolation.dart';
+import 'package:dart_pusher_channels/dart_pusher_channels.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -25,6 +32,9 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
   final TextEditingController _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
+  PrivateChannel? _channel;
+  StreamSubscription<ChannelReadEvent>? _messageSubscription;
+  bool isSubscribed = false;
 
   @override
   void initState() {
@@ -33,14 +43,70 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(chatProvider.notifier).sendMessage("Hello!", ref);
       ref.read(chatProvider.notifier).sendMessage("How are you?", ref);
+      _subscribeToChatChannel();
+      _loadInitialMessages();
     });
   }
 
+  Future<void> _subscribeToChatChannel() async {
+    try {
+      final reverbConfig = ref.read(reverbConfigProvider);
+      if (reverbConfig == null) {
+        log("Reverb config not loaded");
+        return;
+      }
+
+      final token = await SharedPrefsService().getUserToken();
+      if (token == null) {
+        log("No token for Reverb");
+        return;
+      }
+
+      // Create private channel (do NOT add 'private-' prefix — package adds it)
+      _channel = ReverbService.client.privateChannel(
+        'chat.${widget.id}', // e.g., 'chat.123' becomes 'private-chat.123'
+        authorizationDelegate:
+            EndpointAuthorizableChannelTokenAuthorizationDelegate.forPrivateChannel(
+              authorizationEndpoint: Uri.parse(reverbConfig.authEndpoint),
+              headers: {'Authorization': 'Bearer $token'},
+            ),
+      );
+
+      // Subscribe — returns Future<void>, just await it
+      _channel!.subscribeIfNotUnsubscribed();
+
+      // Bind to your event and listen
+      _messageSubscription = _channel!.bind('MessageSent').listen((event) {
+        // ← Your Laravel event name here!
+        final data = event.data as Map<String, dynamic>;
+
+        log("🟢 New message received: $data");
+
+        // Add to Riverpod state
+        // ref
+        //     .read(chatMessagesProvider(widget.chatId).notifier)
+        //     .addIncomingMessage(data);
+      });
+
+      log("✅ Subscribed to chat.${widget.id} and listening for events");
+    } catch (e, stack) {
+      log("❌ Reverb subscription failed: $e");
+      log(stack.toString());
+    }
+  }
+
+  Future<void> _loadInitialMessages() async {
+    // Your existing GET API call to load old messages
+    // await ref.read(chatRepositoryProvider).fetchMessages(chatId: widget.chatId);
+  }
   @override
   void dispose() {
     _textController.dispose();
     _focusNode.dispose();
     _scrollController.dispose();
+    _messageSubscription?.cancel();
+
+    _channel?.unsubscribe();
     super.dispose();
   }
 

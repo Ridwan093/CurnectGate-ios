@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:curnectgate/core/%20utils/service/app_lifecycle_service.dart';
 import 'package:curnectgate/core/%20utils/service/notification_service.dart';
 import 'package:curnectgate/core/navigation/app_rout.dart';
 import 'package:curnectgate/core/style/colors.dart';
@@ -51,11 +52,31 @@ void main() async {
 //     ),
 //   );
 
-class MyApp extends ConsumerWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends ConsumerState<MyApp> {
+  late AppLifecycleService _lifecycleService;
+
+  @override
+  void initState() {
+    super.initState();
+    // Create service with ref
+    _lifecycleService = AppLifecycleService(ref);
+  }
+
+  @override
+  void dispose() {
+    _lifecycleService.dispose();
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context, ) {
+    
     final router = ref.watch(routerProvider); // Get the router
 
     return SessionExpiryListener(

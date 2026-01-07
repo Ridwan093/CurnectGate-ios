@@ -1224,6 +1224,22 @@ class GetApiService {
     }
   }
 
+  Future<Map<String, dynamic>> getReverbConfig() async {
+    try {
+      final response = await _dio.get(
+        reverb,
+        options: Options(extra: {'requiresAuth': true}),
+      );
+
+      log('Reverb Config Response: ${response.data}');
+
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      log('Error fetching Reverb config: ${e.message}');
+      throw _handleError(e); // Reuse your existing error handler
+    }
+  }
+
   dynamic _handleError(DioException e) {
     if (e.response != null) {
       // Handle specific status codes

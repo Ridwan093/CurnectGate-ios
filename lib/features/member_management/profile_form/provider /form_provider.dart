@@ -24,6 +24,8 @@ import 'package:curnectgate/features/auth/widget/tmporarypassword_dialog.dart';
 import 'package:curnectgate/features/chat/data/model/chat_message.dart';
 import 'package:curnectgate/features/chat/data/provider/chat_local_repository_provider.dart';
 import 'package:curnectgate/features/chat/data/provider/chat_messages_provider.dart';
+import 'package:curnectgate/features/chat/data/provider/reverb_provider.dart';
+import 'package:curnectgate/features/chat/services/reverb_service.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/candidate_provider.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/eletion_provider.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/afterImage_provider.dart';
@@ -850,25 +852,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     }
   }
 
-  // void navigateBasedOnRole(UserRole role) {
-  //   switch (role) {
-  //     case UserRole.landlord:
-  //       context.goNamed(AppRoutes.dashbord);
-  //       break;
-  //     case UserRole.admin:
-  //       context.goNamed(AppRoutes.dashbord);
-  //       break;
-  //     case UserRole.resident:
-  //       context.goNamed(AppRoutes.dashbord);
-  //       break;
-  //     case UserRole.security:
-  //       context.goNamed(AppRoutes.securityguide);
-  //       break;
-  //     case UserRole.unknown:
-  //       context.goNamed(AppRoutes.estatateOnbording);
-  //       break;
-  //   }
-  // }
   void getUserRoleFromString(BuildContext context, String role) {
     switch (role.toLowerCase()) {
       case 'landlord':
@@ -884,6 +867,178 @@ class FormNotifier extends StateNotifier<FormStates> {
     }
   }
 
+  // Future<void> logIn({
+  //   required BuildContext context,
+  //   required String email,
+  //   required String password,
+  //   required WidgetRef ref,
+  // }) async {
+  //   updateloginLodaing(false);
+  //   final isBiometricEnabled = ref.read(biometricPrefProvider.notifier);
+  //   final prefs = SharedPrefsService();
+  //   if (password.isEmpty && email.isEmpty) {
+  //     log("empty");
+  //     return;
+  //   }
+  //   log("START------->");
+  //   updateloginLodaing(true);
+
+  //   try {
+  //     final response = await ref
+  //         .read(profileRepositoryProvider)
+  //         .logIn(email: email, pass: password, context: context);
+
+  //     if (!context.mounted) return; // Always check first
+
+  //     if (response['status'] == true) {
+  //       updateloginLodaing(false);
+
+  //       if (response["data"]["password_change_required"] == true) {
+  //         showForcePasswordChangeDialog(
+  //           context: context,
+  //           message: response["message"],
+  //           onChangeNow: () {
+  //             final token = response["data"]["access_token"];
+  //             if (token != null) {
+  //               context.pushNamed(
+  //                 AppRoutes.changeTemporarypass,
+  //                 extra: {"token": token},
+  //               );
+  //             }
+  //           },
+  //         );
+  //       } else {
+  //         final isRegistered = await registerToken(context: context, ref: ref);
+
+  //         if (isRegistered) {
+  //           log("TRUE------->");
+  //           await SharedPrefsService().saveAuthData(response['data']);
+
+  //           showCustomSuccessToast(
+  //             context: context,
+  //             message: response["message"],
+  //             color: AppColors.instance.teal300,
+  //             icon: Icons.check_circle,
+  //             iconColors: AppColors.instance.grey200,
+  //             positionNumber: 70,
+  //           );
+  //           final userData = response['data'] as Map<String, dynamic>?;
+
+  //           if (userData != null) {
+  //             log("UserLoging Token: ${userData["access_token"]}");
+  //             prefs.saveUserToken(userData["access_token"]);
+  //             final user = userData['user'] as Map<String, dynamic>?;
+  //             final firstName = user?['firstname'] as String?;
+  //             final lastName = user!["lastname"] as String?;
+  //             final email = user["email"] as String?;
+  //             final medUrl = user["media_url"] as String?;
+  //             ref.read(authState.authProvider.notifier).loadAuthData();
+  //     final reverbResponse = await ref
+  //         .read(getApiServiceProvider). getReverbConfig();
+  //             if (medUrl != null) {
+  //               await SharedPrefsService().saveMedialUrl(medUrl);
+  //               ref.read(profilePicProvider.notifier).refreshProfilePic();
+  //               ref.read(profilePicProvider.notifier).loadProfilePic();
+  //             }
+  //             if (firstName != null) {
+  //               await SharedPrefsService().saveSingleUserName(firstName);
+  //               await SharedPrefsService().saveFullName(
+  //                 "${firstName} ${lastName}",
+  //               );
+  //               ref.read(authState.authProvider.notifier).loadfullName();
+  //             }
+
+  //             if (email != null) {
+  //               await DeviceInfoHelper.saveUserEmail(email);
+  //             }
+  //           }
+
+  //           final user = response['data']["user"];
+  //           final userRole = user['role'];
+  //           final biometricenabled = user["biometric_enabled"];
+
+  //           if (biometricenabled) {
+  //             await DeviceInfoHelper.saveFirstTimeCheck(false);
+  //             isBiometricEnabled.toggleBiometric(true);
+  //           } else {
+  //             await DeviceInfoHelper.saveFirstTimeCheck(true);
+  //             isBiometricEnabled.toggleBiometric(false);
+  //           }
+  //           log(userRole.toString());
+  //           getUserRoleFromString(context, userRole.toString());
+  //           // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
+  //           //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+  //           // context.goNamed(AppRoutes.dashbord);
+  //         } else {
+  //           showCustomSuccessToast(
+  //             context: context,
+  //             message: "Error Somthing wrong",
+  //             color: AppColors.instance.error500,
+  //             icon: Icons.error,
+  //             iconColors: AppColors.instance.grey200,
+  //             positionNumber: 70,
+  //           );
+  //         }
+  //       }
+  //     } else {
+  //       updateloginLodaing(false);
+  //       log("FALSE------->");
+  //       showCustomSuccessToast(
+  //         context: context,
+  //         message: response['message'],
+  //         color: AppColors.instance.error500,
+  //         icon: Icons.error,
+  //         iconColors: AppColors.instance.grey200,
+  //         positionNumber: 70,
+  //       );
+  //     }
+  //   } on DioException catch (e) {
+  //     updateloginLodaing(false);
+  //     if (!context.mounted) return;
+
+  //     if (e.error is SocketException) {
+  //       showCustomSuccessToast(
+  //         context: context,
+  //         message:
+  //             "Network unavailable. Please check your internet connection.",
+  //         color: AppColors.instance.error500,
+  //         icon: Icons.error,
+  //         iconColors: AppColors.instance.grey200,
+  //         positionNumber: 70,
+  //       );
+  //     } else {
+  //       showCustomSuccessToast(
+  //         context: context,
+  //         message: e.message.toString(),
+  //         color: AppColors.instance.error500,
+  //         icon: Icons.error,
+  //         iconColors: AppColors.instance.grey200,
+  //         positionNumber: 70,
+  //       );
+  //     }
+  //     log(e.toString());
+  //   } catch (e) {
+  //     if (!context.mounted) return;
+  //     log("E-ERROR-MESSAGE------->");
+  //     log(e.toString());
+  //     updateloginLodaing(false);
+  //     showCustomSuccessToast(
+  //       context: context,
+  //       message: e.toString(),
+  //       color: AppColors.instance.error500,
+  //       icon: Icons.error,
+  //       iconColors: AppColors.instance.grey200,
+  //       positionNumber: 70,
+  //     );
+  //   } finally {
+  //     updateloginLodaing(false);
+  //     updateOtp('', false);
+  //     log("END------->");
+  //   }
+  // }
+
+
+  
   Future<void> logIn({
     required BuildContext context,
     required String email,
@@ -893,10 +1048,12 @@ class FormNotifier extends StateNotifier<FormStates> {
     updateloginLodaing(false);
     final isBiometricEnabled = ref.read(biometricPrefProvider.notifier);
     final prefs = SharedPrefsService();
+
     if (password.isEmpty && email.isEmpty) {
       log("empty");
       return;
     }
+
     log("START------->");
     updateloginLodaing(true);
 
@@ -905,7 +1062,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           .read(profileRepositoryProvider)
           .logIn(email: email, pass: password, context: context);
 
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateloginLodaing(false);
@@ -924,77 +1081,119 @@ class FormNotifier extends StateNotifier<FormStates> {
               }
             },
           );
-        } else {
-          final isRegistered = await registerToken(context: context, ref: ref);
+          return; // Stop here if password change required
+        }
 
-          if (isRegistered) {
-            log("TRUE------->");
-            await SharedPrefsService().saveAuthData(response['data']);
+        // Normal login flow
+        final isRegistered = await registerToken(context: context, ref: ref);
 
-            showCustomSuccessToast(
-              context: context,
-              message: response["message"],
-              color: AppColors.instance.teal300,
-              icon: Icons.check_circle,
-              iconColors: AppColors.instance.grey200,
-              positionNumber: 70,
-            );
-            final userData = response['data'] as Map<String, dynamic>?;
+        if (isRegistered) {
+          log("TRUE------->");
+          await SharedPrefsService().saveAuthData(response['data']);
 
-            if (userData != null) {
-              log("UserLoging Token: ${userData["access_token"]}");
-              prefs.saveUserToken(userData["access_token"]);
-              final user = userData['user'] as Map<String, dynamic>?;
-              final firstName = user?['firstname'] as String?;
-              final lastName = user!["lastname"] as String?;
-              final email = user["email"] as String?;
-              final medUrl = user["media_url"] as String?;
-              ref.read(authState.authProvider.notifier).loadAuthData();
+          showCustomSuccessToast(
+            context: context,
+            message: response["message"],
+            color: AppColors.instance.teal300,
+            icon: Icons.check_circle,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
 
-              if (medUrl != null) {
-                await SharedPrefsService().saveMedialUrl(medUrl);
-                ref.read(profilePicProvider.notifier).refreshProfilePic();
-                ref.read(profilePicProvider.notifier).loadProfilePic();
-              }
-              if (firstName != null) {
-                await SharedPrefsService().saveSingleUserName(firstName);
-                await SharedPrefsService().saveFullName(
-                  "${firstName} ${lastName}",
+          final userData = response['data'] as Map<String, dynamic>?;
+
+          if (userData != null) {
+            log("UserLoging Token: ${userData["access_token"]}");
+            prefs.saveUserToken(userData["access_token"]);
+
+            final user = userData['user'] as Map<String, dynamic>?;
+            final firstName = user?['firstname'] as String?;
+            final lastName = user!["lastname"] as String?;
+            final emailUser = user["email"] as String?;
+            final medUrl = user["media_url"] as String?;
+
+            if (medUrl != null) {
+              await SharedPrefsService().saveMedialUrl(medUrl);
+              ref.read(profilePicProvider.notifier).refreshProfilePic();
+              ref.read(profilePicProvider.notifier).loadProfilePic();
+            }
+
+            if (firstName != null) {
+              await SharedPrefsService().saveSingleUserName(firstName);
+              await SharedPrefsService().saveFullName(
+                "${firstName} ${lastName}",
+              );
+              ref.read(authState.authProvider.notifier).loadfullName();
+            }
+
+            if (emailUser != null) {
+              await DeviceInfoHelper.saveUserEmail(emailUser);
+            }
+
+            // ============ REVERB SETUP STARTS HERE ============
+            final token = userData["access_token"] as String;
+
+            try {
+              final reverbResponse =
+                  await ref
+                      .read(getApiServiceProvider)
+                      .getReverbConfig(); // Make sure this method accepts token!
+
+              if (reverbResponse['status'] == true) {
+                final config = reverbResponse['data'];
+                ref
+                    .read(reverbConfigProvider.notifier)
+                    .state = ReverbConfig.fromJson(config);
+                await ReverbService.init(
+                  token: token,
+                  appKey: config['app_key'],
+                  host: config['host'],
+                  port: config['port'],
+                  scheme: config['scheme'],
+                  authEndpoint: config['auth_endpoint'],
                 );
-                ref.read(authState.authProvider.notifier).loadfullName();
+                final userId =
+                    user['id'].toString(); // Get current user ID from response
+
+                await ReverbService.setupGlobalListener(userId, ref);
+                log("Reverb initialized successfully!");
+              } else {
+                log("Reverb config failed: ${reverbResponse['message']}");
+                // Optional: show non-blocking toast
+                // showCustomSuccessToast(context: context, message: "Real-time features unavailable", color: Colors.orange);
               }
-
-              if (email != null) {
-                await DeviceInfoHelper.saveUserEmail(email);
-              }
+            } catch (e) {
+              log("Failed to initialize Reverb: $e");
+              // Fail gracefully — app works without real-time
             }
+            // ============ REVERB SETUP ENDS HERE ============
 
-            final user = response['data']["user"];
-            final userRole = user['role'];
-            final biometricenabled = user["biometric_enabled"];
-
-            if (biometricenabled) {
-              await DeviceInfoHelper.saveFirstTimeCheck(false);
-              isBiometricEnabled.toggleBiometric(true);
-            } else {
-              await DeviceInfoHelper.saveFirstTimeCheck(true);
-              isBiometricEnabled.toggleBiometric(false);
-            }
-            log(userRole.toString());
-            getUserRoleFromString(context, userRole.toString());
-            // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-            //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
-            // context.goNamed(AppRoutes.dashbord);
-          } else {
-            showCustomSuccessToast(
-              context: context,
-              message: "Error Somthing wrong",
-              color: AppColors.instance.error500,
-              icon: Icons.error,
-              iconColors: AppColors.instance.grey200,
-              positionNumber: 70,
-            );
+            ref.read(authState.authProvider.notifier).loadAuthData();
           }
+
+          final user = response['data']["user"];
+          final userRole = user['role'];
+          final biometricenabled = user["biometric_enabled"];
+
+          if (biometricenabled) {
+            await DeviceInfoHelper.saveFirstTimeCheck(false);
+            isBiometricEnabled.toggleBiometric(true);
+          } else {
+            await DeviceInfoHelper.saveFirstTimeCheck(true);
+            isBiometricEnabled.toggleBiometric(false);
+          }
+
+          log(userRole.toString());
+          getUserRoleFromString(context, userRole.toString());
+        } else {
+          showCustomSuccessToast(
+            context: context,
+            message: "Something went wrong",
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
         }
       } else {
         updateloginLodaing(false);
@@ -1025,7 +1224,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       } else {
         showCustomSuccessToast(
           context: context,
-          message: e.message.toString(),
+          message: e.message ?? "An error occurred",
           color: AppColors.instance.error500,
           icon: Icons.error,
           iconColors: AppColors.instance.grey200,
@@ -1035,12 +1234,11 @@ class FormNotifier extends StateNotifier<FormStates> {
       log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       updateloginLodaing(false);
+      log("E-ERROR-MESSAGE-------> $e");
       showCustomSuccessToast(
         context: context,
-        message: e.toString(),
+        message: "Unexpected error occurred",
         color: AppColors.instance.error500,
         icon: Icons.error,
         iconColors: AppColors.instance.grey200,

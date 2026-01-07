@@ -15,7 +15,7 @@ const String registerDeviceToken = "/api/v1/auth/device-tokens/register";
 const String refresToken = "/api/v1/auth/refresh-token";
 const String setUpBiometri = "/api/v1/auth/biometric/setup";
 const String enableBiometric = "/api/v1/auth/biometric/disable";
-
+const String reverb = "/api/v1/config/reverb";
 // AGREEMENT POST'
 
 const String onboardingHouseHold =
