@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:curnectgate/features/operations/violation/model/report_model.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -69,7 +68,7 @@ class ReportNotifier extends StateNotifier<ReportState> {
 
       // 3. Create new maps (immutable update pattern)
       final newImagePaths = Map<int, String>.from(state.report.imagePaths);
-      final newFiles = Map<int, String>.from(state.report.files);
+      final newFiles = Map<int, File>.from(state.report.pickedFiles ?? {});
 
       // 4. Update the maps
       newImagePaths[index] = imagePath; // Now guaranteed non-null
@@ -79,7 +78,7 @@ class ReportNotifier extends StateNotifier<ReportState> {
       state = state.copyWith(
         report: state.report.copyWith(
           imagePaths: newImagePaths,
-          files: newFiles,
+          pickedFiles: newFiles,
         ),
       );
 
@@ -105,7 +104,7 @@ class ReportNotifier extends StateNotifier<ReportState> {
         description: '',
         isAnonymous: false,
         addressId: '',
-        files: null,
+        pickedFiles: null,
         comment: "",
         categoryID: '',
         address: "",
@@ -117,69 +116,100 @@ class ReportNotifier extends StateNotifier<ReportState> {
     removeImageOrFile(0);
   }
 
-  Future<void> addFile(int index) async {
-    state = state.copyWith(fileOperationStatus: FileOperationStatus.loading);
-
+  void addPickedFile(File file, int index) async {
     try {
-      final result = await FilePicker.platform.pickFiles(
-        type: FileType.image,
-        allowMultiple: false,
+      final appDir = await getApplicationDocumentsDirectory();
+      final permanentDir = Directory('${appDir.path}/user_files');
+      if (!await permanentDir.exists())
+        await permanentDir.create(recursive: true);
+
+      final extension = p.extension(file.path).toLowerCase();
+      final newFileName = '${DateTime.now().millisecondsSinceEpoch}$extension';
+      final newPath = '${permanentDir.path}/$newFileName';
+      final newFile = await file.copy(newPath);
+
+      final newPickedFiles = Map<int, File>.from(
+        state.report.pickedFiles ?? {},
       );
+      newPickedFiles[index] = newFile;
 
-      if (result != null && result.files.single.path != null) {
-        final pickedFile = result.files.single;
-        final originalPath = pickedFile.path!;
-
-        // 1. Create permanent storage directory
-        final appDir = await getApplicationDocumentsDirectory();
-        final permanentDir = Directory('${appDir.path}/user_files');
-        if (!await permanentDir.exists()) {
-          await permanentDir.create(recursive: true);
-        }
-
-        // 2. Generate unique filename
-        final extension = p.extension(originalPath).toLowerCase();
-        final newFileName =
-            '${DateTime.now().millisecondsSinceEpoch}$extension';
-        final newPath = '${permanentDir.path}/$newFileName';
-
-        // 3. Copy file to permanent location
-        final originalFile = File(originalPath);
-        final newFile = await originalFile.copy(newPath);
-
-        // 4. Store the permanent path
-        final newFiles = Map<int, String>.from(state.report.files);
-        newFiles[index] = newFile.path;
-
-        final newImagePaths = Map<int, String>.from(state.report.imagePaths);
-        newImagePaths.remove(index);
-
-        state = state.copyWith(
-          report: state.report.copyWith(
-            files: newFiles,
-            imagePaths: newImagePaths,
-          ),
-          fileOperationStatus: FileOperationStatus.success,
-        );
-      }
-    } catch (e, stackTrace) {
-      log('File picker error: $e\n$stackTrace');
       state = state.copyWith(
-        error: 'Failed to add file: ${e.toString()}',
-        fileOperationStatus: FileOperationStatus.error,
+        report: state.report.copyWith(pickedFiles: newPickedFiles),
+        fileOperationStatus: FileOperationStatus.success,
       );
+      log('Picked file saved at index $index -> ${newFile.path}');
+    } catch (e, st) {
+      log('Error saving picked file: $e\n$st');
+      state = state.copyWith(error: 'Failed to save file: $e');
     }
   }
 
+  // Future<void> addFile(int index) async {
+  //   state = state.copyWith(fileOperationStatus: FileOperationStatus.loading);
+
+  //   try {
+  //     final result = await FilePicker.platform.pickFiles(
+  //       type: FileType.image,
+  //       allowMultiple: false,
+  //     );
+
+  //     if (result != null && result.files.single.path != null) {
+  //       final pickedFile = result.files.single;
+  //       final originalPath = pickedFile.path!;
+
+  //       // 1. Create permanent storage directory
+  //       final appDir = await getApplicationDocumentsDirectory();
+  //       final permanentDir = Directory('${appDir.path}/user_files');
+  //       if (!await permanentDir.exists()) {
+  //         await permanentDir.create(recursive: true);
+  //       }
+
+  //       // 2. Generate unique filename
+  //       final extension = p.extension(originalPath).toLowerCase();
+  //       final newFileName =
+  //           '${DateTime.now().millisecondsSinceEpoch}$extension';
+  //       final newPath = '${permanentDir.path}/$newFileName';
+
+  //       // 3. Copy file to permanent location
+  //       final originalFile = File(originalPath);
+  //       final newFile = await originalFile.copy(newPath);
+
+  //       // 4. Store the permanent path
+  //       final newFiles = Map<int, String>.from(state.report.files);
+  //       newFiles[index] = newFile.path;
+
+  //       final newImagePaths = Map<int, String>.from(state.report.imagePaths);
+  //       newImagePaths.remove(index);
+
+  //       state = state.copyWith(
+  //         report: state.report.copyWith(
+  //           files: newFiles,
+  //           imagePaths: newImagePaths,
+  //         ),
+  //         fileOperationStatus: FileOperationStatus.success,
+  //       );
+  //     }
+  //   } catch (e, stackTrace) {
+  //     log('File picker error: $e\n$stackTrace');
+  //     state = state.copyWith(
+  //       error: 'Failed to add file: ${e.toString()}',
+  //       fileOperationStatus: FileOperationStatus.error,
+  //     );
+  //   }
+  // }
+
   void removeImageOrFile(int index) {
     final newImagePaths = Map<int, String>.from(state.report.imagePaths);
-    final newFiles = Map<int, String>.from(state.report.files);
+    final newFiles = Map<int, File>.from(state.report.pickedFiles ?? {});
 
     newImagePaths.remove(index);
     newFiles.remove(index);
 
     state = state.copyWith(
-      report: state.report.copyWith(imagePaths: newImagePaths, files: newFiles),
+      report: state.report.copyWith(
+        imagePaths: newImagePaths,
+        pickedFiles: newFiles,
+      ),
     );
   }
 

@@ -9,6 +9,7 @@ import 'package:curnectgate/features/member_management/profile_form/provider%20/
 import 'package:curnectgate/features/operations/notifications/event/event_widget/show_event_dec_from_host.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/resv_model/rsvp_event_history.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/share_event.dart';
+import 'package:curnectgate/features/operations/notifications/provider/activity_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,112 +26,128 @@ class EventRsvpDetaile extends ConsumerWidget {
     return '${text.substring(0, maxLength).trim()}...';
   }
 
+  bool isUserGoing(dynamic userRsvp) {
+    return (userRsvp as String?)?.trim().toLowerCase() == 'going';
+  }
+
+  bool isUserNotGoing(dynamic userRsvp) {
+    return (userRsvp as String?)?.trim().toLowerCase() == 'not_going';
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.watch(reminderProvider);
 
     final formprvider = ref.read(formProvider.notifier);
-    return Stack(
-      children: [
-        SingleChildScrollView(
-          padding: EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: InkWell(
-                    onTap: () {
-                      context.pop();
-                    },
-                    child: Text(
-                      "Close",
-                      style: TextStyle(
-                        fontFamily: FontFamilies.interDisplay,
-                        color: AppColors.instance.black600,
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (didPop) {
+        if (didPop) {
+          ref.read(isPopProvider.notifier).state = false; // Reset on pop
+        }
+      },
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: InkWell(
+                      onTap: () {
+                        ref.read(isPopProvider.notifier).state = false;
+                        context.pop();
+                      },
+                      child: Text(
+                        "Close",
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          color: AppColors.instance.black600,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 60),
+                const SizedBox(height: 60),
 
-              Image.asset(AssetPaths.eventblue, height: 50, width: 50),
+                Image.asset(AssetPaths.eventblue, height: 50, width: 50),
 
-              const SizedBox(height: 20),
-              Text(
-                truncateWithEllipsis(data.event?.title ?? "", maxLength: 30),
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontFamily: FontFamilies.interDisplay,
-                  fontWeight: FontFamilies.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              _buildEventDetailTile(
-                icon: Icons.access_time,
-                child: const SizedBox(),
-                text: data.event?.duration ?? "",
-                isRichText: false,
-              ),
-              const SizedBox(height: 16),
-              _buildEventDetailTile(
-                icon: Icons.person_3_outlined,
-                child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        style: TextStyle(
-                          fontFamily: FontFamilies.interDisplay,
-                          fontWeight: FontFamilies.medium,
-                          color: AppColors.instance.black400,
-                        ),
-                        text: "Hosted by ",
-                      ),
-                      TextSpan(
-                        style: TextStyle(
-                          fontFamily: FontFamilies.interDisplay,
-                          fontWeight: FontFamilies.bold,
-                          color: AppColors.instance.black600,
-                        ),
-                        text: data.event?.hostedBy ?? "",
-                      ),
-                    ],
-                  ),
-                ),
-                text: '',
-                isRichText: true,
-              ),
-              const SizedBox(height: 16),
-              _buildEventDetailTile(
-                icon: Icons.calendar_month,
-                child: const SizedBox(),
-                text:
-                    "${DateFormat('hh:mm a').format(DateTime.parse(data.event?.startDatetime ?? ""))}, "
-                    "${DateFormat('MMM dd, yyyy').format(DateTime.parse(data.event?.startDatetime ?? ""))}",
-                isRichText: false,
-              ),
-              const SizedBox(height: 16),
-              _buildEventDetailTile(
-                icon: Icons.location_on_outlined,
-                child: const SizedBox(),
-                text: data.event?.location ?? "",
-                isRichText: false,
-              ),
-              const SizedBox(height: 10),
-              if (data.response!.contains("not_going")) ...[
+                const SizedBox(height: 20),
                 Text(
-                  "You cancelled this event",
-                  style: TextStyle(
+                  truncateWithEllipsis(data.event?.title ?? "", maxLength: 30),
+                  style: const TextStyle(
+                    fontSize: 18,
                     fontFamily: FontFamilies.interDisplay,
-                    fontSize: 12,
                     fontWeight: FontFamilies.bold,
-                    color: AppColors.instance.error600,
                   ),
                 ),
-              ] else ...[
+                const SizedBox(height: 8),
+                _buildEventDetailTile(
+                  icon: Icons.access_time,
+                  child: const SizedBox(),
+                  text: data.event?.duration ?? "",
+                  isRichText: false,
+                ),
+                const SizedBox(height: 16),
+                _buildEventDetailTile(
+                  icon: Icons.person_3_outlined,
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          style: TextStyle(
+                            fontFamily: FontFamilies.interDisplay,
+                            fontWeight: FontFamilies.medium,
+                            color: AppColors.instance.black400,
+                          ),
+                          text: "Hosted by ",
+                        ),
+                        TextSpan(
+                          style: TextStyle(
+                            fontFamily: FontFamilies.interDisplay,
+                            fontWeight: FontFamilies.bold,
+                            color: AppColors.instance.black600,
+                          ),
+                          text: data.event?.hostedBy ?? "",
+                        ),
+                      ],
+                    ),
+                  ),
+                  text: '',
+                  isRichText: true,
+                ),
+                const SizedBox(height: 16),
+                _buildEventDetailTile(
+                  icon: Icons.calendar_month,
+                  child: const SizedBox(),
+                  text:
+                      "${DateFormat('hh:mm a').format(DateTime.parse(data.event?.startDatetime ?? ""))}, "
+                      "${DateFormat('MMM dd, yyyy').format(DateTime.parse(data.event?.startDatetime ?? ""))}",
+                  isRichText: false,
+                ),
+                const SizedBox(height: 16),
+                _buildEventDetailTile(
+                  icon: Icons.location_on_outlined,
+                  child: const SizedBox(),
+                  text: data.event?.location ?? "",
+                  isRichText: false,
+                ),
+                const SizedBox(height: 10),
+                // if (data.response!.contains("not_going")) ...[
+                //   Text(
+                //     "You cancelled this event",
+                //     style: TextStyle(
+                //       fontFamily: FontFamilies.interDisplay,
+                //       fontSize: 12,
+                //       fontWeight: FontFamilies.bold,
+                //       color: AppColors.instance.error600,
+                //     ),
+                //   ),
+                // ] else ...[
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -144,38 +161,38 @@ class EventRsvpDetaile extends ConsumerWidget {
                     ),
                     Row(
                       children: [
+                        // YES Button – always enabled
                         _buildEventConfirmButton(
-                          showActions: data.response!.contains("going"),
+                          title: "Yes",
+                          isSelected: isUserGoing(data.response),
                           onPressed: () {
-                            if (data.response!.contains("going")) {
-                            } else {
+                            if (!isUserGoing(data.response)) {
                               formprvider.rsvpEvent(
                                 context: context,
                                 goingNotGoin: "going",
                                 reason: "no reason",
-                                id: data.event!.id.toString(),
+                                id: (data.event?.id ?? 0).toString(),
                                 ref: ref,
                               );
                             }
                           },
-                          title: "Yes",
                         ),
+                        const SizedBox(width: 12),
+                        // NO Button – always enabled
                         _buildEventConfirmButton(
-                          showActions: false,
-
+                          title: "No",
+                          isSelected: isUserNotGoing(data.response),
                           onPressed: () {
-                            if (data.response!.contains("going")) {
-                            } else {
+                            if (!isUserNotGoing(data.response)) {
                               formprvider.rsvpEvent(
                                 context: context,
                                 goingNotGoin: "not_going",
                                 reason: "no reason",
-                                id: data.event!.id.toString(),
+                                id: (data.event?.id ?? 0).toString(),
                                 ref: ref,
                               );
                             }
                           },
-                          title: "No",
                         ),
                       ],
                     ),
@@ -194,11 +211,11 @@ class EventRsvpDetaile extends ConsumerWidget {
                   data,
                 ),
               ],
-            ],
+            ),
           ),
-        ),
-        if (notifier.isLoading) Positioned.fill(child: _buildcontainer()),
-      ],
+          if (notifier.isLoading) Positioned.fill(child: _buildcontainer()),
+        ],
+      ),
     );
   }
 
@@ -310,53 +327,51 @@ class EventRsvpDetaile extends ConsumerWidget {
   }
 
   Widget _buildEventConfirmButton({
-    required bool showActions,
     required String title,
+    required bool isSelected,
     required VoidCallback onPressed,
   }) {
     return InkWell(
       onTap: onPressed,
-      child: Container(
-        margin: EdgeInsets.all(5),
-        height: 35,
-        width: showActions ? 70 : 50,
+      borderRadius: BorderRadius.circular(8),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
           color:
-              showActions
+              isSelected
                   ? AppColors.instance.teal300
                   : AppColors.instance.grey400,
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected ? AppColors.instance.teal500 : Colors.transparent,
+            width: 1.5,
+          ),
         ),
-        child: Center(
-          child:
-              showActions
-                  ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontFamily: FontFamilies.interDisplay,
-                          fontWeight: FontFamilies.bold,
-                          color: AppColors.instance.black600,
-                        ),
-                      ),
-                      SizedBox(width: 5),
-                      Icon(
-                        Icons.done,
-                        size: 12,
-                        color: AppColors.instance.black600,
-                      ),
-                    ],
-                  )
-                  : Text(
-                    title,
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      fontWeight: FontFamilies.bold,
-                      color: AppColors.instance.black600,
-                    ),
-                  ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                fontWeight: FontFamilies.bold,
+                color:
+                    isSelected
+                        ? AppColors.instance.black600
+                        : AppColors.instance.black600,
+                fontSize: 14,
+              ),
+            ),
+            if (isSelected) ...[
+              const SizedBox(width: 8),
+              Icon(
+                Icons.check_circle,
+                size: 18,
+                color: AppColors.instance.black600,
+              ),
+            ],
+          ],
         ),
       ),
     );

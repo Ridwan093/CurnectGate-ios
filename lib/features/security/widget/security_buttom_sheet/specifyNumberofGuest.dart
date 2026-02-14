@@ -53,7 +53,7 @@ class _SpecifyumberOfGuestState extends ConsumerState<SpecifyumberOfGuest> {
                   ),
                   SizedBox(height: 40),
                   Text(
-                    "Specify number of guest",
+                    "Specify number of guest ${widget.id}",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontWeight: FontFamilies.bold,
@@ -111,6 +111,11 @@ class _SpecifyumberOfGuestState extends ConsumerState<SpecifyumberOfGuest> {
                     hintText: "(eg. 10,1,2,3,4)",
                     labelText: "Number of Allowed Guest",
                   ),
+                  onChanged: (value) {
+                    ref
+                        .read(oTpformProvider.notifier)
+                        .updateNumberOfGust(value);
+                  },
                 ),
               ),
               Padding(
@@ -257,7 +262,7 @@ class _SpecifyumberOfGuestState extends ConsumerState<SpecifyumberOfGuest> {
       isLoading: formState.isLoading,
       label: 'Next',
       onPressed:
-          numberOfGust.isNotEmpty
+          formState.numberOfVisitorValid
               ? () {
                 formprovider.grantAccess(
                   context: context,

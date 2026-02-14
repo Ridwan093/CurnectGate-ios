@@ -100,7 +100,7 @@ class _CommentViewState extends State<CommentView>
           ),
           Divider(),
           SizedBox(height: 20),
-          Buildcommentlist(),
+          Buildcommentlist(id: widget.id),
           SizedBox(height: 8),
           Commentinput(
             id: widget.id,

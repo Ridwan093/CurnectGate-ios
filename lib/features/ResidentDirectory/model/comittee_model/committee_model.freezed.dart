@@ -26,7 +26,7 @@ mixin _$Committee {
   CommitteeCategory? get category => throw _privateConstructorUsedError;
   String? get status => throw _privateConstructorUsedError;
   int? get memberCount => throw _privateConstructorUsedError;
-  String? get chairperson => throw _privateConstructorUsedError;
+  Chairperson? get chairperson => throw _privateConstructorUsedError;
   String? get secretary => throw _privateConstructorUsedError;
   DateTime? get nextMeeting => throw _privateConstructorUsedError;
   DateTime? get establishedDate => throw _privateConstructorUsedError;
@@ -59,7 +59,7 @@ abstract class $CommitteeCopyWith<$Res> {
       CommitteeCategory? category,
       String? status,
       int? memberCount,
-      String? chairperson,
+      Chairperson? chairperson,
       String? secretary,
       DateTime? nextMeeting,
       DateTime? establishedDate,
@@ -71,6 +71,7 @@ abstract class $CommitteeCopyWith<$Res> {
       DateTime? updatedAt});
 
   $CommitteeCategoryCopyWith<$Res>? get category;
+  $ChairpersonCopyWith<$Res>? get chairperson;
   $MeetingScheduleCopyWith<$Res>? get meetingSchedule;
 }
 
@@ -134,7 +135,7 @@ class _$CommitteeCopyWithImpl<$Res, $Val extends Committee>
       chairperson: freezed == chairperson
           ? _value.chairperson
           : chairperson // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as Chairperson?,
       secretary: freezed == secretary
           ? _value.secretary
           : secretary // ignore: cast_nullable_to_non_nullable
@@ -192,6 +193,20 @@ class _$CommitteeCopyWithImpl<$Res, $Val extends Committee>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
+  $ChairpersonCopyWith<$Res>? get chairperson {
+    if (_value.chairperson == null) {
+      return null;
+    }
+
+    return $ChairpersonCopyWith<$Res>(_value.chairperson!, (value) {
+      return _then(_value.copyWith(chairperson: value) as $Val);
+    });
+  }
+
+  /// Create a copy of Committee
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
   $MeetingScheduleCopyWith<$Res>? get meetingSchedule {
     if (_value.meetingSchedule == null) {
       return null;
@@ -218,7 +233,7 @@ abstract class _$$CommitteeImplCopyWith<$Res>
       CommitteeCategory? category,
       String? status,
       int? memberCount,
-      String? chairperson,
+      Chairperson? chairperson,
       String? secretary,
       DateTime? nextMeeting,
       DateTime? establishedDate,
@@ -231,6 +246,8 @@ abstract class _$$CommitteeImplCopyWith<$Res>
 
   @override
   $CommitteeCategoryCopyWith<$Res>? get category;
+  @override
+  $ChairpersonCopyWith<$Res>? get chairperson;
   @override
   $MeetingScheduleCopyWith<$Res>? get meetingSchedule;
 }
@@ -293,7 +310,7 @@ class __$$CommitteeImplCopyWithImpl<$Res>
       chairperson: freezed == chairperson
           ? _value.chairperson
           : chairperson // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as Chairperson?,
       secretary: freezed == secretary
           ? _value.secretary
           : secretary // ignore: cast_nullable_to_non_nullable
@@ -374,7 +391,7 @@ class _$CommitteeImpl implements _Committee {
   @override
   final int? memberCount;
   @override
-  final String? chairperson;
+  final Chairperson? chairperson;
   @override
   final String? secretary;
   @override
@@ -496,7 +513,7 @@ abstract class _Committee implements Committee {
       final CommitteeCategory? category,
       final String? status,
       final int? memberCount,
-      final String? chairperson,
+      final Chairperson? chairperson,
       final String? secretary,
       final DateTime? nextMeeting,
       final DateTime? establishedDate,
@@ -523,7 +540,7 @@ abstract class _Committee implements Committee {
   @override
   int? get memberCount;
   @override
-  String? get chairperson;
+  Chairperson? get chairperson;
   @override
   String? get secretary;
   @override

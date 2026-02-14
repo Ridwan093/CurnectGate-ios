@@ -21,7 +21,14 @@ PropertyAgreement _$PropertyAgreementFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$PropertyAgreement {
   bool? get required => throw _privateConstructorUsedError;
+  String? get content => throw _privateConstructorUsedError;
+  int? get version => throw _privateConstructorUsedError;
+  bool? get requiresSignature => throw _privateConstructorUsedError;
   bool? get accepted => throw _privateConstructorUsedError;
+  String? get signedAt => throw _privateConstructorUsedError;
+  int? get acceptedVersion => throw _privateConstructorUsedError;
+  String? get signature => throw _privateConstructorUsedError;
+  bool? get needsUpdate => throw _privateConstructorUsedError;
 
   /// Serializes this PropertyAgreement to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -39,7 +46,16 @@ abstract class $PropertyAgreementCopyWith<$Res> {
           PropertyAgreement value, $Res Function(PropertyAgreement) then) =
       _$PropertyAgreementCopyWithImpl<$Res, PropertyAgreement>;
   @useResult
-  $Res call({bool? required, bool? accepted});
+  $Res call(
+      {bool? required,
+      String? content,
+      int? version,
+      bool? requiresSignature,
+      bool? accepted,
+      String? signedAt,
+      int? acceptedVersion,
+      String? signature,
+      bool? needsUpdate});
 }
 
 /// @nodoc
@@ -58,16 +74,51 @@ class _$PropertyAgreementCopyWithImpl<$Res, $Val extends PropertyAgreement>
   @override
   $Res call({
     Object? required = freezed,
+    Object? content = freezed,
+    Object? version = freezed,
+    Object? requiresSignature = freezed,
     Object? accepted = freezed,
+    Object? signedAt = freezed,
+    Object? acceptedVersion = freezed,
+    Object? signature = freezed,
+    Object? needsUpdate = freezed,
   }) {
     return _then(_value.copyWith(
       required: freezed == required
           ? _value.required
           : required // ignore: cast_nullable_to_non_nullable
               as bool?,
+      content: freezed == content
+          ? _value.content
+          : content // ignore: cast_nullable_to_non_nullable
+              as String?,
+      version: freezed == version
+          ? _value.version
+          : version // ignore: cast_nullable_to_non_nullable
+              as int?,
+      requiresSignature: freezed == requiresSignature
+          ? _value.requiresSignature
+          : requiresSignature // ignore: cast_nullable_to_non_nullable
+              as bool?,
       accepted: freezed == accepted
           ? _value.accepted
           : accepted // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      signedAt: freezed == signedAt
+          ? _value.signedAt
+          : signedAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      acceptedVersion: freezed == acceptedVersion
+          ? _value.acceptedVersion
+          : acceptedVersion // ignore: cast_nullable_to_non_nullable
+              as int?,
+      signature: freezed == signature
+          ? _value.signature
+          : signature // ignore: cast_nullable_to_non_nullable
+              as String?,
+      needsUpdate: freezed == needsUpdate
+          ? _value.needsUpdate
+          : needsUpdate // ignore: cast_nullable_to_non_nullable
               as bool?,
     ) as $Val);
   }
@@ -81,7 +132,16 @@ abstract class _$$PropertyAgreementImplCopyWith<$Res>
       __$$PropertyAgreementImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({bool? required, bool? accepted});
+  $Res call(
+      {bool? required,
+      String? content,
+      int? version,
+      bool? requiresSignature,
+      bool? accepted,
+      String? signedAt,
+      int? acceptedVersion,
+      String? signature,
+      bool? needsUpdate});
 }
 
 /// @nodoc
@@ -98,16 +158,51 @@ class __$$PropertyAgreementImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? required = freezed,
+    Object? content = freezed,
+    Object? version = freezed,
+    Object? requiresSignature = freezed,
     Object? accepted = freezed,
+    Object? signedAt = freezed,
+    Object? acceptedVersion = freezed,
+    Object? signature = freezed,
+    Object? needsUpdate = freezed,
   }) {
     return _then(_$PropertyAgreementImpl(
       required: freezed == required
           ? _value.required
           : required // ignore: cast_nullable_to_non_nullable
               as bool?,
+      content: freezed == content
+          ? _value.content
+          : content // ignore: cast_nullable_to_non_nullable
+              as String?,
+      version: freezed == version
+          ? _value.version
+          : version // ignore: cast_nullable_to_non_nullable
+              as int?,
+      requiresSignature: freezed == requiresSignature
+          ? _value.requiresSignature
+          : requiresSignature // ignore: cast_nullable_to_non_nullable
+              as bool?,
       accepted: freezed == accepted
           ? _value.accepted
           : accepted // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      signedAt: freezed == signedAt
+          ? _value.signedAt
+          : signedAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      acceptedVersion: freezed == acceptedVersion
+          ? _value.acceptedVersion
+          : acceptedVersion // ignore: cast_nullable_to_non_nullable
+              as int?,
+      signature: freezed == signature
+          ? _value.signature
+          : signature // ignore: cast_nullable_to_non_nullable
+              as String?,
+      needsUpdate: freezed == needsUpdate
+          ? _value.needsUpdate
+          : needsUpdate // ignore: cast_nullable_to_non_nullable
               as bool?,
     ));
   }
@@ -117,7 +212,16 @@ class __$$PropertyAgreementImplCopyWithImpl<$Res>
 
 @JsonSerializable(explicitToJson: true)
 class _$PropertyAgreementImpl implements _PropertyAgreement {
-  const _$PropertyAgreementImpl({this.required, this.accepted});
+  const _$PropertyAgreementImpl(
+      {this.required,
+      this.content,
+      this.version,
+      this.requiresSignature,
+      this.accepted,
+      this.signedAt,
+      this.acceptedVersion,
+      this.signature,
+      this.needsUpdate});
 
   factory _$PropertyAgreementImpl.fromJson(Map<String, dynamic> json) =>
       _$$PropertyAgreementImplFromJson(json);
@@ -125,11 +229,25 @@ class _$PropertyAgreementImpl implements _PropertyAgreement {
   @override
   final bool? required;
   @override
+  final String? content;
+  @override
+  final int? version;
+  @override
+  final bool? requiresSignature;
+  @override
   final bool? accepted;
+  @override
+  final String? signedAt;
+  @override
+  final int? acceptedVersion;
+  @override
+  final String? signature;
+  @override
+  final bool? needsUpdate;
 
   @override
   String toString() {
-    return 'PropertyAgreement(required: $required, accepted: $accepted)';
+    return 'PropertyAgreement(required: $required, content: $content, version: $version, requiresSignature: $requiresSignature, accepted: $accepted, signedAt: $signedAt, acceptedVersion: $acceptedVersion, signature: $signature, needsUpdate: $needsUpdate)';
   }
 
   @override
@@ -139,13 +257,35 @@ class _$PropertyAgreementImpl implements _PropertyAgreement {
             other is _$PropertyAgreementImpl &&
             (identical(other.required, required) ||
                 other.required == required) &&
+            (identical(other.content, content) || other.content == content) &&
+            (identical(other.version, version) || other.version == version) &&
+            (identical(other.requiresSignature, requiresSignature) ||
+                other.requiresSignature == requiresSignature) &&
             (identical(other.accepted, accepted) ||
-                other.accepted == accepted));
+                other.accepted == accepted) &&
+            (identical(other.signedAt, signedAt) ||
+                other.signedAt == signedAt) &&
+            (identical(other.acceptedVersion, acceptedVersion) ||
+                other.acceptedVersion == acceptedVersion) &&
+            (identical(other.signature, signature) ||
+                other.signature == signature) &&
+            (identical(other.needsUpdate, needsUpdate) ||
+                other.needsUpdate == needsUpdate));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, required, accepted);
+  int get hashCode => Object.hash(
+      runtimeType,
+      required,
+      content,
+      version,
+      requiresSignature,
+      accepted,
+      signedAt,
+      acceptedVersion,
+      signature,
+      needsUpdate);
 
   /// Create a copy of PropertyAgreement
   /// with the given fields replaced by the non-null parameter values.
@@ -166,7 +306,15 @@ class _$PropertyAgreementImpl implements _PropertyAgreement {
 
 abstract class _PropertyAgreement implements PropertyAgreement {
   const factory _PropertyAgreement(
-      {final bool? required, final bool? accepted}) = _$PropertyAgreementImpl;
+      {final bool? required,
+      final String? content,
+      final int? version,
+      final bool? requiresSignature,
+      final bool? accepted,
+      final String? signedAt,
+      final int? acceptedVersion,
+      final String? signature,
+      final bool? needsUpdate}) = _$PropertyAgreementImpl;
 
   factory _PropertyAgreement.fromJson(Map<String, dynamic> json) =
       _$PropertyAgreementImpl.fromJson;
@@ -174,7 +322,21 @@ abstract class _PropertyAgreement implements PropertyAgreement {
   @override
   bool? get required;
   @override
+  String? get content;
+  @override
+  int? get version;
+  @override
+  bool? get requiresSignature;
+  @override
   bool? get accepted;
+  @override
+  String? get signedAt;
+  @override
+  int? get acceptedVersion;
+  @override
+  String? get signature;
+  @override
+  bool? get needsUpdate;
 
   /// Create a copy of PropertyAgreement
   /// with the given fields replaced by the non-null parameter values.

@@ -72,7 +72,7 @@ class Workoderlist extends ConsumerWidget {
               isCode: false,
             ),
             _buildreUsableListTile(
-              title: "No, of Workers",
+              title: "No of Workers",
               trailing: vendor?.numberOfWorkers.toString() ?? "",
               isCode: false,
             ),
@@ -216,6 +216,23 @@ class Workoderlist extends ConsumerWidget {
     );
   }
 
+  Color _checkColor(String status) {
+    switch (status.toLowerCase()) {
+      case "pending":
+        return AppColors.instance.blue500; // Blue 600 - professional, calm
+      case "start":
+        return AppColors.instance.yellow500; // Amber 400 - noticeable, warm
+      case "in progress":
+        return const Color(
+          0xFF64748B,
+        ); // Blue Grey 500 - neutral, in-progress feel
+      case "completed":
+        return AppColors.instance.teal500; // Green 600 - success/completed
+      default:
+        return const Color(0xFF374151); // Grey 700 - default/unknown
+    }
+  }
+
   Widget _buildStatusLabel(
     String label,
     TaskStatus currentState,
@@ -223,7 +240,7 @@ class Workoderlist extends ConsumerWidget {
   ) {
     final bool isActive = currentState.index >= targetState.index;
     final Color textColor =
-        isActive ? AppColors.instance.black600 : AppColors.instance.black300;
+        isActive ? _checkColor(label) : AppColors.instance.black300;
 
     return Flexible(
       // ← Key: allows shrinking + clipping
@@ -268,6 +285,7 @@ class Workoderlist extends ConsumerWidget {
                   ref: ref,
                   bottom: BottomSheetView.vendorLog,
                   id: vendor.id ?? 0,
+                  vendor:  vendor,
                 ),
             child: Text(
               "Change",

@@ -10,7 +10,11 @@ import 'package:go_router/go_router.dart';
 class SelectpermitBottomsheet extends ConsumerWidget {
   final int id;
   final String otp;
-  const SelectpermitBottomsheet({super.key, required this.otp, required this.id});
+  const SelectpermitBottomsheet({
+    super.key,
+    required this.otp,
+    required this.id,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -53,6 +57,7 @@ class SelectpermitBottomsheet extends ConsumerWidget {
           _buildButton(
             title: "Create Clearance Permit",
             onTap: () {
+              context.pop();
               showUserBottomSheet(
                 context: context,
                 headertitle: otp,
@@ -66,20 +71,20 @@ class SelectpermitBottomsheet extends ConsumerWidget {
           ),
 
           const SizedBox(height: 5),
-          _buildButton(
-            title: "Create Scheduled Permit",
-            onTap: () {
-              showUserBottomSheet(
-                context: context,
-                headertitle: otp,
-                headersubtitle: "Revoked  OTP",
-                ref: ref,
-                bottom: BottomSheetView.shedulPermit,
-                id: id,
-              );
-            },
-            icon: AssetPaths.scheduleOtp,
-          ),
+          // _buildButton(
+          //   title: "Create Scheduled Permit",
+          //   onTap: () {
+          //     showUserBottomSheet(
+          //       context: context,
+          //       headertitle: otp,
+          //       headersubtitle: "Revoked  OTP",
+          //       ref: ref,
+          //       bottom: BottomSheetView.shedulPermit,
+          //       id: id,
+          //     );
+          //   },
+          //   icon: AssetPaths.scheduleOtp,
+          // ),
         ],
       ),
     );

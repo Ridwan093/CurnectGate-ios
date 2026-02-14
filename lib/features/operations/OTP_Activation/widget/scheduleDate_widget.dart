@@ -19,7 +19,7 @@ class DatePickerTile extends ConsumerWidget {
       borderRadius: BorderRadius.circular(10),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           // Label — fixed part
@@ -35,22 +35,20 @@ class DatePickerTile extends ConsumerWidget {
 
           const Spacer(), // Pushes date + icon to right
           // Selected date — safe from overflow
-          Flexible(
-            child: Text(
-              selectedDate != null
-                  ? DateFormat('dd/MM/yyyy').format(selectedDate)
-                  : "Select date",
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.end,
-              style: TextStyle(
-                fontSize: 14,
-                fontFamily: FontFamilies.interDisplay,
-                fontWeight: FontWeight.w600,
-                color:
-                    selectedDate != null
-                        ? AppColors.instance.black600
-                        : AppColors.instance.black400,
-              ),
+          Text(
+            selectedDate != null
+                ? DateFormat('dd/MM/yyyy').format(selectedDate)
+                : "Select date",
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              fontSize: 14,
+              fontFamily: FontFamilies.interDisplay,
+              fontWeight: FontWeight.w600,
+              color:
+                  selectedDate != null
+                      ? AppColors.instance.black600
+                      : AppColors.instance.black400,
             ),
           ),
         ],

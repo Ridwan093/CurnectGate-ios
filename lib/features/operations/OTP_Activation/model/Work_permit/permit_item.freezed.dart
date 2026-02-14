@@ -21,9 +21,16 @@ PermitItem _$PermitItemFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$PermitItem {
   int? get id => throw _privateConstructorUsedError;
-  String? get name => throw _privateConstructorUsedError;
+  int? get clearancePermitId => throw _privateConstructorUsedError;
+  String? get itemName => throw _privateConstructorUsedError;
+  int? get quantity => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
   dynamic get estimatedValue => throw _privateConstructorUsedError;
+  String? get itemCategory => throw _privateConstructorUsedError;
+  bool? get verified => throw _privateConstructorUsedError;
+  String? get verificationNotes => throw _privateConstructorUsedError;
+  String? get createdAt => throw _privateConstructorUsedError;
+  String? get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this PermitItem to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -42,7 +49,17 @@ abstract class $PermitItemCopyWith<$Res> {
       _$PermitItemCopyWithImpl<$Res, PermitItem>;
   @useResult
   $Res call(
-      {int? id, String? name, String? description, dynamic estimatedValue});
+      {int? id,
+      int? clearancePermitId,
+      String? itemName,
+      int? quantity,
+      String? description,
+      dynamic estimatedValue,
+      String? itemCategory,
+      bool? verified,
+      String? verificationNotes,
+      String? createdAt,
+      String? updatedAt});
 }
 
 /// @nodoc
@@ -61,19 +78,34 @@ class _$PermitItemCopyWithImpl<$Res, $Val extends PermitItem>
   @override
   $Res call({
     Object? id = freezed,
-    Object? name = freezed,
+    Object? clearancePermitId = freezed,
+    Object? itemName = freezed,
+    Object? quantity = freezed,
     Object? description = freezed,
     Object? estimatedValue = freezed,
+    Object? itemCategory = freezed,
+    Object? verified = freezed,
+    Object? verificationNotes = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      name: freezed == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
+      clearancePermitId: freezed == clearancePermitId
+          ? _value.clearancePermitId
+          : clearancePermitId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      itemName: freezed == itemName
+          ? _value.itemName
+          : itemName // ignore: cast_nullable_to_non_nullable
               as String?,
+      quantity: freezed == quantity
+          ? _value.quantity
+          : quantity // ignore: cast_nullable_to_non_nullable
+              as int?,
       description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
@@ -82,6 +114,26 @@ class _$PermitItemCopyWithImpl<$Res, $Val extends PermitItem>
           ? _value.estimatedValue
           : estimatedValue // ignore: cast_nullable_to_non_nullable
               as dynamic,
+      itemCategory: freezed == itemCategory
+          ? _value.itemCategory
+          : itemCategory // ignore: cast_nullable_to_non_nullable
+              as String?,
+      verified: freezed == verified
+          ? _value.verified
+          : verified // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      verificationNotes: freezed == verificationNotes
+          ? _value.verificationNotes
+          : verificationNotes // ignore: cast_nullable_to_non_nullable
+              as String?,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -95,7 +147,17 @@ abstract class _$$PermitItemImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int? id, String? name, String? description, dynamic estimatedValue});
+      {int? id,
+      int? clearancePermitId,
+      String? itemName,
+      int? quantity,
+      String? description,
+      dynamic estimatedValue,
+      String? itemCategory,
+      bool? verified,
+      String? verificationNotes,
+      String? createdAt,
+      String? updatedAt});
 }
 
 /// @nodoc
@@ -112,19 +174,34 @@ class __$$PermitItemImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
-    Object? name = freezed,
+    Object? clearancePermitId = freezed,
+    Object? itemName = freezed,
+    Object? quantity = freezed,
     Object? description = freezed,
     Object? estimatedValue = freezed,
+    Object? itemCategory = freezed,
+    Object? verified = freezed,
+    Object? verificationNotes = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
   }) {
     return _then(_$PermitItemImpl(
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      name: freezed == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
+      clearancePermitId: freezed == clearancePermitId
+          ? _value.clearancePermitId
+          : clearancePermitId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      itemName: freezed == itemName
+          ? _value.itemName
+          : itemName // ignore: cast_nullable_to_non_nullable
               as String?,
+      quantity: freezed == quantity
+          ? _value.quantity
+          : quantity // ignore: cast_nullable_to_non_nullable
+              as int?,
       description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
@@ -133,6 +210,26 @@ class __$$PermitItemImplCopyWithImpl<$Res>
           ? _value.estimatedValue
           : estimatedValue // ignore: cast_nullable_to_non_nullable
               as dynamic,
+      itemCategory: freezed == itemCategory
+          ? _value.itemCategory
+          : itemCategory // ignore: cast_nullable_to_non_nullable
+              as String?,
+      verified: freezed == verified
+          ? _value.verified
+          : verified // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      verificationNotes: freezed == verificationNotes
+          ? _value.verificationNotes
+          : verificationNotes // ignore: cast_nullable_to_non_nullable
+              as String?,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -142,7 +239,17 @@ class __$$PermitItemImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class _$PermitItemImpl implements _PermitItem {
   const _$PermitItemImpl(
-      {this.id, this.name, this.description, this.estimatedValue});
+      {this.id,
+      this.clearancePermitId,
+      this.itemName,
+      this.quantity,
+      this.description,
+      this.estimatedValue,
+      this.itemCategory,
+      this.verified,
+      this.verificationNotes,
+      this.createdAt,
+      this.updatedAt});
 
   factory _$PermitItemImpl.fromJson(Map<String, dynamic> json) =>
       _$$PermitItemImplFromJson(json);
@@ -150,15 +257,29 @@ class _$PermitItemImpl implements _PermitItem {
   @override
   final int? id;
   @override
-  final String? name;
+  final int? clearancePermitId;
+  @override
+  final String? itemName;
+  @override
+  final int? quantity;
   @override
   final String? description;
   @override
   final dynamic estimatedValue;
+  @override
+  final String? itemCategory;
+  @override
+  final bool? verified;
+  @override
+  final String? verificationNotes;
+  @override
+  final String? createdAt;
+  @override
+  final String? updatedAt;
 
   @override
   String toString() {
-    return 'PermitItem(id: $id, name: $name, description: $description, estimatedValue: $estimatedValue)';
+    return 'PermitItem(id: $id, clearancePermitId: $clearancePermitId, itemName: $itemName, quantity: $quantity, description: $description, estimatedValue: $estimatedValue, itemCategory: $itemCategory, verified: $verified, verificationNotes: $verificationNotes, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -167,17 +288,43 @@ class _$PermitItemImpl implements _PermitItem {
         (other.runtimeType == runtimeType &&
             other is _$PermitItemImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name) &&
+            (identical(other.clearancePermitId, clearancePermitId) ||
+                other.clearancePermitId == clearancePermitId) &&
+            (identical(other.itemName, itemName) ||
+                other.itemName == itemName) &&
+            (identical(other.quantity, quantity) ||
+                other.quantity == quantity) &&
             (identical(other.description, description) ||
                 other.description == description) &&
             const DeepCollectionEquality()
-                .equals(other.estimatedValue, estimatedValue));
+                .equals(other.estimatedValue, estimatedValue) &&
+            (identical(other.itemCategory, itemCategory) ||
+                other.itemCategory == itemCategory) &&
+            (identical(other.verified, verified) ||
+                other.verified == verified) &&
+            (identical(other.verificationNotes, verificationNotes) ||
+                other.verificationNotes == verificationNotes) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, description,
-      const DeepCollectionEquality().hash(estimatedValue));
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      clearancePermitId,
+      itemName,
+      quantity,
+      description,
+      const DeepCollectionEquality().hash(estimatedValue),
+      itemCategory,
+      verified,
+      verificationNotes,
+      createdAt,
+      updatedAt);
 
   /// Create a copy of PermitItem
   /// with the given fields replaced by the non-null parameter values.
@@ -198,9 +345,16 @@ class _$PermitItemImpl implements _PermitItem {
 abstract class _PermitItem implements PermitItem {
   const factory _PermitItem(
       {final int? id,
-      final String? name,
+      final int? clearancePermitId,
+      final String? itemName,
+      final int? quantity,
       final String? description,
-      final dynamic estimatedValue}) = _$PermitItemImpl;
+      final dynamic estimatedValue,
+      final String? itemCategory,
+      final bool? verified,
+      final String? verificationNotes,
+      final String? createdAt,
+      final String? updatedAt}) = _$PermitItemImpl;
 
   factory _PermitItem.fromJson(Map<String, dynamic> json) =
       _$PermitItemImpl.fromJson;
@@ -208,11 +362,25 @@ abstract class _PermitItem implements PermitItem {
   @override
   int? get id;
   @override
-  String? get name;
+  int? get clearancePermitId;
+  @override
+  String? get itemName;
+  @override
+  int? get quantity;
   @override
   String? get description;
   @override
   dynamic get estimatedValue;
+  @override
+  String? get itemCategory;
+  @override
+  bool? get verified;
+  @override
+  String? get verificationNotes;
+  @override
+  String? get createdAt;
+  @override
+  String? get updatedAt;
 
   /// Create a copy of PermitItem
   /// with the given fields replaced by the non-null parameter values.

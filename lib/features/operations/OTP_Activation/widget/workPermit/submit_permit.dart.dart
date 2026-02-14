@@ -123,7 +123,7 @@ class _SubmitPermitBottomSheetState
                           hintText: 'Enter description of items',
                           label: 'General Description',
                           maxLines: 2,
-                          maxLength: 100,
+                          maxLength: 30,
                           onChanged: (_) {},
                           onValidationChanged: (_) {},
                         ),
@@ -206,8 +206,8 @@ class _SubmitPermitBottomSheetState
                                           .text
                                           .isNotEmpty &&
                                       _noteController.text.isNotEmpty &&
-                                      _descriptionController.text.length > 20 &&
-                                      _noteController.text.length > 20 &&
+                                      _descriptionController.text.length > 9 &&
+                                      _noteController.text.length > 9 &&
                                       _contactPersonController.text.length > 2
                                   ? 1
                                   : 0,

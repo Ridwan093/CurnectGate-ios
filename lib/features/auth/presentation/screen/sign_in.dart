@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/config/biometric_faceID/Helper/device_info_helper.dart';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
-import 'package:curnectgate/core/navigation/back_manageent/back_provider/provider.dart';
 import 'package:curnectgate/core/navigation/back_manageent/back_widget/back_navigator.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';

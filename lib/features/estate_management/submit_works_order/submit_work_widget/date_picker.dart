@@ -77,7 +77,7 @@ class DatePickerField extends ConsumerWidget {
               width: 2.0,
             ),
           ),
-          errorText: errorText,
+        
           suffixIcon: Icon(
             Icons.calendar_today,
             color: buttonColor ?? theme.primaryColor, // Calendar icon color

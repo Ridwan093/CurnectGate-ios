@@ -117,7 +117,7 @@ class _AddItemBottomSheetState
                 _itemName.text.isNotEmpty &&
                         _quantity.text.isNotEmpty &&
                         _category.text.isNotEmpty &&
-                        _description.text.length > 19 &&
+                        _description.text.length > 9 &&
                         _category.text.length > 4 &&
                         _itemName.text.length > 4
                     ? () {
@@ -145,7 +145,7 @@ class _AddItemBottomSheetState
                             _quantity.text.isNotEmpty &&
                             _description.text.isNotEmpty &&
                             _category.text.isNotEmpty &&
-                            _description.text.length > 19 &&
+                            _description.text.length > 9 &&
                             _category.text.length > 4 &&
                             _itemName.text.length > 4
                         ? AppColors.instance.black600

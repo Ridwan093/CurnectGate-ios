@@ -113,7 +113,7 @@ class _ValidateWorkOrderOtpState
       isLoading: formState.isLoading,
       label: 'Validate',
       onPressed:
-          _noteController.text.isNotEmpty && _noteController.text.length > 19
+          _noteController.text.isNotEmpty && _noteController.text.length > 10
               ? () {
                 providerState.vendorAccessCodeCheckOut(
                   context: context,

@@ -219,6 +219,8 @@ class OptionForCodes extends ConsumerWidget {
         break;
       case 'Validate Work Order':
         notifier.updateValidationType("");
+        // ref.read(bottomSheetStateProvider.notifier).state =
+        //     BottomSheetView.workOderSeletion;
         context.pop();
         showUserBottomSheet(
           context: context,

@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/operations/violation/model/estate_address_model.dart';
+import 'package:curnectgate/features/operations/violation/model/estate_Address/estate_address.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/getEstate_provider.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
 import 'package:curnectgate/features/operations/violation/widget/seachHighlith_helper.dart';
@@ -62,7 +62,7 @@ class _CustomSearchDropdownState extends ConsumerState<CustomSearchDropdown>
         // Reset filtered addresses when closing
         final addressList = ref.read(estatePrividers);
         if (addressList.value != null) {
-          _filteredAddresses = addressList.value!.data.addresses;
+          _filteredAddresses = addressList.value!.data!.addresses!;
         }
       }
     });
@@ -82,15 +82,16 @@ class _CustomSearchDropdownState extends ConsumerState<CustomSearchDropdown>
           addresses.where((address) {
             log(address.buildingName.toString());
             final searchTerms = [
-              address.label.toLowerCase(),
-              address.blockNumber.toLowerCase(),
-              address.streetNumber.toLowerCase(),
-              address.streetName.toLowerCase(),
-              address.buildingName.toLowerCase(),
+              address.label?.toLowerCase(),
+              address.blockNumber?.toLowerCase(),
+              address.streetNumber?.toLowerCase(),
+              address.streetName?.toLowerCase(),
+              address.buildingName?.toLowerCase(),
             ];
 
             return searchTerms.any(
-              (term) => term.contains(query.toLowerCase()),
+              (term) =>
+                  (term ?? '').toLowerCase().contains(query.toLowerCase()),
             );
           }).toList();
     });
@@ -132,7 +133,7 @@ class _CustomSearchDropdownState extends ConsumerState<CustomSearchDropdown>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 HighlightedText(
-                  text: address.label,
+                  text: address.label ?? "",
                   query: _searchController.text,
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
@@ -141,8 +142,7 @@ class _CustomSearchDropdownState extends ConsumerState<CustomSearchDropdown>
                   ),
                   highlightColor: AppColors.instance.teal100,
                 ),
-                if (address.streetName.isNotEmpty ||
-                    address.streetNumber.isNotEmpty)
+                if (address.streetName != null || address.streetNumber != null)
                   HighlightedText(
                     text: '${address.streetName} ${address.streetNumber}',
                     query: _searchController.text,
@@ -161,7 +161,7 @@ class _CustomSearchDropdownState extends ConsumerState<CustomSearchDropdown>
                     .read(reportProvider.notifier)
                     .setEstateAddressID(
                       _selectedAddress!.id.toString(),
-                      address.label,
+                      address.label ?? "",
                     );
               }
 
@@ -186,7 +186,7 @@ class _CustomSearchDropdownState extends ConsumerState<CustomSearchDropdown>
 
     return addressList.when(
       data: (data) {
-        final addresses = data?.data.addresses ?? [];
+        final addresses = data?.data!.addresses ?? [];
         if (_filteredAddresses.isEmpty && addresses.isNotEmpty) {
           _filteredAddresses = addresses;
         }

@@ -1,8 +1,10 @@
 // committee_model.dart
+import 'package:curnectgate/features/operations/OTP_Activation/model/nullSafty_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+import 'chairperson_model.dart';
 import 'committee_category_model.dart';
 import 'meeting_schedule_model.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/model/nullSafty_model.dart';
 
 part 'committee_model.freezed.dart';
 part 'committee_model.g.dart';
@@ -17,7 +19,7 @@ class Committee with _$Committee {
     CommitteeCategory? category,
     String? status,
     int? memberCount,
-    String? chairperson,
+    Chairperson? chairperson,
     String? secretary,
     DateTime? nextMeeting,
     DateTime? establishedDate,
@@ -44,7 +46,11 @@ class Committee with _$Committee {
       ),
       status: NullSafetyHelper.safeString(json['status']),
       memberCount: NullSafetyHelper.safeInt(json['member_count']),
-      chairperson: NullSafetyHelper.safeString(json['chairperson']),
+      chairperson: NullSafetyHelper.safeModel(
+        json['chairperson'],
+        Chairperson.fromSafeJson,
+        Chairperson.empty(),
+      ),
       secretary: NullSafetyHelper.safeString(json['secretary']),
       nextMeeting: NullSafetyHelper.safeDateTime(json['next_meeting']),
       establishedDate: NullSafetyHelper.safeDateTime(json['established_date']),
@@ -62,21 +68,21 @@ class Committee with _$Committee {
   }
 
   factory Committee.empty() => const Committee(
-        id: null,
-        name: null,
-        description: null,
-        category: null,
-        status: null,
-        memberCount: null,
-        chairperson: null,
-        secretary: null,
-        nextMeeting: null,
-        establishedDate: null,
-        meetingSchedule: null,
-        meetingLocation: null,
-        objectives: null,
-        achievements: null,
-        createdAt: null,
-        updatedAt: null,
-      );
+    id: null,
+    name: null,
+    description: null,
+    category: null,
+    status: null,
+    memberCount: null,
+    chairperson: null,
+    secretary: null,
+    nextMeeting: null,
+    establishedDate: null,
+    meetingSchedule: null,
+    meetingLocation: null,
+    objectives: null,
+    achievements: null,
+    createdAt: null,
+    updatedAt: null,
+  );
 }

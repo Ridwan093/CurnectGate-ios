@@ -27,6 +27,8 @@ class AssetPaths {
   static const String navProfileActive = '${_nav}profile_active.png';
   static const String navProfileInactive = '${_nav}profile_inactive.png';
   static const String navVisitorLog = '${_nav}visitorLogTab.png';
+  static const String navEventCodeActive = '${_nav}eventCode-Active.png';
+  static const String navEventCodeDeactive = '${_nav}eventCode.png';
   static const String navVisitorLogFilled = '${_nav}visitorLogTabFilled.png';
   static const String appLogos = 'assets/icons/app_icon.png';
   // Action Icons

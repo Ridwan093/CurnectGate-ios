@@ -2,7 +2,6 @@ import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
-import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_user_rsvp_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/resv_model/rsvp_event_history.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,38 +36,11 @@ class RsvpDataEventCard extends ConsumerWidget {
   }
 
   bool isUserGoing(dynamic userRsvp) {
-    if (userRsvp == null) return false;
-
-    // If userRsvp is a map (from JSON)
-    if (userRsvp is Map<String, dynamic>) {
-      final response = userRsvp['response']?.toString().toLowerCase();
-      return response != null && response == 'going';
-    }
-
-    // If userRsvp is a CalendarUserRsvp object
-    if (userRsvp is CalendarUserRsvp) {
-      return userRsvp.response != null &&
-          userRsvp.response!.toLowerCase() == 'going';
-    }
-
-    return false;
+    return (userRsvp as String?)?.trim().toLowerCase() == 'going';
   }
 
-  // Check if user RSVP is "not_going"
   bool isUserNotGoing(dynamic userRsvp) {
-    if (userRsvp == null) return false;
-
-    if (userRsvp is Map<String, dynamic>) {
-      final response = userRsvp['response']?.toString().toLowerCase();
-      return response != null && response == 'not_going';
-    }
-
-    if (userRsvp is CalendarUserRsvp) {
-      return userRsvp.response != null &&
-          userRsvp.response!.toLowerCase() == 'not_going';
-    }
-
-    return false;
+    return (userRsvp as String?)?.trim().toLowerCase() == 'not_going';
   }
 
   String truncateWithEllipsis(String text, {int maxLength = 50}) {
@@ -120,72 +92,56 @@ class RsvpDataEventCard extends ConsumerWidget {
                     ),
 
                     const SizedBox(height: 8),
-                    if (event.response!.contains("not_going")) ...[
-                      Text(
-                        "You cancelled this event",
-                        style: TextStyle(
-                          fontFamily: FontFamilies.interDisplay,
-                          fontSize: 12,
-                          fontWeight: FontFamilies.bold,
-                          color: AppColors.instance.error600,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Going?",
+                          style: TextStyle(
+                            fontFamily: FontFamilies.interDisplay,
+                            color: AppColors.instance.black600,
+                            fontWeight: FontFamilies.medium,
+                          ),
                         ),
-                      ),
-                    ] else ...[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                        children: [
-                          Text(
-                            "Going?",
-                            style: TextStyle(
-                              fontFamily: FontFamilies.interDisplay,
-                              color: AppColors.instance.black600,
-
-                              fontWeight: FontFamilies.medium,
+                        Row(
+                          children: [
+                            // YES Button – always enabled
+                            _buildEventConfirmButton(
+                              title: "Yes",
+                              isSelected: isUserGoing(event.response),
+                              onPressed: () {
+                                if (!isUserGoing(event.response)) {
+                                  formprvider.rsvpEvent(
+                                    context: context,
+                                    goingNotGoin: "going",
+                                    reason: "no reason",
+                                    id: (event.event?.id ?? 0).toString(),
+                                    ref: ref,
+                                  );
+                                }
+                              },
                             ),
-                          ),
-
-                          Row(
-                            children: [
-                              _buildEventConfirmButton(
-                                showActions: event.response!.contains("going"),
-                                onPressed: () {
-                                  if (event.response!.contains("going")) {
-                                    
-                                  } else {
-                                    formprvider.rsvpEvent(
-                                      context: context,
-                                      goingNotGoin: "going",
-                                      reason: "no reason",
-                                      id: event.event!.id.toString(),
-                                      ref: ref,
-                                    );
-                                  }
-                                },
-                                title: "Yes",
-                              ),
-                              _buildEventConfirmButton(
-                                showActions: false,
-
-                                onPressed: () {
-                                  if (event.response!.contains("going")) {
-                                  } else {
-                                    formprvider.rsvpEvent(
-                                      context: context,
-                                      goingNotGoin: "not_going",
-                                      reason: "no reason",
-                                      id: event.event!.id.toString(),
-                                      ref: ref,
-                                    );
-                                  }
-                                },
-                                title: "No",
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
+                            const SizedBox(width: 12),
+                            // NO Button – always enabled
+                            _buildEventConfirmButton(
+                              title: "No",
+                              isSelected: isUserNotGoing(event.response),
+                              onPressed: () {
+                                if (!isUserNotGoing(event.response)) {
+                                  formprvider.rsvpEvent(
+                                    context: context,
+                                    goingNotGoin: "not_going",
+                                    reason: "no reason",
+                                    id: (event.event?.id ?? 0).toString(),
+                                    ref: ref,
+                                  );
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -218,55 +174,111 @@ class RsvpDataEventCard extends ConsumerWidget {
   }
 
   Widget _buildEventConfirmButton({
-    required bool showActions,
     required String title,
+    required bool isSelected,
     required VoidCallback onPressed,
   }) {
     return InkWell(
       onTap: onPressed,
-      child: Container(
-        margin: EdgeInsets.all(5),
+      borderRadius: BorderRadius.circular(8),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        // padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         height: 35,
-        width: showActions ? 70 : 50,
+        width: isSelected ? 70 : 50,
         decoration: BoxDecoration(
           color:
-              showActions
+              isSelected
                   ? AppColors.instance.teal300
                   : AppColors.instance.grey400,
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected ? AppColors.instance.teal500 : Colors.transparent,
+            width: 1.5,
+          ),
         ),
-        child: Center(
-          child:
-              showActions
-                  ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontFamily: FontFamilies.interDisplay,
-                          fontWeight: FontFamilies.bold,
-                          color: AppColors.instance.black600,
-                        ),
-                      ),
-                      SizedBox(width: 5),
-                      Icon(
-                        Icons.done,
-                        size: 12,
-                        color: AppColors.instance.black600,
-                      ),
-                    ],
-                  )
-                  : Text(
-                    title,
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      fontWeight: FontFamilies.bold,
-                      color: AppColors.instance.black600,
-                    ),
-                  ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                fontWeight: FontFamilies.bold,
+                color:
+                    isSelected
+                        ? AppColors.instance.black600
+                        : AppColors.instance.black600,
+                fontSize: 14,
+              ),
+            ),
+            if (isSelected) ...[
+              const SizedBox(width: 8),
+              Flexible(
+                child: Icon(
+                  Icons.check_circle,
+                  size: 18,
+                  color: AppColors.instance.black600,
+                ),
+              ),
+            ],
+          ],
         ),
       ),
     );
   }
+
+  // Widget _buildEventConfirmButton({
+  //   required bool showActions,
+  //   required String title,
+  //   required VoidCallback onPressed,
+  // }) {
+  //   return InkWell(
+  //     onTap: onPressed,
+  //     child: Container(
+  //       margin: EdgeInsets.all(5),
+  //       height: 35,
+  //       width: showActions ? 70 : 50,
+  //       decoration: BoxDecoration(
+  //         color:
+  //             showActions
+  //                 ? AppColors.instance.teal300
+  //                 : AppColors.instance.grey400,
+  //         borderRadius: BorderRadius.circular(5),
+  //       ),
+  //       child: Center(
+  //         child:
+  //             showActions
+  //                 ? Row(
+  //                   mainAxisAlignment: MainAxisAlignment.center,
+  //                   children: [
+  //                     Text(
+  //                       title,
+  //                       style: TextStyle(
+  //                         fontFamily: FontFamilies.interDisplay,
+  //                         fontWeight: FontFamilies.bold,
+  //                         color: AppColors.instance.black600,
+  //                       ),
+  //                     ),
+  //                     SizedBox(width: 5),
+  //                     Icon(
+  //                       Icons.done,
+  //                       size: 12,
+  //                       color: AppColors.instance.black600,
+  //                     ),
+  //                   ],
+  //                 )
+  //                 : Text(
+  //                   title,
+  //                   style: TextStyle(
+  //                     fontFamily: FontFamilies.interDisplay,
+  //                     fontWeight: FontFamilies.bold,
+  //                     color: AppColors.instance.black600,
+  //                   ),
+  //                 ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }

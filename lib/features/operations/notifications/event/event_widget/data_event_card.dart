@@ -134,71 +134,56 @@ class DataEventCard extends ConsumerWidget {
                     ),
 
                     const SizedBox(height: 8),
-                    if (isUserNotGoing(event.userRsvp)) ...[
-                      Text(
-                        "You cancelled this event",
-                        style: TextStyle(
-                          fontFamily: FontFamilies.interDisplay,
-                          fontSize: 12,
-                          fontWeight: FontFamilies.bold,
-                          color: AppColors.instance.error600,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Going?",
+                          style: TextStyle(
+                            fontFamily: FontFamilies.interDisplay,
+                            color: AppColors.instance.black600,
+                            fontWeight: FontFamilies.medium,
+                          ),
                         ),
-                      ),
-                    ] else ...[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                        children: [
-                          Text(
-                            "Going?",
-                            style: TextStyle(
-                              fontFamily: FontFamilies.interDisplay,
-                              color: AppColors.instance.black600,
-
-                              fontWeight: FontFamilies.medium,
+                        Row(
+                          children: [
+                            // YES Button – always enabled
+                            _buildEventConfirmButton(
+                              title: "Yes",
+                              isSelected: isUserGoing(event.userRsvp),
+                              onPressed: () {
+                                if (!isUserGoing(event.userRsvp)) {
+                                  formprvider.rsvpEvent(
+                                    context: context,
+                                    goingNotGoin: "going",
+                                    reason: "no reason",
+                                    id: (event.id ?? 0).toString(),
+                                    ref: ref,
+                                  );
+                                }
+                              },
                             ),
-                          ),
-
-                          Row(
-                            children: [
-                              _buildEventConfirmButton(
-                                showActions: isUserGoing(event.userRsvp),
-                                onPressed: () {
-                                  if (isUserGoing(event.userRsvp)) {
-                                  } else {
-                                    formprvider.rsvpEvent(
-                                      context: context,
-                                      goingNotGoin: "going",
-                                      reason: "no reason",
-                                      id: event.id.toString(),
-                                      ref: ref,
-                                    );
-                                  }
-                                },
-                                title: "Yes",
-                              ),
-                              _buildEventConfirmButton(
-                                showActions: false,
-
-                                onPressed: () {
-                                  if (isUserGoing(event.userRsvp)) {
-                                  } else {
-                                    formprvider.rsvpEvent(
-                                      context: context,
-                                      goingNotGoin: "not_going",
-                                      reason: "no reason",
-                                      id: event.id.toString(),
-                                      ref: ref,
-                                    );
-                                  }
-                                },
-                                title: "No",
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
+                            const SizedBox(width: 12),
+                            // NO Button – always enabled
+                            _buildEventConfirmButton(
+                              title: "No",
+                              isSelected: isUserNotGoing(event.userRsvp),
+                              onPressed: () {
+                                if (!isUserNotGoing(event.userRsvp)) {
+                                  formprvider.rsvpEvent(
+                                    context: context,
+                                    goingNotGoin: "not_going",
+                                    reason: "no reason",
+                                    id: (event.id ?? 0).toString(),
+                                    ref: ref,
+                                  );
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -231,53 +216,56 @@ class DataEventCard extends ConsumerWidget {
   }
 
   Widget _buildEventConfirmButton({
-    required bool showActions,
     required String title,
+    required bool isSelected,
     required VoidCallback onPressed,
   }) {
     return InkWell(
       onTap: onPressed,
-      child: Container(
-        margin: EdgeInsets.all(5),
+      borderRadius: BorderRadius.circular(8),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        // padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         height: 35,
-        width: showActions ? 70 : 50,
+        width: isSelected ? 70 : 50,
         decoration: BoxDecoration(
           color:
-              showActions
+              isSelected
                   ? AppColors.instance.teal300
                   : AppColors.instance.grey400,
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected ? AppColors.instance.teal500 : Colors.transparent,
+            width: 1.5,
+          ),
         ),
-        child: Center(
-          child:
-              showActions
-                  ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontFamily: FontFamilies.interDisplay,
-                          fontWeight: FontFamilies.bold,
-                          color: AppColors.instance.black600,
-                        ),
-                      ),
-                      SizedBox(width: 5),
-                      Icon(
-                        Icons.done,
-                        size: 12,
-                        color: AppColors.instance.black600,
-                      ),
-                    ],
-                  )
-                  : Text(
-                    title,
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      fontWeight: FontFamilies.bold,
-                      color: AppColors.instance.black600,
-                    ),
-                  ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                fontWeight: FontFamilies.bold,
+                color:
+                    isSelected
+                        ? AppColors.instance.black600
+                        : AppColors.instance.black600,
+                fontSize: 14,
+              ),
+            ),
+            if (isSelected) ...[
+              const SizedBox(width: 8),
+              Flexible(
+                child: Icon(
+                  Icons.check_circle,
+                  size: 18,
+                  color: AppColors.instance.black600,
+                ),
+              ),
+            ],
+          ],
         ),
       ),
     );

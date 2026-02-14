@@ -121,10 +121,10 @@ class _DismissingReportState extends ConsumerState<DismissingReport> {
                     _buildCommentButton(
                       onTap:
                           _noteController.text.isNotEmpty &&
-                                  _noteController.text.length > 19
+                                  _noteController.text.length > 10
                               ? () {
                                 if (_noteController.text.isNotEmpty &&
-                                    _noteController.text.length > 19) {
+                                    _noteController.text.length > 10) {
                                   form.resolvedViolation(
                                     context: context,
                                     reason: _noteController.text,

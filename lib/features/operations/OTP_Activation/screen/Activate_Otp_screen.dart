@@ -104,7 +104,7 @@ class Otpactivation extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 23),
-          Expanded(child: ActivedataWidget()),
+          Expanded(child: const ActivedataWidget()),
         ],
       ),
     );

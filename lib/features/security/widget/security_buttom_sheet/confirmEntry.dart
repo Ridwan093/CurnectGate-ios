@@ -6,7 +6,6 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/widget/
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/customPath.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../member_management/tabState/permission_tab_state.dart';
 
@@ -60,7 +59,6 @@ class Confirmentry extends ConsumerWidget {
               Expanded(
                 child: _buildFeatureButton(
                   onTap: () {
-                    context.pop();
                     showUserBottomSheet(
                       id: id,
                       context: context,
@@ -78,7 +76,6 @@ class Confirmentry extends ConsumerWidget {
               Expanded(
                 child: _buildFeatureButton(
                   onTap: () {
-                    context.pop();
                     showUserBottomSheet(
                       id: id,
                       context: context,

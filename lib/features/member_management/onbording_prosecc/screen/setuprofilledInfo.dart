@@ -163,6 +163,8 @@ class _SetUppRofiledState extends ConsumerState<SetUppRofiled> {
           ReusabelProfileForm(
             initialValue: widget.firstName,
             controller: _firstNameController,
+            showLockIcon: true,
+            isRead: true,
             fieldKey: 'firstName',
             fieldType: FieldType.name,
             hintText: 'Enter first name',
@@ -182,6 +184,8 @@ class _SetUppRofiledState extends ConsumerState<SetUppRofiled> {
           ReusabelProfileForm(
             initialValue: widget.lastName,
             controller: _lastNameController,
+            showLockIcon: true,
+            isRead: true,
             fieldKey: 'lastName',
             fieldType: FieldType.name,
             hintText: 'Enter last name',

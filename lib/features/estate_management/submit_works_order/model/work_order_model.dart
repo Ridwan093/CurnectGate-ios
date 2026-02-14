@@ -1,5 +1,7 @@
 class WorkOrderFormState {
   // Form fields
+  static const _noValue = Object();
+
   final String vendorName;
   final String vendorEmail;
   final String phoneNumber;
@@ -46,8 +48,8 @@ class WorkOrderFormState {
     this.workerCount = 1,
     this.daysCount = 1,
     this.id = 0,
-    this.startDate,
-    this.endDate,
+    this.startDate = null,
+    this.endDate = null,
     this.selectedTimeWindow,
 
     // Validation defaults to false
@@ -96,8 +98,8 @@ class WorkOrderFormState {
     int? workerCount,
     int? daysCount,
     int? id,
-    DateTime? startDate,
-    DateTime? endDate,
+    Object? startDate = _noValue,
+    Object? endDate = _noValue,
     String? selectedTimeWindow,
 
     // Validation states
@@ -134,8 +136,11 @@ class WorkOrderFormState {
       workDescription: workDescription ?? this.workDescription,
       workerCount: workerCount ?? this.workerCount,
       daysCount: daysCount ?? this.daysCount,
-      startDate: startDate ?? this.startDate,
-      endDate: endDate ?? this.endDate,
+      startDate:
+          startDate == _noValue ? this.startDate : startDate as DateTime?,
+
+      endDate: endDate == _noValue ? this.endDate : endDate as DateTime?,
+
       selectedTimeWindow: selectedTimeWindow ?? this.selectedTimeWindow,
 
       // Validation

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -31,6 +32,13 @@ class _AgreementSignScreenState extends ConsumerState<AgreementSignScreen> {
     strokeJoin: StrokeJoin.bevel,
     exportBackgroundColor: Colors.transparent,
   );
+  final ValueNotifier<bool> _canSubmitNotifier = ValueNotifier(false);
+  void _validateForm() {
+    final hasName = _nameController.text.trim().isNotEmpty;
+    final hasSignature = _signatureController.isNotEmpty;
+
+    _canSubmitNotifier.value = hasName && hasSignature;
+  }
 
   Future<File> uint8ListToFile(Uint8List bytes) async {
     final directory = await getTemporaryDirectory();
@@ -41,10 +49,32 @@ class _AgreementSignScreenState extends ConsumerState<AgreementSignScreen> {
     return await file.writeAsBytes(bytes);
   }
 
-  int selectedTab = 0; // 0 = Type Name, 1 = Draw Signature
+  Future<String?> getSignatureBase64() async {
+    final bytes = await _signatureController.toPngBytes(
+      height: 200,
+      width: 200,
+    );
+
+    if (bytes == null || bytes.isEmpty) return null;
+
+    return base64Encode(bytes);
+  }
+
+  int selectedTab = 0;
+  @override
+  void initState() {
+    super.initState();
+
+    _nameController.addListener(_validateForm);
+    _signatureController.addListener(_validateForm);
+  }
 
   @override
   void dispose() {
+    _nameController.removeListener(_validateForm);
+    _signatureController.removeListener(_validateForm);
+
+    _canSubmitNotifier.dispose();
     _nameController.dispose();
     _signatureController.dispose();
     super.dispose();
@@ -52,8 +82,8 @@ class _AgreementSignScreenState extends ConsumerState<AgreementSignScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = ref.read(formProvider.notifier);
-    final isLoading = ref.read(formProvider).termsAndCondintionLoading ?? false;
+    final isLoading =
+        ref.watch(formProvider).termsAndCondintionLoading ?? false;
     return Scaffold(
       backgroundColor: AppColors.instance.grey200,
       body: Stack(
@@ -65,11 +95,9 @@ class _AgreementSignScreenState extends ConsumerState<AgreementSignScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 🏠 Home Icon
                     Image.asset(AssetPaths.terms, height: 70, width: 70),
                     const SizedBox(height: 20),
 
-                    // 📝 Header Text
                     Text(
                       "Take a look at the property agreement below. We value transparency, and always want you to choose the option that’s best for you.",
                       style: TextStyle(
@@ -99,7 +127,6 @@ class _AgreementSignScreenState extends ConsumerState<AgreementSignScreen> {
 
                     const SizedBox(height: 30),
 
-                    // 🧭 Custom Tab Switcher
                     Container(
                       height: 70,
                       padding: const EdgeInsets.all(4),
@@ -130,50 +157,52 @@ class _AgreementSignScreenState extends ConsumerState<AgreementSignScreen> {
                     // 🔘 Buttons
                     Column(
                       children: [
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed:
-                                _nameController.text.isNotEmpty &&
-                                        _signatureController.isNotEmpty
-                                    ? () async {
-                                      final Uint8List? data =
-                                          await _signatureController.toPngBytes(
-                                            height: 1000,
-                                            width: 1000,
-                                          );
-                                      if (data == null) {
-                                        return;
-                                      }
+                        ValueListenableBuilder<bool>(
+                          valueListenable: _canSubmitNotifier,
+                          builder: (context, canSubmit, _) {
+                            return SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed:
+                                    canSubmit
+                                        ? () async {
+                                          final base64Signature =
+                                              await getSignatureBase64();
 
-                                      final File signatureFile =
-                                          await uint8ListToFile(data);
-                                      provider.signAgreement(
-                                        context: context,
-                                        signatur: signatureFile,
-                                        fullName: _nameController.text.trim(),
-                                        ref: ref,
-                                      );
-                                    }
-                                    : null,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.instance.black600,
-                              foregroundColor: AppColors.instance.grey200,
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                          ref
+                                              .read(formProvider.notifier)
+                                              .signAgreement(
+                                                context: context,
+                                                signatur: base64Signature ?? "",
+                                                fullName:
+                                                    _nameController.text.trim(),
+                                                ref: ref,
+                                              );
+                                        }
+                                        : null,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.instance.black600,
+                                  foregroundColor: AppColors.instance.grey200,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: Text(
+                                  "Accept",
+                                  style: TextStyle(
+                                    fontFamily: FontFamilies.interDisplay,
+                                    fontWeight: FontFamilies.medium,
+                                    fontSize: 16,
+                                  ),
+                                ),
                               ),
-                            ),
-                            child: Text(
-                              "Accept",
-                              style: TextStyle(
-                                fontFamily: FontFamilies.interDisplay,
-                                fontWeight: FontFamilies.medium,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
+                            );
+                          },
                         ),
+
                         const SizedBox(height: 12),
                         SizedBox(
                           width: double.infinity,
@@ -348,7 +377,10 @@ class _AgreementSignScreenState extends ConsumerState<AgreementSignScreen> {
         Align(
           alignment: Alignment.centerRight,
           child: TextButton(
-            onPressed: _signatureController.clear,
+            onPressed: () {
+              _signatureController.clear();
+              _validateForm();
+            },
             child: Text(
               "Clear",
               style: TextStyle(

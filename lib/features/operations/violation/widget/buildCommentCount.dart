@@ -25,7 +25,7 @@ class Buildcommentcount extends ConsumerWidget {
         try {
           final comment = ref.read(commentProvider).value;
           return comment != null
-              ? _buildCount(count: comment.data.total.toString())
+              ? _buildCount(count: (comment.data?.total ?? 0).toString())
               : _buildCount(count: "0");
         } catch (e) {
           return _buildCount(count: "0");
@@ -38,10 +38,10 @@ class Buildcommentcount extends ConsumerWidget {
           // Try to show cached data
           final comment = ref.read(commentProvider).value;
           if (comment != null) {
-            return _buildCount(count: comment.data.total.toString());
+            return _buildCount(count: (comment.data?.total ?? 0).toString());
           }
           if (comment != null) {
-            return _buildCount(count: comment.data.total.toString());
+            return _buildCount(count: (comment.data?.total ?? 0).toString());
           }
 
           // No cached data available
@@ -57,21 +57,22 @@ class Buildcommentcount extends ConsumerWidget {
       },
     );
   }
-String checkCount(String value) {
-  try {
-    // Convert string to integer
-    int number = int.parse(value);
-    // Check if number is greater than 99
-    if (number > 99) {
-      return "99+";
+
+  String checkCount(String value) {
+    try {
+      // Convert string to integer
+      int number = int.parse(value);
+      // Check if number is greater than 99
+      if (number > 99) {
+        return "99+";
+      }
+      // Return original value if 99 or less
+      return value;
+    } catch (e) {
+      // Handle invalid input (non-numeric string)
+      return value; // or return "0" or another fallback based on your needs
     }
-    // Return original value if 99 or less
-    return value;
-  } catch (e) {
-    // Handle invalid input (non-numeric string)
-    return value; // or return "0" or another fallback based on your needs
   }
-}
 
   Widget _buildCount({required String count}) {
     return Expanded(

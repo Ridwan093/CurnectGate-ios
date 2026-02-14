@@ -4,7 +4,7 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/model/Work_permit/permit.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/model/permit_model/active_otp_item.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,7 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 class WorkpermitCard extends ConsumerWidget {
-  final Permit generated;
+  final ActiveOtpItem generated;
   const WorkpermitCard(this.generated, {super.key});
 
   String _formatDate(String dateString) {
@@ -94,43 +94,31 @@ class WorkpermitCard extends ConsumerWidget {
               context: context,
               isEndDate: false,
               title: "Type",
-              trailing: generated.visitorOtp?.purpose ?? "",
+              trailing: generated.purpose ?? "",
               isCode: false,
-              status: generated.visitorOtp?.status ?? "",
+              status: generated.status ?? "",
             ),
             _buildreUsableListTile(
               context: context,
-              time: formatToTime(generated.visitorOtp?.validUntil ?? ""),
+              time: formatToTime(generated.validUntil ?? ""),
               isEndDate: true,
               title: "End",
-              trailing: _formatDate(generated.visitorOtp?.validUntil ?? ""),
+              trailing: _formatDate(generated.validUntil ?? ""),
               isCode: false,
-              status: generated.visitorOtp?.status ?? "",
+              status: generated.status ?? "",
             ),
 
             _buildreUsableListTile(
               context: context,
               isEndDate: false,
               title: "Code",
-              trailing: generated.visitorOtp?.otpCode ?? "",
+              trailing: generated.otpCode ?? "",
               isCode: true,
 
-              status: generated.visitorOtp?.status ?? "",
+              status: generated.status ?? "",
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildheaderText(String userName) {
-    return Text(
-      userName,
-      style: TextStyle(
-        fontFamily: FontFamilies.interDisplay,
-        fontWeight: FontFamilies.bold,
-        color: AppColors.instance.black600,
-        fontSize: 20,
       ),
     );
   }
@@ -158,39 +146,33 @@ class WorkpermitCard extends ConsumerWidget {
   }) {
     final notifier = ref.read(reminderProvider.notifier);
 
-    switch (status.toLowerCase()) {
-      case "active":
-        return InkWell(
-          onTap: () async {
-            // final authData = await SharedPrefsService().getAuthData();
-            // final data = authData?['user']?['digital_id_code'] ?? "";
-            // log(data.toString());
-            // log(token.toString());
+    return InkWell(
+      onTap: () async {
+        // final authData = await SharedPrefsService().getAuthData();
+        // final data = authData?['user']?['digital_id_code'] ?? "";
+        // log(data.toString());
+        // log(token.toString());
 
-            notifier.updateLoading(false);
+        notifier.updateLoading(false);
 
-            showUserBottomSheet(
-              context: context,
-              headertitle: otp,
-              headersubtitle: "Revoked  OTP",
-              ref: ref,
-              bottom: BottomSheetView.seletPermit,
-              id: activeOtpID,
-            );
-          },
-          child: Text(
-            "Add Permit",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontWeight: FontFamilies.bold,
-              color: AppColors.instance.teal300,
-            ),
-          ),
+        showUserBottomSheet(
+          context: context,
+          headertitle: otp,
+          headersubtitle: "Revoked  OTP",
+          ref: ref,
+          bottom: BottomSheetView.seletPermit,
+          id: activeOtpID,
         );
-
-      default:
-        return Text("");
-    }
+      },
+      child: Text(
+        "Add Permit",
+        style: TextStyle(
+          fontFamily: FontFamilies.interDisplay,
+          fontWeight: FontFamilies.bold,
+          color: AppColors.instance.teal300,
+        ),
+      ),
+    );
   }
 
   Color color(String status) {
@@ -313,37 +295,56 @@ class WorkpermitCard extends ConsumerWidget {
   Widget _buildvendorcardHead(
     WidgetRef ref,
     BuildContext context,
-    Permit generated,
+    ActiveOtpItem generated,
   ) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          spacing: 5,
-          children: [
-            CircleAvatar(
-              backgroundColor: AppColors.instance.teal300,
-              child: Center(
+        // Left: Avatar + Name — takes available space safely
+        Expanded(
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 18,
+                backgroundColor: AppColors.instance.teal300,
                 child: Text(
                   getInitialsFromFullName(generated.guestName ?? ""),
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     color: AppColors.instance.black600,
-                    fontWeight: FontFamilies.bold,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
                   ),
                 ),
               ),
-            ),
-            _buildheaderText(generated.guestName ?? ""),
-          ],
+              const SizedBox(width: 12),
+              Expanded(
+                // ← Critical: name takes remaining space
+                child: Text(
+                  generated.guestName ?? '',
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.instance.black600,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-        changeButton(
-          otp: generated.visitorOtp?.otpCode.toString() ?? "",
-          context: context,
-          ref: ref,
-          activeOtpID: generated.visitorOtp?.id ?? 0,
-          status: generated.visitorOtp?.status ?? "",
-        ),
+
+        // Right: Change button — fixed size, never pushed off
+        if (generated.hasPermit == false &&
+            generated.status!.contains("active"))
+          changeButton(
+            otp: generated.otpCode.toString(),
+            context: context,
+            ref: ref,
+            activeOtpID: generated.otpId ?? 0,
+            status: generated.status ?? "",
+          ),
       ],
     );
   }

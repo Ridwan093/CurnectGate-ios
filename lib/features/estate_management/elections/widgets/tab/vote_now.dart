@@ -36,7 +36,6 @@ class VoteNow extends ConsumerWidget {
     final selections = ref.read(electionProvider).selections;
     final isLoading = ref.watch(formProvider).generateMemberIdLoading;
 
-
     return Column(
       children: [
         PollDatas(canRoute: false),

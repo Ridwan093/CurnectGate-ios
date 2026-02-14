@@ -10,11 +10,13 @@ class ReUsableForm extends ConsumerWidget {
   final String label;
   final int length;
 
+  final TextEditingController? controller;
   const ReUsableForm({
     super.key,
     required this.hintText,
     required this.length,
     required this.label,
+    this.controller,
   });
 
   @override
@@ -24,8 +26,9 @@ class ReUsableForm extends ConsumerWidget {
     final colors = AppColors.instance;
 
     return TextFormField(
+      controller: controller,
       onChanged: (code) => notifier.updateCode(code, length),
-      initialValue: state.code,
+      // initialValue: state.code,
       decoration: _buildInputDecoration(state, colors),
       validator: (_) => state.errorMessage,
       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -41,6 +44,8 @@ class ReUsableForm extends ConsumerWidget {
     EstateCodeFormState state,
     AppColors colors,
   ) {
+    final rawError = state.errorMessage;
+    final hasError = rawError != null && rawError.trim().isNotEmpty;
     return InputDecoration(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       focusedBorder: OutlineInputBorder(
@@ -57,11 +62,8 @@ class ReUsableForm extends ConsumerWidget {
       ),
       hintText: hintText,
       labelText: label,
-      suffixIcon:
-          state.errorMessage != null
-              ? Icon(Icons.error, color: colors.error600)
-              : null,
-      errorText: state.errorMessage,
+      suffixIcon: hasError ? Icon(Icons.error, color: colors.error600) : null,
+      errorText: hasError ? state.errorMessage : null,
       labelStyle: TextStyle(
         fontFamily: FontFamilies.interDisplay,
         color: colors.black300,

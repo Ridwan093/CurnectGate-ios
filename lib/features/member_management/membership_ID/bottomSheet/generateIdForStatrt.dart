@@ -33,7 +33,7 @@ class Generateidforstatrt extends ConsumerWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            'Click to generate ID',
+            'Generate Your Member ID',
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               fontWeight: FontFamilies.bold,
@@ -77,7 +77,7 @@ class Generateidforstatrt extends ConsumerWidget {
                   ),
                   const SizedBox(width: 10),
                   Text(
-                    'Regenerate Code',
+                    'Generate Code',
                     style: TextStyle(
                       fontWeight: FontFamilies.bold,
                       fontFamily: FontFamilies.interDisplay,

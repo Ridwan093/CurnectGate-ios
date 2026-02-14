@@ -5,96 +5,79 @@ import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/provider/Wor_permit_provider.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/provider/getActiveOtpByfilter_provider.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/provider/getPermittactive_permitt.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/permit_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 class PermitData extends ConsumerWidget {
   const PermitData({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activeOtasync = ref.watch(getWorkpermitProvider);
+    final activeOtasync = ref.watch(getActivePermit);
 
     return RefreshIndicator(
       color: AppColors.instance.yellow500,
-      onRefresh:
-          () => ref
-              .read(getActiveOtpProvider.notifier)
-              .refreshActive(context, ref),
+      onRefresh: () =>
+          ref.read(getActivePermit.notifier).refreshActive(context, ref),
 
       child: activeOtasync.when(
         data: (activeOtp) {
-          if (activeOtp!.data!.permits!.isNotEmpty) {
-            return BuildPermitlist(otp: activeOtp.data);
-          } else {
-            return _buildEmtyBody();
+          final otps = activeOtp?.data?.otps;
+
+          if (otps != null && otps.isNotEmpty && activeOtp?.data != null) {
+            final data = activeOtp!.data; // promoted safely by condition
+            return BuildPermitlist(otp: data);
           }
 
-          // If data is valid
+          return _buildEmtyBody();
         },
-        loading: () {
-          final cachedOtp = ref.read(getWorkpermitProvider).value;
 
-          if (cachedOtp != null &&
-              cachedOtp.status! &&
-              cachedOtp.data!.permits!.isNotEmpty) {
-            return BuildPermitlist(otp: cachedOtp.data);
+        loading: () {
+          final cachedOtp = ref.read(getActivePermit).value;
+          final cachedData = cachedOtp?.data;
+          final cachedOtps = cachedData?.otps;
+
+          final hasCachedData =
+              (cachedOtp?.status ?? false) &&
+              cachedOtps != null &&
+              cachedOtps.isNotEmpty;
+
+          if (hasCachedData && cachedData != null) {
+            return BuildPermitlist(otp: cachedData);
           }
 
           return const Loadingstates();
         },
+
         error: (error, stack) {
-          try {
-            // Handle session expiration
-            if (error.toString().contains("Unauthorized")) {
-              return const Expiresessionbody();
-            }
-            final otp = ref.read(getWorkpermitProvider).value;
+          if (error.toString().contains("Unauthorized")) {
+            return const Expiresessionbody();
+          }
 
-            // Try to show cached data
+          final cachedOtp = ref.read(getActivePermit).value;
+          final cachedData = cachedOtp?.data;
+          final cachedOtps = cachedData?.otps;
 
-            if (otp!.data!.permits!.isNotEmpty) {
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    BuildPermitlist(otp: otp.data),
-                    Emmergencybody(error: error.toString()),
-                  ],
-                ),
-              );
-            }
-
-            // No cached data available
-            return Builderroul(
-              error: error.toString(),
-              onTap:
-                  () => ref
-                      .read(getActiveOtpProvider.notifier)
-                      .refreshActive(context, ref),
-              firstMessae: "Faile to load Active OTPs?",
-            );
-          } catch (e) {
-            return Builderroul(
-              error: e.toString(),
-              onTap:
-                  () => ref
-                      .read(getWorkpermitProvider.notifier)
-                      .refreshActive(context, ref),
-              firstMessae: "Faile to load Active OTPs?",
+          if (cachedOtps != null && cachedOtps.isNotEmpty && cachedData != null) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  BuildPermitlist(otp: cachedData),
+                  Emmergencybody(error: error.toString()),
+                ],
+              ),
             );
           }
+
+          return Builderroul(
+            error: error.toString(),
+            onTap: () =>
+                ref.read(getActivePermit.notifier).refreshActive(context, ref),
+            firstMessae: "Failed to load Active OTPs?",
+          );
         },
       ),
-
-      // Expanded(
-      //   child:
-      //       generatedList.isNotEmpty
-      //           ? _buildMemberList(ref, size)
-      //           : _buildEmtyBody(),
-      // ),
     );
   }
 
@@ -105,7 +88,7 @@ class PermitData extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(AssetPaths.setCurfew, height: 100, width: 100),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               "Your Active Otp permit appears here",
               textAlign: TextAlign.center,

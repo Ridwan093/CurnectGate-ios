@@ -1,12 +1,12 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/estate_management/screen_managment.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/model/estate_code_validator_state.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/code_check_widget/buildnotifymessage.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/code_check_widget/codeformfield.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/progresscontainer.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/stepcount.dart';
-import 'package:curnectgate/features/estate_management/screen_managment.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/provider/member_code%20_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,6 +30,12 @@ class MemberIdchecker extends BaseVerificationScreen {
 
 class _EstateCodeVerificationScreenState
     extends ConsumerState<MemberIdchecker> {
+  final _controller = TextEditingController();
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
@@ -88,7 +94,12 @@ class _EstateCodeVerificationScreenState
             ),
           ),
           const SizedBox(height: 32),
-          ReUsableForm(label: "Menber ID", hintText: "eg 045679", length: 6),
+          ReUsableForm(
+            controller: _controller,
+            label: "Menber ID",
+            hintText: "eg 045679",
+            length: 6,
+          ),
           const SizedBox(height: 24),
           const InfoMessage(
             icon: AssetPaths.location,
@@ -117,6 +128,7 @@ class _EstateCodeVerificationScreenState
                   estateLogo:
                       widget.estateData?['settings']?['image_url'] ?? "",
                 );
+                _controller.clear();
                 // log(widget.estateData!['image_url'].toString());
               }
               : null,

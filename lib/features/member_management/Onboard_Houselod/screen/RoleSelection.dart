@@ -54,7 +54,11 @@ class _PasswordScreenState extends ConsumerState<MemberSelection> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
 
-    return Scaffold(appBar: _buildAppBar(), body: _biuldbody(size));
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: _buildAppBar(),
+      body: _biuldbody(size),
+    );
   }
 
   Widget _biuldbody(Size size) {
@@ -67,6 +71,7 @@ class _PasswordScreenState extends ConsumerState<MemberSelection> {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
+      backgroundColor: Colors.white,
       leading: InkWell(
         onTap: () {
           context.pop();

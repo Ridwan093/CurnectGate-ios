@@ -2,9 +2,11 @@ import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/navigation/back_manageent/back_widget/back_navigator.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/%20operations/property_agreement/widget/agreement_pop_data.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/image_tab.dart';
 import 'package:curnectgate/features/member_management/screen/tab_screen/CommunityScreen.dart';
 import 'package:curnectgate/features/member_management/tabState/tab_state.dart';
+import 'package:curnectgate/features/operations/notifications/event/event_widget/EventCode/myEventCode_bottomsheet.dart';
 import 'package:curnectgate/features/payment/screen/PaymentScreen.dart';
 import 'package:curnectgate/features/userProfile/profile/screen/ProfilesScreen.dart';
 import 'package:flutter/material.dart';
@@ -17,11 +19,15 @@ class MainNavigationScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentIndex = ref.watch(tabStateProvider);
     final tabController = ref.read(tabStateProvider.notifier);
+    final tabCount = 5;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final tabWidth = screenWidth / tabCount;
 
     final List<Widget> screens = [
       mainPage,
-      const CommunityScreen(),
       const PaymentScreen(),
+      const MyEventCode(isTab: true),
+      const CommunityScreen(),
       const ProfileScreen(),
     ];
 
@@ -31,30 +37,32 @@ class MainNavigationScreen extends ConsumerWidget {
     return BackButtonHandler(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        body: SafeArea(
-          child: Row(
-            children: [
-              // Tablet: Show NavigationRail on left
-              if (isTablet)
-                Container(
-                  width: 80,
-                  color: Colors.white,
-                  child: _buildNavigationRail(currentIndex, tabController),
-                ),
+        body: AgreementPopupData(
+          child: SafeArea(
+            child: Row(
+              children: [
+                // Tablet: Show NavigationRail on left
+                if (isTablet)
+                  Container(
+                    width: 80,
+                    color: Colors.white,
+                    child: _buildNavigationRail(currentIndex, tabController),
+                  ),
 
-              // Main content — full on tablet, constrained on phone for beauty
-              Expanded(
-                child:
-                    isTablet
-                        ? screens[currentIndex] // Full width on tablet
-                        : Center(
-                          child: ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 600),
-                            child: screens[currentIndex],
+                // Main content — full on tablet, constrained on phone for beauty
+                Expanded(
+                  child:
+                      isTablet
+                          ? screens[currentIndex] // Full width on tablet
+                          : Center(
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 600),
+                              child: screens[currentIndex],
+                            ),
                           ),
-                        ),
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
 
@@ -99,21 +107,30 @@ class MainNavigationScreen extends ConsumerWidget {
                             context,
                             index: 1,
                             currentIndex: currentIndex,
-                            normalIcon: AssetPaths.navMessages,
-                            activeIcon: AssetPaths.navMessageactive,
-                            label: 'Community',
-                          ),
-                          _buildTabItem(
-                            context,
-                            index: 2,
-                            currentIndex: currentIndex,
                             normalIcon: AssetPaths.navCreditCard,
                             activeIcon: AssetPaths.navCreditCardFilled,
                             label: 'Payments',
                           ),
                           _buildTabItem(
                             context,
+                            index: 2,
+                            currentIndex: currentIndex,
+                            normalIcon: AssetPaths.navEventCodeActive,
+                            activeIcon: AssetPaths.navEventCodeDeactive,
+                            label: 'Codes',
+                          ),
+                          _buildTabItem(
+                            context,
                             index: 3,
+                            currentIndex: currentIndex,
+                            normalIcon: AssetPaths.navMessages,
+                            activeIcon: AssetPaths.navMessageactive,
+                            label: 'Chats',
+                          ),
+
+                          _buildTabItem(
+                            context,
+                            index: 4,
                             currentIndex: currentIndex,
                             normalIcon: AssetPaths.navProfileInactive,
                             activeIcon: AssetPaths.navProfileActive,
@@ -125,13 +142,11 @@ class MainNavigationScreen extends ConsumerWidget {
                       Positioned(
                         top: 0,
                         left:
-                            MediaQuery.of(context).size.width /
-                                4 *
-                                currentIndex +
-                            (MediaQuery.of(context).size.width / 8) -
-                            (MediaQuery.of(context).size.width / 14),
+                            tabWidth * currentIndex +
+                            (tabWidth / 2) -
+                            (tabWidth / 4),
                         child: Container(
-                          width: MediaQuery.of(context).size.width / 7,
+                          width: tabWidth / 2,
                           height: 3,
                           color: AppColors.instance.teal300,
                         ),
@@ -168,16 +183,23 @@ class MainNavigationScreen extends ConsumerWidget {
           "Home",
         ),
         _buildRailDestination(
-          AssetPaths.navMessageactive,
-          AssetPaths.navMessages,
-          "Community",
-        ),
-        _buildRailDestination(
-            AssetPaths.navCreditCardFilled,
+          AssetPaths.navCreditCardFilled,
           AssetPaths.navCreditCard,
-        
+
           "Payment",
         ),
+        _buildRailDestination(
+          AssetPaths.navEventCodeActive,
+          AssetPaths.navEventCodeDeactive,
+
+          "Codes",
+        ),
+        _buildRailDestination(
+          AssetPaths.navMessageactive,
+          AssetPaths.navMessages,
+          "Chats",
+        ),
+
         _buildRailDestination(
           AssetPaths.navProfileActive,
           AssetPaths.navProfileInactive,

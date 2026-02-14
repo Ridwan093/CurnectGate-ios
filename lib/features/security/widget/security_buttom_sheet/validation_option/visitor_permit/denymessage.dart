@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/security/model/close_all.dart';
 import 'package:flutter/material.dart';
 
 class DenyEntryPermitMessage extends StatelessWidget {
@@ -56,7 +57,7 @@ class DenyEntryPermitMessage extends StatelessWidget {
           SizedBox(height: 30),
           _buildFeatureButton(
             onTap: () {
-              Navigator.pop(context);
+              closeAllBottomSheets(context);
             },
           ),
         ],

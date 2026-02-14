@@ -4,11 +4,16 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+class Value<T> {
+  final T value;
+  const Value(this.value);
+}
+
 class EstateCodeFormState {
   final String code;
   final bool isValid;
-  final String? validationError; // For client-side validation
-  final String? apiError; // For server-side errors
+  final String? validationError;
+  final String? apiError;
   final bool isLoading;
 
   const EstateCodeFormState({
@@ -19,21 +24,23 @@ class EstateCodeFormState {
     this.isLoading = false,
   });
 
-  // Combine both errors with priority to validation errors
   String? get errorMessage => validationError ?? apiError;
 
   EstateCodeFormState copyWith({
     String? code,
     bool? isValid,
-    String? validationError,
-    String? apiError,
+    Value<String?>? validationError,
+    Value<String?>? apiError,
     bool? isLoading,
   }) {
     return EstateCodeFormState(
       code: code ?? this.code,
       isValid: isValid ?? this.isValid,
-      validationError: validationError,
-      apiError: apiError ?? this.apiError,
+      validationError:
+          validationError != null
+              ? validationError.value
+              : this.validationError,
+      apiError: apiError != null ? apiError.value : this.apiError,
       isLoading: isLoading ?? this.isLoading,
     );
   }
@@ -41,25 +48,23 @@ class EstateCodeFormState {
 
 class EstateCodeFormNotifier extends StateNotifier<EstateCodeFormState> {
   EstateCodeFormNotifier() : super(const EstateCodeFormState());
-
   void updateCode(String code, int length) {
     if (code.isEmpty) {
       state = state.copyWith(
         code: code,
         isValid: false,
-        validationError: null, // No error shown when empty (better UX)
-        apiError: null, // Clear any existing API error
+        validationError: const Value(null),
+        apiError: const Value(null),
       );
       return;
     }
+
     final validationError = _validateCode(code, length);
+
     state = state.copyWith(
       code: code,
-      validationError: validationError,
-      apiError:
-          validationError == null
-              ? null
-              : state.apiError, // Clear API error if validating
+      validationError: Value(validationError),
+      apiError: const Value(null), // clear API error when typing
       isValid: validationError == null,
     );
   }
@@ -74,11 +79,24 @@ class EstateCodeFormNotifier extends StateNotifier<EstateCodeFormState> {
   }
 
   void setApiError(String message) {
-    state = state.copyWith(apiError: message, isValid: false, isLoading: false);
+    state = state.copyWith(
+      code: "",
+      apiError: Value(message),
+      validationError: const Value(null),
+      isValid: false,
+      isLoading: false,
+    );
   }
 
   void clearApiError() {
-    state = state.copyWith(apiError: null, isLoading: false);
+    log("state${state.code}");
+    state = state.copyWith(
+      code: "",
+      isValid: false,
+      validationError: const Value(null),
+      apiError: const Value(null),
+    );
+    log("end${state.code}");
   }
 
   void update(EstateCodeFormState newState) {

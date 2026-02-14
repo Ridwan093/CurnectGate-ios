@@ -45,7 +45,7 @@ class ReusabelProfileForm extends StatefulWidget {
     this.maxLength,
     this.maxLines = 1,
     this.showLockIcon = false,
-   // Default to false
+    // Default to false
   });
 
   @override
@@ -104,7 +104,7 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
       decoration: _buildInputDecoration(),
       // onChanged: _validateField, // Skip validation if read-only
       onChanged: (value) {
-        _validateField(value);
+        _validateField(value.trim());
         widget.onChanged!(value);
       },
       keyboardType: _getKeyboardType(),
@@ -138,7 +138,6 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
         color: colors.black300,
         fontSize: 13,
       ),
-
 
       errorStyle: TextStyle(
         fontFamily: FontFamilies.interDisplay,
@@ -226,12 +225,12 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
           }
           break;
         case FieldType.general:
-          if (value.length < 50) {
-            error = '${widget.label} must be at least 50 characters';
-          }
-        case FieldType.reason:
           if (value.length < 20) {
             error = '${widget.label} must be at least 20 characters';
+          }
+        case FieldType.reason:
+          if (value.length < 10) {
+            error = '${widget.label} must be at least 10 characters';
           }
         case FieldType.itemName:
           if (value.length < 5) {

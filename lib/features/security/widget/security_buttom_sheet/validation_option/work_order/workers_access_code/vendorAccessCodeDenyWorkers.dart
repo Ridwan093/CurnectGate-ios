@@ -139,7 +139,7 @@ class _DenyEntryState extends ConsumerState<VendorAccessDeny> {
       label: 'Deny Access',
       onPressed:
           _dec.text.isNotEmpty &&
-                  _dec.text.length > 19 &&
+                  _dec.text.length > 10 &&
                   formState.reason != null
               ? () {
                 providerState.vendorAccessCodeDeny(

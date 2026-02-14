@@ -10,6 +10,7 @@ import 'package:curnectgate/features/operations/notifications/event/event_widget
 import 'package:curnectgate/features/operations/notifications/event/event_widget/data_event_card.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_event_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_user_rsvp_model.dart';
+import 'package:curnectgate/features/operations/notifications/provider/activity_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/getevent_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/limit_event_provider.dart';
 import 'package:flutter/material.dart';
@@ -125,6 +126,7 @@ class EventLimitData extends ConsumerWidget {
           event: data,
           onGoing: (p0) {},
           onTap: () {
+            ref.read(isPopProvider.notifier).state = true;
             showUserBottomSheet(
               context: context,
               headertitle: "",
@@ -148,7 +150,7 @@ class EventLimitData extends ConsumerWidget {
           Image.asset(AssetPaths.dashboardEvents, height: 100, width: 100),
           SizedBox(height: 10),
           Text(
-            "Your Evente detailes appears here",
+            "Event detiles appears here",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               color: AppColors.instance.black300,

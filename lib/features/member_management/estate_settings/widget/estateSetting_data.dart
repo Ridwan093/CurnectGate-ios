@@ -40,23 +40,37 @@ class EstateSettingsDatas<T> extends ConsumerWidget {
           }
         },
         error: (error, stack) {
-          if (error.toString().contains("Unauthorized")) {
-            return Expiresessionbody();
-          }
+          try {
+            // Handle session expiration
+            if (error.toString().contains("Unauthorized")) {
+              return Expiresessionbody();
+            }
 
-          final cachedProfile = ref.read(emergencyProvider).value;
-          if (cachedProfile?.data?.settings != null) {
-            return builder(context, cachedProfile?.data as T);
-          }
+            // Try to show cached data
+            final cachedProfile = ref.read(emergencyProvider).value;
+            if (cachedProfile?.data?.settings != null) {
+              return builder(context, cachedProfile?.data as T);
+            }
 
-          return Builderroul(
-            error: error.toString(),
-            onTap:
-                () => ref
-                    .read(emergencyProvider.notifier)
-                    .refreshEstateSettings(context, ref),
-            firstMessae: "Failed to load Emergency data?",
-          );
+            // No cached data available
+            return Builderroul(
+              error: error.toString(),
+              onTap:
+                  () => ref
+                      .read(emergencyProvider.notifier)
+                      .refreshEstateSettings(context, ref),
+              firstMessae: "Failed to load Emergency data?",
+            );
+          } catch (e) {
+            return Builderroul(
+              error: error.toString(),
+              onTap:
+                  () => ref
+                      .read(emergencyProvider.notifier)
+                      .refreshEstateSettings(context, ref),
+              firstMessae: "Failed to load Emergency data?",
+            );
+          }
         },
       ),
     );

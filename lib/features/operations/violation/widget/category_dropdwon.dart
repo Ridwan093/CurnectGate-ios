@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:curnectgate/features/operations/violation/model/getCategory_model.dart'
-    show Category, CategoryData;
+import 'package:curnectgate/features/operations/violation/model/violation_category/category.dart';
+import 'package:curnectgate/features/operations/violation/model/violation_category/category_data.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -86,6 +86,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                                     _toggleOverlay();
                                   },
                                   child: Container(
+                                    color: Colors.white,
                                     width: size.width,
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 16,
@@ -185,17 +186,17 @@ class CategoryDropdown extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Filter out null categories and IDs
     // ignore: unnecessary_null_comparison
-    final categories = data.categories.where((c) => c.id != null).toList();
+    final categories = data.categories?.where((c) => c.id != null).toList();
 
     // Find the selected category (using our extension method)
 
     return CustomDropdown<Category>(
-      items: categories,
+      items: categories ?? [],
       value: currentValue ?? "",
-      itemText: (category) => category.name,
+      itemText: (category) => category.name ?? "",
       onChanged: (category) {
         if (category != null) {
-          log(category.name);
+          log(category.name ?? "");
           ref
               .read(reportProvider.notifier)
               .setCategory(category.name.toString(), category.id.toString());

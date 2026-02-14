@@ -1,63 +1,43 @@
 // Provider for your API class
-import 'dart:developer';
-
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
-import 'package:curnectgate/core/style/colors.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/model/otp_response_model.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/active_provider.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final getActiveOtpProvider =
-    AsyncNotifierProvider.autoDispose<ActiveOtpnotifier, OtpResponseModel?>(() {
-      return ActiveOtpnotifier();
+    AsyncNotifierProvider<ActiveOtpNotifier, OtpResponseModel?>(() {
+      return ActiveOtpNotifier();
     });
 
-class ActiveOtpnotifier extends AutoDisposeAsyncNotifier<OtpResponseModel?> {
+class ActiveOtpNotifier extends AsyncNotifier<OtpResponseModel?> {
   @override
   Future<OtpResponseModel?> build() async {
-    // First try to load from local storage
-    final localVendor = await SharedPrefsService.getActiveOtp();
+    // Load from local storage first
+    final localOtp = await SharedPrefsService.getActiveOtp();
 
     try {
-      // Then try to fetch fresh data
       final token = await ref.watch(accessTokenProvider.future);
-      final statue = ref.watch(generateNotifierProvider).filter;
+      final statusFilter = ref.watch(generateNotifierProvider).filter;
 
       if (token == null || token.isEmpty) {
         throw Exception("Unauthenticated");
       }
 
-      final freshVendor = await ref
+      final freshOtp = await ref
           .read(getApiServiceProvider)
-          .getVisitorByFilters(bearerToken: token, status: statue ?? "");
+          .getVisitorByFilters(bearerToken: token, status: statusFilter ?? "");
 
-      // Only update local storage if data is different
-      if (localVendor?.toJson() != freshVendor.toJson()) {
-        await SharedPrefsService.saveActiveOtp(freshVendor);
+      // Save only if changed
+      if (localOtp?.toJson() != freshOtp.toJson()) {
+        await SharedPrefsService.saveActiveOtp(freshOtp);
       }
 
-      return freshVendor;
+      return freshOtp;
     } catch (e) {
-      // If error occurs, return local data if available
-
-      log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");
-      if (localVendor != null) {
-        log("$e local Error ");
-        // Show error toast but still return local data
-        // WidgetsBinding.instance.addPostFrameCallback((_) {
-        //   ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(
-        //       content: Text('Using cached data: ${e.toString()}'),
-        //       duration: const Duration(seconds: 2),
-        //     ),
-        //   );
-        // });
-        return localVendor;
-      }
+      // Return local cache if API fails
+      if (localOtp != null) return localOtp;
       rethrow;
     }
   }
@@ -67,30 +47,19 @@ class ActiveOtpnotifier extends AutoDisposeAsyncNotifier<OtpResponseModel?> {
     state = await AsyncValue.guard(() async {
       try {
         final token = await ref.watch(accessTokenProvider.future);
-        final statue = ref.watch(generateNotifierProvider).filter;
-        final freshVendor = await ref
+        final statusFilter = ref.watch(generateNotifierProvider).filter;
+        final freshOtp = await ref
             .read(getApiServiceProvider)
-            .getVisitorByFilters(bearerToken: token!, status: statue ?? "");
-        await SharedPrefsService.saveActiveOtp(freshVendor);
-        return freshVendor;
+            .getVisitorByFilters(
+              bearerToken: token!,
+              status: statusFilter ?? "",
+            );
+        await SharedPrefsService.saveActiveOtp(freshOtp);
+        return freshOtp;
       } catch (e) {
-        if (e is DioException && e.response?.statusCode == 401) {
-          log(e.toString());
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else if (e.toString().contains("The connection errored")) {
-          log(e.toString());
-          showCustomSuccessToast(
-            context: context,
-            message: 'Connection failed. Please check your network',
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey300,
-            positionNumber: 72,
-          );
-        }
-
-        final localVendor = await SharedPrefsService.getActiveOtp();
-        if (localVendor != null) return localVendor;
+        // Handle errors but fallback to local cache
+        final localOtp = await SharedPrefsService.getActiveOtp();
+        if (localOtp != null) return localOtp;
         rethrow;
       }
     });

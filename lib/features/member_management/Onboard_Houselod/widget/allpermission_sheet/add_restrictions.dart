@@ -6,10 +6,17 @@ import 'package:curnectgate/features/member_management/profile_form/provider%20/
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AddRestrictions extends ConsumerWidget {
+class AddRestrictions extends ConsumerStatefulWidget {
   final int id;
   AddRestrictions({super.key, required this.id});
+
+  @override
+  ConsumerState<AddRestrictions> createState() => _AddRestrictionsState();
+}
+
+class _AddRestrictionsState extends ConsumerState<AddRestrictions> {
   final _controler = TextEditingController();
+
   final hours = [
     '1 hr',
     '2 hrs',
@@ -19,6 +26,7 @@ class AddRestrictions extends ConsumerWidget {
     '18 hrs',
     '24 hrs',
   ];
+
   final days = [
     'Monday',
     'Tusady',
@@ -29,7 +37,13 @@ class AddRestrictions extends ConsumerWidget {
     'Sunday',
   ];
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void dispose() {
+    _controler.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(formProvider);
     final notifier = ref.read(formProvider.notifier);
 
@@ -150,7 +164,7 @@ class AddRestrictions extends ConsumerWidget {
                         // Save logic
                         notifier.landlordRestrictions(
                           context: context,
-                          id: id,
+                          id: widget.id,
                           ref: ref,
                           value: state.restrictionValue ?? false,
                         );

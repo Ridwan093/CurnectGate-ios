@@ -63,7 +63,7 @@ class VendorLog extends ConsumerWidget {
         ),
         child: Center(
           child: Text(
-            "Submite Work Order +",
+            "Submit Work Order +",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               color: AppColors.instance.grey200,

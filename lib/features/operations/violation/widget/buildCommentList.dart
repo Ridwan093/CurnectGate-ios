@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class Buildcommentlist extends ConsumerWidget {
-  const Buildcommentlist({super.key});
+  final int id;
+  const Buildcommentlist({super.key, required this.id});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -17,9 +18,7 @@ class Buildcommentlist extends ConsumerWidget {
       data: (comment) {
         try {
           final comments = comment?.data;
-          return comments != null
-              ? CommentBody(comment!.data)
-              : _buildEmtyBody();
+          return comments != null ? CommentBody(comments) : _buildEmtyBody();
         } catch (e) {
           return _buildErrorUI(e.toString(), ref, context);
         }
@@ -27,8 +26,9 @@ class Buildcommentlist extends ConsumerWidget {
       loading: () {
         try {
           final comment = ref.read(commentProvider).value;
-          return comment != null
-              ? CommentBody(comment.data)
+          final comments = comment?.data;
+          return comment?.data != null
+              ? CommentBody(comments!)
               : _buildLoadingState();
         } catch (e) {
           return _buildErrorUI(e.toString(), ref, context);
@@ -43,11 +43,13 @@ class Buildcommentlist extends ConsumerWidget {
 
           // Try to show cached data
           final comment = ref.read(commentProvider).value;
+          final comments = comment?.data;
           if (comment != null) {
-            return CommentBody(comment.data);
+            return CommentBody(comments!);
           }
           if (comment != null) {
-            return CommentBody(comment.data);
+            final comments = comment.data;
+            return CommentBody(comments!);
           }
 
           // No cached data available
@@ -136,7 +138,7 @@ class Buildcommentlist extends ConsumerWidget {
             onPressed:
                 () => ref
                     .read(commentProvider.notifier)
-                    .refreshComment(context, ref),
+                    .refreshComment(context, ref, id),
             child: Text(
               "Try Again",
               style: TextStyle(

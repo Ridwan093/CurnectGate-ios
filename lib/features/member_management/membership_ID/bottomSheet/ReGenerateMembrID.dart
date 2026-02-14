@@ -77,8 +77,8 @@ class Regeneratemembrid extends ConsumerWidget {
             const SizedBox(height: 30),
             ActionButton(
               onPressed:
-                  state.digiterReason!.isNotEmpty &&
-                          state.digiterReason!.length > 19
+                  (state.digiterReason?.trim() ?? "").isNotEmpty &&
+                          (state.digiterReason?.trim() ?? "").length > 9
                       ? () {
                         form.reGenerateMemberID(context: context, ref: ref);
                       }

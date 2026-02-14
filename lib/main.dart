@@ -38,13 +38,12 @@ void main() async {
     ProviderScope(
       // Wrap your app with ProviderScope
       child: DevicePreview(
-        enabled: true,
+        enabled: false,
         builder: (context) => MyApp(), // Wrap your app
       ),
     ),
   );
-}
-
+} //// 936481 permit / 098550/468131 /workOder=Y0RUH
 //  MaterialApp(
 //         debugShowCheckedModeBanner: false,
 //         home: id != null ? EstateOnboardingScreen() : ActivityPage(),
@@ -74,9 +73,9 @@ class _MyAppState extends ConsumerState<MyApp> {
     _lifecycleService.dispose();
     super.dispose();
   }
+
   @override
-  Widget build(BuildContext context, ) {
-    
+  Widget build(BuildContext context) {
     final router = ref.watch(routerProvider); // Get the router
 
     return SessionExpiryListener(

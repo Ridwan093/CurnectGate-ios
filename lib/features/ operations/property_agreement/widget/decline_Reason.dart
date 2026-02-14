@@ -9,6 +9,7 @@ import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/securitybutton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class DeclineReason extends ConsumerStatefulWidget {
   final String isProperty;
@@ -29,7 +30,8 @@ class _DenyEntryState extends ConsumerState<DeclineReason> {
     // final state = ref.read(oTpformProvider.notifier);
     // final notifiers = ref.read(oTpformProvider);
 
-    final isLoading = ref.read(formProvider).termsAndCondintionLoading ?? false;
+    final isLoading =
+        ref.watch(formProvider).termsAndCondintionLoading ?? false;
     return Stack(
       children: [
         SingleChildScrollView(
@@ -39,10 +41,12 @@ class _DenyEntryState extends ConsumerState<DeclineReason> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: InkWell(
-                      onTap: () => Navigator.of(context).pop(),
+                  InkWell(
+                    onTap: () {
+                      context.pop();
+                    },
+                    child: Align(
+                      alignment: Alignment.topRight,
                       child: Icon(
                         Icons.close,
                         color: AppColors.instance.black600,

@@ -28,6 +28,7 @@ class Builderroul extends ConsumerWidget {
           const SizedBox(height: 16),
           Text(
             firstMessae,
+            textAlign: TextAlign.center,
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               fontSize: 16,

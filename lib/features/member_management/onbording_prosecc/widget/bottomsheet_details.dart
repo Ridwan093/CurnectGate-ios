@@ -1,4 +1,5 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/%20operations/property_agreement/widget/decline_Reason.dart';
@@ -7,6 +8,7 @@ import 'package:curnectgate/features/chat/presentation/chat_widget/admin_seletio
 import 'package:curnectgate/features/chat/presentation/chat_widget/chatInit.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/chat_setting_widget.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/emergency_widget.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/model/get_workOder/work_order.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/managevendorlog.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/uplodeAfterWork/uplodeAfterWork.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/Set_restrictions.dart';
@@ -60,11 +62,11 @@ import 'package:curnectgate/features/payment/widget/buttom_sheet_widget/succeful
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/MenatainLog.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/accessGranted.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/addComment.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/all_validation_code_widget.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/checkoutConfirm.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/confirmEntry.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/dismissing_report.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/specifyNumberofGuest.dart';
-import 'package:curnectgate/features/security/widget/security_buttom_sheet/validate_workOrdr_Otp.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/denyEntry.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/denyEntryConfirm.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/didgita_id/additionalInfoQrScan.dart';
@@ -122,6 +124,7 @@ class BottomsheetDetails extends ConsumerWidget {
   String? additional_notes;
   String? device_id;
   PaymentDashboardData? dashborddata;
+  WorkOrder? workOder;
 
   BottomsheetDetails({
     super.key,
@@ -138,6 +141,7 @@ class BottomsheetDetails extends ConsumerWidget {
     this.location,
     this.additional_notes,
     this.device_id,
+    this.workOder,
   });
 
   @override
@@ -424,7 +428,7 @@ class BottomsheetDetails extends ConsumerWidget {
       case BottomSheetView.createdEvent:
         return CreatEvent();
       case BottomSheetView.myeventCode:
-        return MyEventCode();
+        return MyEventCode(isTab: false);
       case BottomSheetView.eventSetting:
         return EventSettings(data: eventCode!);
       case BottomSheetView.eventDeactive:
@@ -436,6 +440,7 @@ class BottomsheetDetails extends ConsumerWidget {
           id: id ?? 0,
           title: headertitle,
           subtitle: headersubtitle,
+          workOder: workOder,
         );
       case BottomSheetView.selectedAdminforChat:
         return EstateAdminSelectionSheet(type: headertitle);
@@ -531,27 +536,31 @@ class BottomsheetDetails extends ConsumerWidget {
     final chatNotifier = ref.watch(chatProvider.notifier);
 
     switch (bottom) {
-      // case BottomSheetView.vendorLog:
-      //   onTap = () {
-      //     // log(eventData!.vendorName);
-      //     // Navigator.push(
-      //     //   context,
-      //     //   MaterialPageRoute(
-      //     //     builder: (context) => SubmitWorkOrderPage(vendor: ),
-      //     //   ),
-      //     // );
-      //   };
-      //   leading = CircleAvatar(
-      //     backgroundColor: AppColors.instance.grey400,
-      //     child: Center(
-      //       child: Icon(
-      //         Icons.drive_file_rename_outline_outlined,
-      //         color: AppColors.instance.black600,
-      //       ),
-      //     ),
-      //   );
-      //   title = "Edit vendor Log";
-      //   break;
+      case BottomSheetView.vendorLog:
+        onTap = () {
+          context.pushNamed(
+            AppRoutes.workSubmit,
+            extra: {"wokerOrder": workOder},
+          );
+          // log(eventData!.vendorName);
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => SubmitWorkOrderPage(vendor: ),
+          //   ),
+          // );
+        };
+        leading = CircleAvatar(
+          backgroundColor: AppColors.instance.grey400,
+          child: Center(
+            child: Icon(
+              Icons.drive_file_rename_outline_outlined,
+              color: AppColors.instance.black600,
+            ),
+          ),
+        );
+        title = "Edit vendor Log";
+        break;
 
       case BottomSheetView.permissions:
         onTap = () {

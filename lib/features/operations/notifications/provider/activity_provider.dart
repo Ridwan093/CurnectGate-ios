@@ -15,7 +15,9 @@ final searchQueryProvider = StateProvider<String>((ref) => '');
 final isSearchingProvider = StateProvider<bool>((ref) => false);
 final selectedFilterProvider = StateProvider<String?>((ref) => null);
 
-// Provider for your API class
+final isPopProvider = StateProvider<bool>((ref) => false);
+
+
 
 final getUserNotification = AsyncNotifierProvider.autoDispose<
   GetUserNotification,

@@ -114,7 +114,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                 return _buildEmailRichText(
                   firstText: widget.description,
                   email:
-                      widget.data!["email"] ?? "koredR093@gmail.com",
+                      widget.data!["email"] ?? "norma@gmaol.com",
                   lastText: ' please enter below',
                   visibleStartChars: 3,
                   visibleEndChars: 3,

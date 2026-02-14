@@ -5,7 +5,7 @@ class SecurityStateModel {
   final bool reasonvalid;
   final bool securityNotedvalid;
   final bool vendorPhoneValid;
-
+  final bool numberValid;
   final bool isLoading;
   final bool requiredEscort;
   final String? oTpCodeError;
@@ -21,6 +21,7 @@ class SecurityStateModel {
   final String? securityNoted;
   final String? selectedValidationType;
   final String? phone;
+  final String? numberOfGusest;
   const SecurityStateModel({
     this.requiredEscort = false,
     this.accessTypevalid = false,
@@ -30,6 +31,7 @@ class SecurityStateModel {
     this.isLoading = false,
     this.oTpCodevalid = false,
     this.vendorPhoneValid = false,
+    this.numberValid = false,
     this.reasonError = "",
     this.securityNotedError = "",
     this.phoneError = "",
@@ -43,6 +45,7 @@ class SecurityStateModel {
     this.selectedValidationType = '',
     this.reason = '',
     this.securityNoted = "",
+    this.numberOfGusest = "",
   });
   bool get vendorCodeValid => vendorPhoneValid && oTpCodevalid;
 
@@ -51,7 +54,8 @@ class SecurityStateModel {
   bool get validateMain => accessTypevalid && locationGatevalid;
   bool get denyValid => reasonvalid && securityNotedvalid;
   bool get resonaValid => reasonvalid;
-  bool get otpallValid => oTpCodevalid && accessTypevalid && securityNotedvalid;
+  bool get otpallValid => oTpCodevalid && accessTypevalid;
+  bool get numberOfVisitorValid => numberValid;
 
   SecurityStateModel copyWith({
     String? accessTypeError,
@@ -68,8 +72,10 @@ class SecurityStateModel {
     bool? accessTypevalid,
     bool? locationGatevalid,
     bool? requiredEscort,
-        bool? vendorPhoneValid,
+    bool? vendorPhoneValid,
+    bool? numberValid,
     String? oTpCodeError,
+    String? numberOfGusest,
 
     String? selectedValidationType,
     String? reason,
@@ -79,9 +85,11 @@ class SecurityStateModel {
     String? phoneError,
   }) {
     return SecurityStateModel(
-   vendorPhoneValid:vendorPhoneValid?? this.vendorPhoneValid,
-   phone:phone?? this.phone,
-   phoneError: phoneError?? this.phoneError,
+      numberOfGusest: numberOfGusest ?? this.numberOfGusest,
+      numberValid: numberValid ?? this.numberValid,
+      vendorPhoneValid: vendorPhoneValid ?? this.vendorPhoneValid,
+      phone: phone ?? this.phone,
+      phoneError: phoneError ?? this.phoneError,
       requiredEscort: requiredEscort ?? this.requiredEscort,
       securityNoted: securityNoted ?? this.securityNoted,
       securityNotedError: securityNotedError ?? this.securityNotedError,

@@ -2,6 +2,7 @@ import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/widgets/GetYourCode.dart';
 import 'package:curnectgate/features/%20operations/property_agreement/agreement_sign_screen.dart';
+import 'package:curnectgate/features/%20operations/property_agreement/terms_Condition.dart';
 import 'package:curnectgate/features/ResidentDirectory/Screen/ResidentTab.dart';
 import 'package:curnectgate/features/auth/data/auth_model/OnboardingProgressManager.dart';
 import 'package:curnectgate/features/auth/data/auth_model/onbording_enum.dart';
@@ -15,7 +16,9 @@ import 'package:curnectgate/features/auth/presentation/screen/splac_screen.dart'
 import 'package:curnectgate/features/estate_management/elections/poll/poll.dart';
 import 'package:curnectgate/features/estate_management/elections/poll/poll_success.dart';
 import 'package:curnectgate/features/estate_management/elections/screens/election_dashboard.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/model/get_workOder/work_order.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_screen/vendor_log.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_screen/work_requst_screen.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/screen/Dashborad.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/screen/add_member.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/screen/allmemberScreen.dart';
@@ -41,6 +44,7 @@ import 'package:curnectgate/features/payment/widget/payment_data/select_due_paym
 import 'package:curnectgate/features/security/screen/sccurityTap_Screen.dart';
 import 'package:curnectgate/features/security/screen/security_notifier/notification.dart';
 import 'package:curnectgate/features/security/screen/violation_details.dart';
+
 import 'package:curnectgate/features/userProfile/Login_setting/manage_loging.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/screen/SetPreference.dart';
 import 'package:curnectgate/features/userProfile/Privacy_setting/screen/privacy_screen.dart';
@@ -349,7 +353,24 @@ final routerProvider = Provider<GoRouter>((ref) {
           return ElectionPage(id: extra["id"]);
         },
       ),
+      GoRoute(
+        path: '/terms-condtion',
+        name: AppRoutes.termsAndcondition,
+        builder: (context, state) {
+          return TermsAndConditionScreen();
+        },
+      ),
 
+      GoRoute(
+        path: '/workorder-subnit',
+        name: AppRoutes.workSubmit,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+
+          // Extract values with null checks
+          return SubmitWorkOrderPage(vendor: extra["wokerOrder"] as WorkOrder);
+        },
+      ),
       GoRoute(
         path: '/manage_login',
         name: AppRoutes.manageLoging,
@@ -561,7 +582,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       // Role-specific dashboard paths
       const roleDashboards = {
         'landlord': '/dash_board',
-        'admin': '/dash_board',
+        // 'admin': '/dash_board',
         'resident': '/dash_board',
         'security_personnel': '/security-dashboard',
       };
@@ -572,9 +593,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       }
 
       // Role-based route protection
-      if (currentPath.startsWith('/admin') && userRole != 'admin') {
-        return '/';
-      }
+      // if (currentPath.startsWith('/estate') && userRole != 'estate_admin') {
+      //   return '/';
+      // }
 
       if (currentPath.startsWith('/landlord') && userRole != 'landlord') {
         return '/';

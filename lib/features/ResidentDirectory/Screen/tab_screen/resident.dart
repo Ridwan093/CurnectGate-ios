@@ -33,8 +33,13 @@ class Residentss extends ConsumerWidget {
     final searchState = ref.watch(residentSearchProvider);
     final searchNotifier = ref.read(residentSearchProvider.notifier);
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    return AnimatedPadding(
+      duration: const Duration(milliseconds: 300),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+        right: 10,
+        left: 10,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -51,16 +56,14 @@ class Residentss extends ConsumerWidget {
           _buildSearchEngine(searchNotifier, ref),
           if (searchState.errorMessage != null &&
               searchState.errorType == 'no_results') ...[
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Text(
-                searchState.errorMessage ?? "",
-                style: TextStyle(
-                  color: AppColors.instance.black500,
-                  fontSize: 12,
-                  fontFamily: FontFamilies.interDisplay,
-                  fontWeight: FontFamilies.bold,
-                ),
+            const SizedBox(height: 5),
+            Text(
+              searchState.errorMessage ?? "",
+              style: TextStyle(
+                color: AppColors.instance.black500,
+                fontSize: 12,
+                fontFamily: FontFamilies.interDisplay,
+                fontWeight: FontFamilies.bold,
               ),
             ),
           ],

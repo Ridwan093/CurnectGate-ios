@@ -9,6 +9,7 @@ import 'package:curnectgate/features/member_management/tabState/permission_tab_s
 import 'package:curnectgate/features/operations/notifications/event/event_widget/build_errorUlfor_event.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/resvp_event_card.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/resv_model/rsvp_event_history.dart';
+import 'package:curnectgate/features/operations/notifications/provider/activity_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/going_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,6 +23,7 @@ class GoingEvents extends ConsumerWidget {
     final activeOtasync = ref.watch(goingEventRsvpProvider(going));
 
     return RefreshIndicator(
+      color: AppColors.instance.yellow500,
       onRefresh: () => refreshRsvp(ref, going),
       child: activeOtasync.when(
         data: (event) {
@@ -100,6 +102,7 @@ class GoingEvents extends ConsumerWidget {
           event: data,
           onGoing: (p0) {},
           onTap: () {
+            ref.read(isPopProvider.notifier).state = true;
             showUserBottomSheet(
               context: context,
               headertitle: "",

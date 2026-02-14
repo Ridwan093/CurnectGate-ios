@@ -8,6 +8,7 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart' as path;
 
 class AppApiMethod {
@@ -1109,82 +1110,61 @@ class AppApiMethod {
     required String des,
     required String location,
     required String priority,
-    required bool isAnonymouse,
+    required bool isAnonymous,
     required String token,
-    required File evidence1,
-    required File evidence2,
+    required Map<int, File?> pickedFiles,
     required BuildContext context,
   }) async {
     try {
-      // Collect only valid files that actually exist
-      final List<MultipartFile> evidenceMultipartFiles = [];
+      log(pickedFiles.toString());
+      final formData = FormData();
 
-      for (var file in [evidence1, evidence2]) {
-        if (file.path.isNotEmpty && await file.exists()) {
-          evidenceMultipartFiles.add(
-            await MultipartFile.fromFile(
-              file.path,
-              filename: path.basename(
+      // Add fields
+      formData.fields.addAll([
+        MapEntry('violation_category_id', categoryID),
+        MapEntry('estate_address_id', estateaddressID),
+        MapEntry('description', des),
+        MapEntry('location', location),
+        MapEntry('priority', priority),
+        MapEntry('is_anonymous', isAnonymous ? '1' : '0'),
+      ]);
+
+      // Add files
+      for (final file in pickedFiles.values) {
+        if (file != null && file.existsSync()) {
+          final ext =
+              path.extension(file.path).toLowerCase(); // .jpg, .png, etc.
+          String mimeType = 'image/jpeg'; // default
+
+          if (ext.endsWith('png')) mimeType = 'image/png';
+          if (ext.endsWith('gif')) mimeType = 'image/gif';
+          if (ext.endsWith('webp')) mimeType = 'image/webp';
+
+          formData.files.add(
+            MapEntry(
+              'evidence[]',
+              await MultipartFile.fromFile(
                 file.path,
-              ), // ✅ FIXED: Use path.basename()
+                filename: path.basename(file.path),
+                contentType: MediaType('image', mimeType.split('/')[1]),
+              ),
             ),
           );
         }
       }
 
-      final FormData requestData = FormData.fromMap({
-        "violation_category_id": categoryID,
-        "estate_address_id": estateaddressID,
-        "description": des,
-        "location": location,
-        "priority": priority,
-        "is_anonymous": isAnonymouse ? "1" : "0",
-        if (evidenceMultipartFiles.isNotEmpty)
-          "evidence[]": evidenceMultipartFiles,
-      });
-
-      log('Sending ${evidenceMultipartFiles.length} image(s)');
-      log('Request payload: $requestData');
-
       final response = await _dio.post(
         creatViolation,
-        data: requestData,
+        data: formData,
         options: Options(
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Accept': 'application/json',
-          },
+          headers: {'Authorization': 'Bearer $token'},
           validateStatus: (status) => status! < 500,
         ),
       );
 
-      log('Response: ${response.data}');
       return response.data;
-    } on DioException catch (e) {
-      log('Dio Error: ${e.message}');
-      if (e.response != null) {
-        log('Status: ${e.response?.statusCode}');
-        log('Response data: ${e.response?.data}');
-      }
-      showCustomSuccessToast(
-        context: context,
-        message: "Failed to submit report. Please try again.",
-        color: AppColors.instance.error500,
-        icon: Icons.error,
-        iconColors: AppColors.instance.grey200,
-        positionNumber: 70,
-      );
-      rethrow;
     } catch (e) {
-      log('Unexpected error: $e');
-      showCustomSuccessToast(
-        context: context,
-        message: "An error occurred.",
-        color: AppColors.instance.error500,
-        icon: Icons.error,
-        iconColors: AppColors.instance.grey200,
-        positionNumber: 70,
-      );
+      log('Error uploading violation: $e');
       rethrow;
     }
   }
@@ -3821,6 +3801,61 @@ class AppApiMethod {
     }
   }
 
+  Future<Map<String, dynamic>> updateWorkOrders({
+    required String file,
+    required String name,
+    required String dec,
+    required String email,
+    required String phone,
+    required String startDate,
+    required String endDate,
+    required String dailyWindowTime,
+    required String numberofWorkers,
+    required String numberofDays,
+    required String id,
+    required int categorie,
+    required BuildContext context,
+  }) async {
+    final Map<String, dynamic> requestData = {
+      "workorder_category_id": categorie, // maybe, not_going
+      "vendor_name": name,
+      "vendor_phone": phone, // maybe, not_going
+      "start_date": startDate,
+      "end_date": endDate,
+      "daily_time_window": dailyWindowTime,
+      "description": dec,
+      "number_of_workers": numberofWorkers,
+      "before_photos[]": [],
+      "vendor_email": email,
+    };
+    try {
+      final response = await _dio.post(
+        data: requestData,
+        "/api/v1/estates/general/workorders/$id/edit",
+
+        options: Options(validateStatus: (status) => status! < 500),
+      );
+
+      log('Response: ${response.data}');
+      return response.data;
+    } on DioException catch (e) {
+      log('Error details:');
+      log('Status: ${e.response?.statusCode}');
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      log('Headers: ${e.response?.headers}');
+      log('Response: ${e.response?.data}');
+      log('Request: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
   Future<Map<String, dynamic>> setUpBiometric({
     required String token,
     required String device_token,
@@ -4455,7 +4490,7 @@ class AppApiMethod {
   }
 
   Future<Map<String, dynamic>> agreementsiging({
-    required File signatur,
+    required String signatur,
     required String fullName,
 
     required BuildContext context,

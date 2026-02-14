@@ -261,7 +261,7 @@ class _SubmitPermitBottomSheetState
                                       _descriptionController.text.isNotEmpty &&
                                       _guestNumberController.text.isNotEmpty &&
                                       _guestNameController.text.isNotEmpty &&
-                                      _descriptionController.text.length > 20 &&
+                                      _descriptionController.text.length > 10 &&
                                       _guestNameController.text.length > 2 &&
                                       _guestNumberController.text.length > 9 &&
                                       _deleverCompanyController

@@ -3,8 +3,8 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/%20utils/api/api_Service.dart';
 import 'package:curnectgate/core/%20utils/api/api_method.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/model/estate_code_validator_state.dart';
 import 'package:curnectgate/features/member_management/membership_ID/bottomSheet/validation_state.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/model/estate_code_validator_state.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/validator_widget.dart';
 import 'package:curnectgate/features/userProfile/provider/validation_notifier.dart';
 import 'package:flutter/material.dart';
@@ -63,18 +63,19 @@ class MemberCodeSubmissionNotifier extends AutoDisposeAsyncNotifier<void> {
         context,
       );
       log(formState.code);
+      formNotifier.clearApiError();
       final validationState = ref.read(validationProvider);
       if (validationState.status != ValidationStatus.success) {
         throw Exception(validationState.errorMessage);
       }
-
+      formNotifier.clearApiError();
       state = const AsyncValue.data(null);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
       if (context.mounted) {}
     } finally {
       formNotifier.setLoading(false);
-      formNotifier.updateCode("", 0);
+      formNotifier.clearApiError();
     }
   }
 

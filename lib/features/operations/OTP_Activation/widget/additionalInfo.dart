@@ -7,10 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Provider for managing the additional info state
 
 class VisitorInfoSection extends ConsumerStatefulWidget {
-  final Function(String)? onChanged1;
-  final Function(String)? onChanged2;
+  final TextEditingController vehicleNumber;
+  final TextEditingController phoneNumber;
 
-  const VisitorInfoSection({super.key, this.onChanged1, this.onChanged2});
+  const VisitorInfoSection({
+    super.key,
+    required this.phoneNumber,
+    required this.vehicleNumber,
+  });
 
   @override
   ConsumerState<VisitorInfoSection> createState() => _VisitorInfoSectionState();
@@ -91,6 +95,7 @@ class _VisitorInfoSectionState extends ConsumerState<VisitorInfoSection>
                             child: Padding(
                               padding: const EdgeInsets.only(right: 8),
                               child: TextField(
+                                controller: widget.vehicleNumber,
                                 decoration: InputDecoration(
                                   labelStyle: TextStyle(
                                     fontFamily: FontFamilies.interDisplay,
@@ -115,14 +120,12 @@ class _VisitorInfoSectionState extends ConsumerState<VisitorInfoSection>
                                     ),
                                   ),
                                 ),
-                                onChanged: (value) {
-                                  widget.onChanged1!(value);
-                                },
                               ),
                             ),
                           ),
                           Expanded(
                             child: TextField(
+                              controller: widget.phoneNumber,
                               keyboardType: TextInputType.numberWithOptions(),
                               decoration: InputDecoration(
                                 focusedBorder: OutlineInputBorder(
@@ -148,9 +151,7 @@ class _VisitorInfoSectionState extends ConsumerState<VisitorInfoSection>
                                   ),
                                 ),
                               ),
-                              onChanged: (value) {
-                                widget.onChanged2!(value);
-                              },
+
                               maxLength: 11,
                             ),
                           ),

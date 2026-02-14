@@ -111,7 +111,7 @@ class Dashborad extends ConsumerWidget {
               _buildEventContent(ref, context, size),
               SizedBox(height: 25),
               Text(
-                "OTHER LINK",
+                "QUICK LINK",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   color: AppColors.instance.black300,
@@ -331,22 +331,19 @@ class Dashborad extends ConsumerWidget {
         ),
       ),
       actions: [
-        Tooltip(
-    message: "Polls",
-    preferBelow: false,
-    child: InkWell(
-      onTap: () {
-        context.pushNamed(AppRoutes.newPoll);
-      },
-      child: const Padding(
-        padding: EdgeInsets.all(12.0),
-        child: Icon(
-          Icons.poll_outlined,
-          size: 26,
-        ),
-      ),
-    ),
-  ),
+        // Tooltip(
+        //   message: "Polls",
+        //   preferBelow: false,
+        //   child: InkWell(
+        //     onTap: () {
+        //       context.pushNamed(AppRoutes.newPoll);
+        //     },
+        //     child: const Padding(
+        //       padding: EdgeInsets.all(12.0),
+        //       child: Icon(Icons.poll_outlined, size: 26),
+        //     ),
+        //   ),
+        // ),
         Tooltip(
           message: "Events", // Clear label
           preferBelow: false,

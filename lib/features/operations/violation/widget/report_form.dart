@@ -38,128 +38,129 @@ class _ReportFormState extends ConsumerState<ReportForm> {
   @override
   Widget build(BuildContext context) {
     final reportState = ref.watch(reportProvider);
+    final reportNotifer = ref.read(reportProvider.notifier);
     final report = reportState.report;
     final isLoading = ref.watch(formProvider).reportLoading;
     // final isLoading = reportState.isLoading;
+    final repor = ref.read(formProvider.notifier);
 
     final size = MediaQuery.sizeOf(context);
 
-    return SafeArea(
-      child: Stack(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(
-              // bottom: MediaQuery.of(context).viewInsets.bottom,
-              left: 0,
-              right: 0,
-              top: 0,
-            ),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(height: 20),
+    return PopScope(
+      canPop: true, // allow system back
+      onPopInvoked: (didPop) {
+        if (!didPop) return;
 
-                  // 1. Category dropdown (no Expanded!)
-                  _buildCategoryDropdown(ref, report.category ?? "", context),
-                  const SizedBox(height: 20),
+        repor.updateReportLoading(false);
+        reportNotifer.resetState();
+      },
+      child: SafeArea(
+        child: Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                // bottom: MediaQuery.of(context).viewInsets.bottom,
+                left: 0,
+                right: 0,
+                top: 0,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 20),
 
-                  // 2. Description field (no Expanded!)
-                  TextFormField(
-                    controller: decController,
-                    decoration: InputDecoration(
-                      labelText: 'Description',
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
+                    // 1. Category dropdown (no Expanded!)
+                    _buildCategoryDropdown(ref, report.category ?? "", context),
+                    const SizedBox(height: 20),
+
+                    // 2. Description field (no Expanded!)
+                    TextFormField(
+                      controller: decController,
+                      decoration: InputDecoration(
+                        labelText: 'Description',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: AppColors.instance.black500,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: AppColors.instance.black500,
+                          ),
+                        ),
+                        labelStyle: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
                           color: AppColors.instance.black500,
                         ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: AppColors.instance.black500,
-                        ),
+                      maxLines: 3,
+                      onChanged:
+                          (value) => ref
+                              .read(reportProvider.notifier)
+                              .setDescription(value),
+                    ),
+
+                    const SizedBox(height: 8.0),
+                    Text(
+                      "Maximum 100 characters",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        color: AppColors.instance.black300,
+                        fontSize: 13,
                       ),
-                      labelStyle: TextStyle(
+                    ),
+
+                    const SizedBox(height: 20),
+                    // Replace your existing dropdown with:
+                    const CustomSearchDropdown(),
+                    const SizedBox(height: 25),
+                    Text(
+                      "Uploade image Proof",
+                      style: TextStyle(
                         fontFamily: FontFamilies.interDisplay,
                         color: AppColors.instance.black500,
+                        fontWeight: FontFamilies.bold,
                       ),
                     ),
-                    maxLines: 3,
-                    onChanged:
-                        (value) => ref
-                            .read(reportProvider.notifier)
-                            .setDescription(value),
-                  ),
-
-                  const SizedBox(height: 8.0),
-                  Text(
-                    "Maximum 100 characters",
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      color: AppColors.instance.black300,
-                      fontSize: 13,
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        _buildFilePicker(ref, 0),
+                        const SizedBox(width: 20),
+                        _buildFilePicker(ref, 1),
+                      ],
                     ),
-                  ),
+                    const SizedBox(height: 20),
+                    // 3. Optional anonymous toggle
+                    _buildanonymousHide(report, ref),
 
-                  const SizedBox(height: 20),
-                  // Replace your existing dropdown with:
-                  const CustomSearchDropdown(),
-                  const SizedBox(height: 25),
-                  Text(
-                    "Uploade image Proof",
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      color: AppColors.instance.black500,
-                      fontWeight: FontFamilies.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      _buildImagePicker(
-                        ref,
-                        index: 0,
-                        imagePaths: report.imagePaths,
-                        files: report.files,
-                      ),
-                      const SizedBox(width: 20),
-                      _buildImagePicker(
-                        ref,
-                        index: 1,
-                        imagePaths: report.imagePaths,
-                        files: report.files,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  // 3. Optional anonymous toggle
-                  _buildanonymousHide(report, ref),
+                    const SizedBox(height: 20),
 
-                  const SizedBox(height: 20),
-
-                  // 4. Submit button
-                  _buildSubmitButton(size: size, ref: ref, context: context),
-                ],
+                    // 4. Submit button
+                    _buildSubmitButton(size: size, ref: ref, context: context),
+                  ],
+                ),
               ),
             ),
-          ),
-          if (isLoading)
-            Positioned.fill(
-              child: Container(
-                color: AppColors.instance.black100.withOpacity(.4),
-                height: MediaQuery.sizeOf(context).height,
-                child: SizedBox(
-                  height: 30,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.instance.yellow500,
+            if (isLoading)
+              Positioned.fill(
+                child: Container(
+                  color: AppColors.instance.black100.withOpacity(.4),
+                  height: MediaQuery.sizeOf(context).height,
+                  child: SizedBox(
+                    height: 30,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.instance.yellow500,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -211,6 +212,18 @@ double bottomPadding(BuildContext ctx) {
   return result;
 }
 
+bool canSubmit(Map<int, File?>? pickedFiles) {
+  if (pickedFiles == null) return false;
+
+  // Count only valid files that exist
+  final pickedCount =
+      pickedFiles.values
+          .where((file) => file != null && file.existsSync())
+          .length;
+
+  return pickedCount == 2; // Must have exactly 2 files
+}
+
 Widget _buildSubmitButton({
   required Size size,
 
@@ -219,8 +232,7 @@ Widget _buildSubmitButton({
 }) {
   final valid = ref.watch(reportProvider);
   final report = valid.report;
-  final pickedImages =
-      report.imagePaths.values.where((path) => path.isNotEmpty == true).length;
+
   return InkWell(
     onTap: () {
       if (report.category!.isEmpty) {
@@ -250,7 +262,7 @@ Widget _buildSubmitButton({
           iconColors: AppColors.instance.black600,
           positionNumber: 70,
         );
-      } else if (report.categoryID!.isEmpty) {
+      } else if ((report.categoryID ?? "").isEmpty) {
         showCustomSuccessToast(
           context: context,
           message: "Please selecte category!",
@@ -259,15 +271,16 @@ Widget _buildSubmitButton({
           iconColors: AppColors.instance.black600,
           positionNumber: 70,
         );
-      } else if (pickedImages != 2) {
-        showCustomSuccessToast(
-          context: context,
-          message: "Please upload at least 2 evidence photo!",
-          color: AppColors.instance.grey200,
-          icon: Icons.error,
-          iconColors: AppColors.instance.black600,
-          positionNumber: 70,
-        );
+        // }
+        //else if (!canSubmit(report.pickedFiles)) {
+        //   showCustomSuccessToast(
+        //     context: context,
+        //     message: "Please upload at least 2 evidence photo!",
+        //     color: AppColors.instance.grey200,
+        //     icon: Icons.error,
+        //     iconColors: AppColors.instance.black600,
+        //     positionNumber: 70,
+        //   );
         return;
       } else {
         ref
@@ -335,7 +348,7 @@ Widget _buildCategoryDropdown(
         return cachedCategory != null
             ? CategoryDropdown(
               currentValue: currentValue,
-              data: cachedCategory.data,
+              data: cachedCategory.data!,
             )
             : _buildLoadingState();
       } catch (e) {
@@ -371,7 +384,7 @@ Widget _buildCategoryDropdown(
             children: [
               CategoryDropdown(
                 currentValue: currentValue,
-                data: cachedCategory.data,
+                data: cachedCategory.data!,
               ),
               _buildNetworkWarningBanner(
                 error.toString(),
@@ -524,14 +537,10 @@ Widget _buildErrorUI(
   );
 }
 
-Widget _buildImagePicker(
-  WidgetRef ref, {
-  required int index,
-  required Map<int, String> imagePaths,
-  required Map<int, String> files,
-}) {
-  final hasImage = imagePaths.containsKey(index);
-  final hasFile = files.containsKey(index);
+Widget _buildFilePicker(WidgetRef ref, int index) {
+  final file = ref.watch(
+    reportProvider.select((s) => s.report.pickedFiles![index]),
+  );
 
   return GestureDetector(
     onTap: () {
@@ -546,26 +555,57 @@ Widget _buildImagePicker(
         border: Border.all(color: AppColors.instance.grey300),
         borderRadius: BorderRadius.circular(8),
         image:
-            hasImage
-                ? DecorationImage(
-                  image: FileImage(File(imagePaths[index] ?? '')),
-                  fit: BoxFit.cover,
-                )
-                : DecorationImage(
-                  image: FileImage(File(files[index] ?? '')),
-                  fit: BoxFit.cover,
-                ),
+            file != null
+                ? DecorationImage(image: FileImage(file), fit: BoxFit.cover)
+                : null,
       ),
-      child:
-          hasImage
-              ? null
-              : hasFile
-              ? null
-              : Icon(
-                Icons.add_circle,
-                size: 30,
-                color: AppColors.instance.black200,
-              ),
+      child: file == null ? Icon(Icons.add_circle, size: 30) : null,
     ),
   );
 }
+
+// Widget _buildImagePicker(
+//   WidgetRef ref, {
+//   required int index,
+//   required Map<int, String> imagePaths,
+//   required Map<int, String> files,
+// }) {
+//   final hasImage = imagePaths.containsKey(index);
+//   final hasFile = files.containsKey(index);
+
+//   return GestureDetector(
+//     onTap: () {
+//       ref.read(currentEditingIndexProvider.notifier).state = index;
+//       ref.read(bottomSheetStateProvider.notifier).state =
+//           BottomSheetView.reportfileuplode;
+//     },
+//     child: Container(
+//       width: 100,
+//       height: 120,
+//       decoration: BoxDecoration(
+//         border: Border.all(color: AppColors.instance.grey300),
+//         borderRadius: BorderRadius.circular(8),
+//         image:
+//             hasImage
+//                 ? DecorationImage(
+//                   image: FileImage(File(imagePaths[index] ?? '')),
+//                   fit: BoxFit.cover,
+//                 )
+//                 : DecorationImage(
+//                   image: FileImage(File(files[index] ?? '')),
+//                   fit: BoxFit.cover,
+//                 ),
+//       ),
+//       child:
+//           hasImage
+//               ? null
+//               : hasFile
+//               ? null
+//               : Icon(
+//                 Icons.add_circle,
+//                 size: 30,
+//                 color: AppColors.instance.black200,
+//               ),
+//     ),
+//   );
+// }

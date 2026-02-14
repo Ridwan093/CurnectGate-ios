@@ -117,12 +117,14 @@ class PasswordInput extends ConsumerWidget {
             color: isValid ? colors.teal500 : colors.error600,
           ),
           const SizedBox(width: 8),
-          Text(
-            text,
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontSize: 12,
-              color: isValid ? colors.teal500 : colors.error600,
+          Flexible(
+            child: Text(
+              text,
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                fontSize: 12,
+                color: isValid ? colors.teal500 : colors.error600,
+              ),
             ),
           ),
         ],

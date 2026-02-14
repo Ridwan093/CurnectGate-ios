@@ -112,17 +112,17 @@ class _AddItemBottomSheetState extends ConsumerState<AddItemBottomSheet> {
           // ➕ Add Item Button
           InkWell(
             onTap:
-                _itemName.text.isNotEmpty &&
-                        _quantity.text.isNotEmpty &&
-                        _description.text.isNotEmpty &&
-                        _category.text.isNotEmpty
+                _itemName.text.trim().isNotEmpty &&
+                        _quantity.text.trim().isNotEmpty &&
+                        _description.text.trim().isNotEmpty &&
+                        _category.text.trim().isNotEmpty
                     ? () {
                       final newItem = {
-                        "item_name": _itemName.text,
-                        "quantity": int.tryParse(_quantity.text) ?? 1,
-                        "description": _description.text,
+                        "item_name": _itemName.text.trim(),
+                        "quantity": int.tryParse(_quantity.text.trim()) ?? 1,
+                        "description": _description.text.trim(),
 
-                        "item_category": _category.text,
+                        "item_category": _category.text.trim(),
                       };
 
                       final list = ref.read(itemListProvider);
@@ -138,13 +138,13 @@ class _AddItemBottomSheetState extends ConsumerState<AddItemBottomSheet> {
               width: MediaQuery.sizeOf(context).width,
               decoration: BoxDecoration(
                 color:
-                    _itemName.text.isNotEmpty &&
-                            _quantity.text.isNotEmpty &&
-                            _description.text.isNotEmpty &&
-                            _category.text.isNotEmpty &&
-                            _description.text.length > 20 &&
-                            _category.text.length > 5 &&
-                            _itemName.text.length > 5
+                    _itemName.text.trim().isNotEmpty &&
+                            _quantity.text.trim().isNotEmpty &&
+                            _description.text.trim().isNotEmpty &&
+                            _category.text.trim().isNotEmpty &&
+                            _description.text.trim().length > 10 &&
+                            _category.text.trim().length > 5 &&
+                            _itemName.text.trim().length > 5
                         ? AppColors.instance.black600
                         : Colors.grey.shade300,
                 borderRadius: BorderRadius.circular(14),

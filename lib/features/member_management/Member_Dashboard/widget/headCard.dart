@@ -1,14 +1,12 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
-import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/estate_management/elections/provider/eletion_provider.dart';
+import 'package:curnectgate/features/estate_management/elections/models/slected_eletion_type_model.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/poll_provider.dart';
 import 'package:curnectgate/features/estate_management/elections/widgets/votingSettingCheck.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 /// desili1887@badfist.com
 /// siyaf87150@badfist.com
@@ -17,6 +15,23 @@ import 'package:go_router/go_router.dart';
 /// jerel47960@besenica.com
 class Headcard extends ConsumerWidget {
   Headcard({super.key});
+
+  String getTimeLeft(String closesAt) {
+    final closeDate = DateTime.parse(closesAt).toLocal();
+    final now = DateTime.now();
+
+    final diff = closeDate.difference(now);
+
+    if (diff.inDays >= 1) {
+      return "${diff.inDays} days left";
+    } else if (diff.inHours >= 1) {
+      return "${diff.inHours} hours left";
+    } else if (diff.inMinutes >= 1) {
+      return "${diff.inMinutes} minutes left";
+    } else {
+      return "Closing soon";
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -80,7 +95,7 @@ class Headcard extends ConsumerWidget {
                         ),
                       ),
                       Text(
-                        lastWord,
+                        "ESTATE",
                         style: TextStyle(
                           fontFamily: FontFamilies.interDisplay,
                           fontSize: isSmallScreen ? 13 : 15,
@@ -169,25 +184,47 @@ class Headcard extends ConsumerWidget {
                 Votingsettingcheck(
                   child: pollAsync.when(
                     data: (data) {
-                      if (data?.data != null && data!.data!.polls!.isNotEmpty) {
-                        return InkWell(
-                          onTap: () {
-                            final pollId =
-                                data.data!.polls!.first.id.toString();
-                            ref.read(electionProvider.notifier).addId(pollId);
-                            context.pushNamed(
-                              AppRoutes.electionDasbord,
-                              extra: {"id": pollId},
-                            );
-                          },
-                          child: Icon(
-                            Icons.how_to_vote,
-                            color: AppColors.instance.yellow500,
-                            size: isSmallScreen ? 26 : 30,
-                          ),
-                        );
+                      final polls = data?.data?.polls ?? [];
+                      final activePolls =
+                          polls
+                              .where(
+                                (p) => (p.status ?? "").toLowerCase().contains(
+                                  'active',
+                                ),
+                              )
+                              .toList();
+
+                      if (activePolls.isEmpty) {
+                        return const SizedBox.shrink();
                       }
-                      return const SizedBox.shrink();
+
+                      return InkWell(
+                        onTap: () {
+                          final activePolls =
+                              polls
+                                  .where(
+                                    (p) =>
+                                        p.status?.toLowerCase().contains(
+                                          'active',
+                                        ) ==
+                                        true,
+                                  )
+                                  .toList();
+
+                          if (activePolls.isNotEmpty) {
+                            showSelectElectionBottomSheet(
+                              context: context,
+                              ref: ref,
+                              activePolls: activePolls,
+                            );
+                          }
+                        },
+                        child: Icon(
+                          Icons.how_to_vote,
+                          color: AppColors.instance.yellow500,
+                          size: isSmallScreen ? 26 : 30,
+                        ),
+                      );
                     },
                     loading: () => const SizedBox.shrink(),
                     error: (_, __) => const SizedBox.shrink(),

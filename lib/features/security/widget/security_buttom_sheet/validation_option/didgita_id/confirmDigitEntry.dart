@@ -83,7 +83,7 @@ class ConfirmentryDigital extends ConsumerWidget {
                                 //   ref: ref,
                                 //   bottom: BottomSheetView.digitalIdDeny,
                                 // );
-                                context.pop();
+                         
                                 showUserBottomSheet(
                                   context: context,
                                   headertitle:

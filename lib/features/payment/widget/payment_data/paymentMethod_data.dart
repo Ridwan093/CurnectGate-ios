@@ -12,6 +12,7 @@ import 'package:curnectgate/features/payment/provider/payment_method_provider.da
 import 'package:curnectgate/features/payment/state_model/payment_model/payment_method/payment_method_item.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/payment_method/payment_methods_data.dart';
 import 'package:curnectgate/features/payment/state_model/state.dart';
+import 'package:curnectgate/features/payment/widget/payment_data/payment_not_available.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/widget/featureNotavailableDialog.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
@@ -167,14 +168,27 @@ class PaymentMethodData extends ConsumerWidget {
                           //   amount: 500, // ₦500
                           //   reference: ref,
                           // );
-
-                          showUserBottomSheet(
-                            context: context,
-                            headertitle: e.secretKey ?? "",
-                            headersubtitle: e.publicKey ?? "",
-                            ref: ref,
-                            bottom: BottomSheetView.fundingAmount,
-                          );
+                          if (e.publicKey!.contains(
+                                "pk_test_sample_public_key_here",
+                              ) &&
+                              e.secretKey!.contains(
+                                "sk_test_sample_secret_key_here",
+                              )) {
+                            showDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder:
+                                  (_) => const PaymentNotConfiguredDialog(),
+                            );
+                          } else {
+                            showUserBottomSheet(
+                              context: context,
+                              headertitle: e.secretKey ?? "",
+                              headersubtitle: e.publicKey ?? "",
+                              ref: ref,
+                              bottom: BottomSheetView.fundingAmount,
+                            );
+                          }
                         }
                         // Navigator.push(...);
                       }

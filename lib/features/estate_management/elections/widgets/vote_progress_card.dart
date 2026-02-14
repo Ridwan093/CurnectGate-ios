@@ -14,6 +14,7 @@ import 'package:go_router/go_router.dart';
 class VoteProgressCard extends ConsumerStatefulWidget {
   final PollsData? data;
   final bool canRoute;
+
   const VoteProgressCard({
     super.key,
     required this.data,
@@ -45,12 +46,26 @@ String getTimeLeft(String closesAt) {
 class _VoteProgressCardState extends ConsumerState<VoteProgressCard> {
   @override
   Widget build(BuildContext context) {
+    final pollId = ref.watch(electionProvider).id;
+    final data = widget.data?.polls ?? [];
+    final filteredPolls =
+        (!widget.canRoute && pollId.isNotEmpty)
+            ? data.where((p) => p.id.toString() == pollId).toList()
+            : data;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children:
-          widget.data!.polls!
-              .map((e) => _buildItemContent(e, widget.canRoute))
-              .toList(),
+          filteredPolls.map((e) {
+            final statues = e.status ?? "";
+            if (statues.contains("closed")||statues.contains("scheduled") ) {
+              return SizedBox();
+            } else {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: _buildItemContent(e, widget.canRoute),
+              );
+            }
+          }).toList(),
     );
   }
 
@@ -153,13 +168,13 @@ class _VoteProgressCardState extends ConsumerState<VoteProgressCard> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.green.shade50,
+        color: AppColors.instance.teal400,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
         text.toUpperCase(),
         style: TextStyle(
-          color: AppColors.instance.teal500,
+          color: _statusColor(text),
           fontWeight: FontFamilies.medium,
           fontFamily: FontFamilies.interDisplay,
 
@@ -167,5 +182,17 @@ class _VoteProgressCardState extends ConsumerState<VoteProgressCard> {
         ),
       ),
     );
+  }
+
+  Color _statusColor(String status) {
+    switch (status.toLowerCase()) {
+      case "active":
+        return AppColors.instance.teal500;
+
+      case "closed":
+        return AppColors.instance.error500;
+      default:
+        return AppColors.instance.grey300;
+    }
   }
 }

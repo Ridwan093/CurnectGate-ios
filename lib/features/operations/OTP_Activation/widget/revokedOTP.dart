@@ -96,7 +96,7 @@ class Revokedotp extends ConsumerWidget {
                       ),
                     ),
             onPressed:
-                isValid && valid.workDescription.length > 19
+                isValid && valid.workDescription.trim().length > 10
                     ? () {
                       log(isValid.toString());
                       log(valid.workDescription);

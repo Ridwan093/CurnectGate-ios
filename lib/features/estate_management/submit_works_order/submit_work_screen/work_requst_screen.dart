@@ -1,6 +1,6 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/estate_management/submit_works_order/model/venodrLod_model.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/model/get_workOder/work_order.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/work_order_model.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/workformprovider.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/date_picker.dart';
@@ -14,9 +14,10 @@ import 'package:curnectgate/features/member_management/profile_form/provider%20/
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class SubmitWorkOrderPage extends ConsumerStatefulWidget {
-  final VendorLogModel? vendor;
+  final WorkOrder? vendor;
   const SubmitWorkOrderPage({super.key, this.vendor});
 
   @override
@@ -29,6 +30,7 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
   late final TextEditingController _discriptionController;
   late final TextEditingController _vendoremailController;
   late final TextEditingController _vendorphoneController;
+  final now = DateTime.now();
 
   final List<String> workTypes = [
     'Electrical',
@@ -59,10 +61,10 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
       text: widget.vendor?.description ?? '',
     );
     _vendoremailController = TextEditingController(
-      text: widget.vendor?.email ?? '',
+      text: widget.vendor?.vendorEmail ?? '',
     );
     _vendorphoneController = TextEditingController(
-      text: widget.vendor?.phonenumber ?? '',
+      text: widget.vendor?.vendorPhone ?? '',
     );
 
     // Update form state after widgets are built
@@ -78,44 +80,69 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
     final vendor = widget.vendor!;
 
     // Update form state
-    notifier.updateVendorName(vendor.vendorName);
-    notifier.updateVendorEmail(vendor.email);
-    notifier.updatePhoneNumber(vendor.phonenumber);
-    notifier.updateWorkDescription(vendor.description);
-    notifier.updateWorkType(vendor.worktype, 0);
+    notifier.updateVendorName(vendor.vendorName ?? "");
+    notifier.updateVendorEmail(vendor.vendorEmail ?? "");
+    notifier.updatePhoneNumber(vendor.vendorPhone ?? "");
+    notifier.updateWorkDescription(vendor.description ?? "");
+    notifier.updateWorkType(
+      vendor.category?.name ?? "",
+      vendor.workorderCategoryId ?? 0,
+    );
 
     // Handle numeric fields
     // notifier.updateDaysCount(int.tryParse(vendor.daysCount!) ?? 1);
 
-    // notifier.updateWorkerCount(int.tryParse(vendor.workNumbers!) ?? 1);
+    notifier.updateWorkCount(vendor.numberOfWorkers ?? 0);
 
     // Handle dates
-    notifier.updateStartDate(vendor.startDay);
-    notifier.updateEndDate(vendor.endDay);
-    notifier.updateTimeWindow(vendor.windowTime);
+
+    // Usage
+    final startDate = parseDate(vendor.startDate);
+    final endDate = parseDate(vendor.endDate);
+
+    notifier.updateStartDate(startDate);
+    notifier.updateEndDate(endDate);
+    notifier.updateTimeWindow(vendor.dailyTimeWindow ?? "");
   }
 
   void _submitForm(BuildContext context) {
-    // ref.read(formProvider.notifier).updateLoading(true);
     final state = ref.watch(workOrderFormProvider);
 
     final provider = ref.read(formProvider.notifier);
-
-    provider.submitWorkOrder(
-      categorie: state.id,
-      context: context,
-      file: "",
-      name: _vendorNameController.text.trim(),
-      dec: _discriptionController.text.trim(),
-      email: _vendoremailController.text.trim(),
-      phone: _vendorphoneController.text.trim(),
-      startDate: state.startDate.toString(),
-      endDate: state.endDate.toString(),
-      dailyWindowTime: state.selectedTimeWindow ?? "",
-      numberofWorkers: state.workerCount.toString(),
-      numberofDays: state.daysCount.toString(),
-      ref: ref,
-    );
+    if (widget.vendor != null) {
+      provider.updateWorkOrder(
+        categorie: state.id,
+        context: context,
+        file: "",
+        name: _vendorNameController.text.trim(),
+        dec: _discriptionController.text.trim(),
+        email: _vendoremailController.text.trim(),
+        phone: _vendorphoneController.text.trim(),
+        startDate: state.startDate.toString(),
+        endDate: state.endDate.toString(),
+        dailyWindowTime: state.selectedTimeWindow ?? "",
+        numberofWorkers: state.workerCount.toString(),
+        numberofDays: state.daysCount.toString(),
+        id: (widget.vendor?.id ?? 0).toString(),
+        ref: ref,
+      );
+    } else {
+      provider.submitWorkOrder(
+        categorie: state.id,
+        context: context,
+        file: "",
+        name: _vendorNameController.text.trim(),
+        dec: _discriptionController.text.trim(),
+        email: _vendoremailController.text.trim(),
+        phone: _vendorphoneController.text.trim(),
+        startDate: state.startDate.toString(),
+        endDate: state.endDate.toString(),
+        dailyWindowTime: state.selectedTimeWindow ?? "",
+        numberofWorkers: state.workerCount.toString(),
+        numberofDays: state.daysCount.toString(),
+        ref: ref,
+      );
+    }
 
     resetForm();
     _clearAllFields();
@@ -123,11 +150,32 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
 
   void resetForm() {
     ref.watch(workOrderFormProvider);
-    // Resets to initial empty state
+  }
+
+  DateTime? parseDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return null;
+
+    final dt = DateTime.tryParse(dateStr);
+    if (dt != null) return dt;
+
+    final formats = [
+      DateFormat('yyyy-MM-dd'),
+      DateFormat('dd/MM/yyyy'),
+      DateFormat('yyyy-MM-dd HH:mm'),
+      DateFormat('dd-MM-yyyy'),
+      DateFormat('MM/dd/yyyy'),
+    ];
+
+    for (final format in formats) {
+      try {
+        return format.parseStrict(dateStr);
+      } catch (_) {}
+    }
+
+    return null;
   }
 
   void _clearAllFields() {
-    // Clear all text controllers
     _vendorNameController.clear();
     _discriptionController.clear();
     _vendoremailController.clear();
@@ -198,7 +246,7 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
                       label: 'Vendor name',
                       onChanged: (value) {},
                       onValidationChanged: (value) {
-                        notifier.updateVendorName(_vendorNameController.text);
+                        notifier.updateVendorName(_vendorNameController.text.trim());
                       },
                     ),
                     const SizedBox(height: 16),
@@ -212,7 +260,7 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
                       label: 'Email',
                       onChanged: (value) {},
                       onValidationChanged: (value) {
-                        notifier.updateVendorEmail(_vendoremailController.text);
+                        notifier.updateVendorEmail(_vendoremailController.text.trim());
                       },
                     ),
                     const SizedBox(height: 16),
@@ -226,7 +274,7 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
                       label: 'Phone number',
                       onChanged: (value) {},
                       onValidationChanged: (value) {
-                        notifier.updatePhoneNumber(_vendorphoneController.text);
+                        notifier.updatePhoneNumber(_vendorphoneController.text.trim());
                       },
                     ),
                     const SizedBox(height: 16),
@@ -253,7 +301,7 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
                       onChanged: (value) {},
                       onValidationChanged: (value) {
                         notifier.updateWorkDescription(
-                          _discriptionController.text,
+                          _discriptionController.text.trim(),
                         );
                       },
                     ),
@@ -424,36 +472,42 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
               child: DatePickerField(
                 label: 'Start Date',
                 selectedDate: state.startDate,
-                initialDate: state.startDate ?? DateTime.now(),
-                firstDate: DateTime.now(),
-                lastDate: state.endDate ?? DateTime(2100),
+                initialDate:
+                    state.startDate != null && state.startDate!.isBefore(now)
+                        ? now
+                        : (state.startDate ?? now),
+                firstDate: now,
+                lastDate: DateTime(2100),
                 onDateSelected: notifier.updateStartDate,
                 errorText: state.startDateError,
-                buttonColor: AppColors.instance.black600, // Custom button color
-                selectionColor:
-                    AppColors.instance.teal300, // Custom selection color
-                textColor: AppColors.instance.black600, // Custom text color
+                buttonColor: AppColors.instance.black600,
+                selectionColor: AppColors.instance.teal300,
+                textColor: AppColors.instance.black600,
               ),
             ),
+
             const SizedBox(width: 16),
             Expanded(
               child: DatePickerField(
                 label: 'End Date',
                 selectedDate: state.endDate,
-                initialDate:
-                    state.endDate ?? (state.startDate ?? DateTime.now()),
-                firstDate: state.startDate ?? DateTime.now(),
+                initialDate: () {
+                  final first = state.startDate ?? now;
+                  final init = state.endDate ?? first;
+                  return init.isBefore(first) ? first : init;
+                }(),
+                firstDate: state.startDate ?? now,
                 lastDate: DateTime(2100),
                 onDateSelected: notifier.updateEndDate,
                 errorText: state.endDateError,
-                buttonColor: AppColors.instance.black600, // Custom button color
-                selectionColor:
-                    AppColors.instance.teal300, // Custom selection color
-                textColor: AppColors.instance.black600, // Custom text color
+                buttonColor: AppColors.instance.black600,
+                selectionColor: AppColors.instance.teal300,
+                textColor: AppColors.instance.black600,
               ),
             ),
           ],
         ),
+
         const SizedBox(height: 16),
 
         // Time Window Dropdown

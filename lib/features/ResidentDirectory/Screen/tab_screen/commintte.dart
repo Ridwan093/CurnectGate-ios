@@ -48,22 +48,22 @@ class Committee extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 20),
-          _buildSearchEngine(searchNotifier, ref),
-          if (searchState.commmitteeErrorMessage != null &&
-              searchState.commmitteeErrorType == 'no_results') ...[
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Text(
-                searchState.commmitteeErrorMessage ?? "",
-                style: TextStyle(
-                  color: AppColors.instance.black500,
-                  fontSize: 12,
-                  fontFamily: FontFamilies.interDisplay,
-                  fontWeight: FontFamilies.bold,
-                ),
-              ),
-            ),
-          ],
+          // _buildSearchEngine(searchNotifier, ref),
+          // if (searchState.commmitteeErrorMessage != null &&
+          //     searchState.commmitteeErrorType == 'no_results') ...[
+          //   Padding(
+          //     padding: const EdgeInsets.only(top: 8.0),
+          //     child: Text(
+          //       searchState.commmitteeErrorMessage ?? "",
+          //       style: TextStyle(
+          //         color: AppColors.instance.black500,
+          //         fontSize: 12,
+          //         fontFamily: FontFamilies.interDisplay,
+          //         fontWeight: FontFamilies.bold,
+          //       ),
+          //     ),
+          //   ),
+          // ],
           const SizedBox(height: 20),
           searchState.committeeData.when(
             data:

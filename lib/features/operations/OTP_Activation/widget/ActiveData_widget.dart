@@ -1,6 +1,5 @@
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
-import 'package:curnectgate/core/appErrorBody/emmergencyBody.dart';
 import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
@@ -15,8 +14,6 @@ class ActivedataWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activeOtasync = ref.watch(getActiveOtpProvider);
-
     return RefreshIndicator(
       color: AppColors.instance.yellow500,
       onRefresh:
@@ -24,80 +21,68 @@ class ActivedataWidget extends ConsumerWidget {
               .read(getActiveOtpProvider.notifier)
               .refreshActive(context, ref),
 
-      child: activeOtasync.when(
-        data: (activeOtp) {
-          if (activeOtp!.data!.otps.isNotEmpty) {
-            return Buildactivelist(otp: activeOtp.data);
-          } else {
-            return _buildEmtyBody();
-          }
+      child: const _ActiveOtpBody(), // 👈 isolate rebuilds
+    );
+  }
+}
 
-          // If data is valid
-        },
-        loading: () {
-          final cachedOtp = ref.read(getActiveOtpProvider).value;
+class _ActiveOtpBody extends ConsumerWidget {
+  const _ActiveOtpBody();
 
-          if (cachedOtp != null &&
-              cachedOtp.status &&
-              cachedOtp.data!.otps.isNotEmpty) {
-            return Buildactivelist(otp: cachedOtp.data);
-          }
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final activeOtpAsync = ref.watch(getActiveOtpProvider);
 
-          return const Loadingstates();
-        },
-        error: (error, stack) {
-          try {
-            // Handle session expiration
-            if (error.toString().contains("Unauthorized")) {
-              return const Expiresessionbody();
-            }
-            final otp = ref.read(getActiveOtpProvider).value;
+    return activeOtpAsync.when(
+      data: (activeOtp) {
+        if (activeOtp!.data!.otps.isNotEmpty == true) {
+          return Consumer(
+            // ← Isolate rebuilds here
+            builder: (context, ref, child) {
+              // Only rebuild this part when getActiveOtpProvider changes
+              return Buildactivelist(otp: activeOtp.data);
+            },
+          );
+        }
+        return _buildEmptyBody();
+      },
+      loading: () {
+        final cachedOtp = ref.read(getActiveOtpProvider).value;
 
-            // Try to show cached data
+        if (cachedOtp != null &&
+            cachedOtp.status &&
+            cachedOtp.data!.otps.isNotEmpty) {
+          return Buildactivelist(otp: cachedOtp.data);
+        }
 
-            if (otp!.data!.otps.isNotEmpty) {
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Buildactivelist(otp: otp.data),
-                    Emmergencybody(error: error.toString()),
-                  ],
-                ),
-              );
-            }
+        return const Loadingstates();
+      },
+      error: (error, stack) {
+        if (error.toString().contains("Unauthorized")) {
+          return const Expiresessionbody();
+        }
 
-            // No cached data available
-            return Builderroul(
-              error: error.toString(),
-              onTap:
-                  () => ref
-                      .read(getActiveOtpProvider.notifier)
-                      .refreshActive(context, ref),
-              firstMessae: "Faile to load Active OTPs?",
-            );
-          } catch (e) {
-            return Builderroul(
-              error: e.toString(),
-              onTap:
-                  () => ref
-                      .read(getActiveOtpProvider.notifier)
-                      .refreshActive(context, ref),
-              firstMessae: "Faile to load Active OTPs?",
-            );
-          }
-        },
-      ),
+        final cachedOtp = ref.read(getActiveOtpProvider).value;
 
-      // Expanded(
-      //   child:
-      //       generatedList.isNotEmpty
-      //           ? _buildMemberList(ref, size)
-      //           : _buildEmtyBody(),
-      // ),
+        if (cachedOtp != null && cachedOtp.data!.otps.isNotEmpty) {
+          return SingleChildScrollView(
+            child: Column(children: [Buildactivelist(otp: cachedOtp.data)]),
+          );
+        }
+
+        return Builderroul(
+          error: error.toString(),
+          onTap:
+              () => ref
+                  .read(getActiveOtpProvider.notifier)
+                  .refreshActive(context, ref),
+          firstMessae: "Failed to load Active OTPs?",
+        );
+      },
     );
   }
 
-  Widget _buildEmtyBody() {
+  Widget _buildEmptyBody() {
     return Center(
       child: SingleChildScrollView(
         child: Column(
@@ -108,9 +93,9 @@ class ActivedataWidget extends ConsumerWidget {
               height: 100,
               width: 100,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
-              "Your Active Otp detailes appears here",
+              "Your active Otp details appear here",
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
                 color: AppColors.instance.black300,

@@ -1,6 +1,6 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/operations/violation/model/comment_model.dart';
+import 'package:curnectgate/features/operations/violation/model/comment_model/comment_data.dart';
 import 'package:curnectgate/features/operations/violation/model/timeAgo_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,12 +14,22 @@ class CommentBody extends ConsumerWidget {
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: data.comments.length,
+      itemCount: data.comments?.length ?? 0,
       separatorBuilder: (context, index) => const Divider(height: 24),
       itemBuilder: (context, index) {
-        final comment = data.comments[index];
-        final timeAge = TimeagoModel(DateTime.parse(comment.createdAt));
-        String userName = comment.user.name;
+        final comment = data.comments![index];
+        final createdAt = comment.createdAt;
+
+        final parsedDate =
+            createdAt == null ? null : DateTime.tryParse(createdAt);
+
+        if (parsedDate == null) {
+          return const SizedBox.shrink();
+        }
+
+        final timeAge = TimeagoModel(parsedDate);
+
+        String userName = comment.user?.name ?? "";
         String avatarUrl =
             'https://ui-avatars.com/api/?name=${Uri.encodeComponent(userName)}&background=8EC0C9&color=ffffff&size=128';
 
@@ -44,13 +54,16 @@ class CommentBody extends ConsumerWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          comment.user.name,
-                          style: TextStyle(
-                            fontWeight: FontFamilies.bold,
-                            color: AppColors.instance.black600,
-                            fontFamily: FontFamilies.interDisplay,
-                            fontSize: 14,
+                        Flexible(
+                          child: Text(
+                            comment.user?.name ?? "",
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: FontFamilies.bold,
+                              color: AppColors.instance.black600,
+                              fontFamily: FontFamilies.interDisplay,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 5),
@@ -83,7 +96,7 @@ class CommentBody extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 52),
                 child: Text(
-                  comment.comment,
+                  comment.comment ?? "",
                   style: TextStyle(
                     fontSize: 14,
                     fontFamily: FontFamilies.interDisplay,

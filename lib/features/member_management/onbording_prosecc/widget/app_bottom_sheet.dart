@@ -1,5 +1,6 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/model/get_workOder/work_order.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/revokeWorkOder.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/basic_permission.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/removeConfirmation_sheet.dart';
@@ -33,6 +34,7 @@ void showUserBottomSheet({
   String? location,
   String? additional_notes,
   String? device_id,
+  WorkOrder? vendor,
   int? id,
 }) {
   ref.read(bottomSheetStateProvider.notifier).state =
@@ -49,10 +51,8 @@ void showUserBottomSheet({
       minWidth: double.infinity,
     ),
     builder: (BuildContext context) {
-      return Consumer(
-        builder: (context, ref, wid) {
-          final currentView = ref.watch(bottomSheetStateProvider);
-          return Container(
+      return 
+           Container(
             width: MediaQuery.sizeOf(context).width,
             padding:
                 bottom == BottomSheetView.securityViolationTrack ||
@@ -74,31 +74,37 @@ void showUserBottomSheet({
               color: Colors.white,
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: _buildCurrentView(
-                currentView,
-                context,
-                ref,
-                headertitle,
-                headersubtitle,
-                bottom,
-                event,
-                eventCode,
-                dashbordData,
-                id,
-                digital_id_code,
-                access_type,
-                location,
-                additional_notes,
-                device_id,
-                rsvpdata,
-              ),
-            ),
+            child: Consumer(
+      builder: (context, ref, _) {
+        final currentView = ref.watch(bottomSheetStateProvider);
+
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: _buildCurrentView(
+            currentView,
+            context,
+            ref,
+            headertitle,
+            headersubtitle,
+            bottom,
+            event,
+            eventCode,
+            dashbordData,
+            id,
+            digital_id_code,
+            access_type,
+            location,
+            additional_notes,
+            device_id,
+            rsvpdata,
+            vendor
+          ),
+        );
+      },
+    ),
           );
         },
-      );
-    },
+     
   );
 }
 
@@ -119,6 +125,7 @@ Widget _buildCurrentView(
   String? additional_notes,
   String? device_id,
   RsvpEventHistory? event,
+  WorkOrder? workOder,
 ) {
   switch (view) {
     case BottomSheetView.userDetails:
@@ -136,6 +143,7 @@ Widget _buildCurrentView(
         additional_notes: additional_notes,
         device_id: device_id,
         event: event,
+        workOder: workOder,
       );
     case BottomSheetView.permissions:
       return BasicPermission(id: id ?? 0);

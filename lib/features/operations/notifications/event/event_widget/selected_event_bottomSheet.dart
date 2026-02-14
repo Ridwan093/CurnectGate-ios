@@ -76,7 +76,7 @@ class EventSelected extends ConsumerWidget {
                 id: 0,
               );
             },
-            icon: AssetPaths.scheduleOtp,
+            icon: AssetPaths.navEventCodeDeactive,
           ),
         ],
       ),

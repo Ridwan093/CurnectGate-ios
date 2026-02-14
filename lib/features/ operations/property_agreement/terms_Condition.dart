@@ -1,17 +1,24 @@
-import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/%20operations/property_agreement/widget/termsAndCondition.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:signature/signature.dart';
 
-class TermsAndConditionScreen extends StatefulWidget {
+class TermsAndConditionScreen extends ConsumerStatefulWidget {
   const TermsAndConditionScreen({super.key});
 
   @override
-  State<TermsAndConditionScreen> createState() => _TermsAndConditionScreenState();
+  ConsumerState<TermsAndConditionScreen> createState() =>
+      _TermsAndConditionScreenState();
 }
 
-class _TermsAndConditionScreenState extends State<TermsAndConditionScreen> {
+class _TermsAndConditionScreenState
+    extends ConsumerState<TermsAndConditionScreen> {
   final TextEditingController _nameController = TextEditingController();
   final SignatureController _signatureController = SignatureController(
     penStrokeWidth: 6,
@@ -32,198 +39,141 @@ class _TermsAndConditionScreenState extends State<TermsAndConditionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading =
+        ref.watch(formProvider).termsAndCondintionLoading ?? false;
     return Scaffold(
       backgroundColor: AppColors.instance.grey200,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 🏠 Home Icon
-                Image.asset(AssetPaths.terms, height: 70, width: 70),
-                const SizedBox(height: 20),
-
-                // 📝 Header Text
-                Text(
-                  "Take a look at the property agreement below. We value transparency, and always want you to choose the option that’s best for you.",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontWeight: FontFamilies.medium,
-                    fontSize: 15,
-                    color: AppColors.instance.black500,
-                    height: 1.5,
-                  ),
-                ),
-                const SizedBox(height: 30),
-
-                // 📄 Sub Header
-                Text(
-                  "Property agreement",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontWeight: FontFamilies.bold,
-                    fontSize: 18,
-                    color: AppColors.instance.black600,
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // 📜 Agreement Body
-                Text(
-                  """1. Your Unit
-You're moving into:
-[54678, Greenwood estate]
-For residential use only.
-
-2. Start Date & Duration
-Your stay begins on [Start Date] and runs for [12 months], unless ended earlier.
-
-3. Resident Responsibilities
-Please:
-• Keep your space and shared areas clean
-• Follow estate rules (e.g., noise, parking, guest access)
-• Use the app to report issues or request maintenance
-• Don’t sublet your unit without permission""",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontWeight: FontFamilies.regular,
-                    fontSize: 15,
-                    color: AppColors.instance.black600,
-                    height: 1.6,
-                  ),
-                ),
-                const SizedBox(height: 30),
-
-                // 🧭 Custom Tab Switcher
-                Container(
-                  height: 70,
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: AppColors.instance.grey300,
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: Row(
-                    children: [
-                      _buildTabButton("Type your\n name", 0),
-                      _buildTabButton("Draw your\n signature", 1),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-          
-
-                // 🔘 Buttons
-                Column(
+      body: Stack(
+        children: [
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // TODO: handle accept
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.instance.black600,
-                          foregroundColor: AppColors.instance.grey200,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: Text(
-                          "Accept",
-                          style: TextStyle(
-                            fontFamily: FontFamilies.interDisplay,
-                            fontWeight: FontFamilies.medium,
-                            fontSize: 16,
-                          ),
-                        ),
+                    // 🏠 Home Icon
+                    const SizedBox(height: 20),
+
+                    // // 📝 Header Text
+                    // Text(
+                    //   "Take a look at the property agreement below. We value transparency, and always want you to choose the option that’s best for you.",
+                    //   style: TextStyle(
+                    //     fontFamily: FontFamilies.interDisplay,
+                    //     fontWeight: FontFamilies.medium,
+                    //     fontSize: 15,
+                    //     color: AppColors.instance.black500,
+                    //     height: 1.5,
+                    //   ),
+                    // ),
+                    const SizedBox(height: 30),
+
+                    // 📄 Sub Header
+                    Text(
+                      "Terms and conditions",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        fontWeight: FontFamilies.bold,
+                        fontSize: 18,
+                        color: AppColors.instance.black600,
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // TODO: handle decline
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.instance.grey200,
-                          foregroundColor: AppColors.instance.black600,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                    const SizedBox(height: 16),
+
+                    // 📜 Agreement Body
+                    TermsAndConditionData(),
+                    const SizedBox(height: 30),
+
+                    // 🧭 Custom Tab Switcher
+                    const SizedBox(height: 20),
+
+                    // 🔘 Buttons
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                ref
+                                    .read(formProvider.notifier)
+                                    .termsAndConditon(
+                                      context: context,
+                                      ref: ref,
+                                    );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.instance.black600,
+                                foregroundColor: AppColors.instance.grey200,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: Text(
+                                "Accept",
+                                style: TextStyle(
+                                  fontFamily: FontFamilies.interDisplay,
+                                  fontWeight: FontFamilies.medium,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                        child: Text(
-                          "Decline",
-                          style: TextStyle(
-                            fontFamily: FontFamilies.interDisplay,
-                            fontWeight: FontFamilies.medium,
-                            fontSize: 16,
+                          const SizedBox(height: 12),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                showUserBottomSheet(
+                                  context: context,
+                                  headertitle: "",
+                                  headersubtitle: "",
+                                  ref: ref,
+                                  bottom: BottomSheetView.termsAndCondition,
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.instance.grey200,
+                                foregroundColor: AppColors.instance.black600,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: Text(
+                                "Decline",
+                                style: TextStyle(
+                                  fontFamily: FontFamilies.interDisplay,
+                                  fontWeight: FontFamilies.medium,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
+          if (isLoading) Positioned.fill(child: _loadingBody()),
+        ],
       ),
     );
   }
 
-  // Custom Tab Button
-  Widget _buildTabButton(String label, int index) {
-    final bool isSelected = selectedTab == index;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => setState(() => selectedTab = index),
-        child: AnimatedContainer(
-          height: 70,
-          // margin: EdgeInsets.all(8.0),
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            color:
-                isSelected
-                    ? AppColors.instance.grey200
-                    : AppColors.instance.grey300,
-            borderRadius: BorderRadius.circular(10),
-
-            boxShadow:
-                isSelected
-                    ? [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ]
-                    : [],
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontWeight:
-                  isSelected ? FontFamilies.medium : FontFamilies.medium,
-              fontSize: 14,
-              color:
-                  isSelected
-                      ? AppColors.instance.black600
-                      : AppColors.instance.black400,
-            ),
-          ),
-        ),
-      ),
+  Widget _loadingBody() {
+    return Container(
+      color: AppColors.instance.grey300.withOpacity(.8),
+      child: Loadingstates(),
     );
   }
-
-
 }

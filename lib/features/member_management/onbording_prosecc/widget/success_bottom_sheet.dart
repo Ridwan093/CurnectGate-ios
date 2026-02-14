@@ -175,6 +175,7 @@ Widget _buildAddressCard({
         const SizedBox(width: 13.0),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               address,

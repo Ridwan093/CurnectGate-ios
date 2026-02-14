@@ -59,6 +59,7 @@ class _OverlayMultiSelectContentState
       context: context,
       builder:
           (_) => Dialog(
+            backgroundColor: Colors.white,
             insetPadding: const EdgeInsets.symmetric(
               horizontal: 24,
               vertical: 40,

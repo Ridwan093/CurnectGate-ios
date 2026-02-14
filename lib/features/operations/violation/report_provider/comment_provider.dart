@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
-import 'package:curnectgate/features/operations/violation/model/comment_model.dart';
+import 'package:curnectgate/features/operations/violation/model/comment_model/comment_response.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:dio/dio.dart';
@@ -42,9 +42,9 @@ class CommentNotifer extends AutoDisposeAsyncNotifier<CommentResponse?> {
       return freshComment;
     } catch (e) {
       // If error occurs, return local data if available
-      log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");
+      log("First Error On Comment: ${e}");
       if (localComment != null) {
-        log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");
+        log("Error On Comments: ${e}");
         // Show error toast but still return local data
         // WidgetsBinding.instance.addPostFrameCallback((_) {
         //   ScaffoldMessenger.of(context).showSnackBar(
@@ -60,15 +60,20 @@ class CommentNotifer extends AutoDisposeAsyncNotifier<CommentResponse?> {
     }
   }
 
-  Future<void> refreshComment(BuildContext context, WidgetRef ref) async {
+  Future<void> refreshComment(
+    BuildContext context,
+    WidgetRef ref,
+    int? id,
+  ) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       try {
         final token = await ref.watch(accessTokenProvider.future);
-        final id = ref.watch(reportProvider).report.id.toString();
+
+        log(id.toString());
         final freshComment = await ref
             .read(getApiServiceProvider)
-            .getreportComment(bearerToken: token!, id: id);
+            .getreportComment(bearerToken: token!, id: id.toString());
         await SharedPrefsService.saveReportComment(freshComment);
         return freshComment;
       } catch (e) {

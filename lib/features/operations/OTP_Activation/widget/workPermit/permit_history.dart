@@ -1,6 +1,6 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/pamit_data.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/permit_History_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -42,7 +42,7 @@ class _CheckInOtpTabState extends ConsumerState<CheckInOtpTab> {
         // ),
         // SizedBox(height: 40),
         Text(
-          "Check-in OTP",
+          "Permit History",
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,
             fontWeight: FontFamilies.bold,
@@ -52,7 +52,7 @@ class _CheckInOtpTabState extends ConsumerState<CheckInOtpTab> {
         ),
         const SizedBox(height: 4),
         Text(
-          "Grant access for guests and family",
+          "View all visitor OTPs that include permit access.",
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,
             fontSize: 13,

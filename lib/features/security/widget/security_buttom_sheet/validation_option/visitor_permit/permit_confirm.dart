@@ -5,7 +5,6 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../../member_management/tabState/permission_tab_state.dart';
 
@@ -13,7 +12,8 @@ class ConfirmPermitentry extends ConsumerWidget {
   final String name;
   final String type;
   final int id;
-  ConfirmPermitentry({
+
+  const ConfirmPermitentry({
     super.key,
     required this.name,
     required this.type,
@@ -22,24 +22,30 @@ class ConfirmPermitentry extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final Map<String, dynamic> extractedData = json.decode(type);
-    final Map<String, dynamic> data = json.decode(name);
-    final clearancePermit = extractedData["data"]?["clearance_permit"];
-    int id2 = clearancePermit["permit_id"] ?? 0;
+    final extractedData = json.decode(type);
+    final data = extractedData["data"] ?? {};
+
+    final permitSummary = data["permit_summary"] ?? {};
+    final permitItems = (data["permit_items"] as List?) ?? [];
+    final otpGeneratedBy = data["otp_generated_by"] ?? {};
+
+    final int permitId = data["permit_id"] ?? 0;
+
     final size = MediaQuery.sizeOf(context);
+
     return SingleChildScrollView(
       child: Column(
         children: [
           Align(
             alignment: Alignment.topRight,
             child: InkWell(
-              onTap: () {
-                Navigator.pop(context);
-              },
+              onTap: () => Navigator.pop(context),
               child: Icon(Icons.close, color: AppColors.instance.black600),
             ),
           ),
-          SizedBox(height: 25),
+
+          const SizedBox(height: 25),
+
           Text(
             "Confirm Permit",
             style: TextStyle(
@@ -49,24 +55,31 @@ class ConfirmPermitentry extends ConsumerWidget {
               fontWeight: FontFamilies.bold,
             ),
           ),
-          SizedBox(height: 30),
+
+          const SizedBox(height: 30),
+
           _buildUserInfoBox(
             size: size,
-            extractedData: extractedData,
-            data: data,
+            visitorName: data["visitor_name"],
+            generatedBy: otpGeneratedBy,
+            propertyName: permitSummary["property_name"],
+            unitNumber: permitSummary["unit_number"],
+            items: permitItems,
+            itemsCount: data["permit_items_count"],
           ),
-          SizedBox(height: 30),
+
+          const SizedBox(height: 30),
+
           Row(
             children: [
               Expanded(
                 child: _buildFeatureButton(
                   onTap: () {
-                    context.pop();
                     showUserBottomSheet(
-                      id: id2,
+                      id: permitId,
                       context: context,
-                      headertitle: "",
-                      headersubtitle: extractedData['id'].toString(),
+                      headertitle: data["otp_code"]?.toString() ?? "",
+                      headersubtitle: data["otp_code"]?.toString() ?? "",
                       ref: ref,
                       bottom: BottomSheetView.checkoutPermitdeny,
                     );
@@ -75,18 +88,15 @@ class ConfirmPermitentry extends ConsumerWidget {
                   color: AppColors.instance.grey500,
                 ),
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Expanded(
                 child: _buildFeatureButton(
                   onTap: () {
-                    context.pop();
                     showUserBottomSheet(
-                      id: id2,
+                      id: permitId,
                       context: context,
-                      headertitle:
-                          extractedData["data"]["visitor"]["code"] ?? "N/A",
-
-                      headersubtitle: "",
+                      headertitle: permitSummary["otp_code"] ?? "",
+                      headersubtitle: data["otp_code"]?.toString() ?? "",
                       ref: ref,
                       bottom: BottomSheetView.checkOutPermitApproved,
                     );
@@ -102,71 +112,17 @@ class ConfirmPermitentry extends ConsumerWidget {
     );
   }
 
-  // Widget _buildUserInfoBox({
-  //   required Size size,
-  //   required Map<String, dynamic> extractedData,
-  //   required Map<String, dynamic> data,
-  // }) {
-  //   return Container(
-  //     padding: EdgeInsets.only(top: 10, bottom: 10),
-  //     width: size.width,
-
-  //     decoration: BoxDecoration(
-  //       color: AppColors.instance.grey300,
-  //       borderRadius: BorderRadius.circular(12),
-  //     ),
-  //     child: Column(
-  //       children: [
-  //         PentagonContainer(
-  //           width: 80,
-  //           height: 80,
-  //           color: AppColors.instance.teal400,
-
-  //           child: Center(
-  //             child:
-  //                 extractedData["visitor"]["generated_by"]['media_url'] == null
-  //                     ? Icon(
-  //                       Icons.person_3_sharp,
-  //                       color: AppColors.instance.grey200,
-  //                       size: 26,
-  //                     )
-  //                     : Image.network(
-  //                       extractedData["visitor"]["generated_by"]['media_url'] ??
-  //                           "N/A",
-  //                       fit: BoxFit.cover,
-  //                     ),
-  //           ),
-  //         ),
-  //         SizedBox(height: 20),
-  //         _buildText(
-  //           title: "Name",
-  //           subtitle:
-  //               "${extractedData['firstname'].toString().toUpperCase()}  ${extractedData['lastname'].toString().toUpperCase()}",
-  //         ),
-  //         SizedBox(height: 20),
-  //         _buildText(
-  //           title: "Type",
-  //           subtitle: extractedData['role'].toString().toUpperCase(),
-  //         ),
-  //         SizedBox(height: 20),
-  //         _buildText(
-  //           title: "House Address",
-  //           subtitle: extractedData["estate_name"] ?? "N/A",
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
   Widget _buildUserInfoBox({
     required Size size,
-    required Map<String, dynamic> extractedData,
-    required Map<String, dynamic> data,
+    required String? visitorName,
+    required Map generatedBy,
+    required String? propertyName,
+    required String? unitNumber,
+    required List items,
+    required int? itemsCount,
   }) {
-    final clearancePermit = extractedData["data"]?["clearance_permit"];
-    final items = clearancePermit?["items_list"] ?? [];
-
     return Container(
-      padding: const EdgeInsets.only(top: 10, bottom: 10),
+      padding: const EdgeInsets.symmetric(vertical: 16),
       width: size.width,
       decoration: BoxDecoration(
         color: AppColors.instance.grey300,
@@ -174,51 +130,25 @@ class ConfirmPermitentry extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          /// Avatar
-          // PentagonContainer(
-          //   width: 80,
-          //   height: 80,
-          //   color: AppColors.instance.teal400,
-          //   child: Center(
-          //     child: extractedData["data"]?["otp"]?["generated_by"]?['media_url'] == null
-          //         ? Icon(Icons.person_3_sharp,
-          //             color: AppColors.instance.grey200, size: 26)
-          //         : Image.network(
-          //             extractedData["data"]?["otp"]?["generated_by"]?['media_url'] ??
-          //                 "",
-          //             fit: BoxFit.cover,
-          //           ),
-          //   ),
-          // ),
-          const SizedBox(height: 20),
-
-          _buildText(
-            title: "Guest Name",
-            subtitle: "${extractedData['data']?['visitor']?['name'] ?? 'N/A'}",
-          ),
-
+          _buildText(title: "Guest Name", subtitle: visitorName ?? "N/A"),
           const SizedBox(height: 20),
 
           _buildText(
             title: "Generated By",
-            subtitle:
-                "${extractedData['data']?['otp']?['generated_by']?['firstname']?.toString().toUpperCase() ?? "N/A"}  ${extractedData['data']?['otp']?['generated_by']?['lastname']?.toString().toUpperCase() ?? "N/A"}",
+            subtitle: generatedBy["name"] ?? generatedBy["email"] ?? "N/A",
           ),
-
           const SizedBox(height: 20),
 
           _buildText(
-            title: "House Address",
-            subtitle:
-                extractedData["data"]?["otp"]?["generated_by"]?["estate_name"] ??
-                "N/A",
+            title: "Property",
+            subtitle: "$propertyName ($unitNumber)",
           ),
 
-          /// ✅ Clearance Permit Section (NEW)
-          if (clearancePermit?["exists"] == true) ...[
+          if (items.isNotEmpty) ...[
             const SizedBox(height: 30),
+
             Text(
-              "Clearance Permit",
+              "Clearance Items",
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
                 fontWeight: FontFamilies.bold,
@@ -227,69 +157,68 @@ class ConfirmPermitentry extends ConsumerWidget {
               ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 6),
 
             Text(
-              "${clearancePermit?["total_items"] ?? items.length} items allowed",
+              "${itemsCount ?? items.length} items registered",
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
-                fontWeight: FontFamilies.bold,
                 fontSize: 12,
+                fontWeight: FontFamilies.medium,
                 color: AppColors.instance.teal400,
               ),
             ),
 
             const SizedBox(height: 15),
 
-            /// Items List
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 14),
               child: Column(
-                children: List.generate(items.length, (i) {
-                  final item = items[i];
-                  return Container(
-                    width: size.width,
-                    padding: const EdgeInsets.all(10),
-                    margin: const EdgeInsets.only(bottom: 10),
-                    decoration: BoxDecoration(
-                      color: AppColors.instance.grey200,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: AppColors.instance.teal300),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item["name"] ?? "Unknown Item",
-                          style: TextStyle(
-                            fontFamily: FontFamilies.interDisplay,
-                            fontWeight: FontFamilies.bold,
-                            fontSize: 13,
-                            color: AppColors.instance.black600,
-                          ),
+                children:
+                    items.map((item) {
+                      return Container(
+                        width: size.width,
+                        padding: const EdgeInsets.all(10),
+                        margin: const EdgeInsets.only(bottom: 10),
+                        decoration: BoxDecoration(
+                          color: AppColors.instance.grey200,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: AppColors.instance.teal300),
                         ),
-                        const SizedBox(height: 5),
-                        Text(
-                          item["description"] ?? "",
-                          style: TextStyle(
-                            fontFamily: FontFamilies.interDisplay,
-                            fontSize: 11,
-                            color: AppColors.instance.black400,
-                          ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item["item_name"] ?? "Unknown Item",
+                              style: TextStyle(
+                                fontFamily: FontFamilies.interDisplay,
+                                fontWeight: FontFamilies.bold,
+                                fontSize: 13,
+                                color: AppColors.instance.black600,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              item["description"] ?? "",
+                              style: TextStyle(
+                                fontFamily: FontFamilies.interDisplay,
+                                fontSize: 11,
+                                color: AppColors.instance.black400,
+                              ),
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              item["item_category"] ?? "",
+                              style: TextStyle(
+                                fontFamily: FontFamilies.interDisplay,
+                                fontSize: 11,
+                                color: AppColors.instance.teal400,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 3),
-                        Text(
-                          item["category"] ?? "",
-                          style: TextStyle(
-                            fontFamily: FontFamilies.interDisplay,
-                            fontSize: 11,
-                            color: AppColors.instance.teal400,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
+                      );
+                    }).toList(),
               ),
             ),
           ],

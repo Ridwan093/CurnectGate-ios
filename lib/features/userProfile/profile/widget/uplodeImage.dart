@@ -34,6 +34,7 @@ class _UpdateProfilePromptState extends ConsumerState<UpdateProfilePrompt> {
     final formprovider = ref.read(formProvider.notifier);
     final formSate = ref.watch(formProvider);
     return SingleChildScrollView(
+      padding: EdgeInsets.only(bottom: 20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

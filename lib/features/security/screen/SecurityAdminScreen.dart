@@ -1029,11 +1029,11 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
             Divider(color: AppColors.instance.grey400),
             SizedBox(height: 8),
             CountDataForAll<ViolationCountResponse>(
-              provider: violationCountProvider("used"),
+              provider: violationCountProvider("investigating"),
               emptyBody: _violationTrack("0"),
               builder: (data) {
                 // Safely get the pending count
-                final pendingCount = data.data?.byStatus?['pending'] ?? 0;
+                final pendingCount = data.data?.byStatus?['investigating'] ?? 0;
 
                 return _violationTrack(pendingCount.toString());
               },
@@ -1141,7 +1141,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
             ),
             SizedBox(height: 16),
             CountDataForAll<ViolationCountResponse>(
-              provider: violationCountProvider("used"),
+              provider: violationCountProvider("investigating"),
               emptyBody: _buildViolationItem(
                 () {
                   showUserBottomSheet(
@@ -1159,7 +1159,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
               ),
               builder: (data) {
                 // Safely get the pending count
-                final pendingCount = data.data?.byStatus?['pending'] ?? 0;
+                final pendingCount = data.data?.byStatus?['investigating'] ?? 0;
 
                 return _buildViolationItem(
                   () {

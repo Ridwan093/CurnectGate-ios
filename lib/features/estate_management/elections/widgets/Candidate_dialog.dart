@@ -139,12 +139,16 @@ class _CandidateDialogState extends ConsumerState<CandidateDialog>
                                           ),
                                           child: CircleAvatar(
                                             radius: 45,
+                                            backgroundImage:
+                                                widget.avatarUrl.isNotEmpty
+                                                    ? NetworkImage(
+                                                      widget.avatarUrl,
+                                                    )
+                                                    : null,
 
                                             child:
                                                 widget.avatarUrl.isNotEmpty
-                                                    ? Image.network(
-                                                      widget.avatarUrl,
-                                                    )
+                                                    ? null
                                                     : Text(
                                                       widget.name
                                                           .split(' ')
@@ -324,7 +328,6 @@ class _CandidateDialogState extends ConsumerState<CandidateDialog>
       ),
     );
   }
-
 
   Widget _sectionTitle({required IconData icon, required String title}) {
     return Padding(

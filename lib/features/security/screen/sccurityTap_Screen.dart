@@ -46,23 +46,24 @@ class SecurityTapScreen extends ConsumerWidget {
               // === Main Content Area ===
               Expanded(
                 child: Builder(
-        builder: (context) {
-          final bool isTablet = MediaQuery.of(context).size.width >= 600;
+                  builder: (context) {
+                    final bool isTablet =
+                        MediaQuery.of(context).size.width >= 600;
 
-          if (!isTablet) {
-            // Phone: keep phone-like centered width (optional, or remove if you want full on phone too)
-            return Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 600),
-                child: screens[currentIndex],
-              ),
-            );
-          }
+                    if (!isTablet) {
+                      // Phone: keep phone-like centered width (optional, or remove if you want full on phone too)
+                      return Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 600),
+                          child: screens[currentIndex],
+                        ),
+                      );
+                    }
 
-          // Tablet: FULL WIDTH — no constraints!
-          return screens[currentIndex];
-        },
-      ),
+                    // Tablet: FULL WIDTH — no constraints!
+                    return screens[currentIndex];
+                  },
+                ),
               ),
             ],
           ),
@@ -111,7 +112,7 @@ class SecurityTapScreen extends ConsumerWidget {
                             currentIndex: currentIndex,
                             normalIcon: AssetPaths.navMessages,
                             activeIcon: AssetPaths.navMessageactive,
-                            label: 'Community',
+                            label: 'Chats',
                           ),
                           _buildTabItem(
                             context,
@@ -173,7 +174,7 @@ class SecurityTapScreen extends ConsumerWidget {
         _buildRailDestination(
           AssetPaths.navMessageactive,
           AssetPaths.navMessages,
-          "Community",
+          "Chats",
         ),
         _buildRailDestination(
           AssetPaths.navProfileActive,

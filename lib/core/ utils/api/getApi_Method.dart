@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/%20utils/api/api_url.dart';
 import 'package:curnectgate/features/%20operations/property_agreement/model/agreements_response.dart';
+import 'package:curnectgate/features/%20operations/property_agreement/model/compliance/compliance_response.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/comittee_model/committees_response_model.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resident_directory_respond.dart';
 import 'package:curnectgate/features/chat/data/chat_model/availableAdmin/estate_admins_response.dart';
@@ -25,11 +26,13 @@ import 'package:curnectgate/features/member_management/Onboard_Houselod/model/pr
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/setCurfew/curfew_response_model.dart';
 import 'package:curnectgate/features/member_management/estate_settings/setting_model/estate_settings_response.dart';
 import 'package:curnectgate/features/member_management/membership_ID/model/digital_id_status.dart';
+
 import 'package:curnectgate/features/member_management/membership_ID/model/digital_member_id_response.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/model/Work_permit/clearance_permit_response.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/model/active_Otp_count/Expired_count/expired_count_response.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/model/active_Otp_count/active_count/active_count_response.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/model/otp_response_model.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/model/permit_model/active_otp_response.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_events_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/events_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/resv_model/rsvp_events_response.dart';
@@ -38,10 +41,10 @@ import 'package:curnectgate/features/operations/notifications/event/model/notifi
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_response.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/remider/reminders_response_model.dart';
 import 'package:curnectgate/features/operations/violation/model/GetReport_history_model.dart';
-import 'package:curnectgate/features/operations/violation/model/comment_model.dart';
-import 'package:curnectgate/features/operations/violation/model/estate_address_model.dart';
-import 'package:curnectgate/features/operations/violation/model/getCategory_model.dart';
+import 'package:curnectgate/features/operations/violation/model/comment_model/comment_response.dart';
+import 'package:curnectgate/features/operations/violation/model/estate_Address/estate_address_response.dart';
 import 'package:curnectgate/features/operations/violation/model/report_models/violation_response.dart';
+import 'package:curnectgate/features/operations/violation/model/violation_category/violation_category_response.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/dashbord_Model/payment_dashboard_response.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/due_model/outstanding_dues_response.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/history_model/payment_history_response.dart';
@@ -217,7 +220,7 @@ class GetApiService {
       );
       log(response.data.toString());
 
-      return EstateAddressResponse.fromJson(response.data);
+      return EstateAddressResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);
@@ -240,7 +243,7 @@ class GetApiService {
       );
       log(response.data.toString());
 
-      return ViolationCategoryResponse.fromJson(response.data);
+      return ViolationCategoryResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);
@@ -331,7 +334,7 @@ class GetApiService {
       );
       log(response.data.toString());
 
-      return CommentResponse.fromJson(response.data);
+      return CommentResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);
@@ -385,6 +388,29 @@ class GetApiService {
       log(response.data.toString());
 
       return ClearancePermitResponse.fromSafeJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<ActiveOtpResponse> geActivePermit() async {
+    try {
+      // final Map<String, dynamic> requestData = {"status": status};
+
+      final response = await _dio.get(
+        getActivePermit, // Update with your actual endpoint
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
+      );
+      log(response.data.toString());
+
+      return ActiveOtpResponse.fromSafeJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);
@@ -706,7 +732,7 @@ class GetApiService {
     try {
       final response = await _dio.get(
         // "/api/v1/estates/general/events?status=cancelled",
-        "/api/v1/estates/general/events?status=$statuse&limit=$limit&start_date=${date ?? ""}", // Update with your actual endpoint
+        "/api/v1/estates/general/events?status=$statuse&limit=$limit&upcoming=1&start_date=${date ?? ""}", // Update with your actual endpoint
         // options: Options(
         //   headers: {
         //     'Accept': 'application/json',
@@ -1218,6 +1244,20 @@ class GetApiService {
       log(response.data.toString());
 
       return AgreementsResponse.safeFromJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<ComplianceResponse> getMyComplence() async {
+    try {
+      final response = await _dio.get(
+        compliance, // Update with your actual endpoint
+      );
+      log(response.data.toString());
+
+      return ComplianceResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);

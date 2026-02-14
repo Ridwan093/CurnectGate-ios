@@ -81,7 +81,7 @@ class _ReportviolationState extends ConsumerState<ReportViolation> {
             children: [
               Expanded(
                 child: Text(
-                  "Report violation",
+                  "Violation",
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,

@@ -1,8 +1,10 @@
+import 'dart:io';
+
 class Report {
   final String? category;
   final String description;
   final Map<int, String> imagePaths; // Key is index, value is path
-  final Map<int, String> files; // Key is index, value is file
+  final Map<int, File?>? pickedFiles; // Key is index, value is file
   final bool isAnonymous;
   final String? addressId;
   final String? address;
@@ -24,10 +26,10 @@ class Report {
     this.isErrorBodyShow = false,
     this.isCommentInternal = false,
     Map<int, String>? imagePaths,
-    Map<int, String>? files,
+    Map<int, File?>? pickedFiles,
     this.isAnonymous = false,
   }) : imagePaths = imagePaths ?? const {},
-       files = files ?? const {};
+       pickedFiles = pickedFiles ?? const {};
 
   Report copyWith({
     String? reportfilter,
@@ -37,7 +39,7 @@ class Report {
     String? categoryID,
     String? description,
     Map<int, String>? imagePaths,
-    Map<int, String>? files,
+    Map<int, File?>? pickedFiles,
     bool? isAnonymous,
     bool? isErrorBodyShow,
     bool? isCommentInternal,
@@ -55,7 +57,7 @@ class Report {
       category: category ?? this.category,
       description: description ?? this.description,
       imagePaths: imagePaths ?? this.imagePaths,
-      files: files ?? this.files,
+      pickedFiles: pickedFiles ?? this.pickedFiles,
       isAnonymous: isAnonymous ?? this.isAnonymous,
       comment: comment ?? this.comment,
     );

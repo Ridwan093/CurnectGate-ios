@@ -39,28 +39,28 @@ class DeactivePass extends ConsumerWidget {
             ),
 
             const SizedBox(height: 20),
-           Text(
-        'Deactivate Pass?',
-        style: TextStyle(
-          fontSize: 18,
-          fontFamily: FontFamilies.interDisplay,
-          color: AppColors.instance.black600,
-          fontWeight: FontFamilies.bold,
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-        child: Text(
-          'Are you sure you want to deactivate your pass? ',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 14,
-            fontFamily: FontFamilies.interDisplay,
-            color: AppColors.instance.black300,
-            fontWeight: FontFamilies.medium,
-          ),
-        ),
-      ),
+            Text(
+              'Deactivate Pass?',
+              style: TextStyle(
+                fontSize: 18,
+                fontFamily: FontFamilies.interDisplay,
+                color: AppColors.instance.black600,
+                fontWeight: FontFamilies.bold,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+              child: Text(
+                'Are you sure you want to deactivate your pass? ',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontFamily: FontFamilies.interDisplay,
+                  color: AppColors.instance.black300,
+                  fontWeight: FontFamilies.medium,
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 23, right: 23, top: 10),
               child: ReusabelProfileForm(
@@ -76,8 +76,8 @@ class DeactivePass extends ConsumerWidget {
             const SizedBox(height: 30),
             ActionButton(
               onPressed:
-                  state.digiterReason!.isNotEmpty &&
-                          state.digiterReason!.length > 19
+                  (state.digiterReason?.trim() ?? "").isNotEmpty &&
+                          (state.digiterReason?.trim() ?? "").length > 9
                       ? () {
                         form.deActivememberID(context: context, ref: ref);
                       }

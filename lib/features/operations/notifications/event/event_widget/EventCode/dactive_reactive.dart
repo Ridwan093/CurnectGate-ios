@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class DeactiveEventCode extends ConsumerWidget {
-  final  EventCode eventCode;
+  final EventCode eventCode;
   const DeactiveEventCode({super.key, required this.eventCode});
 
   @override
@@ -78,10 +78,14 @@ class DeactiveEventCode extends ConsumerWidget {
             const SizedBox(height: 30),
             ActionButton(
               onPressed:
-                  state.digiterReason!.isNotEmpty &&
-                          state.digiterReason!.length > 19
+                  (state.digiterReason ?? "").trim().isNotEmpty &&
+                          (state.digiterReason ?? "").trim().length > 9
                       ? () {
-                        form.deActiveEventCode(context: context,id:eventCode.id??0, ref: ref);
+                        form.deActiveEventCode(
+                          context: context,
+                          id: eventCode.id ?? 0,
+                          ref: ref,
+                        );
                       }
                       : null,
               label: 'Deactivate code',

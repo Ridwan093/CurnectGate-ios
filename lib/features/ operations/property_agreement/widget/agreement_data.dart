@@ -28,7 +28,7 @@ class AgreementData extends ConsumerWidget {
           final user = agreement?.data;
           return user != null
               ? _contents(
-                content: user.agreements?.termsAndConditions?.content ?? "",
+                content: user.agreements?.propertyAgreement?.content ?? "",
               )
               : EmptyBodys(message: "No data?");
         } catch (e) {
@@ -38,7 +38,7 @@ class AgreementData extends ConsumerWidget {
                 () => ref
                     .read(agreementProvider.notifier)
                     .refreshAgreement(context, ref),
-            firstMessae: "Faile to load profile?",
+            firstMessae: "Faile to load data?",
           );
         }
       },
@@ -46,8 +46,7 @@ class AgreementData extends ConsumerWidget {
         try {
           final cachedProfile = ref.read(agreementProvider).value;
           final data =
-              cachedProfile?.data?.agreements?.termsAndConditions?.content ??
-              "";
+              cachedProfile?.data?.agreements?.propertyAgreement?.content ?? "";
           return cachedProfile?.data?.agreements != null
               ? _contents(content: data)
               : Loadingstates();
@@ -58,7 +57,7 @@ class AgreementData extends ConsumerWidget {
                 () => ref
                     .read(agreementProvider.notifier)
                     .refreshAgreement(context, ref),
-            firstMessae: "Faile to load profile?",
+            firstMessae: "Faile to load data?",
           );
         }
       },
@@ -72,8 +71,7 @@ class AgreementData extends ConsumerWidget {
           // Try to show cached data
           final cachedProfile = ref.read(agreementProvider).value;
           final data =
-              cachedProfile?.data?.agreements?.termsAndConditions?.content ??
-              "";
+              cachedProfile?.data?.agreements?.propertyAgreement?.content ?? "";
           if (cachedProfile?.data?.agreements != null) {
             return _contents(content: data);
           }
@@ -85,7 +83,7 @@ class AgreementData extends ConsumerWidget {
                 () => ref
                     .read(agreementProvider.notifier)
                     .refreshAgreement(context, ref),
-            firstMessae: "Faile to load profile?",
+            firstMessae: "Faile to load data?",
           );
         } catch (e) {
           return Builderroul(
@@ -94,7 +92,7 @@ class AgreementData extends ConsumerWidget {
                 () => ref
                     .read(agreementProvider.notifier)
                     .refreshAgreement(context, ref),
-            firstMessae: "Faile to load profile?",
+            firstMessae: "Faile to load data?",
           );
         }
       },

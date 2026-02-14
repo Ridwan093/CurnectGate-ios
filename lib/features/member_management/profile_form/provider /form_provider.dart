@@ -18,6 +18,7 @@ import 'package:curnectgate/core/local_store/getUserprofile_file_provider.dart';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
+import 'package:curnectgate/features/%20operations/property_agreement/provider/complince_provider.dart';
 import 'package:curnectgate/features/auth/data/auth_model/OnboardingProgressManager.dart';
 import 'package:curnectgate/features/auth/data/auth_model/onbording_enum.dart';
 import 'package:curnectgate/features/auth/widget/tmporarypassword_dialog.dart';
@@ -43,14 +44,17 @@ import 'package:curnectgate/features/member_management/membership_ID/provider/di
 import 'package:curnectgate/features/member_management/membership_ID/provider/getDigitalIDProvider.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/estate_admin_dialog.dart';
 import 'package:curnectgate/features/member_management/profile_form/validator/password_validator.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/active_provider.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/submit_permit_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/EventCode_provider/getlistofEventCode_provider.dart';
+import 'package:curnectgate/features/operations/notifications/provider/activity_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/getCalender_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/getevent_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/going_provider.dart';
+import 'package:curnectgate/features/operations/notifications/provider/limit_event_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notification_Count_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/reminder_provider.dart';
@@ -59,6 +63,7 @@ import 'package:curnectgate/features/operations/violation/report_provider/getRep
 import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
 import 'package:curnectgate/features/payment/provider/dashbord_provider.dart';
 import 'package:curnectgate/features/payment/provider/payment_History_provider.dart';
+import 'package:curnectgate/features/security/model/close_all.dart';
 import 'package:curnectgate/features/security/provider/dismiss_provider.dart';
 import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:curnectgate/features/security/provider/investigation_provider.dart';
@@ -651,6 +656,26 @@ class FormNotifier extends StateNotifier<FormStates> {
     );
   }
 
+  String extractValidationMessage(Map<String, dynamic> response) {
+    final errors = response["data"]?["errors"];
+
+    if (errors is Map<String, dynamic>) {
+      final buffer = StringBuffer();
+
+      for (final entry in errors.entries) {
+        final fieldErrors = entry.value;
+        if (fieldErrors is List && fieldErrors.isNotEmpty) {
+          buffer.writeln(fieldErrors.first);
+        }
+      }
+
+      final result = buffer.toString().trim();
+      if (result.isNotEmpty) return result;
+    }
+
+    return response["message"] ?? "Validation error occurred";
+  }
+
   Future<void> completeRegristration({
     required BuildContext context,
     required String firstName,
@@ -856,8 +881,7 @@ class FormNotifier extends StateNotifier<FormStates> {
     switch (role.toLowerCase()) {
       case 'landlord':
         return context.goNamed(AppRoutes.dashbord);
-      case 'admin':
-        return context.goNamed(AppRoutes.dashbord);
+
       case 'resident':
         return context.goNamed(AppRoutes.dashbord);
       case 'security_personnel':
@@ -1037,8 +1061,6 @@ class FormNotifier extends StateNotifier<FormStates> {
   //   }
   // }
 
-
-  
   Future<void> logIn({
     required BuildContext context,
     required String email,
@@ -1046,8 +1068,8 @@ class FormNotifier extends StateNotifier<FormStates> {
     required WidgetRef ref,
   }) async {
     updateloginLodaing(false);
-    final isBiometricEnabled = ref.read(biometricPrefProvider.notifier);
-    final prefs = SharedPrefsService();
+    // final isBiometricEnabled = ref.read(biometricPrefProvider.notifier);
+    // final prefs = SharedPrefsService();
 
     if (password.isEmpty && email.isEmpty) {
       log("empty");
@@ -1084,117 +1106,13 @@ class FormNotifier extends StateNotifier<FormStates> {
           return; // Stop here if password change required
         }
 
+        await _handlePostLoginSuccess(
+          context: context,
+          ref: ref,
+          data: response['data'],
+          message: response["message"] ?? "",
+        );
         // Normal login flow
-        final isRegistered = await registerToken(context: context, ref: ref);
-
-        if (isRegistered) {
-          log("TRUE------->");
-          await SharedPrefsService().saveAuthData(response['data']);
-
-          showCustomSuccessToast(
-            context: context,
-            message: response["message"],
-            color: AppColors.instance.teal300,
-            icon: Icons.check_circle,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-
-          final userData = response['data'] as Map<String, dynamic>?;
-
-          if (userData != null) {
-            log("UserLoging Token: ${userData["access_token"]}");
-            prefs.saveUserToken(userData["access_token"]);
-
-            final user = userData['user'] as Map<String, dynamic>?;
-            final firstName = user?['firstname'] as String?;
-            final lastName = user!["lastname"] as String?;
-            final emailUser = user["email"] as String?;
-            final medUrl = user["media_url"] as String?;
-
-            if (medUrl != null) {
-              await SharedPrefsService().saveMedialUrl(medUrl);
-              ref.read(profilePicProvider.notifier).refreshProfilePic();
-              ref.read(profilePicProvider.notifier).loadProfilePic();
-            }
-
-            if (firstName != null) {
-              await SharedPrefsService().saveSingleUserName(firstName);
-              await SharedPrefsService().saveFullName(
-                "${firstName} ${lastName}",
-              );
-              ref.read(authState.authProvider.notifier).loadfullName();
-            }
-
-            if (emailUser != null) {
-              await DeviceInfoHelper.saveUserEmail(emailUser);
-            }
-
-            // ============ REVERB SETUP STARTS HERE ============
-            final token = userData["access_token"] as String;
-
-            try {
-              final reverbResponse =
-                  await ref
-                      .read(getApiServiceProvider)
-                      .getReverbConfig(); // Make sure this method accepts token!
-
-              if (reverbResponse['status'] == true) {
-                final config = reverbResponse['data'];
-                ref
-                    .read(reverbConfigProvider.notifier)
-                    .state = ReverbConfig.fromJson(config);
-                await ReverbService.init(
-                  token: token,
-                  appKey: config['app_key'],
-                  host: config['host'],
-                  port: config['port'],
-                  scheme: config['scheme'],
-                  authEndpoint: config['auth_endpoint'],
-                );
-                final userId =
-                    user['id'].toString(); // Get current user ID from response
-
-                await ReverbService.setupGlobalListener(userId, ref);
-                log("Reverb initialized successfully!");
-              } else {
-                log("Reverb config failed: ${reverbResponse['message']}");
-                // Optional: show non-blocking toast
-                // showCustomSuccessToast(context: context, message: "Real-time features unavailable", color: Colors.orange);
-              }
-            } catch (e) {
-              log("Failed to initialize Reverb: $e");
-              // Fail gracefully — app works without real-time
-            }
-            // ============ REVERB SETUP ENDS HERE ============
-
-            ref.read(authState.authProvider.notifier).loadAuthData();
-          }
-
-          final user = response['data']["user"];
-          final userRole = user['role'];
-          final biometricenabled = user["biometric_enabled"];
-
-          if (biometricenabled) {
-            await DeviceInfoHelper.saveFirstTimeCheck(false);
-            isBiometricEnabled.toggleBiometric(true);
-          } else {
-            await DeviceInfoHelper.saveFirstTimeCheck(true);
-            isBiometricEnabled.toggleBiometric(false);
-          }
-
-          log(userRole.toString());
-          getUserRoleFromString(context, userRole.toString());
-        } else {
-          showCustomSuccessToast(
-            context: context,
-            message: "Something went wrong",
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
       } else {
         updateloginLodaing(false);
         log("FALSE------->");
@@ -1251,6 +1169,109 @@ class FormNotifier extends StateNotifier<FormStates> {
     }
   }
 
+  Future<void> signInwithFaceID({
+    required BuildContext context,
+    required WidgetRef ref,
+    required String slug,
+  }) async {
+    log("🚀 START signInwithFaceID()");
+
+    updateloginLodaing(true);
+
+    try {
+      // 1️⃣ Authenticate user with biometrics (finger/face)
+      final authenticated = await DeviceInfoHelper.authenticateUser(ref);
+
+      if (!authenticated) {
+        showCustomSuccessToast(
+          context: context,
+          message: "Biometric authentication failed or cancelled.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+        return;
+      }
+
+      // 2️⃣ Gather all needed data for the login request
+      final email = await BiometricSignatureHelper.getStoredEmail();
+      final signature = await BiometricSignatureHelper.getStoredSignature();
+      final deviceToken = await DeviceInfoHelper.getDeviceToken();
+      final token = await ref.watch(accessTokenProvider.future) ?? "";
+
+      log('${signature}');
+
+      log("Device EMAIL: $email");
+
+      if (email == null || signature == null) {
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Biometric data not found. Please enable biometric login first.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+        return;
+      }
+
+      // 3️⃣ Call API to log in using stored biometric credentials
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .logIngwithFingerPrintAndFaceID(
+            token: token,
+            email: email,
+            device_token: deviceToken ?? "",
+            biometric_signature: signature,
+            context: context,
+          );
+
+      if (!context.mounted) return;
+
+      // 4️⃣ Handle response
+      if (response["status"] == true) {
+        updateloginLodaing(false);
+
+        await _handlePostLoginSuccess(
+          context: context,
+          ref: ref,
+          data: response['data'],
+          message: response["message"] ?? "",
+        );
+      } else {
+        final message = response["message"] ?? "Biometric login failed.";
+        log("❌ Login failed: $message");
+        updateloginLodaing(false);
+        _handleLoginError(context, ref, message);
+      }
+    } on DioException catch (e) {
+      log("🌐 DIO ERROR during biometric login: $e");
+      showCustomSuccessToast(
+        context: context,
+        message: "Network error occurred while logging in.",
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } catch (e) {
+      log("💥 Unexpected ERROR: $e");
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      updateloginLodaing(false);
+      log("🏁 END signInwithFaceID()");
+    }
+  }
+
   Future<bool> registerToken({
     required BuildContext context,
     required WidgetRef ref,
@@ -1302,6 +1323,107 @@ class FormNotifier extends StateNotifier<FormStates> {
       updateloginLodaing(false);
       log("🏁 END registerToken()");
     }
+  }
+
+  Future<void> _handlePostLoginSuccess({
+    required BuildContext context,
+    required WidgetRef ref,
+    required Map<String, dynamic> data,
+    required String message,
+  }) async {
+    final prefs = SharedPrefsService();
+    final isBiometricEnabled = ref.read(biometricPrefProvider.notifier);
+
+    final user = data['user'] as Map<String, dynamic>? ?? {};
+    final token = data["access_token"] as String?;
+    final userRole = user['role']?.toString() ?? "";
+    final biometricenabled = user["biometric_enabled"] == true;
+
+    // 🚫 Block admin/service provider
+    if (userRole.contains("estate_admin") ||
+        userRole.contains("service_provider")) {
+      showEstateAdminBlockedDialog(context);
+      return;
+    }
+
+    // 💾 Save auth data
+    await prefs.saveAuthData(data);
+
+    if (token != null) {
+      prefs.saveUserToken(token);
+    }
+
+    // 👤 Save profile basics
+    final firstName = user['firstname'];
+    final lastName = user['lastname'];
+    final email = user['email'];
+    final mediaUrl = user['media_url'];
+
+    if (mediaUrl != null) {
+      await prefs.saveMedialUrl(mediaUrl);
+      ref.read(profilePicProvider.notifier).refreshProfilePic();
+    }
+
+    if (firstName != null && lastName != null) {
+      await prefs.saveFullName("$firstName $lastName");
+      await prefs.saveSingleUserName(firstName);
+      ref.read(authState.authProvider.notifier).loadfullName();
+    }
+
+    if (email != null) {
+      await DeviceInfoHelper.saveUserEmail(email);
+    }
+
+    // 🔔 Register push token (MOVED HERE)
+    await registerToken(context: context, ref: ref);
+
+    // 🔐 Handle biometric toggle state
+    if (biometricenabled) {
+      await DeviceInfoHelper.saveFirstTimeCheck(false);
+      isBiometricEnabled.toggleBiometric(true);
+    } else {
+      await DeviceInfoHelper.saveFirstTimeCheck(true);
+      isBiometricEnabled.toggleBiometric(false);
+    }
+
+    // 🌐 Reverb setup (REALTIME)
+    try {
+      final reverbResponse =
+          await ref.read(getApiServiceProvider).getReverbConfig();
+
+      if (reverbResponse['status'] == true && token != null) {
+        final config = reverbResponse['data'];
+        ref.read(reverbConfigProvider.notifier).state = ReverbConfig.fromJson(
+          config,
+        );
+
+        await ReverbService.init(
+          token: token,
+          appKey: config['app_key'],
+          host: config['host'],
+          port: config['port'],
+          scheme: config['scheme'],
+          authEndpoint: config['auth_endpoint'],
+        );
+
+        await ReverbService.setupGlobalListener(user['id'].toString(), ref);
+      }
+    } catch (_) {
+      // Fail silently — realtime is optional
+    }
+
+    ref.read(authState.authProvider.notifier).loadAuthData();
+
+    showCustomSuccessToast(
+      context: context,
+      message: message,
+      color: AppColors.instance.teal300,
+      icon: Icons.check_circle,
+      iconColors: AppColors.instance.grey200,
+      positionNumber: 70,
+    );
+
+    getUserRoleFromString(context, userRole);
   }
 
   Future<void> forgetPass({
@@ -1704,7 +1826,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
         //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
 
-        context.pushNamed(AppRoutes.signIN);
+        context.pop();
       } else {
         log("FALSE------->");
         showCustomSuccessToast(
@@ -1900,20 +2022,16 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         context.pop();
       } else {
-        updateChangProfilePassLoading(false);
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          showCustomSuccessToast(
-            context: context,
-            message: response["message"],
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       updateChangProfilePassLoading(false);
@@ -1996,19 +2114,16 @@ class FormNotifier extends StateNotifier<FormStates> {
         context.pop();
       } else {
         updatedeActivatAccountLoading(false);
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          showCustomSuccessToast(
-            context: context,
-            message: response["message"],
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       updatedeActivatAccountLoading(false);
@@ -2545,16 +2660,9 @@ class FormNotifier extends StateNotifier<FormStates> {
             estateaddressID: report.addressId ?? "",
             des: report.description,
             location: report.category ?? "",
-            isAnonymouse: report.isAnonymous,
+            isAnonymous: report.isAnonymous,
             priority: "high",
-            evidence1:
-                report.imagePaths[0] != null
-                    ? File(report.imagePaths[0]!)
-                    : File(''),
-            evidence2:
-                report.imagePaths[1] != null
-                    ? File(report.imagePaths[1]!)
-                    : File(''),
+            pickedFiles: report.pickedFiles ?? {},
           );
       log(response.toString());
       if (!context.mounted) return; // Always check first
@@ -2582,22 +2690,17 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          reportStatess.resetState();
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          reportStatess.resetState();
-          context.pop();
-          showCustomSuccessToast(
-            context: context,
-            message: response["message"],
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        reportStatess.resetState();
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       updateReportLoading(false);
@@ -2683,9 +2786,11 @@ class FormNotifier extends StateNotifier<FormStates> {
         //   iconColors: AppColors.instance.grey200,
         //   positionNumber: 70,
         // );
-        reportStatess.resetState();
-        ref.read(commentProvider.notifier).refreshComment(context, ref);
 
+        ref
+            .read(commentProvider.notifier)
+            .refreshComment(context, ref, int.parse(id));
+        reportStatess.resetState();
         // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
         //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
@@ -2693,23 +2798,18 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          reportStatess.resetState();
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          reportStatess.resetState();
-          //  final error = response['errors']?['comment']?.first;
 
-          showCustomSuccessToast(
-            context: context,
-            message: response["data"],
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        reportStatess.resetState();
+        //  final error = response['errors']?['comment']?.first;
+
+        showCustomSuccessToast(
+          context: context,
+          message: response["data"],
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       updateCommentLoading(false);
@@ -2839,24 +2939,20 @@ class FormNotifier extends StateNotifier<FormStates> {
         updatedeGenerateOtpLoading(false);
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          visitors.resetState();
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          visitors.resetState();
-          //  final error = response['errors']?['comment']?.first;
 
-          showCustomSuccessToast(
-            context: context,
-            message: response["message"],
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        visitors.resetState();
+        //  final error = response['errors']?['comment']?.first;
+
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       updatedeGenerateOtpLoading(false);
@@ -2984,23 +3080,20 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          visitors.resetState();
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          visitors.resetState();
-          //  final error = response['errors']?['comment']?.first;
 
-          showCustomSuccessToast(
-            context: context,
-            message: response["message"],
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        visitors.resetState();
+        //  final error = response['errors']?['comment']?.first;
+
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       updatedeSchedulOtpLoading(false);
@@ -3096,24 +3189,20 @@ class FormNotifier extends StateNotifier<FormStates> {
         updatedeRevorkOtpLoading(false);
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          visitors.resetState();
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          visitors.resetState();
-          //  final error = response['errors']?['comment']?.first;
 
-          showCustomSuccessToast(
-            context: context,
-            message: response['data']['otp_id']?.first ?? 'Unknown error',
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        visitors.resetState();
+        //  final error = response['errors']?['comment']?.first;
+
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       updatedeSchedulOtpLoading(false);
@@ -3204,23 +3293,19 @@ class FormNotifier extends StateNotifier<FormStates> {
         state.setLoading(false);
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          state.setLoading(false);
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          //  final error = response['errors']?['comment']?.first;
 
-          showCustomSuccessToast(
-            context: context,
-            message: response['data']['otp_id']?.first ?? 'Unknown error',
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        //  final error = response['errors']?['comment']?.first;
+
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final state = ref.read(workOrderFormProvider.notifier);
@@ -3296,6 +3381,8 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
+        context.pop();
+        ref.read(digitMemberIDprovider.notifier).refreshDigitalID(context, ref);
         context.pushNamed(AppRoutes.digitalIDMember);
         // context.pop();
 
@@ -3307,22 +3394,19 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateGenrateMemberIdLoading(false);
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          //  final error = response['errors']?['comment']?.first;
 
-          showCustomSuccessToast(
-            context: context,
-            message: response["message"],
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        //  final error = response['errors']?['comment']?.first;
+
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       updateGenrateMemberIdLoading(false);
@@ -3414,22 +3498,19 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateGenrateMemberIdLoading(false);
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          //  final error = response['errors']?['comment']?.first;
-          resteRasion();
-          showCustomSuccessToast(
-            context: context,
-            message: response["message"],
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+
+        //  final error = response['errors']?['comment']?.first;
+        resteRasion();
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       updateGenrateMemberIdLoading(false);
@@ -3522,22 +3603,19 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateGenrateMemberIdLoading(false);
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          //  final error = response['errors']?['comment']?.first;
-          resteRasion();
-          showCustomSuccessToast(
-            context: context,
-            message: response["message"],
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+
+        //  final error = response['errors']?['comment']?.first;
+        resteRasion();
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       updateGenrateMemberIdLoading(false);
@@ -3628,21 +3706,19 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          //  final error = response['errors']?['comment']?.first;
-          resteRasion();
-          showCustomSuccessToast(
-            context: context,
-            message: response["message"],
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+
+        //  final error = response['errors']?['comment']?.first;
+        resteRasion();
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       updateGenrateMemberIdLoading(false);
@@ -3749,24 +3825,18 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          restaddMemberFillds();
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        restaddMemberFillds();
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       updateAddHouseHoldLoading(false);
@@ -3860,21 +3930,19 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          //  final error = response['errors']?['comment']?.first;
-          resteRasion();
-          showCustomSuccessToast(
-            context: context,
-            message: response["message"],
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+
+        //  final error = response['errors']?['comment']?.first;
+        resteRasion();
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       updateRemovedHouseHoldLoading(false);
@@ -3998,26 +4066,20 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          restaddMemberFillds();
-          ref.read(multiSelectProvider('Certifications').notifier).clearAll();
-          ref.read(multiSelectProvider('Specializations').notifier).clearAll();
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        restaddMemberFillds();
+        ref.read(multiSelectProvider('Certifications').notifier).clearAll();
+        ref.read(multiSelectProvider('Specializations').notifier).clearAll();
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       updateAddHouseHoldLoading(false);
@@ -4146,26 +4208,20 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          restaddMemberFillds();
-          ref.read(multiSelectProvider('Certifications').notifier).clearAll();
-          ref.read(multiSelectProvider('Specializations').notifier).clearAll();
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        restaddMemberFillds();
+        ref.read(multiSelectProvider('Certifications').notifier).clearAll();
+        ref.read(multiSelectProvider('Specializations').notifier).clearAll();
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       updateAddHouseHoldLoading(false);
@@ -4306,24 +4362,17 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-          notifier.resetForm();
-        } else {
-          notifier.resetForm();
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
@@ -4441,25 +4490,18 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateGranFacilityPermissionLoading(false);
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-          notifier.resetForm();
-        } else {
-          notifier.resetForm();
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifier.resetForm();
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
@@ -4579,24 +4621,19 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
@@ -4702,24 +4739,19 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
@@ -4826,24 +4858,18 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifier.resetForm();
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
@@ -4942,25 +4968,19 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateGrantNightPermissionLoading(false);
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
@@ -5063,25 +5083,19 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateGrantParkingPermissionLoading(false);
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
@@ -5185,25 +5199,19 @@ class FormNotifier extends StateNotifier<FormStates> {
         notifiers.setLoading(false);
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
@@ -5314,24 +5322,18 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
@@ -5436,25 +5438,19 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
@@ -5589,25 +5585,20 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -5725,26 +5716,21 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
 
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+        notifiers.updateLoading(false);
+        notifier.resetForm();
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -5836,7 +5822,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         notifier.resetForm();
         log("TRUE------->");
         final userData = response['data']['user'];
-        context.pop();
+        closeAllBottomSheets(context);
         final String jsonString = json.encode(userData);
         // Log the specific fields you want
         debugPrint('📋 USER DETAILS LOG:');
@@ -5869,27 +5855,21 @@ class FormNotifier extends StateNotifier<FormStates> {
       } else {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
 
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+        notifiers.updateLoading(false);
+        notifier.resetForm();
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -6002,26 +5982,20 @@ class FormNotifier extends StateNotifier<FormStates> {
       } else {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -6101,27 +6075,39 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (!context.mounted) return; // Always check first
 
       if (response['status'] == true) {
-        context.pop();
         notifiers.updateLoading(false);
         notifier.resetForm();
         final userData = response;
 
         final String jsonString = json.encode(userData);
-        final String jsonStringdata = json.encode(response['data']["otp"]);
+        final String jsonStringdata = json.encode(response['data']);
+        final hasClearance = userData["data"]["has_clearance_permit"];
+        final message = response["message"];
+        if (hasClearance == false) {
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
+        } else {
+          // context.pop();
+          final int id = response['data']["permit_id"];
 
-        final int id = response['data']["otp"]["id"];
-
-        debugPrint('─────────────────────────────────────────');
-        notifier.resetForm();
-        log("TRUE------->");
-        showUserBottomSheet(
-          id: id,
-          context: context,
-          headertitle: jsonString,
-          headersubtitle: jsonStringdata,
-          ref: ref,
-          bottom: BottomSheetView.checkOutWithpermitConfirm,
-        );
+          debugPrint('─────────────────────────────────────────');
+          notifier.resetForm();
+          log("TRUE------->");
+          showUserBottomSheet(
+            id: id,
+            context: context,
+            headertitle: jsonString,
+            headersubtitle: jsonStringdata,
+            ref: ref,
+            bottom: BottomSheetView.checkOutWithpermitConfirm,
+          );
+        }
 
         // showUserBottomSheet(
         //   id: id,
@@ -6135,25 +6121,20 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -6243,7 +6224,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         final String jsonString = json.encode(userData);
         final String jsonStringdata = json.encode(response['data']["otp"]);
 
-        final int id = response['data']["otp"]["id"];
+        final int id = response['data']["validation"]["id"];
 
         debugPrint('─────────────────────────────────────────');
         notifier.resetForm();
@@ -6260,25 +6241,20 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -6392,25 +6368,21 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -6518,25 +6490,20 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -6639,26 +6606,20 @@ class FormNotifier extends StateNotifier<FormStates> {
       } else {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -6761,26 +6722,20 @@ class FormNotifier extends StateNotifier<FormStates> {
       } else {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -6883,26 +6838,20 @@ class FormNotifier extends StateNotifier<FormStates> {
       } else {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -7015,25 +6964,20 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -7116,11 +7060,12 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (!context.mounted) return; // Always check first
 
       if (response['status'] == true) {
-        context.pop();
         notifiers.updateLoading(false);
+
         notifier.resetForm();
         log("TRUE------->");
         final userData = response;
+        closeAllBottomSheets(context);
         final String jsonString = json.encode(userData);
         notifier.resetForm();
         log("TRUE------->");
@@ -7135,25 +7080,20 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -7255,25 +7195,20 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -7357,7 +7292,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (!context.mounted) return; // Always check first
 
       if (response['status'] == true) {
-        context.pop();
+        closeAllBottomSheets(context);
         notifiers.updateLoading(false);
         final userData = response;
 
@@ -7385,25 +7320,20 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -7514,25 +7444,20 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -7579,7 +7504,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       notifier.resetForm();
       notifiers.updateLoading(false);
-      updateOtp('', false);
+
       log("END------->");
     }
   }
@@ -7655,25 +7580,20 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -7720,7 +7640,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       notifier.resetForm();
       notifiers.updateLoading(false);
-      updateOtp('', false);
+
       log("END------->");
     }
   }
@@ -7773,25 +7693,20 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -7902,26 +7817,21 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
 
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
+        notifiers.updateLoading(false);
+        notifier.resetForm();
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -8020,26 +7930,20 @@ class FormNotifier extends StateNotifier<FormStates> {
       } else {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifiers.updateLoading(false);
-          notifier.resetForm();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifier = ref.read(oTpformProvider.notifier);
@@ -8085,7 +7989,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       notifiers.resetForm();
 
-      updateOtp('', false);
       log("END------->");
     }
   }
@@ -8146,26 +8049,21 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifier.updateLoading(false);
-          ref.read(generateNotifierProvider.notifier).resetState();
-          notifier.resetAll();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifier.updateLoading(false);
+        ref.read(generateNotifierProvider.notifier).resetState();
+        notifier.resetAll();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifiers = ref.read(reminderProvider.notifier);
@@ -8209,7 +8107,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       ref.read(generateNotifierProvider.notifier).resetState();
       notifier.resetAll();
 
-      updateOtp('', false);
       log("END------->");
     }
   }
@@ -8275,26 +8172,21 @@ class FormNotifier extends StateNotifier<FormStates> {
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         ref.read(generateNotifierProvider.notifier).resetState();
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          ref.read(generateNotifierProvider.notifier).resetState();
-          notifier.updateLoading(false);
-          notifier.resetAll();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        ref.read(generateNotifierProvider.notifier).resetState();
+        notifier.updateLoading(false);
+        notifier.resetAll();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifiers = ref.read(reminderProvider.notifier);
@@ -8391,23 +8283,21 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifier.updateLoading(false);
-          notifier.resetAll();
-          //  final error = response['errors']?['comment']?.first;
 
-          showCustomSuccessToast(
-            context: context,
-            message: response["message"],
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifier.updateLoading(false);
+        notifier.resetAll();
+        //  final error = response['errors']?['comment']?.first;
+
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifiers = ref.read(reminderProvider.notifier);
@@ -8451,7 +8341,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       notifier.resetAll();
 
-      updateOtp('', false);
       log("END------->");
     }
   }
@@ -8499,25 +8388,20 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifier.updateLoading(false);
-          notifier.resetAll();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifier.updateLoading(false);
+        notifier.resetAll();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifiers = ref.read(reminderProvider.notifier);
@@ -8578,7 +8462,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     try {
       final notifier = ref.read(reminderProvider.notifier);
-
+      final isPop = ref.watch(isPopProvider);
       notifier.updateLoading(true);
 
       final token = await ref.watch(accessTokenProvider.future);
@@ -8600,8 +8484,16 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (response['status'] == true) {
         notifier.updateLoading(false);
         ref.read(getEventProvider.notifier).refreshEvent(context, ref, "");
+        ref.read(getEventLimitProvider.notifier).refreshEvent(context, ref);
+        refreshRsvp(ref, "going");
+        refreshRsvp(ref, "not_going");
+
         notifier.resetAll();
-        // context.pop();
+        if (isPop) {
+          context.pop();
+          ref.read(isPopProvider.notifier).state = false;
+        }
+
         log("TRUE------->");
         showCustomSuccessToast(
           context: context,
@@ -8615,23 +8507,21 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifier.updateLoading(false);
-          notifier.resetAll();
-          //  final error = response['errors']?['comment']?.first;
 
-          showCustomSuccessToast(
-            context: context,
-            message: response["message"],
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifier.updateLoading(false);
+        notifier.resetAll();
+        //  final error = response['errors']?['comment']?.first;
+
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifiers = ref.read(reminderProvider.notifier);
@@ -8675,7 +8565,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       notifier.resetAll();
 
-      updateOtp('', false);
       log("END------->");
     }
   }
@@ -8753,26 +8642,152 @@ class FormNotifier extends StateNotifier<FormStates> {
       } else {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          updateWorkderLoading(false);
 
-          //  final error = response['errors']?['comment']?.first;
-          // final message =
-          //     response["data"]?["0"]?["email"]?[0] ?? response["message"];
+        updateWorkderLoading(false);
 
-          showCustomSuccessToast(
+        //  final error = response['errors']?['comment']?.first;
+        // final message =
+        //     response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+    } on DioException catch (e) {
+      updateWorkderLoading(false);
+
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        log(e.error.toString());
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+      log(e.toString());
+    } catch (e) {
+      if (!context.mounted) return;
+
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      updateWorkderLoading(false);
+
+      log("END------->");
+    }
+  }
+
+  Future<void> updateWorkOrder({
+    required BuildContext context,
+    required String file,
+    required String name,
+    required String dec,
+    required String email,
+    required String phone,
+    required String startDate,
+    required String endDate,
+    required String dailyWindowTime,
+    required String numberofWorkers,
+    required String numberofDays,
+    required int categorie,
+    required String id,
+
+    required WidgetRef ref,
+  }) async {
+    log("START------->");
+
+    try {
+      final notifier = ref.read(reminderProvider.notifier);
+
+      updateWorkderLoading(true);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .updateWorkOrders(
+            categorie: categorie,
+            file: "",
+            name: name,
+            dec: dec,
+            email: email,
+            phone: phone,
+            startDate: startDate,
+            endDate: endDate,
+            dailyWindowTime: dailyWindowTime,
+            numberofWorkers: numberofWorkers,
+            numberofDays: numberofDays,
+
+            id: id,
+
             context: context,
-            message: response["message"],
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
           );
-        }
+
+      log(response.toString());
+      if (!context.mounted) return; // Always check first
+
+      if (response['status'] == true) {
+        updateWorkderLoading(false);
+        final data = response['data']["workorder"];
+
+        final String jsonString = json.encode(data);
+        context.pop();
+        context.pushNamed(
+          AppRoutes.vendorAccessCode,
+          extra: {"title": jsonString, "share": "", "code": ""},
+        );
+        notifier.resetAll();
+        ref.read(workOrderProvider.notifier).refreshWorkOrders(context, ref);
+
+        log("TRUE------->");
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      } else {
+        // log(e.toString());
+        // ref.read(authProvider.notifier).seassionExpire(context, ref);
+        log("FALSE------->");
+
+        updateWorkderLoading(false);
+
+        //  final error = response['errors']?['comment']?.first;
+        // final message =
+        //     response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       updateWorkderLoading(false);
@@ -8857,25 +8872,23 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          updateWorkderLoading(false);
 
-          //  final error = response['errors']?['comment']?.first;
-          // final message =
-          //     response["data"]?["0"]?["email"]?[0] ?? response["message"];
+        updateWorkderLoading(false);
 
-          showCustomSuccessToast(
-            context: context,
-            message: response["message"],
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        //  final error = response['errors']?['comment']?.first;
+        // final message =
+        //     response["data"]?["0"]?["email"]?[0] ?? response["message"];
+
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       updateWorkderLoading(false);
@@ -8991,19 +9004,16 @@ class FormNotifier extends StateNotifier<FormStates> {
 
           // enabletoggle(context: context, value: value, ref: ref, slug: slug);
         } else {
-          final message = response["message"] ?? "Unknown error";
-          if (message.contains("Unauthenticated")) {
-            ref.read(authProvider.notifier).sessionExpire(context, ref);
-          } else {
-            showCustomSuccessToast(
-              context: context,
-              message: "SetUpFingerPrintErrorMessage: $message",
-              color: AppColors.instance.error500,
-              icon: Icons.error,
-              iconColors: AppColors.instance.grey200,
-              positionNumber: 70,
-            );
-          }
+          final message = extractValidationMessage(response);
+
+          showCustomSuccessToast(
+            context: context,
+            message: message,
+            color: AppColors.instance.error500,
+            icon: Icons.error,
+            iconColors: AppColors.instance.grey200,
+            positionNumber: 70,
+          );
         }
       } else {
         log("the value was true");
@@ -9112,147 +9122,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     }
   }
 
-  Future<void> signInwithFaceID({
-    required BuildContext context,
-    required WidgetRef ref,
-    required String slug,
-  }) async {
-    log("🚀 START signInwithFaceID()");
-
-    updateloginLodaing(true);
-    final isBiometricEnabled = ref.read(biometricPrefProvider.notifier);
-
-    try {
-      // 1️⃣ Authenticate user with biometrics (finger/face)
-      final authenticated = await DeviceInfoHelper.authenticateUser(ref);
-
-      if (!authenticated) {
-        showCustomSuccessToast(
-          context: context,
-          message: "Biometric authentication failed or cancelled.",
-          color: AppColors.instance.error500,
-          icon: Icons.error,
-          iconColors: AppColors.instance.grey200,
-          positionNumber: 70,
-        );
-        return;
-      }
-
-      // 2️⃣ Gather all needed data for the login request
-      final email = await BiometricSignatureHelper.getStoredEmail();
-      final signature = await BiometricSignatureHelper.getStoredSignature();
-      final deviceToken = await DeviceInfoHelper.getDeviceToken();
-      final token = await ref.watch(accessTokenProvider.future) ?? "";
-
-      log('${signature}');
-
-      log("Device EMAIL: $email");
-
-      if (email == null || signature == null) {
-        showCustomSuccessToast(
-          context: context,
-          message:
-              "Biometric data not found. Please enable biometric login first.",
-          color: AppColors.instance.error500,
-          icon: Icons.error,
-          iconColors: AppColors.instance.grey200,
-          positionNumber: 70,
-        );
-        return;
-      }
-
-      // 3️⃣ Call API to log in using stored biometric credentials
-      final response = await ref
-          .read(profileRepositoryProvider)
-          .logIngwithFingerPrintAndFaceID(
-            token: token,
-            email: email,
-            device_token: deviceToken ?? "",
-            biometric_signature: signature,
-            context: context,
-          );
-
-      if (!context.mounted) return;
-
-      // 4️⃣ Handle response
-      if (response["status"] == true) {
-        log("✅ Biometric login successful for user: $email");
-        updateloginLodaing(false);
-
-        log("TRUE------->");
-        await SharedPrefsService().saveAuthData(response['data']);
-
-        showCustomSuccessToast(
-          context: context,
-          message: response["message"],
-          color: AppColors.instance.teal300,
-          icon: Icons.check_circle,
-          iconColors: AppColors.instance.grey200,
-          positionNumber: 70,
-        );
-        final userData = response['data'] as Map<String, dynamic>?;
-        if (userData != null) {
-          final user = userData['user'] as Map<String, dynamic>?;
-          final firstName = user?['firstname'] as String?;
-          final email = user?["email"] as String?;
-          if (firstName != null) {
-            await SharedPrefsService().saveSingleUserName(firstName);
-          }
-
-          if (email != null) {
-            await DeviceInfoHelper.saveUserEmail(email);
-          }
-        }
-        final user = response['data']["user"];
-        final userRole = user['role'];
-        final biometricenabled = user["biometric_enabled"];
-
-        if (biometricenabled) {
-          await DeviceInfoHelper.saveFirstTimeCheck(false);
-          isBiometricEnabled.toggleBiometric(true);
-        } else {
-          await DeviceInfoHelper.saveFirstTimeCheck(true);
-          isBiometricEnabled.toggleBiometric(false);
-        }
-        log(userRole.toString());
-        getUserRoleFromString(context, userRole.toString());
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
-        // context.goNamed(AppRoutes.dashbord);
-        // Optionally save token or navigate to dashboard
-        // ref.read(authProvider.notifier).handleLoginSuccess(response);
-      } else {
-        final message = response["message"] ?? "Biometric login failed.";
-        log("❌ Login failed: $message");
-        updateloginLodaing(false);
-        _handleLoginError(context, ref, message);
-      }
-    } on DioException catch (e) {
-      log("🌐 DIO ERROR during biometric login: $e");
-      showCustomSuccessToast(
-        context: context,
-        message: "Network error occurred while logging in.",
-        color: AppColors.instance.error500,
-        icon: Icons.error,
-        iconColors: AppColors.instance.grey200,
-        positionNumber: 70,
-      );
-    } catch (e) {
-      log("💥 Unexpected ERROR: $e");
-      showCustomSuccessToast(
-        context: context,
-        message: e.toString(),
-        color: AppColors.instance.error500,
-        icon: Icons.error,
-        iconColors: AppColors.instance.grey200,
-        positionNumber: 70,
-      );
-    } finally {
-      updateloginLodaing(false);
-      log("🏁 END signInwithFaceID()");
-    }
-  }
-
   Future<void> addPermitToActiveOTP({
     required BuildContext context,
 
@@ -9299,26 +9168,21 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifier.updateLoading(false);
-          items.clear();
-          notifier.resetAll();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifier.updateLoading(false);
+        items.clear();
+        notifier.resetAll();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifiers = ref.read(reminderProvider.notifier);
@@ -9427,25 +9291,20 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          notifier.updateLoading(false);
-          notifier.resetAll();
-          //  final error = response['errors']?['comment']?.first;
-          final message =
-              response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
-          showCustomSuccessToast(
-            context: context,
-            message: message,
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        notifier.updateLoading(false);
+        notifier.resetAll();
+        //  final error = response['errors']?['comment']?.first;
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       final notifiers = ref.read(reminderProvider.notifier);
@@ -9541,22 +9400,19 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateGenrateMemberIdLoading(false);
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          //  final error = response['errors']?['comment']?.first;
-          resteRasion();
-          showCustomSuccessToast(
-            context: context,
-            message: response["message"],
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+
+        //  final error = response['errors']?['comment']?.first;
+        resteRasion();
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       updateGenrateMemberIdLoading(false);
@@ -9652,22 +9508,19 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          ref.read(electionProvider.notifier).clearAll();
-          //  final error = response['errors']?['comment']?.first;
-          resteRasion();
-          showCustomSuccessToast(
-            context: context,
-            message: response["message"],
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+        ref.read(electionProvider.notifier).clearAll();
+        //  final error = response['errors']?['comment']?.first;
+        resteRasion();
       }
     } on DioException catch (e) {
       updateGenrateMemberIdLoading(false);
@@ -9768,25 +9621,21 @@ class FormNotifier extends StateNotifier<FormStates> {
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
         log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          //  final error = response['errors']?['comment']?.first;
-          context.pop();
-          context.pushNamed(
-            AppRoutes.paymentSuccess,
-            extra: {"fails_succs": true, "ErrorMessage": response["message"]},
-          );
-          // showCustomSuccessToast(
-          //   context: context,
-          //   message: response["message"],
-          //   color: AppColors.instance.error500,
-          //   icon: Icons.error,
-          //   iconColors: AppColors.instance.grey200,
-          //   positionNumber: 70,
-          // );
-        }
+
+        //  final error = response['errors']?['comment']?.first;
+        context.pop();
+        context.pushNamed(
+          AppRoutes.paymentSuccess,
+          extra: {"fails_succs": true, "ErrorMessage": response["message"]},
+        );
+        // showCustomSuccessToast(
+        //   context: context,
+        //   message: response["message"],
+        //   color: AppColors.instance.error500,
+        //   icon: Icons.error,
+        //   iconColors: AppColors.instance.grey200,
+        //   positionNumber: 70,
+        // );
       }
     } on DioException catch (e) {
       updateGenrateMemberIdLoading(false);
@@ -9901,33 +9750,30 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateGenrateMemberIdLoading(false);
         // log(e.toString());
         // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          //  final error = response['errors']?['comment']?.first;
-          context.pop();
-          // context.pushNamed(
-          //   AppRoutes.paymentSuccess,
-          //   extra: {"fails_succs": true, "ErrorMessage": response["message"]},
-          // );
-          showUserBottomSheet(
-            context: context,
-            headertitle: response["message"].toString(),
-            headersubtitle: "hellleo",
-            ref: ref,
-            bottom: BottomSheetView.paymentSuccess,
-          );
-          // showCustomSuccessToast(
-          //   context: context,
-          //   message: response["message"],
-          //   color: AppColors.instance.error500,
-          //   icon: Icons.error,
-          //   iconColors: AppColors.instance.grey200,
-          //   positionNumber: 70,
-          // );
-        }
+
+        //  final error = response['errors']?['comment']?.first;
+        context.pop();
+        // context.pushNamed(
+        //   AppRoutes.paymentSuccess,
+        //   extra: {"fails_succs": true, "ErrorMessage": response["message"]},
+        // );
+        final message = extractValidationMessage(response);
+
+        showUserBottomSheet(
+          context: context,
+          headertitle: message,
+          headersubtitle: "hellleo",
+          ref: ref,
+          bottom: BottomSheetView.paymentSuccess,
+        );
+        // showCustomSuccessToast(
+        //   context: context,
+        //   message: response["message"],
+        //   color: AppColors.instance.error500,
+        //   icon: Icons.error,
+        //   iconColors: AppColors.instance.grey200,
+        //   positionNumber: 70,
+        // );
       }
     } on DioException catch (e) {
       if (!context.mounted) return;
@@ -10097,11 +9943,6 @@ class FormNotifier extends StateNotifier<FormStates> {
         ref.read(chatMessagesProvider.notifier).refresh();
 
         log("CHAT MESSAGE SYNCED");
-      } else {
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        }
       }
     } on DioException catch (e) {
       log("NETWORK ERROR — message kept offline");
@@ -10218,7 +10059,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
   Future<void> signAgreement({
     required BuildContext context,
-    required File signatur,
+    required String signatur,
     required String fullName,
     required WidgetRef ref,
   }) async {
@@ -10240,7 +10081,8 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (response['status'] == true) {
         // 5️⃣ Mark message as synced
         updateTermsAndPropertyLoading(false);
-        log("CHAT MESSAGE SYNCED");
+        context.pop();
+        ref.read(complianceprovider.notifier).refreshCompliance(context, ref);
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -10250,9 +10092,11 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       } else {
+        final message = extractValidationMessage(response);
+
         showCustomSuccessToast(
           context: context,
-          message: response["message"],
+          message: message,
           color: AppColors.instance.error500,
           icon: Icons.error,
           iconColors: AppColors.instance.grey200,
@@ -10324,9 +10168,11 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       } else {
+        final message = extractValidationMessage(response);
+
         showCustomSuccessToast(
           context: context,
-          message: response["message"],
+          message: message,
           color: AppColors.instance.error500,
           icon: Icons.error,
           iconColors: AppColors.instance.grey200,
@@ -10383,6 +10229,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (response['status'] == true) {
         // 5️⃣ Mark message as synced
         updateTermsAndPropertyLoading(false);
+        context.pop();
         log("CHAT MESSAGE SYNCED");
         showCustomSuccessToast(
           context: context,
@@ -10393,9 +10240,11 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       } else {
+        final message = extractValidationMessage(response);
+
         showCustomSuccessToast(
           context: context,
-          message: response["message"],
+          message: message,
           color: AppColors.instance.error500,
           icon: Icons.error,
           iconColors: AppColors.instance.grey200,

@@ -38,7 +38,7 @@ class ValidateConfirmEntry extends ConsumerWidget {
           SizedBox(height: 30),
           _buildFeatureButton(
             onTap: () {
-                 Navigator.pop(context);
+             
               showUserBottomSheet(
                 context: context,
                 headertitle: "",
@@ -66,7 +66,7 @@ class ValidateConfirmEntry extends ConsumerWidget {
       child: Column(
         children: [
           SizedBox(height: 20),
-          _buildText(title: "Name", subtitle: "Speed Darlington"),
+          _buildText(title: "Name", subtitle: ""),
           SizedBox(height: 20),
           _buildText(title: "Workers", subtitle: "5"),
           SizedBox(height: 20),

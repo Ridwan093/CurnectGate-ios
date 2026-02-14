@@ -4,7 +4,6 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/calaender_Data.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/event_data.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/going_tab.dart';
-import 'package:curnectgate/features/operations/notifications/provider/cancel_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/eventprovider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/getevent_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/going_provider.dart';
@@ -47,7 +46,7 @@ class EventsBottomSheet extends ConsumerWidget {
 
                   // Tab Content — takes all remaining space without overflow
                   SliverFillRemaining(
-                    hasScrollBody: true, // Allows inner ListView to scroll
+                    hasScrollBody: false, // Allows inner ListView to scroll
                     child: _buildContent(ref, context),
                   ),
                 ],
@@ -60,10 +59,6 @@ class EventsBottomSheet extends ConsumerWidget {
       },
     );
   }
-
-  // =============================================
-  // 3. Widget Building Methods
-  // =============================================
 
   Widget _buildLoadingOverlay() {
     return Container(
@@ -141,9 +136,9 @@ class EventsBottomSheet extends ConsumerWidget {
         if (index == 0) {
           ref.read(getEventProvider.notifier).refreshEvent(context, ref, "");
         } else if (index == 2) {
-          ref
-              .read(canceledEventProvider.notifier)
-              .refreshEvent(context, ref, "cancelled");
+          // ref
+          //     .read(canceledEventProvider.notifier)
+          //     .refreshEvent(context, ref, "cancelled");
         }
         notifier.changeTab(index);
       },

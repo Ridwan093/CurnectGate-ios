@@ -166,7 +166,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
               SizedBox(height: 25),
               BuildListTile(
                 onTap: () async {
-                  context.pushNamed(AppRoutes.propertyAgreement);
+                  context.pushNamed(AppRoutes.termsAndcondition);
                 },
                 title: "Terms of Service",
                 iconPath: AssetPaths.termsOfService,

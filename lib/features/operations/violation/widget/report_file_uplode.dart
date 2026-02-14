@@ -1,10 +1,11 @@
-import 'dart:developer';
+import 'dart:io';
 
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -57,7 +58,9 @@ class ReportFileUplode extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 50),
-          _buildthirdaryOptionTile(
+
+          // Take Photo
+          _buildOptionTile(
             context: context,
             onTap: () async {
               final index = ref.read(currentEditingIndexProvider);
@@ -65,64 +68,78 @@ class ReportFileUplode extends ConsumerWidget {
                 final image = await ImagePicker().pickImage(
                   source: ImageSource.camera,
                 );
-      
                 if (image != null) {
-                  ref.read(reportProvider.notifier).addImage(image.path, index);
+                  ref
+                      .read(reportProvider.notifier)
+                      .addPickedFile(File(image.path), index);
                   ref.read(bottomSheetStateProvider.notifier).state =
                       BottomSheetView.userDetails;
                 }
               }
             },
             title: "Take Photo",
-            leadingicon: AssetPaths.takephoto,
+            leadingIcon: AssetPaths.takephoto,
           ),
-          // Primary option tile
+
           const SizedBox(height: 5),
-          _buildthirdaryOptionTile(
+
+          // Choose from Gallery
+          _buildOptionTile(
             context: context,
             onTap: () async {
               final index = ref.read(currentEditingIndexProvider);
-              log(index.toString());
               if (index != null) {
                 final image = await ImagePicker().pickImage(
                   source: ImageSource.gallery,
                 );
                 if (image != null) {
-                  log(image.path.toString());
-                  ref.read(reportProvider.notifier).addImage(image.path, index);
+                  ref
+                      .read(reportProvider.notifier)
+                      .addPickedFile(File(image.path), index);
                   ref.read(bottomSheetStateProvider.notifier).state =
                       BottomSheetView.userDetails;
                 }
               }
             },
             title: "Choose from Gallery",
-            leadingicon: AssetPaths.choosfromgallery,
+            leadingIcon: AssetPaths.choosfromgallery,
           ),
-          // Secondary option tile
+
           const SizedBox(height: 5),
-          _buildthirdaryOptionTile(
+
+          // Choose File
+          _buildOptionTile(
             context: context,
             onTap: () async {
               final index = ref.read(currentEditingIndexProvider);
               if (index != null) {
-                await ref.read(reportProvider.notifier).addFile(index);
-                ref.read(bottomSheetStateProvider.notifier).state =
-                    BottomSheetView.userDetails;
+                final result = await FilePicker.platform.pickFiles(
+                  type: FileType.image,
+                  allowMultiple: false,
+                );
+                if (result != null && result.files.single.path != null) {
+                  final pickedFile = File(result.files.single.path!);
+                  ref
+                      .read(reportProvider.notifier)
+                      .addPickedFile(pickedFile, index);
+                  ref.read(bottomSheetStateProvider.notifier).state =
+                      BottomSheetView.userDetails;
+                }
               }
             },
             title: "Choose file",
-            leadingicon: AssetPaths.chooseFile,
+            leadingIcon: AssetPaths.chooseFile,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildthirdaryOptionTile({
+  Widget _buildOptionTile({
     required BuildContext context,
     required VoidCallback onTap,
     required String title,
-    required String leadingicon,
+    required String leadingIcon,
   }) {
     return Container(
       height: 100,
@@ -137,7 +154,7 @@ class ReportFileUplode extends ConsumerWidget {
             shape: BoxShape.circle,
             color: AppColors.instance.grey400,
           ),
-          child: Center(child: Image.asset(leadingicon, width: 25, height: 25)),
+          child: Center(child: Image.asset(leadingIcon, width: 25, height: 25)),
         ),
         title: Text(
           title,

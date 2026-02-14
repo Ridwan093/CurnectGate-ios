@@ -1,8 +1,9 @@
 // validation_bottom_sheet.dart
 import 'dart:developer';
 
-import 'package:curnectgate/features/member_management/onbording_prosecc/provider/member_code%20_repo.dart';
 import 'package:curnectgate/features/member_management/membership_ID/bottomSheet/validation_state.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/model/estate_code_validator_state.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/provider/member_code%20_repo.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,16 +18,22 @@ class ValidationNotifier extends StateNotifier<ValidationState> {
     String code,
     String estateCode,
     String estateName,
-    BuildContext context
+    BuildContext context,
   ) async {
     state = state.copyWith(status: ValidationStatus.loading);
+    final formNotifier = ref.read(estateCodeFormProvider.notifier);
 
     try {
       final response = await ref
           .read(memberCodeRepositoryProvider)
-          .submitMemberCode(code: code, estateCode: estateCode, context: context);
+          .submitMemberCode(
+            code: code,
+            estateCode: estateCode,
+            context: context,
+          );
 
       if (response['status'] == true) {
+        formNotifier.clearApiError();
         state = state.copyWith(
           status: ValidationStatus.success,
           memberAddress:
@@ -43,8 +50,10 @@ class ValidationNotifier extends StateNotifier<ValidationState> {
         );
         log(response['data'].toString());
       } else {
+        formNotifier.clearApiError();
         state = state.copyWith(
           status: ValidationStatus.error,
+
           errorMessage:
               response['message'] ==
                       "This member code is already registered and active. Please login instead."

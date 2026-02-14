@@ -78,12 +78,8 @@ class CalenderData extends ConsumerWidget {
           scrollDirection: Axis.horizontal,
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minWidth: availableWidth, // At least full width
-              maxWidth:
-                  isSmallScreen
-                      ? 380
-                      : double
-                          .infinity, // Slightly wider on small for breathing
+              minWidth: availableWidth,
+              maxWidth: isSmallScreen ? 380 : double.infinity,
             ),
             child: TableCalendar(
               firstDay: firstDay,
@@ -106,8 +102,7 @@ class CalenderData extends ConsumerWidget {
                           )
                           .toList(),
               headerStyle: HeaderStyle(
-                formatButtonVisible:
-                    !isSmallScreen, // Hide format button on small screens
+                formatButtonVisible: !isSmallScreen,
                 titleCentered: true,
                 formatButtonShowsNext: false,
                 titleTextStyle: const TextStyle(
@@ -125,7 +120,13 @@ class CalenderData extends ConsumerWidget {
                   color: AppColors.instance.black600,
                   shape: BoxShape.circle,
                 ),
+                markerDecoration: BoxDecoration(
+                  color: Colors.transparent,
+                ), // ← Key fix
+                markerSize: 0, // ← Makes default dots invisible
+                canMarkersOverflow: false,
               ),
+
               calendarBuilders: CalendarBuilders(
                 todayBuilder: (context, date, focusedDay) {
                   final dayEvents =
@@ -179,7 +180,7 @@ class CalenderData extends ConsumerWidget {
                   final bgColor =
                       hasAdded
                           ? AppColors.instance.yellow400
-                          : AppColors.instance.teal400;
+                          : AppColors.instance.yellow400;
 
                   return Container(
                     margin: EdgeInsets.all(isSmallScreen ? 3 : 6),
@@ -199,24 +200,25 @@ class CalenderData extends ConsumerWidget {
                     ),
                   );
                 },
+
+                // ONLY your custom yellow dot when addedToCalendar == true
                 markerBuilder: (context, date, events) {
                   final dayEvents = events.whereType<Event>().toList();
                   if (dayEvents.isEmpty) return null;
 
-                  final hasUserRsvp = dayEvents.any(
+                  final hasUserAdded = dayEvents.any(
                     (e) => e.addedToCalendar ?? false,
                   );
-                  if (!hasUserRsvp) return null;
+                  if (!hasUserAdded) return null;
 
-                  return Positioned(
-                    bottom: isSmallScreen ? 4 : 6,
-                    child: Container(
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        color: AppColors.instance.yellow600,
-                        shape: BoxShape.circle,
-                      ),
+                  // Your custom dot (no black default)
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 4),
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: AppColors.instance.yellow600,
+                      shape: BoxShape.circle,
                     ),
                   );
                 },

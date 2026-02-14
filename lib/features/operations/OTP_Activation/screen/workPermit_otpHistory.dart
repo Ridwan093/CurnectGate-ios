@@ -1,7 +1,8 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/screen/add_permmit.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/Active_history.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/workPermi.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/permit_history.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -18,7 +19,7 @@ class _OtpTabsPageState extends State<OtpTabsPage>
 
   @override
   Widget build(BuildContext context) {
-    final tabs = ["OTP History", "Check-in OTP"];
+    final tabs = ["OTP History", "Clearance Permit", "Permit History"];
 
     return Column(
       children: [
@@ -73,7 +74,7 @@ class _OtpTabsPageState extends State<OtpTabsPage>
                         color: isSelected ? Colors.white : Colors.grey.shade800,
                         fontWeight:
                             isSelected ? FontWeight.bold : FontWeight.w500,
-                        fontSize: 14.5,
+                        fontSize: 12.5,
                       ),
                       child: Text(tabs[index]),
                     ),
@@ -103,14 +104,24 @@ class _OtpTabsPageState extends State<OtpTabsPage>
                 child: SlideTransition(position: offsetAnimation, child: child),
               );
             },
-            child:
-                _selectedIndex == 0
-                    ? ActiveHistory(key: ValueKey('otpHistory'))
-                    : const CheckInOtpTab(key: ValueKey('checkInOtp')),
+            child: _view(_selectedIndex),
           ),
         ),
       ],
     );
+  }
+
+  Widget _view(int index) {
+    switch (index) {
+      case 0:
+        return ActiveHistory(key: ValueKey('otpHistory'));
+      case 1:
+        return const ClearancePermitAdd(key: ValueKey('addPermit'));
+      case 2:
+        return const CheckInOtpTab(key: ValueKey('checkInOtp'));
+      default:
+        return SizedBox();
+    }
   }
 }
 

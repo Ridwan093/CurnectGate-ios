@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/security/model/close_all.dart';
 import 'package:flutter/material.dart';
 
 class AccessGrantedPermit extends StatelessWidget {
@@ -62,7 +63,7 @@ class AccessGrantedPermit extends StatelessWidget {
         // ),
         _buildPrimaryButton(
           label: "Got it!",
-          onTap: () => Navigator.pop(context),
+          onTap: () => closeAllBottomSheets(context),
         ),
       ],
     );

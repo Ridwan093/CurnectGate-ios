@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:curnectgate/features/%20operations/property_agreement/model/agreements_response.dart';
+import 'package:curnectgate/features/%20operations/property_agreement/model/compliance/compliance_response.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/comittee_model/committees_response_model.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resident_directory_respond.dart';
 import 'package:curnectgate/features/chat/data/chat_model/availableAdmin/estate_admins_response.dart';
@@ -29,6 +30,7 @@ import 'package:curnectgate/features/operations/OTP_Activation/model/Work_permit
 import 'package:curnectgate/features/operations/OTP_Activation/model/active_Otp_count/Expired_count/expired_count_response.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/model/active_Otp_count/active_count/active_count_response.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/model/otp_response_model.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/model/permit_model/active_otp_response.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_events_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/events_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/resv_model/rsvp_events_response.dart';
@@ -37,10 +39,10 @@ import 'package:curnectgate/features/operations/notifications/event/model/notifi
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_response.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/remider/reminders_response_model.dart';
 import 'package:curnectgate/features/operations/violation/model/GetReport_history_model.dart';
-import 'package:curnectgate/features/operations/violation/model/comment_model.dart';
-import 'package:curnectgate/features/operations/violation/model/estate_address_model.dart';
-import 'package:curnectgate/features/operations/violation/model/getCategory_model.dart';
+import 'package:curnectgate/features/operations/violation/model/comment_model/comment_response.dart';
+import 'package:curnectgate/features/operations/violation/model/estate_Address/estate_address_response.dart';
 import 'package:curnectgate/features/operations/violation/model/report_models/violation_response.dart';
+import 'package:curnectgate/features/operations/violation/model/violation_category/violation_category_response.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/dashbord_Model/payment_dashboard_response.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/due_model/outstanding_dues_response.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/history_model/payment_history_response.dart';
@@ -152,6 +154,8 @@ class SharedPrefsService {
   static const String _getAdminList = "_admin_key";
   static const String _committeKey = "Com_key";
   static const String _agreement_Key = "agreement_key";
+  static const String _activePermit = "active_permit";
+  static const String _compliancKey = "comp_Key";
 
   //// CHATTING SERVECE
 
@@ -267,7 +271,7 @@ class SharedPrefsService {
     final prefs = await SharedPreferences.getInstance();
     final data = prefs.getString(_reportComment);
     if (data != null) {
-      return CommentResponse.fromJson(jsonDecode(data));
+      return CommentResponse.safeFromJson(jsonDecode(data));
     }
     return null;
   }
@@ -283,7 +287,7 @@ class SharedPrefsService {
     final prefs = await SharedPreferences.getInstance();
     final data = prefs.getString(_estateAddressKey);
     if (data != null) {
-      return EstateAddressResponse.fromJson(jsonDecode(data));
+      return EstateAddressResponse.safeFromJson(jsonDecode(data));
     }
     return null;
   }
@@ -299,7 +303,7 @@ class SharedPrefsService {
     final prefs = await SharedPreferences.getInstance();
     final data = prefs.getString(_estateCategory);
     if (data != null) {
-      return ViolationCategoryResponse.fromJson(jsonDecode(data));
+      return ViolationCategoryResponse.safeFromJson(jsonDecode(data));
     }
     return null;
   }
@@ -487,6 +491,20 @@ class SharedPrefsService {
     final data = prefs.getString(_work_permitKey);
     if (data != null) {
       return ClearancePermitResponse.fromSafeJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> saveActivePermit(ActiveOtpResponse preference) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_activePermit, jsonEncode(preference.toJson()));
+  }
+
+  static Future<ActiveOtpResponse?> getActivePermit() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_activePermit);
+    if (data != null) {
+      return ActiveOtpResponse.fromSafeJson(jsonDecode(data));
     }
     return null;
   }
@@ -907,6 +925,20 @@ class SharedPrefsService {
     return null;
   }
 
+  static Future<void> saveCompliance(ComplianceResponse profile) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_compliancKey, jsonEncode(profile.toJson()));
+  }
+
+  static Future<ComplianceResponse?> getCompliance() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_compliancKey);
+    if (data != null) {
+      return ComplianceResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
   static Future<void> saveProfile(GetUserProfile profile) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_profileKey, jsonEncode(profile.toJson()));
@@ -1003,6 +1035,11 @@ class SharedPrefsService {
   static Future<void> clearProfile() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_profileKey);
+  }
+
+  static Future<void> clearComplaince() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_compliancKey);
   }
 
   static Future<void> clearReportCategory() async {
@@ -1258,6 +1295,11 @@ class SharedPrefsService {
     await prefs.remove(_violationCountKey);
   }
 
+  static Future<void> clearActivePermit() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_activePermit);
+  }
+
   Future<void> saveAuthData(Map<String, dynamic> data) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_keyAuthData, jsonEncode(data));
@@ -1355,6 +1397,8 @@ class SharedPrefsService {
     clearCommitteeList();
     clearAdminList();
     clearAgreement();
+    clearActivePermit();
+    clearComplaince();
     await prefs.remove(_keyAuthData);
   }
 }

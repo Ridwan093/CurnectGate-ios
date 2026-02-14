@@ -20,12 +20,12 @@ const String reverb = "/api/v1/config/reverb";
 
 const String onboardingHouseHold =
     "/api/v1/estates/owner-portal/households/onboarding";
-//NEXT CREATE NEW PASSWORD API URL
+
 const String aGREEMENT = "/api/v1/estates/general/agreements";
 const String agreementSign = "/api/v1/estates/general/agreements/sign-property";
 const String termAccept = "/api/v1/estates/general/agreements/accept-terms";
 const String decline = "/api/v1/estates/general/agreements/decline";
-
+const String compliance ="/api/v1/estates/general/agreements/status";
 const String markNotificationAsRead =
     "/api/v1/estates/general/notifications/mark-all-read";
 const String markSingleNotificationAsRead =
@@ -165,6 +165,8 @@ const String getVisitorByfirter = "/api/v1/estates/general/visitor-otps";
 const String getVisitorDetail = "/api/v1/estates/general/visitor-otps/1";
 const String getWorkpermit =
     "/api/v1/estates/general/clearance-permits/my-permits";
+    const String getActivePermit =
+    "/api/v1/estates/general/clearance-permits/active-otps";
 // GET DIGITALID CODE
 
 const String getDigitalIDCode =

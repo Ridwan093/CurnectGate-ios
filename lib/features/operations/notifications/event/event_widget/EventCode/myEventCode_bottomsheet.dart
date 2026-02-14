@@ -8,46 +8,54 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class MyEventCode extends ConsumerWidget {
-  const MyEventCode({super.key});
+  final bool isTab;
+  const MyEventCode({super.key, required this.isTab});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
-    return Column(
-      key: const ValueKey('userDetails'),
+    return Padding(
+      padding:
+          isTab
+              ? const EdgeInsets.only(left: 10, right: 10, bottom: 8)
+              : EdgeInsets.zero,
+      child: Column(
+        key: const ValueKey('userDetails'),
 
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Header section
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                onPressed: () => context.pop(),
-                icon: const Icon(Icons.close),
-              ),
-            ),
-            const SizedBox(height: 10),
-            _buildAddMemberButton(size, context, ref),
-            const SizedBox(height: 30),
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Header section
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (!isTab)
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    onPressed: () => context.pop(),
+                    icon: const Icon(Icons.close),
+                  ),
+                ),
+              const SizedBox(height: 10),
+              _buildAddMemberButton(size, context, ref),
+              const SizedBox(height: 30),
 
-            Text(
-              "Event code",
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontWeight: FontFamilies.bold,
-                fontSize: 20,
-                color: AppColors.instance.black600,
+              Text(
+                "Event code",
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  fontWeight: FontFamilies.bold,
+                  fontSize: 20,
+                  color: AppColors.instance.black600,
+                ),
               ),
-            ),
-            const SizedBox(height: 4),
-          ],
-        ),
-        const SizedBox(height: 35),
-        Expanded(child: EventCodeData()),
-      ],
+              const SizedBox(height: 4),
+            ],
+          ),
+          const SizedBox(height: 35),
+          Expanded(child: EventCodeData()),
+        ],
+      ),
     );
   }
 

@@ -12,7 +12,6 @@ import 'package:curnectgate/features/member_management/medel/member_model.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/loading_screen/loading_page.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/progresscontainer.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/stepcount.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:flutter/material.dart';
@@ -73,10 +72,10 @@ class _SetUppRofiledState extends ConsumerState<AddCOowner> {
     log('Phone: $phone');
 
     if (memebers.isNotEmpty ||
-        _emailController.text.isNotEmpty ||
-        _firstNameController.text.isNotEmpty ||
-        _lastNameController.text.isNotEmpty ||
-        _phoneController.text.isNotEmpty) {
+        _emailController.text.trim().isNotEmpty ||
+        _firstNameController.text.trim().isNotEmpty ||
+        _lastNameController.text.trim().isNotEmpty ||
+        _phoneController.text.trim().isNotEmpty) {
       switch (widget.selectedRole.toLowerCase()) {
         case "co-owner":
         case "family member":
@@ -165,6 +164,7 @@ class _SetUppRofiledState extends ConsumerState<AddCOowner> {
     final isLoading = ref.watch(formProvider).addHouseHoldLoading;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: isLoading ? null : _buildAppBar(),
       bottomNavigationBar:
           isLoading
@@ -193,6 +193,7 @@ class _SetUppRofiledState extends ConsumerState<AddCOowner> {
     final backPressNotifier = ref.read(backPressProvider.notifier);
     final router = GoRouter.of(context);
     return AppBar(
+      backgroundColor: Colors.white,
       leading: InkWell(
         onTap: () {
           backPressNotifier.reset();
@@ -200,9 +201,9 @@ class _SetUppRofiledState extends ConsumerState<AddCOowner> {
         },
         child: const Icon(Icons.arrow_back_ios_new),
       ),
-      actions: [
-        StepIndicator(current: widget.currentStep, total: widget.totalSteps),
-      ],
+      // actions: [
+      //   StepIndicator(current: widget.currentStep, total: widget.totalSteps),
+      // ],
     );
   }
 
@@ -214,13 +215,13 @@ class _SetUppRofiledState extends ConsumerState<AddCOowner> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 25),
-          const ProgressIndicators(
-            currentStep: 4,
-            totalSteps: 5,
-            height: 2.0,
-            borderRadius: 4.0,
-          ),
-          const SizedBox(height: 55),
+          // const ProgressIndicators(
+          //   currentStep: 4,
+          //   totalSteps: 5,
+          //   height: 2.0,
+          //   borderRadius: 4.0,
+          // ),
+          // const SizedBox(height: 55),
           Text(
             widget.title,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(

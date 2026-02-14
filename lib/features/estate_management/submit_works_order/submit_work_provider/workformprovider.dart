@@ -1,15 +1,13 @@
 // Provider
 import 'package:curnectgate/core/%20utils/emailvalidator.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../model/work_order_model.dart';
 
-
 final workOrderFormProvider =
     StateNotifierProvider<WorkOrderFormNotifier, WorkOrderFormState>((ref) {
-  return WorkOrderFormNotifier();
-});
+      return WorkOrderFormNotifier();
+    });
 
 class WorkOrderFormNotifier extends StateNotifier<WorkOrderFormState> {
   WorkOrderFormNotifier() : super(WorkOrderFormState());
@@ -18,13 +16,13 @@ class WorkOrderFormNotifier extends StateNotifier<WorkOrderFormState> {
   void updateVendorName(String name) {
     state = state.copyWith(
       vendorName: name,
-      vendorNameValid: name.isNotEmpty,
+      vendorNameValid: name.trim().isNotEmpty,
       vendorNameError: name.isEmpty ? 'Vendor name is required' : null,
     );
   }
 
   void updateVendorEmail(String email) {
-    final isValid = EmailValidator.validateEmail(email);
+    final isValid = EmailValidator.validateEmail(email.trim());
     state = state.copyWith(
       vendorEmail: email,
       vendorEmailValid: isValid,
@@ -45,15 +43,16 @@ class WorkOrderFormNotifier extends StateNotifier<WorkOrderFormState> {
     state = state.copyWith(
       workType: type,
       workTypeValid: type != null && type.isNotEmpty,
-      id: id
+      id: id,
     );
   }
 
   void updateWorkDescription(String description) {
     state = state.copyWith(
       workDescription: description,
-      workDescriptionValid: description.isNotEmpty,
-      workDescriptionError: description.isEmpty ? 'Description is required' : null,
+      workDescriptionValid: description.trim().isNotEmpty,
+      workDescriptionError:
+          description.isEmpty ? 'Description is required' : null,
     );
   }
 
@@ -63,6 +62,10 @@ class WorkOrderFormNotifier extends StateNotifier<WorkOrderFormState> {
       startDateValid: date != null,
       startDateError: date == null ? 'Select a start date' : null,
     );
+    if (state.endDate != null &&
+        state.endDate!.isBefore(date ?? DateTime.now())) {
+      state = state.copyWith(endDate: null);
+    }
   }
 
   void updateEndDate(DateTime? date) {
@@ -79,7 +82,8 @@ class WorkOrderFormNotifier extends StateNotifier<WorkOrderFormState> {
       timeWindowValid: window != null && window.isNotEmpty,
     );
   }
-    void setIncrementPresse(bool pressed) {
+
+  void setIncrementPresse(bool pressed) {
     state = state.copyWith(isIncrementPressed: pressed);
   }
 
@@ -95,6 +99,9 @@ class WorkOrderFormNotifier extends StateNotifier<WorkOrderFormState> {
     state = state.copyWith(isDecrementPressedday: pressed);
   }
 
+  void updateWorkCount(int value) {
+    state = state.copyWith(workerCount: value);
+  }
 
   // Worker count methods
   void incrementWorkers() {

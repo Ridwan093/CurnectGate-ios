@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
-import 'package:curnectgate/features/operations/violation/model/getCategory_model.dart';
+import 'package:curnectgate/features/operations/violation/model/violation_category/violation_category_response.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';

@@ -17,33 +17,91 @@ class CommitteeCard extends StatelessWidget {
     return '$first$last';
   }
 
-  String truncateWithEllipsis(String text, {int maxLength = 50}) {
+  String truncate(String text, {int maxLength = 50}) {
     if (text.length <= maxLength) return text;
     return '${text.substring(0, maxLength).trim()}...';
   }
 
-  String? formatDateFromDateTime(DateTime? dateTime) {
-    if (dateTime == null) return null;
+  String formatDate(DateTime? dateTime) {
+    if (dateTime == null) return '';
     return DateFormat('MMM d, yyyy').format(dateTime);
   }
 
-  String formatTimeFromDateTime(DateTime? dateTime) {
+  String formatTime(DateTime? dateTime) {
     if (dateTime == null) return '';
     return DateFormat('h:mm a').format(dateTime);
   }
 
+  Color _getCategoryColor() {
+    if (committee.category?.colorCode != null) {
+      try {
+        String hex = committee.category!.colorCode!.replaceAll('#', '');
+        if (hex.length == 6) return Color(int.parse('0xFF$hex'));
+      } catch (_) {}
+    }
+    return AppColors.instance.teal300;
+  }
+
+  Widget _buildLeaderRow(String role, String? name) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 90,
+          child: Text(
+            role,
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: AppColors.instance.black400,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            name ?? 'N/A',
+            style: TextStyle(
+              fontFamily: FontFamilies.interDisplay,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: AppColors.instance.black600,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAvatar(String text, {double radius = 20}) {
+    return CircleAvatar(
+      radius: radius,
+      backgroundColor: _getCategoryColor(),
+      child: Text(
+        _getInitials(text),
+        style: TextStyle(
+          fontFamily: FontFamilies.interDisplay,
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+          color: AppColors.instance.grey200,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeInOut,
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         color: AppColors.instance.grey200,
         boxShadow: [
           BoxShadow(
-            color: AppColors.instance.black100.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: AppColors.instance.black100.withOpacity(0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -52,291 +110,195 @@ class CommitteeCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header with Committee Name and Avatar
-            _buildCardHeader(context),
-
+            // Header with Avatar + Name + Category
+            Row(
+              children: [
+                _buildAvatar(committee.name ?? 'CM'),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        committee.name ?? 'Unnamed Committee',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: AppColors.instance.black600,
+                        ),
+                      ),
+                      if (committee.category?.name != null)
+                        Text(
+                          committee.category!.name!,
+                          style: TextStyle(
+                            fontFamily: FontFamilies.interDisplay,
+                            fontSize: 12,
+                            color: AppColors.instance.black400,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 16),
 
-            // Category Information
-            if (committee.category != null) _buildCategorySection(),
+            // Category Description
+            if (committee.category?.description != null)
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: _getCategoryColor().withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.category, size: 16, color: _getCategoryColor()),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        committee.category!.description!,
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.instance.black600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
 
             const SizedBox(height: 12),
 
-            // Leadership Section
-            _buildLeadershipSection(),
+            // Leadership
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Leadership',
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: AppColors.instance.black600,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                if (committee.chairperson != null)
+                  _buildLeaderRow(
+                    'Chairperson',
+                    '${committee.chairperson?.firstname ?? ''} ${committee.chairperson?.lastname ?? ''}',
+                  ),
+                if (committee.secretary != null)
+                  _buildLeaderRow('Secretary', '${committee.secretary ?? ""}'),
+              ],
+            ),
 
             const SizedBox(height: 12),
 
-            // Meeting Information
+            // Meeting Schedule
             if (committee.meetingSchedule != null ||
                 committee.nextMeeting != null)
-              _buildMeetingSection(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Meetings',
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: AppColors.instance.black600,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  if (committee.meetingSchedule?.day != null)
+                    Text(
+                      'Schedule: ${committee.meetingSchedule!.day} at ${committee.meetingSchedule?.time ?? ''} (${committee.meetingSchedule?.frequency ?? ''})',
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        fontSize: 12,
+                        color: AppColors.instance.black600,
+                      ),
+                    ),
+                  if (committee.nextMeeting != null)
+                    Text(
+                      'Next Meeting: ${formatDate(committee.nextMeeting)} at ${formatTime(committee.nextMeeting)}',
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        fontSize: 12,
+                        color: AppColors.instance.black600,
+                      ),
+                    ),
+                ],
+              ),
 
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
+
+            // Objectives
+            if ((committee.objectives?.isNotEmpty ?? false))
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Objectives',
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: AppColors.instance.black600,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  ...committee.objectives!.map(
+                    (obj) => Text(
+                      '- $obj',
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        fontSize: 12,
+                        color: AppColors.instance.black600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+            const SizedBox(height: 12),
 
             // Description
-            if (committee.description?.isNotEmpty ?? false)
-              _buildDescriptionSection(),
+            if (committee.description != null &&
+                committee.description!.isNotEmpty)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Description',
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: AppColors.instance.black600,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    truncate(committee.description!, maxLength: 200),
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontSize: 13,
+                      color: AppColors.instance.black500,
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
       ),
     );
-  }
-
-  Widget _buildCardHeader(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: _getCategoryColor(),
-                child: Center(
-                  child: Text(
-                    _getInitials(committee.name ?? "CM"),
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      color: AppColors.instance.grey200,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      committee.name ?? "Unnamed Committee",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontFamily: FontFamilies.interDisplay,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.instance.black600,
-                        fontSize: 18,
-                      ),
-                    ),
-                    if (committee.category?.name != null)
-                      Text(
-                        committee.category?.name ?? "",
-                        style: TextStyle(
-                          fontFamily: FontFamilies.interDisplay,
-                          color: AppColors.instance.black400,
-                          fontSize: 12,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCategorySection() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: _getCategoryColor().withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.category, size: 16, color: _getCategoryColor()),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (committee.category?.description != null)
-                  Expanded(
-                    child: Text(
-                      committee.category!.description!,
-                      style: TextStyle(
-                        fontFamily: FontFamilies.interDisplay,
-                        color: AppColors.instance.black600,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLeadershipSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Leadership",
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontWeight: FontWeight.bold,
-            color: AppColors.instance.black600,
-            fontSize: 14,
-          ),
-        ),
-        const SizedBox(height: 8),
-        if (committee.chairperson != null)
-          _buildLeaderRow("Chairperson", committee.chairperson ?? "N/A"),
-        if (committee.secretary != null)
-          _buildLeaderRow("Secretary", committee.secretary ?? "N/A"),
-      ],
-    );
-  }
-
-  Widget _buildLeaderRow(String role, String name) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 80,
-            child: Text(
-              role,
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontSize: 12,
-                color: AppColors.instance.black400,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              name,
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontSize: 12,
-                color: AppColors.instance.black600,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMeetingSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Meetings",
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontWeight: FontWeight.bold,
-            color: AppColors.instance.black600,
-            fontSize: 14,
-          ),
-        ),
-        const SizedBox(height: 8),
-        if (committee.meetingSchedule?.day != null)
-          _buildMeetingDetailRow("Schedule", committee.meetingSchedule!.day!),
-        if (committee.nextMeeting != null)
-          _buildMeetingDetailRow(
-            "Next Meeting",
-            "${formatDateFromDateTime(committee.nextMeeting)} at ${formatTimeFromDateTime(committee.nextMeeting)}",
-          ),
-      ],
-    );
-  }
-
-  Widget _buildMeetingDetailRow(String title, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 80,
-            child: Text(
-              title,
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontSize: 12,
-                color: AppColors.instance.black400,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              value,
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontSize: 12,
-                color: AppColors.instance.black600,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDescriptionSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Description",
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontWeight: FontWeight.bold,
-            color: AppColors.instance.black600,
-            fontSize: 14,
-          ),
-        ),
-        const SizedBox(height: 8),
-
-        Text(
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
-
-          softWrap: true,
-          committee.description!,
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontSize: 13,
-            color: AppColors.instance.black500,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Color _getCategoryColor() {
-    if (committee.category?.colorCode != null) {
-      try {
-        // Convert hex color code to Color
-        String hexColor = committee.category!.colorCode!.replaceAll("#", "");
-        if (hexColor.length == 6) {
-          return Color(int.parse("0xFF$hexColor"));
-        }
-      } catch (e) {
-        // If color parsing fails, return a default color
-      }
-    }
-    return AppColors.instance.teal300; // Default color
   }
 }

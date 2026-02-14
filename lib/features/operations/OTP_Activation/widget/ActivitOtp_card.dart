@@ -54,7 +54,7 @@ class ActivitOtpCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final size = MediaQuery.sizeOf(context);
+    // final size = MediaQuery.sizeOf(context);
     return Container(
       margin: const EdgeInsets.only(top: 20), // Responsive side margins
       decoration: BoxDecoration(
@@ -86,6 +86,7 @@ class ActivitOtpCard extends ConsumerWidget {
               title: "Type",
               trailing: generated.purpose,
               isCode: false,
+              status: generated.status,
             ),
             const SizedBox(height: 12),
 
@@ -96,6 +97,7 @@ class ActivitOtpCard extends ConsumerWidget {
               title: "End",
               trailing: _formatDate(generated.validUntil),
               isCode: false,
+              status: generated.status,
             ),
             const SizedBox(height: 12),
 
@@ -117,17 +119,17 @@ class ActivitOtpCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildheaderText(String userName) {
-    return Text(
-      userName,
-      style: TextStyle(
-        fontFamily: FontFamilies.interDisplay,
-        fontWeight: FontFamilies.bold,
-        color: AppColors.instance.black600,
-        fontSize: 20,
-      ),
-    );
-  }
+  // Widget _buildheaderText(String userName) {
+  //   return Text(
+  //     userName,
+  //     style: TextStyle(
+  //       fontFamily: FontFamilies.interDisplay,
+  //       fontWeight: FontFamilies.bold,
+  //       color: AppColors.instance.black600,
+  //       fontSize: 20,
+  //     ),
+  //   );
+  // }
 
   String statusCheck(String status) {
     switch (status) {
@@ -191,10 +193,10 @@ class ActivitOtpCard extends ConsumerWidget {
       case "revoked":
         return AppColors.instance.error500;
       case "expired":
-        return AppColors.instance.black300;
+        return AppColors.instance.error500;
 
       default:
-        return AppColors.instance.error500;
+        return AppColors.instance.black300;
     }
   }
 
@@ -211,9 +213,9 @@ class ActivitOtpCard extends ConsumerWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Title — fixed width to prevent pushing
+        /// LEFT — Title
         SizedBox(
-          width: 80, // Keeps "Type", "End", "Code" aligned
+          width: 80,
           child: Text(
             title,
             style: TextStyle(
@@ -227,40 +229,47 @@ class ActivitOtpCard extends ConsumerWidget {
 
         const SizedBox(width: 12),
 
-        // Trailing content — takes remaining space safely
+        /// RIGHT SIDE
         Expanded(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              /// STATUS / EXPIRE
               if (isCode && expired?.isNotEmpty == true)
                 Flexible(
                   child: Text(
-                    "Expired in $expired",
-                    textAlign: TextAlign.end,
+                    "Expires in $expired",
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
-                      fontSize: 11,
-                      color: color(status ?? ""),
+                      fontSize: 9,
+                      color: AppColors.instance.error500,
                       fontWeight: FontFamilies.bold,
                     ),
                   ),
                 )
-              else if (isCode)
-                Text(
-                  statusCheck(status ?? ""),
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontSize: 11,
-                    color: color(status ?? ""),
-                    fontWeight: FontFamilies.bold,
+              else if (isCode && status != null)
+                Flexible(
+                  // ✅ FIXED
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 6),
+                    child: Text(
+                      statusCheck(status),
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        fontSize: 11,
+                        color: color(status),
+                        fontWeight: FontFamilies.bold,
+                      ),
+                    ),
                   ),
                 ),
 
-              if (isCode) const SizedBox(width: 8),
-
-              // Main trailing text
-              Expanded(
+              /// CODE / DATE (gets priority space)
+              Flexible(
+                flex: 2,
                 child: Text(
                   isEndDate ? "$trailing - $time" : trailing,
                   textAlign: TextAlign.end,
@@ -274,6 +283,7 @@ class ActivitOtpCard extends ConsumerWidget {
                 ),
               ),
 
+              /// COPY ICON
               if (isCode) ...[
                 const SizedBox(width: 8),
                 InkWell(
