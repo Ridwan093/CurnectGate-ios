@@ -45,6 +45,7 @@ class Headcard extends ConsumerWidget {
 
     // Extract first and last word logic
     String firstWord = "";
+    // ignore: unused_local_variable
     String lastWord = "";
 
     if (estateName.trim().isNotEmpty) {

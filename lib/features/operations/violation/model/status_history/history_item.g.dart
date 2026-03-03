@@ -10,14 +10,14 @@ _$HistoryItemImpl _$$HistoryItemImplFromJson(Map<String, dynamic> json) =>
     _$HistoryItemImpl(
       id: (json['id'] as num?)?.toInt(),
       status: json['status'] as String?,
-      changedBy: json['changed_by'] == null
+      changedBy: json['changedBy'] == null
           ? null
-          : ChangedBy.fromJson(json['changed_by'] as Map<String, dynamic>),
+          : ChangedBy.fromJson(json['changedBy'] as Map<String, dynamic>),
       notes: json['notes'] as String?,
-      changedAt: json['changed_at'] == null
+      changedAt: json['changedAt'] == null
           ? null
-          : DateTime.parse(json['changed_at'] as String),
-      timeAgo: json['time_ago'] as String?,
+          : DateTime.parse(json['changedAt'] as String),
+      timeAgo: json['timeAgo'] as String?,
     );
 
 Map<String, dynamic> _$$HistoryItemImplToJson(_$HistoryItemImpl instance) =>
@@ -26,6 +26,6 @@ Map<String, dynamic> _$$HistoryItemImplToJson(_$HistoryItemImpl instance) =>
       'status': instance.status,
       'changedBy': instance.changedBy,
       'notes': instance.notes,
-      'changed_at': instance.changedAt?.toIso8601String(),
-      'time_ago': instance.timeAgo,
+      'changedAt': instance.changedAt?.toIso8601String(),
+      'timeAgo': instance.timeAgo,
     };

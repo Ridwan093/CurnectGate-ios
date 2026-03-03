@@ -146,13 +146,13 @@ class ActivitOtpCard extends ConsumerWidget {
   }
 
   Widget changeButton({
-    required String status,
+    required bool status,
     required BuildContext context,
     required WidgetRef ref,
     required int activeOtpID,
   }) {
     switch (status) {
-      case "active":
+      case true:
         return InkWell(
           onTap: () async {
             // final authData = await SharedPrefsService().getAuthData();
@@ -178,9 +178,7 @@ class ActivitOtpCard extends ConsumerWidget {
             ),
           ),
         );
-      case "expired":
-      case "revoked":
-      case "used":
+      case false:
         return SizedBox();
 
       default:
@@ -361,7 +359,7 @@ class ActivitOtpCard extends ConsumerWidget {
           context: context,
           ref: ref,
           activeOtpID: generated.id,
-          status: generated.status,
+          status: generated.isActive,
         ),
       ],
     );

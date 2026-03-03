@@ -247,19 +247,15 @@ class FormStates {
   bool get allValidAddTenant =>
       firstNameValid &&
       lastNameValid &&
-      propertyId!.isNotEmpty &&
+      (propertyId ?? "").isNotEmpty &&
       emailValid &&
       phoneValid &&
       emenergencyNameValid &&
       emergencyContactValid &&
       emenergencyRoleValid &&
       ocupationValid &&
-      montlyIconValid &&
       timeStateValid &&
-      employerValid &&
-      rentalfrequencyValid &&
-      agentFeeValid &&
-      securityFeesValid;
+      employerValid;
 
   bool get singinValid => emailValid && passValid && profileImage != null;
   bool get allValid =>

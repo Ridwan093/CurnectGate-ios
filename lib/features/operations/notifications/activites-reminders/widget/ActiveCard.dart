@@ -147,7 +147,12 @@ class ActivityCard extends ConsumerWidget {
           // Time
           Text(
             formatToShortMonthDay(activity.updatedAt ?? ""),
-            style: const TextStyle(color: Colors.grey, fontSize: 12),
+            style: TextStyle(
+              color: AppColors.instance.black400,
+              fontFamily: FontFamilies.interDisplay,
+              fontWeight: FontFamilies.medium,
+              fontSize: 12,
+            ),
           ),
         ],
       ),

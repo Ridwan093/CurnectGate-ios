@@ -74,7 +74,7 @@ class PermitData extends ConsumerWidget {
             error: error.toString(),
             onTap: () =>
                 ref.read(getActivePermit.notifier).refreshActive(context, ref),
-            firstMessae: "Failed to load Active OTPs?",
+            firstMessae: "Failed to load permit?",
           );
         },
       ),
@@ -90,7 +90,7 @@ class PermitData extends ConsumerWidget {
             Image.asset(AssetPaths.setCurfew, height: 100, width: 100),
             const SizedBox(height: 10),
             Text(
-              "Your Active Otp permit appears here",
+              "Your active permit appear here",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,

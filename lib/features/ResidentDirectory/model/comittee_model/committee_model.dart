@@ -20,7 +20,7 @@ class Committee with _$Committee {
     String? status,
     int? memberCount,
     Chairperson? chairperson,
-    String? secretary,
+   Chairperson? secretary,
     DateTime? nextMeeting,
     DateTime? establishedDate,
     MeetingSchedule? meetingSchedule,
@@ -51,7 +51,12 @@ class Committee with _$Committee {
         Chairperson.fromSafeJson,
         Chairperson.empty(),
       ),
-      secretary: NullSafetyHelper.safeString(json['secretary']),
+       secretary: NullSafetyHelper.safeModel(
+      json['secretary'],
+      Chairperson.fromSafeJson,
+      Chairperson.empty(),
+    ),
+
       nextMeeting: NullSafetyHelper.safeDateTime(json['next_meeting']),
       establishedDate: NullSafetyHelper.safeDateTime(json['established_date']),
       meetingSchedule: NullSafetyHelper.safeModel(

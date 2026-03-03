@@ -23,7 +23,8 @@ class VendorLog extends ConsumerWidget {
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       centerTitle: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
+      elevation: 0,
       leading: InkWell(
         onTap: () {
           context.pop();

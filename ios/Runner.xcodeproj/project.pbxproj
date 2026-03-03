@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		041BAE962F55A49B00FC6D33 /* amber_urgent.caf in Resources */ = {isa = PBXBuildFile; fileRef = 041BAE952F55A49A00FC6D33 /* amber_urgent.caf */; };
 		0F36772B4A7A0209A9B1E5C2 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6132855EB6624ACFAC6F2A99 /* Pods_RunnerTests.framework */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		290CF8A93F607CC5D836115F /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02DADB76F1CE792520127BFE /* Pods_Runner.framework */; };
@@ -44,6 +45,7 @@
 
 /* Begin PBXFileReference section */
 		02DADB76F1CE792520127BFE /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		041BAE952F55A49A00FC6D33 /* amber_urgent.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = amber_urgent.caf; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 		9740EEB11CF90186004384FC /* Flutter */ = {
 			isa = PBXGroup;
 			children = (
+				041BAE952F55A49A00FC6D33 /* amber_urgent.caf */,
 				3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */,
 				9740EEB21CF90195004384FC /* Debug.xcconfig */,
 				7AFA3C8E1D35360C0083082E /* Release.xcconfig */,
@@ -270,6 +273,7 @@
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 				584940F43F40B2387EDCEA59 /* GoogleService-Info.plist in Resources */,
+				041BAE962F55A49B00FC6D33 /* amber_urgent.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

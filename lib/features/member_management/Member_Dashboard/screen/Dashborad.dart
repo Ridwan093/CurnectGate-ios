@@ -7,23 +7,17 @@ import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/estate_management/elections/widgets/eletionData/poll_data.dart';
-import 'package:curnectgate/features/estate_management/elections/widgets/votingSettingCheck.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/workformprovider.dart';
+import 'package:curnectgate/features/member_management/Member_Dashboard/widget/buildSar_Widget.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/dashBordRowcard.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/headCard.dart';
+import 'package:curnectgate/features/member_management/Member_Dashboard/widget/quikLink_card.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/vewMoreButton.dart';
-import 'package:curnectgate/features/member_management/Member_Dashboard/widget/visitorActiveCount.dart';
 import 'package:curnectgate/features/member_management/membership_ID/provider/digitalD_status.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/model/active_Otp_count/Expired_count/expired_count_response.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/model/active_Otp_count/active_count/active_count_response.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/provider/active_count_provider.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/provider/expired_used_count_provider.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/ActiveData_widget.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/widget/count_data.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/event_limit_data.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
@@ -47,7 +41,6 @@ class Dashborad extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
-    final role = ref.watch(userRoleProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -65,18 +58,18 @@ class Dashborad extends ConsumerWidget {
               _buildRow(context, ref),
               SizedBox(height: 15),
 
-              Votingsettingcheck(child: PollDatas(canRoute: true)),
-              SizedBox(height: 25),
+              // Votingsettingcheck(child: PollDatas(canRoute: true)),
+              // SizedBox(height: 10),
 
-              Text(
-                "YOUR DUES",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black300,
-                  fontWeight: FontFamilies.bold,
-                ),
-              ),
-              SizedBox(height: 15),
+              // Text(
+              //   "YOUR DUES",
+              //   style: TextStyle(
+              //     fontFamily: FontFamilies.interDisplay,
+              //     color: AppColors.instance.black300,
+              //     fontWeight: FontFamilies.bold,
+              //   ),
+              // ),
+              // SizedBox(height: 15),
               DashbordData(
                 builder:
                     (context, data) => _buildDueCard(
@@ -87,95 +80,87 @@ class Dashborad extends ConsumerWidget {
               ),
 
               SizedBox(height: 20),
-              Text(
-                "VISITOR ACTIVITIES",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black300,
-                  fontWeight: FontFamilies.bold,
-                ),
-              ),
-              SizedBox(height: 15),
-              _buildvisitorRow(),
-              _buildContent(size, context, ref),
-              SizedBox(height: 24),
-              Text(
-                "EVENTS",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black300,
-                  fontWeight: FontFamilies.bold,
-                ),
-              ),
-              SizedBox(height: 24),
-              _buildEventContent(ref, context, size),
-              SizedBox(height: 25),
-              Text(
-                "QUICK LINK",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black300,
-                  fontWeight: FontFamilies.bold,
-                ),
-              ),
-              SizedBox(height: 25),
-
-              role.when(
-                data: (data) {
-                  if (data.isNotEmpty) {
-                    if (data.toLowerCase().contains("landlord") ||
-                        data.toLowerCase().contains("spouse")) {
-                      return _otherLinks(
-                        title: "ADD FAMILY",
-                        onTap: () async {
-                          context.pushNamed(AppRoutes.getMemberInfo);
-                        },
-                      );
-                    } else {
-                      return SizedBox();
-                    }
-                  } else {
-                    return SizedBox();
-                  }
-                },
-                error: (e, s) {
-                  return SizedBox();
-                },
-                loading: () {
-                  return SizedBox();
-                },
-              ),
-
-              Divider(color: AppColors.instance.grey400),
-              _otherLinks(
-                title: "ACCOUNT SETTINGS",
-                onTap: () {
-                  context.pushNamed(AppRoutes.manageLoging);
-                },
-              ),
-              Divider(color: AppColors.instance.grey400),
-              SizedBox(height: 5),
-              _otherLinks(
-                title: "RESIDENT DIRECTORY",
-                onTap: () {
-                  context.pushNamed(AppRoutes.residentDirectory);
-                },
-              ),
-              SizedBox(height: 20),
-              Text(
-                "NEED SAFETY HELP?",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black300,
-                  fontWeight: FontFamilies.bold,
-                ),
-              ),
+              _buildTopTitile("STATISTICS"),
               SizedBox(height: 10),
-              _buildSaftyRow(context, ref),
+              // _buildvisitorRow(),
+              Statistics(),
+
+              // _buildContent(size, context, ref),
+              SizedBox(height: 20),
+              _buildTopTitile("QUICK LINK"),
+
+              SizedBox(height: 10),
+
+              // role.when(
+              //   data: (data) {
+              //     if (data.isNotEmpty) {
+              //       if (data.toLowerCase().contains("landlord") ||
+              //           data.toLowerCase().contains("spouse")) {
+              //         return _otherLinks(
+              //           title: "ADD FAMILY",
+              //           onTap: () async {
+              //             context.pushNamed(AppRoutes.getMemberInfo);
+              //           },
+              //         );
+              //       } else {
+              //         return SizedBox();
+              //       }
+              //     } else {
+              //       return SizedBox();
+              //     }
+              //   },
+              //   error: (e, s) {
+              //     return SizedBox();
+              //   },
+              //   loading: () {
+              //     return SizedBox();
+              //   },
+              // ),
+              _buildQuikLink(ref, context),
+              // Divider(color: AppColors.instance.grey400),
+              // _otherLinks(
+              //   title: "ACCOUNT SETTINGS",
+              //   onTap: () {
+              //     context.pushNamed(AppRoutes.manageLoging);
+              //   },
+              // ),
+              // Divider(color: AppColors.instance.grey400),
+              // SizedBox(height: 5),
+              // _otherLinks(
+              //   title: "RESIDENT DIRECTORY",
+              //   onTap: () {
+              //     context.pushNamed(AppRoutes.residentDirectory);
+              //   },
+              // ),
+              // SizedBox(height: 20),
+              // _buildTopTitile("NEED SAFETY HELP"),
+
+              // SizedBox(height: 10),
+              // _buildSaftyRow(context, ref),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTopTitile(String title) {
+    return Row(
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            fontFamily: FontFamilies.interDisplay,
+            color: AppColors.instance.black500,
+            fontWeight: FontFamilies.bold,
+          ),
+        ),
+        SizedBox(width: 10),
+        Expanded(child: Divider(color: AppColors.instance.grey300)),
+        // Expanded(
+        //   child: Container(height: 1.0, color: AppColors.instance.black600),
+        // ),
+      ],
     );
   }
 
@@ -258,31 +243,116 @@ class Dashborad extends ConsumerWidget {
     );
   }
 
-  Widget _otherLinks({required String title, required VoidCallback onTap}) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: InkWell(
-        onTap: onTap,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                color: AppColors.instance.black600,
-                fontWeight: FontFamilies.bold,
-                fontSize: 13,
-              ),
-            ),
-            Icon(
-              Icons.arrow_forward_ios,
-              color: AppColors.instance.black600,
-              size: 14,
-            ),
-          ],
+  // Widget _otherLinks({required String title, required VoidCallback onTap}) {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(bottom: 10),
+  //     child: InkWell(
+  //       onTap: onTap,
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           Text(
+  //             title,
+  //             style: TextStyle(
+  //               fontFamily: FontFamilies.interDisplay,
+  //               color: AppColors.instance.black600,
+  //               fontWeight: FontFamilies.bold,
+  //               fontSize: 13,
+  //             ),
+  //           ),
+  //           Icon(
+  //             Icons.arrow_forward_ios,
+  //             color: AppColors.instance.black600,
+  //             size: 14,
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+  Widget _buildQuikLink(WidgetRef ref, BuildContext context) {
+    final authState = ref.watch(authProvider);
+    final user = authState.user;
+    final fullname = authState.fullname;
+    final adminEmail = user?["estate"]["contact_email"] ?? "";
+    final estateName = user?['estate_name'] ?? "";
+    final role = ref.watch(userRoleProvider);
+
+    return Wrap(
+      spacing: 5, // horizontal gap between cards
+      runSpacing: 10, // vertical gap between rows
+
+      children: [
+        role.when(
+          data: (data) {
+            if (data.isNotEmpty) {
+              if (data.toLowerCase().contains("landlord") ||
+                  data.toLowerCase().contains("spouse")) {
+                return QuikLinkCard(
+                  isfund: false,
+                  onTap: () {
+                    context.pushNamed(AppRoutes.getMemberInfo);
+                  },
+                  title: "Add Family",
+                  icon: Icons.person_add_alt_1,
+                );
+              } else {
+                return SizedBox();
+              }
+            } else {
+              return SizedBox();
+            }
+          },
+          error: (e, s) {
+            return SizedBox();
+          },
+          loading: () {
+            return SizedBox();
+          },
         ),
-      ),
+
+        QuikLinkCard(
+          isfund: false,
+          onTap: () {
+            showUserBottomSheet(
+              context: context,
+              headertitle: "",
+              headersubtitle: "",
+              ref: ref,
+              bottom: BottomSheetView.residentEmgencyContacts,
+            );
+          },
+          title: "Emergency",
+          icon: Icons.emergency,
+        ),
+
+        QuikLinkCard(
+          isfund: true,
+          onTap: () {},
+          title: "Add Fund",
+          icon: Icons.payments,
+        ),
+        QuikLinkCard(
+          isfund: false,
+          onTap: () {
+            context.pushNamed(AppRoutes.residentDirectory);
+          },
+          title: "Resident",
+          icon: Icons.home_outlined,
+        ),
+        QuikLinkCard(
+          isfund: false,
+          onTap: () {
+            _launchSupportEmail(
+              adminEmail: adminEmail,
+              estateName: estateName,
+              userName: fullname ?? "",
+            );
+          },
+          title: "Support",
+          icon: Icons.email,
+        ),
+      ],
     );
   }
 
@@ -314,8 +384,10 @@ class Dashborad extends ConsumerWidget {
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context, WidgetRef ref) {
+    final size = MediaQuery.sizeOf(context);
     final reminderprovider = ref.read(reminderProvider.notifier);
     final notifier = ref.read(workOrderFormProvider.notifier);
+    final isSmallScreen = size.height < 700 || size.width < 380;
     final profileFile = ref.watch(profilePicProvider);
     return AppBar(
       backgroundColor: Colors.white,
@@ -323,11 +395,20 @@ class Dashborad extends ConsumerWidget {
       leading: Padding(
         padding: const EdgeInsets.all(8.0),
         child: CircleAvatar(
-          radius: 20,
-          backgroundImage:
-              profileFile != null
-                  ? FileImage(profileFile)
-                  : AssetImage(AssetPaths.navProfileActive) as ImageProvider,
+          radius: isSmallScreen ? 26 : 32,
+          backgroundImage: profileFile != null ? FileImage(profileFile) : null,
+          backgroundColor: Colors.white,
+          child: Center(
+            child:
+                profileFile != null
+                    ? null
+                    : Image.asset(
+                      AssetPaths.navProfileActive,
+                      width: 25,
+
+                      color: AppColors.instance.teal400,
+                    ),
+          ),
         ),
       ),
       actions: [
@@ -361,7 +442,7 @@ class Dashborad extends ConsumerWidget {
                 bottom: BottomSheetView.seletctEvent,
               );
             },
-            child: Image.asset(AssetPaths.dashboardcalenderSetting, width: 20),
+            child: Icon(Icons.event, color: AppColors.instance.black600),
           ),
         ),
         SizedBox(width: 15),
@@ -398,73 +479,101 @@ class Dashborad extends ConsumerWidget {
     WidgetRef ref,
   ) {
     final isDue = data?.totalOutstanding == 0;
-    final amount = data?.totalOutstanding.toString();
-    return Container(
-      padding: EdgeInsets.all(12),
-      height: 65,
-      decoration: BoxDecoration(
-        color: AppColors.instance.teal300,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          isDue
-              ? Text(
-                "No upcoming dues",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black400,
-                  fontWeight: FontFamilies.medium,
-                  fontSize: 13,
-                ),
-              )
-              : Flexible(
-                child: Text(
-                  "Amount Due:  ₦${formatPrice(amount ?? "")}",
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    color: AppColors.instance.black600,
-                    fontWeight: FontFamilies.bold,
+    final rawAmount = data?.totalOutstanding ?? 0;
+    final displayAmount = "₦${formatPrice(rawAmount.toString())}";
+
+    // Use MediaQuery for safe, proportional sizing
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final maxAmountWidth =
+        screenWidth * 0.65; // 65% of screen → safe on small devices
+
+    return isDue
+        ? SizedBox()
+        : Container(
+          padding: const EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
+          decoration: BoxDecoration(
+            color: AppColors.instance.teal400,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Amount Due",
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      color: AppColors.instance.grey200.withOpacity(0.9),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
                   ),
-                ),
+                  // const SizedBox(height: 6),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: maxAmountWidth),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        displayAmount,
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          color: AppColors.instance.grey200,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30,
+                          height: 1.1,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-          isDue
-              ? Text("")
-              : InkWell(
-                onTap: () {
-                  showUserBottomSheet(
-                    context: context,
-                    headertitle: "Pay Outstanding Due",
-                    headersubtitle: "",
-                    ref: ref,
-                    dashbordData: data,
-                    bottom: BottomSheetView.payOustanding,
-                  );
-                },
-                child: Container(
-                  height: 35,
-                  width: 70,
-                  decoration: BoxDecoration(
-                    color: AppColors.instance.black600,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "Pay due",
-                      style: TextStyle(
-                        fontFamily: FontFamilies.interDisplay,
-                        color: AppColors.instance.grey200,
-                        fontSize: 12,
+
+              Align(
+                alignment:
+                    Alignment
+                        .centerRight, // or Alignment.bottomRight if you prefer
+                child: InkWell(
+                  onTap: () {
+                    showUserBottomSheet(
+                      context: context,
+                      headertitle: "Pay Outstanding Due",
+                      headersubtitle: "",
+                      ref: ref,
+                      dashbordData: data,
+                      bottom: BottomSheetView.payOustanding,
+                    );
+                  },
+                  child: Container(
+                    height: 35,
+                    width: 100,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    decoration: BoxDecoration(
+                      color: AppColors.instance.black600.withOpacity(.4),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Pay Now",
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          color: AppColors.instance.grey200,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-        ],
-      ),
-    );
+            ],
+          ),
+        );
   }
 
   Widget _buildRow(BuildContext context, WidgetRef ref) {
@@ -542,44 +651,44 @@ class Dashborad extends ConsumerWidget {
     );
   }
 
-  Widget _buildvisitorRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        CountDataForAll<ExpiredCountResponse>(
-          provider: expiredCountProvider("used"),
-          emptyBody: Visitoractivecount(title: "Total today", count: "0"),
-          builder:
-              (data) => Visitoractivecount(
-                title: "Total today",
-                count: '${data.data?.count ?? 0}',
-              ),
-        ),
+  // Widget _buildvisitorRow() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     children: [
+  //       CountDataForAll<ExpiredCountResponse>(
+  //         provider: expiredCountProvider("used"),
+  //         emptyBody: Visitoractivecount(title: "Total today", count: "0"),
+  //         builder:
+  //             (data) => Visitoractivecount(
+  //               title: "Total today",
+  //               count: '${data.data?.count ?? 0}',
+  //             ),
+  //       ),
 
-        SizedBox(width: 10),
-        CountDataForAll<ActiveCountResponse>(
-          provider: getActiveCountProvider,
-          emptyBody: Visitoractivecount(title: "Active", count: '0'),
-          builder:
-              (data) => Visitoractivecount(
-                title: "Active",
-                count: '${data.data?.count ?? 0}',
-              ),
-        ),
+  //       SizedBox(width: 10),
+  //       CountDataForAll<ActiveCountResponse>(
+  //         provider: getActiveCountProvider,
+  //         emptyBody: Visitoractivecount(title: "Active", count: '0'),
+  //         builder:
+  //             (data) => Visitoractivecount(
+  //               title: "Active",
+  //               count: '${data.data?.count ?? 0}',
+  //             ),
+  //       ),
 
-        SizedBox(width: 10),
-        CountDataForAll<ExpiredCountResponse>(
-          provider: expiredCountProvider("expired"),
-          emptyBody: Visitoractivecount(title: "Expired", count: "0"),
-          builder:
-              (data) => Visitoractivecount(
-                title: "Expired",
-                count: '${data.data?.count ?? 0}',
-              ),
-        ),
-      ],
-    );
-  }
+  //       SizedBox(width: 10),
+  //       CountDataForAll<ExpiredCountResponse>(
+  //         provider: expiredCountProvider("expired"),
+  //         emptyBody: Visitoractivecount(title: "Expired", count: "0"),
+  //         builder:
+  //             (data) => Visitoractivecount(
+  //               title: "Expired",
+  //               count: '${data.data?.count ?? 0}',
+  //             ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Future<void> _launchSupportEmail({
     required String adminEmail,

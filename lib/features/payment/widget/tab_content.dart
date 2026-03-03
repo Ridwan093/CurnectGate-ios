@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/payment/services/recipt_service.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/history_model/transaction_item.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -11,31 +12,6 @@ import 'package:intl/intl.dart';
 class AllTabContent extends StatelessWidget {
   final List<TransactionItem>? data;
   AllTabContent({super.key, required this.data}); // Your list here
-  final List<Map<String, dynamic>> activities = [
-    {
-      "icon": AssetPaths.addMember,
-      "title": "Added to wallet",
-      "date": "May 2 2024",
-      "amount": "+₦24.000",
-      "isPositive": true,
-    },
-    {
-      "icon": AssetPaths.maintenance,
-      "title": "Maintenance",
-      "date": "May 1 2024",
-      "amount": "-₦15.000",
-      "isPositive": false,
-    },
-    {
-      "icon": AssetPaths.maintenance,
-      "title": "Maintenace",
-      "date": "April 30 2024",
-      "amount": "-₦17.000",
-      "isPositive": false,
-    },
-
-    // Add more as needed
-  ];
 
   String formatPrice(String price) {
     final number = double.tryParse(price) ?? 0.0;
@@ -56,8 +32,9 @@ class AllTabContent extends StatelessWidget {
       itemBuilder: (context, index) {
         final activity = data?[index];
         return ListTile(
-          onTap: () {
+          onTap: () async {
             log(activity!.receipt.toString());
+            await showPaymentReceipt(context, activity);
           },
           leading: CircleAvatar(
             backgroundColor: AppColors.instance.teal100,
@@ -164,6 +141,7 @@ class AllTabContent extends StatelessWidget {
     }
   }
 }
+
 class DueTabContent extends StatelessWidget {
   final List<TransactionItem>? data;
   const DueTabContent({super.key, required this.data});
@@ -171,7 +149,13 @@ class DueTabContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Filter only due payments
-    final dueList = data?.where((item) => item.transactionType?.toLowerCase() == "due_payment").toList() ?? [];
+    final dueList =
+        data
+            ?.where(
+              (item) => item.transactionType?.toLowerCase() == "due_payment",
+            )
+            .toList() ??
+        [];
 
     return AllTabContent(data: dueList);
   }
@@ -184,7 +168,13 @@ class DepositTabContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Filter only wallet funding
-    final depositList = data?.where((item) => item.transactionType?.toLowerCase() == "wallet_funding").toList() ?? [];
+    final depositList =
+        data
+            ?.where(
+              (item) => item.transactionType?.toLowerCase() == "wallet_funding",
+            )
+            .toList() ??
+        [];
 
     return AllTabContent(data: depositList);
   }

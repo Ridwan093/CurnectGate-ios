@@ -211,7 +211,7 @@ class OptionForCodes extends ConsumerWidget {
         context.pop();
         showUserBottomSheet(
           context: context,
-          headertitle: "",
+          headertitle: "general",
           headersubtitle: "",
           ref: ref,
           bottom: BottomSheetView.visitorValidation,

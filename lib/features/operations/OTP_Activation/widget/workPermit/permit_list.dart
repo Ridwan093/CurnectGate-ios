@@ -1,5 +1,5 @@
-import 'package:curnectgate/features/operations/OTP_Activation/model/Work_permit/clearance_permit_data.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/model/permit_model/active_otp_data.dart' show ActiveOtpData;
+import 'package:curnectgate/features/operations/OTP_Activation/model/permit_model/active_otp_data.dart'
+    show ActiveOtpData;
 import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/workPermit_card.dart';
 import 'package:flutter/widgets.dart';
 

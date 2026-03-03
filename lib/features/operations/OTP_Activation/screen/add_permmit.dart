@@ -44,7 +44,7 @@ class _CheckInOtpTabState extends ConsumerState<ClearancePermitAdd> {
         // ),
         // SizedBox(height: 40),
         Text(
-          "Clearance Permit",
+          "My Permits",
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,
             fontWeight: FontFamilies.bold,
@@ -54,7 +54,7 @@ class _CheckInOtpTabState extends ConsumerState<ClearancePermitAdd> {
         ),
         const SizedBox(height: 4),
         Text(
-          "add permit to your visitor otp",
+          "Authorize and manage visitor exit permits.",
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,
             fontSize: 13,

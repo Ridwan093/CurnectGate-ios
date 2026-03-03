@@ -29,7 +29,7 @@ class Deleteconfirmation extends ConsumerWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          'Remove $title?',
+          'Cancel $title?',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,
@@ -38,7 +38,7 @@ class Deleteconfirmation extends ConsumerWidget {
           ),
         ),
         Text(
-          'Are you sure you want to remove$title?',
+          'Are you sure you want to cancel $title?',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,
@@ -59,7 +59,7 @@ class Deleteconfirmation extends ConsumerWidget {
               ref: ref,
             );
           },
-          buttiontitle: "Yes, Removed",
+          buttiontitle: "Yes, cancel",
         ),
       ],
     );

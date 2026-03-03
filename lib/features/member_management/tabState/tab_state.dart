@@ -11,10 +11,10 @@ class TabStateNotifier extends StateNotifier<int> {
   void resetToMainTab() {
     state = 0; // Reset to main tab (index 0)
   }
- void resetTochat() {
-    state = 1; // Reset to main tab (index 0)
-  }
 
+  void resetTochat() {
+    state = 3; // Reset to main tab (index 0)
+  }
 }
 
 final tabStateProvider = StateNotifierProvider<TabStateNotifier, int>((ref) {

@@ -1,7 +1,6 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/screen/add_permmit.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/widget/Active_history.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/permit_history.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -19,7 +18,7 @@ class _OtpTabsPageState extends State<OtpTabsPage>
 
   @override
   Widget build(BuildContext context) {
-    final tabs = ["OTP History", "Clearance Permit", "Permit History"];
+    final tabs = ["My Permits", "Permit History"];
 
     return Column(
       children: [
@@ -44,7 +43,7 @@ class _OtpTabsPageState extends State<OtpTabsPage>
 
         /// 🔹 Custom Tab Switcher
         Container(
-          height: 46,
+          height: 40,
           decoration: BoxDecoration(
             color: Colors.grey[200],
             borderRadius: BorderRadius.circular(12),
@@ -62,9 +61,18 @@ class _OtpTabsPageState extends State<OtpTabsPage>
                     decoration: BoxDecoration(
                       color:
                           isSelected
-                              ? AppColors.instance.teal300
+                              ? AppColors.instance.teal400
                               : Colors.transparent,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius:
+                          index == 1
+                              ? BorderRadius.only(
+                                topRight: Radius.circular(10),
+                                bottomRight: Radius.circular(10),
+                              )
+                              : BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                bottomLeft: Radius.circular(10),
+                              ),
                     ),
                     alignment: Alignment.center,
                     child: AnimatedDefaultTextStyle(
@@ -113,11 +121,11 @@ class _OtpTabsPageState extends State<OtpTabsPage>
 
   Widget _view(int index) {
     switch (index) {
+      // case 0:
+      //   return ActiveHistory(key: ValueKey('otpHistory'));
       case 0:
-        return ActiveHistory(key: ValueKey('otpHistory'));
-      case 1:
         return const ClearancePermitAdd(key: ValueKey('addPermit'));
-      case 2:
+      case 1:
         return const CheckInOtpTab(key: ValueKey('checkInOtp'));
       default:
         return SizedBox();

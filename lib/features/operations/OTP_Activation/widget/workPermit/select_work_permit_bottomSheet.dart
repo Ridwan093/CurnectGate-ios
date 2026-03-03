@@ -10,10 +10,14 @@ import 'package:go_router/go_router.dart';
 class SelectpermitBottomsheet extends ConsumerWidget {
   final int id;
   final String otp;
+  final String username;
+  final String phoneNumber;
   const SelectpermitBottomsheet({
     super.key,
     required this.otp,
     required this.id,
+    required this.username,
+    required this.phoneNumber,
   });
 
   @override
@@ -61,7 +65,8 @@ class SelectpermitBottomsheet extends ConsumerWidget {
               showUserBottomSheet(
                 context: context,
                 headertitle: otp,
-                headersubtitle: "Revoked  OTP",
+                headersubtitle: username,
+                location: phoneNumber,
                 ref: ref,
                 bottom: BottomSheetView.permitAccces,
                 id: id,

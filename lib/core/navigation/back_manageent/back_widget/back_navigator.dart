@@ -1,4 +1,5 @@
 import 'package:curnectgate/core/navigation/back_manageent/back_provider/provider.dart';
+import 'package:curnectgate/features/security/provider/scanProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,8 +14,9 @@ class BackButtonHandler extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final backPressNotifier = ref.read(backPressProvider.notifier);
     final backPressState = ref.watch(backPressProvider);
+    final isScanning = ref.watch(qrScanProvider);
 
-    if (backPressState.showSnackBar) {
+    if (backPressState.showSnackBar && !isScanning) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

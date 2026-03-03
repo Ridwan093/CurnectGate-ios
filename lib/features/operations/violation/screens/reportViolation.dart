@@ -57,7 +57,8 @@ class _ReportviolationState extends ConsumerState<ReportViolation> {
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       centerTitle: true,
-      backgroundColor: Colors.transparent,
+      elevation: 0,
+      backgroundColor: Colors.white,
       leading: InkWell(
         onTap: () {
           context.pop();

@@ -66,7 +66,7 @@ class DashbordContent extends ConsumerWidget {
               ? Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "No upcoming dues",
+                  "No upcoming due",
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     color: AppColors.instance.black400,
@@ -80,7 +80,7 @@ class DashbordContent extends ConsumerWidget {
                 children: [
                   Flexible(
                     child: Text(
-                      "Total dua amount is ₦${formatPrice(amount)}",
+                      "Total due amount is ₦${formatPrice(amount)}",
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontFamily: FontFamilies.interDisplay,

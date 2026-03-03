@@ -12,154 +12,247 @@ import 'package:curnectgate/features/operations/notifications/event/model/Event/
 import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_user_rsvp_model.dart';
 import 'package:curnectgate/features/operations/notifications/provider/activity_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/getevent_provider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class EventData extends ConsumerWidget {
-  const EventData({super.key});
-  bool isUserGoing(CalendarUserRsvp? userRsvpMap) {
-    if (userRsvpMap == null) return false;
+// class EventData extends ConsumerWidget {
+//   const EventData({super.key});
+//   bool isUserGoing(CalendarUserRsvp? userRsvpMap) {
+//     if (userRsvpMap == null) return false;
 
-    final response = userRsvpMap.response;
-    return response != null && response.toString().toLowerCase() == 'going';
-  }
+//     final response = userRsvpMap.response;
+//     return response != null && response.toString().toLowerCase() == 'going';
+//   }
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final activeOtasync = ref.watch(getEventProvider);
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     final activeOtasync = ref.watch(getEventProvider);
 
-    return RefreshIndicator(
-      color: AppColors.instance.yellow500,
-      onRefresh:
-          () => ref
-              .read(getEventProvider.notifier)
-              .refreshEvent(context, ref, ""),
+//     return RefreshIndicator(
+//       color: AppColors.instance.yellow500,
+//       onRefresh:
+//           () => ref
+//               .read(getEventProvider.notifier)
+//               .refreshEvent(context, ref, ""),
 
-      child: activeOtasync.when(
-        data: (event) {
-          if (event!.data!.events!.isNotEmpty) {
-            return _buildEventList(event.data?.events ?? [], context, ref);
-          } else {
-            return _buildEmtyBody();
-          }
+//       child: activeOtasync.when(
+//         data: (event) {
+//           if (event!.data!.events!.isNotEmpty) {
+//             return _buildEventList(event.data?.events ?? [], context, ref);
+//           } else {
+//             return _buildEmtyBody();
+//           }
 
-          // If data is valid
-        },
-        loading: () {
-          final cachedEvent = ref.read(getEventProvider).value;
+//           // If data is valid
+//         },
+//         loading: () {
+//           final cachedEvent = ref.read(getEventProvider).value;
 
-          if (cachedEvent != null &&
-              cachedEvent.status! &&
-              cachedEvent.data!.events!.isNotEmpty) {
-            return _buildEventList(
-              cachedEvent.data?.events ?? [],
-              context,
-              ref,
-            );
-          }
+//           if (cachedEvent != null &&
+//               cachedEvent.status! &&
+//               cachedEvent.data!.events!.isNotEmpty) {
+//             return _buildEventList(
+//               cachedEvent.data?.events ?? [],
+//               context,
+//               ref,
+//             );
+//           }
 
-          return const Loadingstates();
-        },
-        error: (error, stack) {
-          try {
-            // Handle session expiration
-            if (error.toString().contains("Unauthorized")) {
-              return const Expiresessionbody();
-            }
-            final event = ref.read(getEventProvider).value;
+//           return const Loadingstates();
+//         },
+//         error: (error, stack) {
+//           try {
+//             // Handle session expiration
+//             if (error.toString().contains("Unauthorized")) {
+//               return const Expiresessionbody();
+//             }
+//             final event = ref.read(getEventProvider).value;
 
-            // Try to show cached data
+//             // Try to show cached data
 
-            if (event!.data!.events!.isNotEmpty) {
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _buildEventList(event.data?.events ?? [], context, ref),
-                    Emmergencybody(error: error.toString()),
-                  ],
-                ),
-              );
-            }
+//             if (event!.data!.events!.isNotEmpty) {
+//               return SingleChildScrollView(
+//                 child: Column(
+//                   children: [
+//                     _buildEventList(event.data?.events ?? [], context, ref),
+//                     Emmergencybody(error: error.toString()),
+//                   ],
+//                 ),
+//               );
+//             }
 
-            // No cached data available
-            return Builderrouls(
-              error: error.toString(),
-              onTap:
-                  () => ref
-                      .read(getEventProvider.notifier)
-                      .refreshEvent(context, ref, ""),
-              firstMessae: "Faile to load Event",
-            );
-          } catch (e) {
-            return Builderrouls(
-              error: e.toString(),
-              onTap:
-                  () => ref
-                      .read(getEventProvider.notifier)
-                      .refreshEvent(context, ref, ""),
-              firstMessae: "Faile to load Event?",
-            );
-          }
-        },
+//             // No cached data available
+//             return Builderrouls(
+//               error: error.toString(),
+//               onTap:
+//                   () => ref
+//                       .read(getEventProvider.notifier)
+//                       .refreshEvent(context, ref, ""),
+//               firstMessae: "Faile to load Event",
+//             );
+//           } catch (e) {
+//             return Builderrouls(
+//               error: e.toString(),
+//               onTap:
+//                   () => ref
+//                       .read(getEventProvider.notifier)
+//                       .refreshEvent(context, ref, ""),
+//               firstMessae: "Faile to load Event?",
+//             );
+//           }
+//         },
+//       ),
+
+//       // Expanded(
+//       //   child:
+//       //       generatedList.isNotEmpty
+//       //           ? _buildMemberList(ref, size)
+//       //           : _buildEmtyBody(),
+//       // ),
+//     );
+//   }
+
+//   Widget _buildEventList(
+//     List<CalendarEvent> event,
+//     BuildContext context,
+//     WidgetRef ref,
+//   ) {
+//     return ListView.builder(
+//       itemCount: event.length,
+//       itemBuilder: (context, index) {
+//         var data = event[index];
+//         return DataEventCard(
+//           event: data,
+//           onGoing: (p0) {},
+//           onTap: () {
+//             ref.read(isPopProvider.notifier).state = true;
+//             showUserBottomSheet(
+//               context: context,
+//               headertitle: "",
+//               headersubtitle: "",
+//               ref: ref,
+//               bottom: BottomSheetView.eventsDetails,
+
+//               event: data,
+//             );
+//           },
+//         );
+//       },
+//     );
+//   }
+
+//   Widget _buildEmtyBody() {
+//     return Center(
+//       child: SingleChildScrollView(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             Image.asset(AssetPaths.dashboardEvents, height: 100, width: 100),
+//             SizedBox(height: 10),
+//             Text(
+//               "Event detiles appears here",
+//               style: TextStyle(
+//                 fontFamily: FontFamilies.interDisplay,
+//                 color: AppColors.instance.black300,
+//                 fontSize: 12,
+//                 fontWeight: FontFamilies.medium,
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+
+class EventDataSliver {
+  List<Widget> buildSlivers(BuildContext context, WidgetRef ref) {
+    final asyncValue = ref.watch(getEventProvider);
+
+    return [
+      CupertinoSliverRefreshControl(
+        onRefresh: () =>
+            ref.read(getEventProvider.notifier).refreshEvent(context, ref, ""),
       ),
 
-      // Expanded(
-      //   child:
-      //       generatedList.isNotEmpty
-      //           ? _buildMemberList(ref, size)
-      //           : _buildEmtyBody(),
-      // ),
-    );
-  }
+      ...asyncValue.when(
+        data: (event) {
+          if (event!.data!.events!.isEmpty) {
+            return [
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: _emptyBody(),
+              ),
+            ];
+          }
 
-  Widget _buildEventList(
-    List<CalendarEvent> event,
-    BuildContext context,
-    WidgetRef ref,
-  ) {
-    return ListView.builder(
-      itemCount: event.length,
-      itemBuilder: (context, index) {
-        var data = event[index];
-        return DataEventCard(
-          event: data,
-          onGoing: (p0) {},
-          onTap: () {
-            ref.read(isPopProvider.notifier).state = true;
-            showUserBottomSheet(
-              context: context,
-              headertitle: "",
-              headersubtitle: "",
-              ref: ref,
-              bottom: BottomSheetView.eventsDetails,
-
-              event: data,
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildEmtyBody() {
-    return Center(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(AssetPaths.dashboardEvents, height: 100, width: 100),
-            SizedBox(height: 10),
-            Text(
-              "Event detiles appears here",
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                color: AppColors.instance.black300,
-                fontSize: 12,
-                fontWeight: FontFamilies.medium,
+          return [
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final data = event.data!.events![index];
+                  return DataEventCard(
+                    event: data,
+                    onGoing: (_) {},
+                    onTap: () {
+                      ref.read(isPopProvider.notifier).state = true;
+                      showUserBottomSheet(
+                        context: context,
+                        headertitle: "",
+                        headersubtitle: "",
+                        ref: ref,
+                        bottom: BottomSheetView.eventsDetails,
+                        event: data,
+                      );
+                    },
+                  );
+                },
+                childCount: event.data!.events!.length,
               ),
             ),
-          ],
-        ),
+          ];
+        },
+        loading: () => [
+          const SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(child: Loadingstates()),
+          ),
+        ],
+        error: (error, stack) => [
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Builderrouls(
+              error: error.toString(),
+              onTap: () => ref
+                  .read(getEventProvider.notifier)
+                  .refreshEvent(context, ref, ""),
+              firstMessae: "Failed to load Event",
+            ),
+          ),
+        ],
+      ),
+    ];
+  }
+
+  Widget _emptyBody() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(AssetPaths.dashboardEvents, height: 100, width: 100),
+          SizedBox(height: 10),
+          Text(
+            "Event details appear here",
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontFamilies.medium,
+              color: AppColors.instance.black300,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -29,7 +29,7 @@ class ViolationFormBottomSheet extends ConsumerWidget {
     return SizedBox(
       height: size.height,
       width: size.width,
-      child: SafeArea(
+      child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -76,7 +76,7 @@ class ViolationFormBottomSheet extends ConsumerWidget {
               ],
             ),
 
-            Expanded(child: widget),
+            widget,
           ],
         ),
       ),

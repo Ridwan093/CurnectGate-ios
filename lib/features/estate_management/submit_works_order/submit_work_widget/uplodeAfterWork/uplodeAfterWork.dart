@@ -8,12 +8,12 @@ import 'package:curnectgate/features/member_management/profile_form/provider%20/
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-//C9ZKG
 
 class UploadWorkImagesSheet extends ConsumerStatefulWidget {
   final int id;
   final String title;
   final String subtitle;
+
   const UploadWorkImagesSheet({
     super.key,
     required this.id,
@@ -61,8 +61,68 @@ class _UploadWorkImagesSheetState extends ConsumerState<UploadWorkImagesSheet>
 
   @override
   void dispose() {
-    _controller.dispose(); // stop ticker first
-    super.dispose(); // then clean up
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _confirmCompleteWithoutProof(
+    BuildContext context,
+    FormNotifier provider,
+    bool isLoading,
+  ) async {
+    if (isLoading) return;
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            title: Text(
+              "Complete without proof?",
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                color: AppColors.instance.black500,
+              ),
+            ),
+            content: Text(
+              "You are about to complete this work order without uploading images.",
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                color: AppColors.instance.black400,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    color: AppColors.instance.black300,
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text(
+                  "Yes, complete",
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    color: AppColors.instance.black600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+    );
+
+    if (result == true) {
+      provider.uploadeAfterWork(
+        context: context,
+        file: [],
+        id: widget.id.toString(),
+        ref: ref,
+      );
+    }
   }
 
   @override
@@ -70,6 +130,8 @@ class _UploadWorkImagesSheetState extends ConsumerState<UploadWorkImagesSheet>
     final images = ref.watch(workImagesProvider);
     final isLoading = ref.watch(formProvider).workOderLoading;
     final provider = ref.read(formProvider.notifier);
+
+    final canUpload = images.isNotEmpty && !isLoading;
 
     return SafeArea(
       child: SlideTransition(
@@ -86,7 +148,7 @@ class _UploadWorkImagesSheetState extends ConsumerState<UploadWorkImagesSheet>
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // HEADER
+                /// HEADER
                 const Text(
                   "Upload Work Images",
                   style: TextStyle(
@@ -98,7 +160,7 @@ class _UploadWorkImagesSheetState extends ConsumerState<UploadWorkImagesSheet>
 
                 const SizedBox(height: 4),
 
-                Text(
+                const Text(
                   "Upload between 1 and 2 images as proof of completed work.",
                   style: TextStyle(
                     fontSize: 14,
@@ -109,7 +171,7 @@ class _UploadWorkImagesSheetState extends ConsumerState<UploadWorkImagesSheet>
 
                 const SizedBox(height: 20),
 
-                // IMAGE LIST
+                /// IMAGE LIST
                 SizedBox(
                   height: 100,
                   child: ListView.separated(
@@ -117,10 +179,9 @@ class _UploadWorkImagesSheetState extends ConsumerState<UploadWorkImagesSheet>
                     itemCount: images.length + (images.length < 2 ? 1 : 0),
                     separatorBuilder: (_, __) => const SizedBox(width: 10),
                     itemBuilder: (context, index) {
-                      // Add Image Button
                       if (index == images.length && images.length < 2) {
                         return GestureDetector(
-                          onTap: pickImage,
+                          onTap: isLoading ? null : pickImage,
                           child: Container(
                             width: 100,
                             height: 100,
@@ -135,7 +196,6 @@ class _UploadWorkImagesSheetState extends ConsumerState<UploadWorkImagesSheet>
                         );
                       }
 
-                      // Image thumbnail
                       return Stack(
                         children: [
                           ClipRRect(
@@ -152,9 +212,11 @@ class _UploadWorkImagesSheetState extends ConsumerState<UploadWorkImagesSheet>
                             right: 4,
                             child: GestureDetector(
                               onTap:
-                                  () => ref
-                                      .read(workImagesProvider.notifier)
-                                      .removeImage(index),
+                                  isLoading
+                                      ? null
+                                      : () => ref
+                                          .read(workImagesProvider.notifier)
+                                          .removeImage(index),
                               child: Container(
                                 padding: const EdgeInsets.all(3),
                                 decoration: const BoxDecoration(
@@ -177,34 +239,24 @@ class _UploadWorkImagesSheetState extends ConsumerState<UploadWorkImagesSheet>
 
                 const SizedBox(height: 25),
 
-                // SUBMIT BUTTON
+                /// PRIMARY BUTTON — Upload & Complete
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed:
-                        images.isEmpty
-                            ? null
-                            : () {
-                              // Navigator.pop(context, images);
-
-                              // SEND TO BACKEND
-                              print(
-                                "Selected images: ${images.map((e) => e.path)}",
-                              );
+                        canUpload
+                            ? () {
                               provider.uploadeAfterWork(
                                 context: context,
                                 file: images,
                                 id: widget.id.toString(),
                                 ref: ref,
                               );
-
-                              // You can now access the images list in parent screen
-                            },
+                            }
+                            : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
-                          images.isEmpty
-                              ? Colors.grey
-                              : AppColors.instance.black600,
+                          canUpload ? AppColors.instance.black600 : Colors.grey,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -214,7 +266,7 @@ class _UploadWorkImagesSheetState extends ConsumerState<UploadWorkImagesSheet>
                         isLoading
                             ? Loadingstates()
                             : Text(
-                              "Upload",
+                              "Upload & Complete",
                               style: TextStyle(
                                 fontSize: 16,
                                 color: AppColors.instance.grey200,
@@ -223,6 +275,34 @@ class _UploadWorkImagesSheetState extends ConsumerState<UploadWorkImagesSheet>
                             ),
                   ),
                 ),
+
+                const SizedBox(height: 12),
+
+                /// SECONDARY ACTION — Complete without proof
+                Center(
+                  child: TextButton(
+                    onPressed:
+                        isLoading
+                            ? null
+                            : () => _confirmCompleteWithoutProof(
+                              context,
+                              provider,
+                              isLoading,
+                            ),
+                    child: Text(
+                      "Complete without proof",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        fontSize: 14,
+                        decoration: TextDecoration.underline,
+                        decorationColor: AppColors.instance.black400,
+                        color: AppColors.instance.black400,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 10),
               ],
             ),
           ),

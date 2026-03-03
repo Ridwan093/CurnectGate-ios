@@ -1,10 +1,8 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/estate_management/submit_works_order/model/enum/status_num.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/get_workOder/work_order.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/get_workOder/work_order_data.dart';
-import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/status_progress_widget.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +18,7 @@ class Workoderlist extends ConsumerWidget {
     if (dateString == null || dateString.isEmpty) return '';
     try {
       final date = DateTime.parse(dateString);
-      return DateFormat('M/d').format(date);
+      return DateFormat('MMM d, yyyy').format(date);
     } catch (e) {
       return '';
     }
@@ -34,62 +32,33 @@ class Workoderlist extends ConsumerWidget {
       itemCount: data?.workorders.data.length,
       itemBuilder: (BuildContext context, int index) {
         final vendorLog = data?.workorders.data[index];
-        return _buildListContent(vendorLog, context, ref, size);
+        return WorkOrderCard(
+          onChange: () {
+            showUserBottomSheet(
+              context: context,
+              headertitle: "Manage Vendor Log",
+              headersubtitle: "Manage  ${vendorLog?.category?.name ?? ""}",
+              ref: ref,
+              bottom: BottomSheetView.vendorLog,
+              id: vendorLog?.id ?? 0,
+              vendor: vendorLog,
+            );
+          },
+          data: WorkOrderCardData(
+            vendor: vendorLog,
+
+            title: vendorLog?.category?.name ?? "",
+            location:
+                "${vendorLog?.estateAddress?.blockNumber ?? ""} . ${vendorLog?.estateAddress?.flatNumber ?? ""}",
+            code: vendorLog?.vendorAccessCode ?? "",
+            startDate: _formatDate(vendorLog?.startDate ?? ""),
+            endDate: _formatDate(vendorLog?.endDate ?? ""),
+            workers: vendorLog?.numberOfWorkers ?? 0,
+            status: _buildStatusProgress(vendorLog?.status ?? ""),
+            etaText: _statuscheck(vendorLog?.status ?? ""),
+          ),
+        );
       },
-    );
-  }
-
-  Widget _buildListContent(
-    WorkOrder? vendor,
-    BuildContext context,
-    WidgetRef ref,
-    Size size,
-  ) {
-    return Container(
-      margin: EdgeInsets.only(top: 20),
-
-      width: size.width,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: AppColors.instance.grey300,
-      ),
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(15),
-        child: Column(
-          spacing: 10,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildvendorcardHead(ref, context, vendor),
-            _buildheaderText(vendor?.category?.name ?? ""),
-            _buildreUsableListTile(
-              title: "Start",
-              trailing: _formatDate(vendor?.startDate ?? ""),
-              isCode: false,
-            ),
-            _buildreUsableListTile(
-              title: "End",
-              trailing: _formatDate(vendor?.endDate ?? ""),
-              isCode: false,
-            ),
-            _buildreUsableListTile(
-              title: "No of Workers",
-              trailing: vendor?.numberOfWorkers.toString() ?? "",
-              isCode: false,
-            ),
-            _buildreUsableListTile(
-              title: "Code",
-              trailing: vendor?.vendorAccessCode ?? "",
-              isCode: true,
-            ),
-            _buildreUsableListTile(
-              title: "States",
-              trailing: _statuscheck(vendor?.status ?? ""),
-              isCode: false,
-            ),
-            _buildStatusProgress(vendor?.status ?? ""),
-          ],
-        ),
-      ),
     );
   }
 
@@ -113,189 +82,202 @@ class Workoderlist extends ConsumerWidget {
     }
   }
 
-  Widget _buildheaderText(String workType) {
-    return Text(
-      "$workType",
-      style: TextStyle(
-        fontFamily: FontFamilies.interDisplay,
-        fontWeight: FontFamilies.bold,
-        color: AppColors.instance.black600,
+  WorkOrderStatus _buildStatusProgress(String status) {
+    switch (status.toLowerCase()) {
+      case "cancelled":
+        return WorkOrderStatus.completed;
+      case "pending":
+        return WorkOrderStatus.pending;
+
+      case "in_progress":
+        return WorkOrderStatus.inProgress;
+      case "completed":
+        return WorkOrderStatus.completed;
+      case "approved":
+        return WorkOrderStatus.started;
+      default:
+        return WorkOrderStatus.pending;
+    }
+  }
+}
+
+class WorkOrderCardData {
+  final String title;
+  final String location;
+  final String code;
+  final String startDate;
+  final String endDate;
+  final int workers;
+
+  final WorkOrderStatus status;
+  final String? etaText;
+  final WorkOrder? vendor;
+  const WorkOrderCardData({
+    required this.title,
+    required this.location,
+    required this.code,
+    required this.startDate,
+    required this.endDate,
+    required this.workers,
+    required this.status,
+    required this.vendor,
+    this.etaText,
+  });
+}
+
+class WorkOrderCard extends StatelessWidget {
+  final WorkOrderCardData data;
+  final VoidCallback? onChange;
+
+  const WorkOrderCard({super.key, required this.data, this.onChange});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+    
+
+    return Padding(
+      padding: EdgeInsets.only(top: 12, bottom: 10),
+      child: Material(
+        elevation: 3,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          width: size.width,
+
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.instance.grey300),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _Header(data: data, onChange: onChange),
+
+              const SizedBox(height: 16),
+
+              _DateRow(data: data),
+
+              const SizedBox(height: 12),
+
+              _WorkersRow(count: data.workers),
+
+              const SizedBox(height: 16),
+
+              _StatusBanner(data: data),
+
+              const SizedBox(height: 16),
+
+              _ProgressStepper(status: data.status),
+            ],
+          ),
+        ),
       ),
     );
   }
+}
 
-  Widget _buildreUsableListTile({
-    required String title,
-    required String trailing,
-    required bool isCode,
-  }) {
+class _Header extends ConsumerWidget {
+  final WorkOrderCardData data;
+  final VoidCallback? onChange;
+
+  const _Header({required this.data, required this.onChange});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontSize: 13,
-            color: AppColors.instance.black300,
+        CircleAvatar(
+          radius: 22,
+          backgroundColor: AppColors.instance.teal300,
+          child: Icon(Icons.water_drop, color: Colors.white, size: 20),
+        ),
+
+        const SizedBox(width: 12),
+
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                data.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: AppColors.instance.black600,
+                ),
+              ),
+              Text(
+                data.location,
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  fontSize: 13,
+                  color: AppColors.instance.black400,
+                ),
+              ),
+            ],
           ),
         ),
-        Row(
+        const SizedBox(width: 12),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              trailing,
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontSize: 13,
-                color: AppColors.instance.black600,
+            if (data.status == WorkOrderStatus.inProgress ||
+                data.status == WorkOrderStatus.started) ...[
+              _builduplodButton(ref, context, data.vendor),
+            ] else if (data.status == WorkOrderStatus.pending) ...[
+              OutlinedButton(
+                onPressed: onChange,
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: AppColors.instance.teal300),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  "Change",
+                  style: TextStyle(
+                    color: AppColors.instance.teal300,
+                    fontFamily: FontFamilies.interDisplay,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
-            ),
-            isCode
-                ? InkWell(
+            ],
+
+            SizedBox(height: 20),
+            Row(
+              children: [
+                Text(
+                  data.code,
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontSize: 18,
+                    color: AppColors.instance.black400,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                InkWell(
                   onTap: () {
-                    Clipboard.setData(ClipboardData(text: trailing));
+                    Clipboard.setData(ClipboardData(text: data.code));
                   },
                   child: Image.asset(
                     AssetPaths.clipboard,
                     height: 15,
                     width: 15,
                   ),
-                )
-                : SizedBox(),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStatusProgress(String status) {
-    switch (status.toLowerCase()) {
-      case "cancelled":
-        return _buildStatusWidget(status, TaskStatus.complete);
-      case "pending":
-        return _buildStatusWidget(status, TaskStatus.pending);
-
-      case "in_progress":
-        return _buildStatusWidget(status, TaskStatus.inProgress);
-      case "completed":
-        return _buildStatusWidget(status, TaskStatus.complete);
-      case "approved":
-        return _buildStatusWidget(status, TaskStatus.start);
-      default:
-        return _buildStatusWidget(status, TaskStatus.pending);
-    }
-  }
-
-  Widget _buildStatusWidget(String status, TaskStatus state) {
-    // Color getLabelColor(TaskStatus current, TaskStatus target) {
-    //   if (current.index >= target.index) {
-    //     return AppColors.instance.black600; // highlighted (or use custom color)
-    //   }
-    //   return AppColors.instance.black300; // dimmed
-    // }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ProgressLine(
-          status: state,
-          height: 5,
-          progressColor: AppColors.instance.yellow500,
-        ),
-        const SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildStatusLabel("Pending", state, TaskStatus.pending),
-            _buildStatusLabel("Start", state, TaskStatus.start),
-            _buildStatusLabel("In Progress", state, TaskStatus.inProgress),
-            _buildStatusLabel("Completed", state, TaskStatus.complete),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Color _checkColor(String status) {
-    switch (status.toLowerCase()) {
-      case "pending":
-        return AppColors.instance.blue500; // Blue 600 - professional, calm
-      case "start":
-        return AppColors.instance.yellow500; // Amber 400 - noticeable, warm
-      case "in progress":
-        return const Color(
-          0xFF64748B,
-        ); // Blue Grey 500 - neutral, in-progress feel
-      case "completed":
-        return AppColors.instance.teal500; // Green 600 - success/completed
-      default:
-        return const Color(0xFF374151); // Grey 700 - default/unknown
-    }
-  }
-
-  Widget _buildStatusLabel(
-    String label,
-    TaskStatus currentState,
-    TaskStatus targetState,
-  ) {
-    final bool isActive = currentState.index >= targetState.index;
-    final Color textColor =
-        isActive ? _checkColor(label) : AppColors.instance.black300;
-
-    return Flexible(
-      // ← Key: allows shrinking + clipping
-      child: Text(
-        label,
-        overflow: TextOverflow.ellipsis, // ← Clips long text safely
-        maxLines: 1,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: textColor,
-          fontWeight: FontFamilies.bold,
-          fontFamily: FontFamilies.interDisplay,
-          fontSize: 14,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildvendorcardHead(
-    WidgetRef ref,
-    BuildContext context,
-    WorkOrder? vendor,
-  ) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        CircleAvatar(
-          backgroundColor: AppColors.instance.teal300,
-          child: Center(
-            child: Image.asset(AssetPaths.waterDrop, height: 20, width: 20),
-          ),
-        ),
-        if (vendor!.status!.contains("approved")) ...[
-          _builduplodButton(ref, context, vendor),
-        ] else
-          InkWell(
-            onTap:
-                () => showUserBottomSheet(
-                  context: context,
-                  headertitle: "Manage Vendor Log",
-                  headersubtitle: "Manage  ${vendor.category?.name ?? ""}",
-                  ref: ref,
-                  bottom: BottomSheetView.vendorLog,
-                  id: vendor.id ?? 0,
-                  vendor:  vendor,
                 ),
-            child: Text(
-              "Change",
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontWeight: FontFamilies.bold,
-                color: AppColors.instance.teal300,
-              ),
+              ],
             ),
-          ),
+          ],
+        ),
       ],
     );
   }
@@ -325,3 +307,250 @@ class Workoderlist extends ConsumerWidget {
     );
   }
 }
+
+class _DateRow extends StatelessWidget {
+  final WorkOrderCardData data;
+
+  const _DateRow({required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Divider(color: AppColors.instance.grey400),
+        SizedBox(height: 5),
+        Row(
+          children: [
+            Expanded(child: _DateItem(label: "Start", value: data.startDate)),
+            Container(
+              alignment: Alignment.bottomCenter,
+              width: 1,
+              height: 45,
+              color: AppColors.instance.grey400,
+            ),
+            SizedBox(width: 10),
+            Expanded(child: _DateItem(label: "End", value: data.endDate)),
+          ],
+        ),
+        SizedBox(height: 5),
+        Divider(color: AppColors.instance.grey400),
+      ],
+    );
+  }
+}
+
+class _DateItem extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _DateItem({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(fontSize: 13, color: AppColors.instance.black400),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: AppColors.instance.black600,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _WorkersRow extends StatelessWidget {
+  final int count;
+
+  const _WorkersRow({required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          "Workers",
+          style: TextStyle(fontSize: 13, color: AppColors.instance.black400),
+        ),
+        const Spacer(),
+        Text(
+          count.toString(),
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: AppColors.instance.black600,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StatusBanner extends StatelessWidget {
+  final WorkOrderCardData data;
+
+  const _StatusBanner({required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        // borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            _buildStatusProgress(data.status),
+            color: AppColors.instance.black600,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              "${data.etaText ?? ''}",
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                fontWeight: FontWeight.w600,
+                color: AppColors.instance.black600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  IconData _buildStatusProgress(WorkOrderStatus status) {
+    switch (status) {
+      case WorkOrderStatus.completed:
+        return Icons.check_circle;
+      case WorkOrderStatus.pending:
+        return Icons.access_time;
+
+      case WorkOrderStatus.inProgress:
+        return Icons.hourglass_empty;
+
+      case WorkOrderStatus.started:
+        return Icons.start;
+    }
+  }
+}
+
+class _ProgressStepper extends StatelessWidget {
+  final WorkOrderStatus status;
+
+  const _ProgressStepper({required this.status});
+
+  bool _isDone(WorkOrderStatus step) => status.index >= step.index;
+
+  @override
+  Widget build(BuildContext context) {
+    final steps = WorkOrderStatus.values;
+    final textScale = MediaQuery.textScaleFactorOf(context);
+
+    // Clamp scale so accessibility doesn't break layout
+    final safeScale = textScale.clamp(0.9, 1.2);
+
+    return Row(
+      children: List.generate(steps.length, (index) {
+        final step = steps[index];
+        final done = _isDone(step);
+        final isLast = index == steps.length - 1;
+
+        return Expanded(
+          child: Row(
+            children: [
+              /// STEP NODE + LABEL
+              Expanded(
+                child: Row(
+                  children: [
+                    Icon(
+                      done ? Icons.check_circle : Icons.radio_button_unchecked,
+                      size: 20,
+                      color:
+                          done
+                              ? AppColors.instance.teal300
+                              : AppColors.instance.grey400,
+                    ),
+                    SizedBox(width: 4 * safeScale),
+
+                    /// 🔥 FittedBox prevents overflow on tiny screens
+                    Expanded(
+                      child: FittedBox(
+                        alignment: Alignment.centerLeft,
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          _label(step),
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 20 * safeScale,
+                            fontFamily: FontFamilies.interDisplay,
+                            fontWeight: FontFamilies.bold,
+                            color:
+                                done
+                                    ? AppColors.instance.teal300
+                                    : AppColors.instance.grey400,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              /// CONNECTOR
+              if (!isLast)
+                Container(
+                  width: 16 * safeScale,
+                  height: 5,
+                  margin: EdgeInsets.symmetric(horizontal: 4 * safeScale),
+                  color:
+                      status.index > index
+                          ? AppColors.instance.teal300
+                          : AppColors.instance.grey500,
+                ),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+
+  String _label(WorkOrderStatus s) {
+    switch (s) {
+      case WorkOrderStatus.pending:
+        return "Pending";
+      case WorkOrderStatus.started:
+        return "Started";
+      case WorkOrderStatus.inProgress:
+        return "In Progress";
+      case WorkOrderStatus.completed:
+        return "Completed";
+    }
+  }
+}
+
+String _label(WorkOrderStatus s) {
+  switch (s) {
+    case WorkOrderStatus.pending:
+      return "Pending";
+    case WorkOrderStatus.started:
+      return "Started";
+    case WorkOrderStatus.inProgress:
+      return "In Progress";
+    case WorkOrderStatus.completed:
+      return "Completed";
+  }
+}
+
+enum WorkOrderStatus { pending, started, inProgress, completed }

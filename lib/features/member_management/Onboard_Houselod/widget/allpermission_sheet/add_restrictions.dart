@@ -26,16 +26,15 @@ class _AddRestrictionsState extends ConsumerState<AddRestrictions> {
     '18 hrs',
     '24 hrs',
   ];
-
-  final days = [
-    'Monday',
-    'Tusady',
-    'Wednsday',
-    'Thusday',
-    'Friday',
-    'Saturday',
-    'Sunday',
-  ];
+final days = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday',
+];
   @override
   void dispose() {
     _controler.dispose();

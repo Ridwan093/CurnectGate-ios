@@ -6,13 +6,12 @@ import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/a
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/removeConfirmation_sheet.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/bottomsheet_details.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/provider/active_provider.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/widget/custom_validity.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/generateOTP_with_validity.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/scheduleOTPS.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_event_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/resv_model/rsvp_event_history.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/EventCodes/event_code_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/remider/reminder_model.dart';
 import 'package:curnectgate/features/operations/violation/widget/report_file_uplode.dart';
 import 'package:curnectgate/features/operations/violation/widget/violation_form_bottom_sheet.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/dashbord_Model/payment_dashboard_data.dart';
@@ -35,7 +34,9 @@ void showUserBottomSheet({
   String? additional_notes,
   String? device_id,
   WorkOrder? vendor,
+
   int? id,
+  ReminderModel? activity,
 }) {
   ref.read(bottomSheetStateProvider.notifier).state =
       BottomSheetView.userDetails;
@@ -43,6 +44,7 @@ void showUserBottomSheet({
     context: context,
     isScrollControlled: true,
     enableDrag: true,
+    useSafeArea: true,
     isDismissible: true,
     useRootNavigator: true,
     backgroundColor: Colors.transparent,
@@ -51,60 +53,72 @@ void showUserBottomSheet({
       minWidth: double.infinity,
     ),
     builder: (BuildContext context) {
-      return 
-           Container(
-            width: MediaQuery.sizeOf(context).width,
-            padding:
-                bottom == BottomSheetView.securityViolationTrack ||
-                        bottom == BottomSheetView.mentainLog ||
-                        bottom == BottomSheetView.optionForIdAndCode ||
-                        bottom == BottomSheetView.optionForAll ||
-                        bottom == BottomSheetView.optionForScan ||
-                        bottom == BottomSheetView.events ||
-                        bottom == BottomSheetView.eventsDetails ||
-                        bottom == BottomSheetView.workOderSeletion ||
-                        bottom == BottomSheetView.eventRsvpDetails ||
-                        bottom == BottomSheetView.afterphoto
-                    ? null
-                    : EdgeInsets.all(20),
-            margin: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            child: Consumer(
-      builder: (context, ref, _) {
-        final currentView = ref.watch(bottomSheetStateProvider);
+      final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+      final safeBottom = MediaQuery.of(context).padding.bottom;
 
-        return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          child: _buildCurrentView(
-            currentView,
-            context,
-            ref,
-            headertitle,
-            headersubtitle,
-            bottom,
-            event,
-            eventCode,
-            dashbordData,
-            id,
-            digital_id_code,
-            access_type,
-            location,
-            additional_notes,
-            device_id,
-            rsvpdata,
-            vendor
+      return SafeArea(
+        top: false, // important for bottom sheets
+        child: Container(
+          width: MediaQuery.sizeOf(context).width,
+          padding:
+              bottom == BottomSheetView.securityViolationTrack ||
+                      bottom == BottomSheetView.mentainLog ||
+                      bottom == BottomSheetView.optionForIdAndCode ||
+                      bottom == BottomSheetView.optionForAll ||
+                      bottom == BottomSheetView.optionForScan ||
+                      bottom == BottomSheetView.events ||
+                      bottom == BottomSheetView.eventsDetails ||
+                      bottom == BottomSheetView.workOderSeletion ||
+                      bottom == BottomSheetView.eventRsvpDetails ||
+                      bottom == BottomSheetView.afterphoto ||
+                      bottom == BottomSheetView.permitAccces
+                  ? null
+                  : const EdgeInsets.all(20),
+
+          // ✅ PRO FIX — handle BOTH keyboard and nav bar
+          margin: EdgeInsets.only(bottom: bottomInset),
+
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
-        );
-      },
-    ),
-          );
-        },
-     
+
+          child: Padding(
+            // ✅ protects against nav bar
+            padding: EdgeInsets.only(bottom: safeBottom),
+            child: Consumer(
+              builder: (context, ref, _) {
+                final currentView = ref.watch(bottomSheetStateProvider);
+
+                return AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: _buildCurrentView(
+                    currentView,
+                    context,
+                    ref,
+                    headertitle,
+                    headersubtitle,
+                    bottom,
+                    event,
+                    eventCode,
+                    dashbordData,
+                    id,
+                    digital_id_code,
+                    access_type,
+                    location,
+                    additional_notes,
+                    device_id,
+                    rsvpdata,
+                    vendor,
+                    activity,
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      );
+    },
   );
 }
 
@@ -126,6 +140,7 @@ Widget _buildCurrentView(
   String? device_id,
   RsvpEventHistory? event,
   WorkOrder? workOder,
+  ReminderModel? activity,
 ) {
   switch (view) {
     case BottomSheetView.userDetails:
@@ -144,6 +159,7 @@ Widget _buildCurrentView(
         device_id: device_id,
         event: event,
         workOder: workOder,
+        activity: activity,
       );
     case BottomSheetView.permissions:
       return BasicPermission(id: id ?? 0);
@@ -277,6 +293,7 @@ Widget _buildCurrentView(
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
+        location: location,
       );
 
     case BottomSheetView.checkOutWithpermitConfirm:
@@ -402,6 +419,7 @@ Widget _buildCurrentView(
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
+        location: location,
       );
     case BottomSheetView.workOderSeletion:
       return BottomsheetDetails(
@@ -680,21 +698,16 @@ Widget _buildCurrentView(
         bottom: bottom,
       );
     case BottomSheetView.generateOtpwithperiod:
-      return FractionallySizedBox(
-        heightFactor: 0.6,
-        child: ViolationFormBottomSheet(
-          titlefontSize: 18,
-          subtitlefontSize: 13,
-          widget: GenerateOTPWithValidity(),
-          title: "Generate OTP with validity period",
-          subtitle: "Select a date and time for the OTP to be generated.",
-        ),
+      return BottomsheetDetails(
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
       );
     case BottomSheetView.validatorcustom:
-      return CustomValidity(
-        onChanged:
-            (value) =>
-                ref.read(generateNotifierProvider.notifier).setPeriod(value),
+      return BottomsheetDetails(
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
       );
     case BottomSheetView.scheduleOtp:
       return FractionallySizedBox(

@@ -42,7 +42,7 @@ class _EstateCodeVerificationScreenState
 
     return Scaffold(
       appBar: _buildAppBar(),
-      bottomNavigationBar: _buildBottomAction(),
+      bottomNavigationBar: SafeArea(top: false, child: _buildBottomAction()),
       body: _biuldbody(size),
     );
   }

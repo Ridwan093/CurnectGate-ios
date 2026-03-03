@@ -45,12 +45,15 @@ class MemberCodeSubmissionNotifier extends AutoDisposeAsyncNotifier<void> {
       if (context.mounted) {
         showModalBottomSheet(
           context: context,
+          useSafeArea: true,
           isScrollControlled: true,
           builder:
-              (context) => ValidationBottomSheet(
-                memberCode: formState.code,
+              (context) => SafeArea(
+                child: ValidationBottomSheet(
+                  memberCode: formState.code,
 
-                estateLogo: estateLogo,
+                  estateLogo: estateLogo,
+                ),
               ),
         );
       }

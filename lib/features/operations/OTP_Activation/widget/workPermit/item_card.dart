@@ -9,76 +9,99 @@ class ItemCard extends StatelessWidget {
   const ItemCard({super.key, required this.item, required this.onRemove});
 
   @override
+  @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          margin: const EdgeInsets.symmetric(horizontal: 6),
-          padding: const EdgeInsets.only(
-            left: 10,
-            right: 10,
-            bottom: 10,
-            top: 5,
-          ),
-          decoration: BoxDecoration(
-            color: AppColors.instance.teal100,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(right: 16.0, top: 4),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      item['item_name'] ?? '',
-                      overflow: TextOverflow.ellipsis,
+    final size = MediaQuery.sizeOf(context);
+
+    return Dismissible(
+      key: ValueKey(item.hashCode),
+
+      direction: DismissDirection.endToStart,
+      confirmDismiss: (_) async {
+        return await showDialog<bool>(
+              context: context,
+              builder:
+                  (_) => AlertDialog(
+                    title: Text(
+                      'Remove item?',
                       style: TextStyle(
                         fontFamily: FontFamilies.interDisplay,
-                        fontWeight: FontFamilies.bold,
-                        color: AppColors.instance.black500,
+
+                        color: AppColors.instance.black600,
                       ),
                     ),
-                    SizedBox(width: 12),
-                    // Padding(
-                    //   padding: const EdgeInsets.only(bottom: 20, right: 10),
-                    //   child: InkWell(
-                    //     onTap: onRemove,
-                    //     child: Align(
-                    //       alignment: Alignment.topRight,
-                    //       child: CircleAvatar(
-                    //         backgroundColor: AppColors.instance.grey200,
-                    //         radius: 10,
-                    //         child: Icon(
-                    //           Icons.close,
-                    //           size: 16,
-                    //           color: AppColors.instance.error500,
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  "Qty: ${item['quantity']}",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    color: AppColors.instance.black300,
-                    fontSize: 12,
+                    content: Text(
+                      'This action cannot be undone.',
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+
+                        color: AppColors.instance.black400,
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(
+                            fontFamily: FontFamilies.interDisplay,
+                            fontSize: 12,
+                            color: AppColors.instance.black300,
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: Text(
+                          'Remove',
+                          style: TextStyle(
+                            fontFamily: FontFamilies.interDisplay,
+                            fontSize: 12,
+                            color: AppColors.instance.error500,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
+            ) ??
+            false;
+      },
+      onDismissed: (_) => onRemove(),
+
+      background: _buildDeleteBackground(),
+
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Material(
+          borderRadius: BorderRadius.circular(10),
+          elevation: .7,
+          color: Colors.white,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            width: size.width,
+            padding: const EdgeInsets.only(
+              left: 10,
+              right: 10,
+              bottom: 5,
+              top: 5,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.check_circle, color: Colors.green, size: 23),
+                const SizedBox(width: 5),
                 Flexible(
                   child: Text(
-                    item['item_category'] ?? '',
+                    " ${item['quantity']} X ${item['item_name'] ?? ''}",
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
+                      fontWeight: FontFamilies.bold,
+                      color: AppColors.instance.black400,
                       fontSize: 11,
-                      color: AppColors.instance.black300,
                     ),
                   ),
                 ),
@@ -86,23 +109,34 @@ class ItemCard extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
-          right: 10,
-          top: 5,
-          child: InkWell(
-            onTap: onRemove,
-            child: CircleAvatar(
-              backgroundColor: AppColors.instance.grey200,
-              radius: 10,
-              child: Icon(
-                Icons.close,
-                size: 16,
-                color: AppColors.instance.error500,
-              ),
+      ),
+    );
+  }
+
+  Widget _buildDeleteBackground() {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      alignment: Alignment.centerRight,
+      decoration: BoxDecoration(
+        color: AppColors.instance.error500,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Icon(Icons.delete_outline, color: Colors.white),
+          SizedBox(width: 6),
+          Text(
+            "Remove",
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: FontFamilies.interDisplay,
+              fontWeight: FontWeight.w600,
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

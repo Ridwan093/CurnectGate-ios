@@ -1,8 +1,8 @@
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/auth/widget/tempt_pass_form.dart';
+import 'package:curnectgate/features/estate_management/screen_managment.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/loading_screen/loading_page.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
-import 'package:curnectgate/features/estate_management/screen_managment.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,7 +37,9 @@ class _SignInState extends ConsumerState<ChangeTemporaryPassword> {
     return Scaffold(
       appBar: state.changTemporyPassLoading ? null : _buildAppBar(),
       bottomNavigationBar:
-          state.changTemporyPassLoading ? null : _buildBottomAction(),
+          state.changTemporyPassLoading
+              ? null
+              : SafeArea(top: false, child: _buildBottomAction()),
       body:
           state.changTemporyPassLoading
               ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)

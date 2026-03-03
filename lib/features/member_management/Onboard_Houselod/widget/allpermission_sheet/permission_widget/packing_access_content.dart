@@ -138,10 +138,10 @@ class _PackingAccessContentState extends ConsumerState<PackingAccessContent> {
                               iconColors: AppColors.instance.black600,
                               positionNumber: 70,
                             );
-                          } else if (_rasoncontoller.text.length < 15) {
+                          } else if (_rasoncontoller.text.length < 10) {
                             showCustomSuccessToast(
                               context: context,
-                              message: "Reason must be at least 15 characters",
+                              message: "Reason must be at least 10 characters",
                               color: AppColors.instance.grey500,
                               icon: Icons.error,
                               iconColors: AppColors.instance.black600,

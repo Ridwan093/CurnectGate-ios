@@ -39,7 +39,8 @@ dependencies:
   signature: ^6.3.0
   crypto: ^3.0.6
   flutter_paystack_plus: ^2.3.0
-  # mobile_scanner: ^7.1.2
+  pdfx: ^2.9.2
+  confetti: ^0.8.0
   qr_code_scanner_plus: ^2.0.12
   device_info_plus: ^12.1.0
   package_info_plus: ^9.0.0
@@ -54,6 +55,8 @@ dependencies:
   json_annotation: ^4.9.0
   device_preview: ^1.2.0
   dart_pusher_channels: ^1.2.3
+  screenshot: ^3.0.0
+  pdf: ^3.11.3
 dev_dependencies:
   flutter_test:
     sdk: flutter

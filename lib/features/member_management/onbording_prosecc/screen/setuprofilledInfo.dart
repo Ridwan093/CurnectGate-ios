@@ -105,7 +105,7 @@ class _SetUppRofiledState extends ConsumerState<SetUppRofiled> {
 
     return Scaffold(
       appBar: _buildAppBar(),
-      bottomNavigationBar: _buildBottomAction(),
+      bottomNavigationBar: SafeArea(top: false, child: _buildBottomAction()),
       body:
           state.creatPassLoading
               ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)

@@ -87,9 +87,12 @@ class _SignInState extends ConsumerState<SignIn> {
         bottomNavigationBar:
             state.loginLodaing
                 ? null
-                : _buildBottomAction(
-                  _emailController.text,
-                  _passwordController.text,
+                : SafeArea(
+                  top: false,
+                  child: _buildBottomAction(
+                    _emailController.text,
+                    _passwordController.text,
+                  ),
                 ),
         body:
             state.loginLodaing

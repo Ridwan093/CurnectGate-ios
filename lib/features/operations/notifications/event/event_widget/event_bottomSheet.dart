@@ -21,12 +21,13 @@ void showEventsDetailBottomSheet(BuildContext context, CalendarEvent data) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
+    useSafeArea: true,
     builder:
         (context) => Container(
           constraints: BoxConstraints(
             maxHeight: MediaQuery.of(context).size.height * 0.9,
           ),
-          child: EventDetaile(data: data),
+          child: SafeArea(child: EventDetaile(data: data)),
         ),
   );
 }

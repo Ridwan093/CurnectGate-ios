@@ -10,8 +10,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ValidateWorkOrderOtp extends ConsumerStatefulWidget {
+  final String type;
   final String validateType;
-  ValidateWorkOrderOtp({super.key, required this.validateType});
+  ValidateWorkOrderOtp({
+    super.key,
+    required this.validateType,
+    required this.type,
+  });
 
   @override
   ConsumerState<ValidateWorkOrderOtp> createState() =>
@@ -22,6 +27,21 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidateWorkOrderOtp> {
   final _otpController = TextEditingController();
   final _noteController = TextEditingController();
   List<String> _accessType = ["Checkin", "Checkout", "Checkout with Permit"];
+  List<String> _checkInList = ["Checkin"];
+  List<String> _checkOutList = ["Checkout", "Checkout with Permit"];
+
+  List<String> _checkIF(String status) {
+    switch (status.toLowerCase()) {
+      case "general":
+        return _accessType;
+      case "checkout":
+        return _checkOutList;
+      case "checkin":
+        return _checkInList;
+      default:
+        return _accessType;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +115,7 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidateWorkOrderOtp> {
               ),
               SizedBox(height: 10),
               CoDropdown(
-                item: _accessType,
+                item: _checkIF(widget.type),
                 onChanged: (value) {
                   ref
                       .read(oTpformProvider.notifier)
@@ -110,7 +130,7 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidateWorkOrderOtp> {
                 },
                 label: "Access Type",
                 value:
-                    _accessType.contains(notifiers.accessType)
+                    _checkIF(widget.type).contains(notifiers.accessType)
                         ? notifiers.accessType
                         : null,
                 errorKey: "Access Type",

@@ -18,7 +18,7 @@ class TenantAdditionalFields extends ConsumerWidget {
     required this.emergencyContactname,
     required this.emergencyContactphnoe,
   });
-  final List<String> _rental_frequency = ['Monthly',];
+  final List<String> _rental_frequency = ['Monthly'];
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(formProvider);

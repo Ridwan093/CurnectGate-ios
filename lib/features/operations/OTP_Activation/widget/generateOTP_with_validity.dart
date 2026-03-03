@@ -54,7 +54,6 @@ class _GenerateOTPWithValidityState
     final visitPeriod = ref.watch(
       generateNotifierProvider.select((s) => s.visitperiod),
     );
-    final isLoading = ref.watch(formProvider).generateOtpWithValidatorLoading;
     final size = MediaQuery.sizeOf(context);
 
     return Column(

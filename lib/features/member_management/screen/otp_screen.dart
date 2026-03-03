@@ -52,10 +52,13 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
       bottomNavigationBar:
           state.otpVerifyLoading
               ? null
-              : _buildVerifyButton(
-                widget.data!["email"] ?? "",
-                _otpController.text.trim(),
-                context,
+              : SafeArea(
+                top: false,
+                child: _buildVerifyButton(
+                  widget.data!["email"] ?? "",
+                  _otpController.text.trim(),
+                  context,
+                ),
               ),
       body:
           state.otpVerifyLoading

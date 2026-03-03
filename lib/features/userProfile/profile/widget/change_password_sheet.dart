@@ -103,11 +103,9 @@ class ChangePasswordSheet extends ConsumerWidget {
                 state.allNewPassValid
                     ? () async {
                       final authData = await SharedPrefsService().getAuthData();
-                      final data = authData?['user'];
+
                       if (authData != null) {
-                        final gender = data?['gender'] as String?;
-                        final notfypre =
-                            data?['preferred_notification'] as String?;
+
 
                         formprovider.updateUserPassWord(
                           context: context,

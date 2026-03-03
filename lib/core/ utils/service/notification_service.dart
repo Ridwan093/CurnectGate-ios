@@ -7,6 +7,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// Handles both FCM (remote) and local notifications for iOS & Android.
 class NotificationService {
@@ -141,6 +142,22 @@ class NotificationService {
 
     final DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings(
+          notificationCategories: [
+            DarwinNotificationCategory(
+              'AMBER_CATEGORY',
+              actions: [
+                DarwinNotificationAction.plain(
+                  'OPEN_URL',
+                  'View Alert',
+
+                  options: {
+                    DarwinNotificationActionOption.foreground,
+                    DarwinNotificationActionOption.destructive,
+                  },
+                ),
+              ],
+            ),
+          ],
           requestAlertPermission: true,
           requestBadgePermission: true,
           requestSoundPermission: true,
@@ -154,8 +171,19 @@ class NotificationService {
 
     await _localNotifications.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
-        print('📩 Local notification tapped with payload: ${response.payload}');
+
+      onDidReceiveNotificationResponse: (NotificationResponse response) async {
+        log('📩 Local notification tapped with payload: ${response.payload}');
+        final payload = response.payload;
+        if (response.actionId == 'OPEN_URL' &&
+            payload != null &&
+            payload.isNotEmpty &&
+            payload.startsWith('http')) {
+          final url = response.payload;
+          if (url != null && url.isNotEmpty) {
+            await launchUrl(Uri.parse(url));
+          }
+        }
       },
     );
   }
@@ -175,160 +203,244 @@ class NotificationService {
     }
   }
 
-  /// Show local notification for foreground messages
   Future<void> _showLocalNotification(RemoteMessage message) async {
     final notification = message.notification;
     final data = message.data;
 
-    String type = data['type'] ?? 'general';
-    String isAmber = data["is_amber_alert"];
-    String title = notification?.title ?? 'Notification';
-    String body = notification?.body ?? 'You have a new message';
+    final String type = data['type'] ?? 'general';
+    final String isAmber = (data["is_amber_alert"] ?? "false").toString();
+    final String priority = (data["priority"] ?? "").toString();
+    final String? actionText = data["action_text"];
+    final String? actionUrl = data["action_url"];
+    final String playsound = (data["include_audio"] ?? "false").toString();
+    final String byPassSetting =
+        (data["bypass_device_settings"] ?? "false").toString();
 
-    String imagePath = await downloadAndSaveImage(
-      data["media_url"],
-      'chat_${data["senderId"]}.jpg',
+    final String title = notification?.title ?? 'Notification';
+    final String body = notification?.body ?? 'You have a new message';
+
+    // ✅ download image if exists
+    String? imagePath;
+    if (data["media_url"] != null && data["media_url"].toString().isNotEmpty) {
+      imagePath = await downloadAndSaveImage(
+        data["media_url"],
+        'notif_${DateTime.now().millisecondsSinceEpoch}.jpg',
+      );
+    }
+
+    final androidDetails = _getAndroidChannelDetails(
+      byPassSetting: byPassSetting,
+      playsound: playsound,
+      type: type,
+      imagePath: imagePath,
+      isAmber: isAmber,
+      priority: priority,
+      actionText: actionText,
+      actionUrl: actionUrl,
+      body: body,
     );
 
-    final AndroidNotificationDetails androidDetails = _getAndroidChannelDetails(
-      type,
-      imagePath,
-      isAmber,
+    final iosDetails = _getIOSDetails(
+      byPassSetting: byPassSetting,
+      isAmber: isAmber,
+      priority: priority,
+      playsound: playsound,
     );
 
-    final NotificationDetails notificationDetails = NotificationDetails(
+    final notificationDetails = NotificationDetails(
       android: androidDetails,
+      iOS: iosDetails,
     );
 
     await _localNotifications.show(
-      notification.hashCode,
+      DateTime.now().millisecondsSinceEpoch ~/ 1000,
       title,
       body,
       notificationDetails,
-      payload: type,
+      payload: actionUrl, // 👈 used when tapped
     );
   }
 
-  /// Define different notification channels based on type
-  AndroidNotificationDetails _getAndroidChannelDetails(
-    String type,
-    String imageUrl,
-    String isAmber,
-  ) {
-    switch (isAmber.toLowerCase()) {
-      case "true":
+  AndroidNotificationDetails _getAndroidChannelDetails({
+    required String type,
+    required String? imagePath,
+    required String isAmber,
+    required String priority,
+    required String? actionText,
+    required String? actionUrl,
+    required String playsound,
+    required String byPassSetting,
+    required String body,
+  }) {
+    final bool isAmberTrue = isAmber.toLowerCase() == "true";
+    final String priorityLower = priority.toLowerCase();
+
+    final bool isUrgentAmber = isAmberTrue && priorityLower == "urgent";
+    final bool isHighAmber = isAmberTrue && priorityLower == "high";
+    final bool isNormalAmber =
+        isAmberTrue && (priorityLower.isEmpty || priorityLower == "normal");
+    final bool shouldBypass = byPassSetting.toLowerCase() == "true";
+
+    final bool shouldShowActionByPriority =
+        priorityLower == 'high' || priorityLower == 'urgent';
+
+    final bool showAction =
+        shouldShowActionByPriority && actionText != null && actionUrl != null;
+    final bool isplaySound = playsound.toLowerCase() == "true";
+
+    String? soundName;
+    if (isAmberTrue && isplaySound) {
+      soundName = 'amber_urgent';
+    }
+    // 🔥 STYLE SELECTION
+    StyleInformation style;
+
+    if (imagePath != null) {
+      style = BigPictureStyleInformation(
+        FilePathAndroidBitmap(imagePath),
+        summaryText: body,
+        htmlFormatSummaryText: true,
+        hideExpandedLargeIcon: true, // ✅ FIXED
+      );
+    } else {
+      style = BigTextStyleInformation(body, htmlFormatBigText: true);
+    }
+
+    // 🔥 CHANNEL SELECTION (restored your logic)
+    switch (type) {
+      case 'payment':
         return AndroidNotificationDetails(
-          'announcement_channel',
-          'Announcements',
-          channelDescription: 'Community announcements and broadcasts',
-          importance: Importance.high,
+          'payment_channel',
+          'Payment Notifications',
+          channelDescription: 'Notifications related to payments',
+          importance: Importance.max,
           priority: Priority.high,
-          playSound: true,
-          styleInformation: BigPictureStyleInformation(
-            FilePathAndroidBitmap(imageUrl),
-            contentTitle: '<b>Announcement</b>',
-            htmlFormatContentTitle: true,
-            htmlFormatSummaryText: true,
-            hideExpandedLargeIcon: true,
-          ),
+          styleInformation: style,
         );
-      case "false":
-        return const AndroidNotificationDetails(
-          'general_channel',
-          'General Notifications',
-          channelDescription: 'Miscellaneous notifications',
-          importance: Importance.defaultImportance,
-          priority: Priority.defaultPriority,
-          playSound: true,
+
+      case 'chat':
+        return AndroidNotificationDetails(
+          'chat_channel',
+          'Chat Notifications',
+          channelDescription: 'Chat messages and replies',
+          importance: Importance.max,
+          priority: Priority.high,
+          largeIcon:
+              imagePath != null ? FilePathAndroidBitmap(imagePath) : null,
+          styleInformation: style,
         );
+
+      case 'reminder':
+        return AndroidNotificationDetails(
+          'reminder_channel',
+          'Reminders',
+          channelDescription: 'Reminders and alerts',
+          importance: Importance.max,
+          priority: Priority.high,
+          styleInformation: style,
+        );
+
       default:
-        return const AndroidNotificationDetails(
-          'general_channel',
-          'General Notifications',
+        // 🔥 determine importance by amber priority
+        Importance importance;
+        Priority notifPriority;
+        bool bypassDnd = false;
+        bool fullScreen = false;
+        String channelId = 'general_channel';
+        String channelName = 'General Notifications';
+
+        if (isUrgentAmber) {
+          importance = Importance.max;
+          notifPriority = Priority.high;
+          bypassDnd = shouldBypass; // 🔥 key for urgent
+          fullScreen = shouldBypass; // 🔥 emergency feel
+          channelId = 'amber_urgent_channel_v2'; // 🔥 bump version
+          channelName = 'Amber Alerts (Urgent)';
+        } else if (isHighAmber) {
+          importance = Importance.high;
+          notifPriority = Priority.high;
+          channelId = 'amber_high_channel';
+          channelName = 'Amber Alerts (High)';
+        } else if (isNormalAmber) {
+          importance = Importance.defaultImportance;
+          notifPriority = Priority.defaultPriority;
+          channelId = 'amber_normal_channel';
+          channelName = 'Amber Alerts';
+        } else {
+          importance = Importance.defaultImportance;
+          notifPriority = Priority.defaultPriority;
+        }
+
+        return AndroidNotificationDetails(
+          channelId,
+          channelName,
           channelDescription: 'Miscellaneous notifications',
-          importance: Importance.defaultImportance,
-          priority: Priority.defaultPriority,
-          playSound: true,
+          importance: importance,
+          priority: notifPriority,
+          playSound: isplaySound,
+          sound: RawResourceAndroidNotificationSound('amber_urgent'),
+          // 🔥 only urgent tries to bypass DND
+          channelBypassDnd: bypassDnd,
+
+          // 🔥 only urgent uses fullscreen
+          fullScreenIntent: fullScreen,
+
+          // collapsed image
+          largeIcon:
+              imagePath != null ? FilePathAndroidBitmap(imagePath) : null,
+
+          styleInformation: style,
+
+          actions:
+              showAction
+                  ? [
+                    AndroidNotificationAction(
+                      'OPEN_URL',
+                      actionText,
+                      showsUserInterface: true,
+                      cancelNotification: true,
+                    ),
+                  ]
+                  : null,
         );
     }
-    // switch (type) {
-    //   case 'payment':
-    //     return const AndroidNotificationDetails(
-    //       'payment_channel',
-    //       'Payment Notifications',
-    //       channelDescription: 'Notifications related to payments',
-    //       importance: Importance.max,
-    //       priority: Priority.high,
-    //       playSound: true,
-    //       ticker: 'payment',
-    //     );
-    //   case 'chat':
-    //     return AndroidNotificationDetails(
-    //       'chat_channel',
-    //       'Chat Notifications',
-    //       channelDescription: 'Chat messages and replies',
-    //       importance: Importance.max,
-    //       priority: Priority.high,
-    //       playSound: true,
-    //       ticker: 'chat',
-    //       largeIcon: FilePathAndroidBitmap(imageUrl),
+  }
 
-    //       // ✅ REPLY ACTION
-    //       actions: <AndroidNotificationAction>[
-    //         AndroidNotificationAction(
-    //           'REPLY_ACTION', // Action key
-    //           'Reply',
-    //           inputs: <AndroidNotificationActionInput>[
-    //             AndroidNotificationActionInput(
-    //               label: 'Type a reply...', // placeholder
-    //             ),
-    //           ],
-    //           showsUserInterface: true,
-    //           allowGeneratedReplies: true,
-    //         ),
-    //       ],
+  DarwinNotificationDetails _getIOSDetails({
+    required String isAmber,
+    required String byPassSetting,
+    required String priority,
+    required String playsound,
+  }) {
+    final bool isAmberTrue = isAmber.toLowerCase() == "true";
+    final String priorityLower = priority.toLowerCase();
 
-    //       styleInformation: const InboxStyleInformation(
-    //         [],
-    //         htmlFormatContentTitle: true,
-    //       ),
-    //     );
+    final bool isUrgentAmber = isAmberTrue && priorityLower == "urgent";
+    final bool isHighAmber = isAmberTrue && priorityLower == "high";
 
-    //   case 'announcement':
-    //     return AndroidNotificationDetails(
-    //       'announcement_channel',
-    //       'Announcements',
-    //       channelDescription: 'Community announcements and broadcasts',
-    //       importance: Importance.high,
-    //       priority: Priority.defaultPriority,
-    //       playSound: true,
-    //       styleInformation: BigPictureStyleInformation(
-    //         FilePathAndroidBitmap(imageUrl),
-    //         contentTitle: '<b>Announcement</b>',
-    //         htmlFormatContentTitle: true,
-    //         htmlFormatSummaryText: true,
-    //         hideExpandedLargeIcon: true,
-    //       ),
-    //     );
-    //   case 'reminder':
-    //     return const AndroidNotificationDetails(
-    //       'reminder_channel',
-    //       'Reminders',
-    //       channelDescription: 'Reminders and alerts',
-    //       importance: Importance.max,
-    //       priority: Priority.high,
-    //       playSound: true,
-    //     );
-    //   default:
-    //     return const AndroidNotificationDetails(
-    //       'general_channel',
-    //       'General Notifications',
-    //       channelDescription: 'Miscellaneous notifications',
-    //       importance: Importance.defaultImportance,
-    //       priority: Priority.defaultPriority,
-    //       playSound: true,
-    //     );
-    // }
+    final bool isplaySound = playsound.toLowerCase() == "true";
+    String? soundName;
+    if (isplaySound) {
+      soundName = 'amber_alert.caf'; // your CAF file name
+    }
+
+    InterruptionLevel level = InterruptionLevel.active;
+
+    if (isUrgentAmber) {
+      level = InterruptionLevel.timeSensitive; // 🔥 strongest allowed
+    } else if (isHighAmber) {
+      level = InterruptionLevel.active;
+    }
+
+    return DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: isplaySound,
+
+      sound: "amber_alert.caf",
+      interruptionLevel: level,
+      categoryIdentifier: isUrgentAmber ? 'AMBER_CATEGORY' : null,
+    );
   }
 
   Future<String> downloadAndSaveImage(String url, String fileName) async {
@@ -370,11 +482,20 @@ class NotificationService {
   // }
 
   /// Background handler (must be top-level)
-  static Future<void> _firebaseMessagingBackgroundHandler(
+  ///
+  Future<void> _firebaseMessagingBackgroundHandler(
     RemoteMessage message,
   ) async {
     await Firebase.initializeApp();
     print('📩 Background message: ${message.data}');
+    await _showLocalNotification(message);
+  }
+
+  Future<void> _openUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
   }
 
   /// Get FCM token for debugging or server registration

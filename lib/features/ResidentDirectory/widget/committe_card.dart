@@ -195,7 +195,10 @@ class CommitteeCard extends StatelessWidget {
                     '${committee.chairperson?.firstname ?? ''} ${committee.chairperson?.lastname ?? ''}',
                   ),
                 if (committee.secretary != null)
-                  _buildLeaderRow('Secretary', '${committee.secretary ?? ""}'),
+                  _buildLeaderRow(
+                    'Secretary',
+                    '${committee.secretary?.firstname ?? ''} ${committee.secretary?.lastname ?? ''}',
+                  ),
               ],
             ),
 

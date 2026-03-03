@@ -43,20 +43,6 @@ class Otpactivation extends ConsumerWidget {
         },
         child: const Icon(Icons.arrow_back_ios_new),
       ),
-      actions: [
-        IconButton(
-          onPressed: () {
-            showUserBottomSheet(
-              context: context,
-              headertitle: "OTP Usage History",
-              headersubtitle: "Track who accessed your property and when.",
-              ref: ref,
-              bottom: BottomSheetView.activeOTPHistory,
-            );
-          },
-          icon: Icon(Icons.history_edu),
-        ),
-      ],
     );
   }
 
@@ -66,7 +52,51 @@ class Otpactivation extends ConsumerWidget {
       padding: const EdgeInsets.all(12),
       child: Column(
         children: [
-          _buildAddMemberButton(size, context, ref),
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: _buildAddMemberButton(
+                  size,
+                  context,
+                  ref,
+                  buttonText: "My Permits",
+                  onTap: () {
+                    showUserBottomSheet(
+                      context: context,
+                      headertitle: "Select option",
+                      headersubtitle: "Manage OTPs for Visitor Access",
+                      ref: ref,
+                      bottom: BottomSheetView.activeOTPHistory,
+                    );
+                  },
+                  buttonColor: AppColors.instance.teal300,
+                  textColor: AppColors.instance.black600,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                flex: 2,
+                child: _buildAddMemberButton(
+                  size,
+                  context,
+                  ref,
+                  textColor: AppColors.instance.grey200,
+                  buttonText: "Add new OTP +",
+                  onTap: () {
+                    showUserBottomSheet(
+                      context: context,
+                      headertitle: "Select option",
+                      headersubtitle: "Manage OTPs for Visitor Access",
+                      ref: ref,
+                      bottom: BottomSheetView.manageOTPforvisitor,
+                    );
+                  },
+                  buttonColor: AppColors.instance.black600,
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 30),
           Row(
             children: [
@@ -76,7 +106,7 @@ class Otpactivation extends ConsumerWidget {
                   "Active OTPs",
                   overflow:
                       TextOverflow
-                          .ellipsis, // ← Safety for very long titles (rare but pro)
+                          .ellipsis,
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     fontSize: 24,
@@ -86,8 +116,8 @@ class Otpactivation extends ConsumerWidget {
                 ),
               ),
 
-              const SizedBox(width: 16), // Consistent gap
-              // Dropdown — fixed compact size
+              const SizedBox(width: 16),
+             
               CustomStatusDropdown(
                 statusOptions: _statusOptions,
                 initialStatus: 'All',
@@ -110,31 +140,39 @@ class Otpactivation extends ConsumerWidget {
     );
   }
 
-  Widget _buildAddMemberButton(Size size, BuildContext context, WidgetRef ref) {
+  Widget _buildAddMemberButton(
+    Size size,
+    BuildContext context,
+    WidgetRef ref, {
+    required String buttonText,
+    required Color buttonColor,
+    required VoidCallback onTap,
+    required Color textColor,
+  }) {
     return InkWell(
-      onTap: () {
-        showUserBottomSheet(
-          context: context,
-          headertitle: "Select option",
-          headersubtitle: "Manage OTPs for Visitor Access",
-          ref: ref,
-          bottom: BottomSheetView.manageOTPforvisitor,
-        );
-      },
+      onTap: onTap,
       child: Container(
         height: 50,
-        width: size.width,
+        // width: size.width,
         decoration: BoxDecoration(
-          color: AppColors.instance.black600,
+          color: buttonColor,
+          border:
+              buttonText.contains("My")
+                  ? Border.all(
+                    color: AppColors.instance.black500,
+                    style: BorderStyle.solid,
+                  )
+                  : null,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(
           child: Text(
-            "Add new OTP +",
+            buttonText,
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.grey200,
-              fontSize: 12,
+              color: textColor,
+              fontSize: 13,
+              fontWeight: FontFamilies.bold,
             ),
           ),
         ),

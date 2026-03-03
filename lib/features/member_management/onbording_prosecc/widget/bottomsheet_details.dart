@@ -26,9 +26,11 @@ import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/a
 import 'package:curnectgate/features/member_management/estate_settings/widget/bottom_seet/emergency.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/screen/workPermit_otpHistory.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/provider/active_provider.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/widget/custom_validity.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/widget/generateOTP_with_validity.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/revokedOTP.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/add_item_bottomsheet.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/Permit_sheet.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/schedul_addItem_bottomsheet.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/schedul_work_permit.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/select_work_permit_bottomSheet.dart';
@@ -50,6 +52,7 @@ import 'package:curnectgate/features/operations/notifications/event/event_widget
 import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_event_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/resv_model/rsvp_event_history.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/EventCodes/event_code_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/remider/reminder_model.dart';
 import 'package:curnectgate/features/operations/violation/widget/comment_view.dart';
 import 'package:curnectgate/features/operations/violation/widget/report_form.dart';
 import 'package:curnectgate/features/operations/violation/widget/resulationTime.dart';
@@ -125,6 +128,7 @@ class BottomsheetDetails extends ConsumerWidget {
   String? device_id;
   PaymentDashboardData? dashborddata;
   WorkOrder? workOder;
+  ReminderModel? activity;
 
   BottomsheetDetails({
     super.key,
@@ -142,6 +146,7 @@ class BottomsheetDetails extends ConsumerWidget {
     this.additional_notes,
     this.device_id,
     this.workOder,
+    this.activity,
   });
 
   @override
@@ -168,7 +173,12 @@ class BottomsheetDetails extends ConsumerWidget {
           private: headertitle,
           puplic: headersubtitle,
         );
-
+      case BottomSheetView.validatorcustom:
+        return CustomValidity(
+          onChanged:
+              (value) =>
+                  ref.read(generateNotifierProvider.notifier).setPeriod(value),
+        );
       case BottomSheetView.eventRsvpDetails:
         // return ActiveHistory();fundingAmount
         return EventRsvpDetaile(data: event!);
@@ -224,12 +234,14 @@ class BottomsheetDetails extends ConsumerWidget {
           title: headertitle,
           subtitle: headersubtitle,
           id: id ?? 0,
+          activity: activity,
         );
       case BottomSheetView.remidermarks:
         return MarksReminder(
           title: headertitle,
           subtitle: headersubtitle,
           id: id ?? 0,
+          activity: activity,
         );
 
       case BottomSheetView.revorkActiveOtp:
@@ -313,7 +325,10 @@ class BottomsheetDetails extends ConsumerWidget {
       case BottomSheetView.validateVendor:
         return ValidateWorkOrders(validateType: "vendor");
       case BottomSheetView.visitorValidation:
-        return ValidateWorkOrderOtp(validateType: "otpValidation");
+        return ValidateWorkOrderOtp(
+          validateType: "otpValidation",
+          type: headertitle,
+        );
 
       case BottomSheetView.digitalIdConfirm:
         return ConfirmentryDigital(
@@ -379,6 +394,17 @@ class BottomsheetDetails extends ConsumerWidget {
         return AccessGrantedDigital(jsonData: headertitle);
       case BottomSheetView.digitalIdDenymessage:
         return DenyEntryDigitalMessage(jsonData: headertitle);
+      case BottomSheetView.generateOtpwithperiod:
+        return FractionallySizedBox(
+          heightFactor: 0.6,
+          child: ViolationFormBottomSheet(
+            titlefontSize: 18,
+            subtitlefontSize: 13,
+            widget: GenerateOTPWithValidity(),
+            title: "Generate OTP with validity period",
+            subtitle: "Select a date and time for the OTP to be generated.",
+          ),
+        );
       //      digitalIdConfirm,
       // // digitalIdDeny,
       // // digitalIdApproved,
@@ -413,16 +439,26 @@ class BottomsheetDetails extends ConsumerWidget {
       case BottomSheetView.eventsDetails:
         return EventDetaile(data: eventData!);
       case BottomSheetView.permitAccces:
-        return SubmitPermitBottomSheet(id: id ?? 0, otp: headertitle);
-      case BottomSheetView.addpermitItems:
-        return AddItemBottomSheet();
+        return SubmitPermitBottomSheet(
+          id: id ?? 0,
+          otp: headertitle,
+          userName: headersubtitle,
+          phoneNumber: location ?? "",
+        );
+      // case BottomSheetView.addpermitItems:
+      //   return AddItemBottomSheet();
       case BottomSheetView.shedulPermit:
         return SubmitSchedulPermitBottomSheet(otp: headertitle, id: id ?? 0);
       case BottomSheetView.schedulpermitItem:
         return SchedulAddItemBottomSheet();
 
       case BottomSheetView.seletPermit:
-        return SelectpermitBottomsheet(otp: headertitle, id: id ?? 0);
+        return SelectpermitBottomsheet(
+          otp: headertitle,
+          id: id ?? 0,
+          username: headersubtitle,
+          phoneNumber: location ?? "",
+        );
       case BottomSheetView.seletctEvent:
         return EventSelected();
       case BottomSheetView.createdEvent:
@@ -600,8 +636,17 @@ class BottomsheetDetails extends ConsumerWidget {
         break;
       case BottomSheetView.manageOTPforvisitor:
         onTap = () async {
-          ref.read(bottomSheetStateProvider.notifier).state =
-              BottomSheetView.generateOtpwithperiod;
+          // ref.read(bottomSheetStateProvider.notifier).state =
+          //     BottomSheetView.generateOtpwithperiod;
+
+          showUserBottomSheet(
+            context: context,
+            headertitle: "",
+            headersubtitle: "",
+            ref: ref,
+            bottom: BottomSheetView.generateOtpwithperiod,
+            id: 0,
+          );
         };
         leading = Container(
           height: 50,

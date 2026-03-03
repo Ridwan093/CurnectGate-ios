@@ -1,10 +1,10 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/estate_management/screen_managment.dart'
+    show BaseVerificationScreen;
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/loading_screen/loading_page.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/stepcount.dart';
-import 'package:curnectgate/features/estate_management/screen_managment.dart'
-    show BaseVerificationScreen;
 import 'package:curnectgate/features/member_management/profile_form/otp_form.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +48,9 @@ class _OtpScreenState extends ConsumerState<ForgetPassOtpScreen> {
     return Scaffold(
       appBar: state.otpVerifyLoading ? null : _buildAppBar(),
       bottomNavigationBar:
-          state.otpVerifyLoading ? null : _buildVerifyButton(widget.data),
+          state.otpVerifyLoading
+              ? null
+              : SafeArea(top: false, child: _buildVerifyButton(widget.data)),
       body:
           state.otpVerifyLoading
               ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)
@@ -121,7 +123,7 @@ class _OtpScreenState extends ConsumerState<ForgetPassOtpScreen> {
   }
 
   Widget _buildResend(String email) {
-     final formState = ref.watch(formProvider);
+    final formState = ref.watch(formProvider);
     final formNotifier = ref.read(formProvider.notifier);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -158,7 +160,7 @@ class _OtpScreenState extends ConsumerState<ForgetPassOtpScreen> {
             ),
           ),
         ),
-      ]
+      ],
     );
   }
 

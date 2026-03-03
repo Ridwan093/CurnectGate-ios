@@ -190,7 +190,7 @@ class DuePaymentSelection extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Select Due to Payment",
+              "Pay Custom",
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
                 fontWeight: FontFamilies.bold,

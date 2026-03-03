@@ -20,7 +20,9 @@ _$CommitteeImpl _$$CommitteeImplFromJson(Map<String, dynamic> json) =>
       chairperson: json['chairperson'] == null
           ? null
           : Chairperson.fromJson(json['chairperson'] as Map<String, dynamic>),
-      secretary: json['secretary'] as String?,
+      secretary: json['secretary'] == null
+          ? null
+          : Chairperson.fromJson(json['secretary'] as Map<String, dynamic>),
       nextMeeting: json['next_meeting'] == null
           ? null
           : DateTime.parse(json['next_meeting'] as String),
@@ -55,7 +57,7 @@ Map<String, dynamic> _$$CommitteeImplToJson(_$CommitteeImpl instance) =>
       'status': instance.status,
       'member_count': instance.memberCount,
       'chairperson': instance.chairperson?.toJson(),
-      'secretary': instance.secretary,
+      'secretary': instance.secretary?.toJson(),
       'next_meeting': instance.nextMeeting?.toIso8601String(),
       'established_date': instance.establishedDate?.toIso8601String(),
       'meeting_schedule': instance.meetingSchedule?.toJson(),

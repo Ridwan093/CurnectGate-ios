@@ -95,7 +95,7 @@ class _ActiveOtpBody extends ConsumerWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              "Your active Otp details appear here",
+              "Active Otp detiles appear here",
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
                 color: AppColors.instance.black300,

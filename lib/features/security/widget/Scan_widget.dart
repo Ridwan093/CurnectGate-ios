@@ -258,7 +258,7 @@ void reassemble() {
 
   @override
   void dispose() {
-    qrController?.dispose();
+    // qrController?.dispose();
     super.dispose();
   }
 

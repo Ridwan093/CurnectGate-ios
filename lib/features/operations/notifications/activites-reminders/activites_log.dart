@@ -17,6 +17,7 @@ import 'package:curnectgate/features/operations/notifications/provider/notificat
 import 'package:curnectgate/features/operations/notifications/provider/reminder_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class ActivityPage extends ConsumerStatefulWidget {
   const ActivityPage({super.key});
@@ -75,80 +76,93 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
 
     return Scaffold(
       appBar: isSearching ? null : _buildNormalAppBar(context, tabIndex),
-      body: Stack(
-        children: [
-          // Main content
-          _buildMainBody(ref),
+      body: PopScope(
+        canPop: false,
+        onPopInvoked: (didPop) {
+          if (didPop) return;
+          if (isSearching) {
+            ref.read(isSearchingProvider.notifier).state = false;
+            ref.read(searchQueryProvider.notifier).state = '';
+            _searchController.clear();
+          } else {
+            context.pop();
+          }
+        },
+        child: Stack(
+          children: [
+            // Main content
+            _buildMainBody(ref),
 
-          // Search overlay
-          if (isSearching) ...[
-            ModalBarrier(
-              // ignore: deprecated_member_use
-              color: Colors.black.withOpacity(0.5),
-              dismissible: true,
-              onDismiss: () {
-                ref.read(isSearchingProvider.notifier).state = false;
-                ref.read(searchQueryProvider.notifier).state = '';
-                _searchController.clear();
-              },
-            ),
-            if (tabIndex == 0) ...[
-              SafeArea(
-                child: Column(
-                  children: [
-                    // Search bar with bottom padding for gap
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                      child: _buildSearchAppBar(context),
-                    ),
-
-                    // Consistent gap — this 12px will look the same on ALL devices
-                    const SizedBox(height: 12),
-
-                    // Results card — takes remaining space
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: _buildSearchBody(searchQuery),
-                      ),
-                    ),
-
-                    // Optional bottom padding
-                    const SizedBox(height: 10),
-                  ],
-                ),
+            // Search overlay
+            if (isSearching) ...[
+              ModalBarrier(
+                // ignore: deprecated_member_use
+                color: Colors.black.withOpacity(0.5),
+                dismissible: true,
+                onDismiss: () {
+                  ref.read(isSearchingProvider.notifier).state = false;
+                  ref.read(searchQueryProvider.notifier).state = '';
+                  _searchController.clear();
+                },
               ),
-            ],
-
-            if (tabIndex == 1) ...[
-              SafeArea(
-                child: Column(
-                  children: [
-                    // Search bar with bottom padding for gap
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                      child: _buildSearchAppBar(context),
-                    ),
-
-                    // Consistent gap — this 12px will look the same on ALL devices
-                    const SizedBox(height: 12),
-
-                    // Results card — takes remaining space
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: _buildSearchBodyReminder(searchQuery),
+              if (tabIndex == 0) ...[
+                SafeArea(
+                  child: Column(
+                    children: [
+                      // Search bar with bottom padding for gap
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                        child: _buildSearchAppBar(context),
                       ),
-                    ),
 
-                    // Optional bottom padding
-                    const SizedBox(height: 10),
-                  ],
+                      // Consistent gap — this 12px will look the same on ALL devices
+                      const SizedBox(height: 12),
+
+                      // Results card — takes remaining space
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: _buildSearchBody(searchQuery),
+                        ),
+                      ),
+
+                      // Optional bottom padding
+                      const SizedBox(height: 10),
+                    ],
+                  ),
                 ),
-              ),
+              ],
+
+              if (tabIndex == 1) ...[
+                SafeArea(
+                  child: Column(
+                    children: [
+                      // Search bar with bottom padding for gap
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                        child: _buildSearchAppBar(context),
+                      ),
+
+                      // Consistent gap — this 12px will look the same on ALL devices
+                      const SizedBox(height: 12),
+
+                      // Results card — takes remaining space
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: _buildSearchBodyReminder(searchQuery),
+                        ),
+                      ),
+
+                      // Optional bottom padding
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                ),
+              ],
             ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -157,7 +171,7 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
     return AppBar(
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_ios),
-        onPressed: () => Navigator.pop(context),
+        onPressed: () => context.pop(),
       ),
 
       actions: [

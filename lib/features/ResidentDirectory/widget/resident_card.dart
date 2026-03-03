@@ -9,11 +9,13 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ResidentCard extends StatelessWidget {
   final String userName;
   final String block;
   final String? adrress;
+  final String email;
 
   final VoidCallback? onChangePressed;
   final bool colortype;
@@ -23,10 +25,19 @@ class ResidentCard extends StatelessWidget {
     required this.userName,
     required this.block,
     this.adrress,
-
+    required this.email,
     this.onChangePressed,
     this.colortype = true,
   });
+
+  Future<void> _launchEmail(String email) async {
+    final Uri emailUri = Uri(scheme: 'mailto', path: email);
+
+    if (await canLaunchUrl(emailUri)) {
+      await launchUrl(emailUri);
+    }
+  }
+
   // New: Format address from JSON string
   String _formatAddress(String? addressJson) {
     if (addressJson == null ||
@@ -140,26 +151,50 @@ class ResidentCard extends StatelessWidget {
               fontFamily: FontFamilies.interDisplay,
               fontWeight: FontWeight.bold,
               color: AppColors.instance.black600,
-              fontSize: 19,
+              fontSize: 16,
             ),
           ),
         ),
 
         // Right: Call button — always visible
-        if (onChangePressed != null)
-          InkWell(
-            onTap: onChangePressed,
-            borderRadius: BorderRadius.circular(40),
-            child: CircleAvatar(
-              radius: 20,
-              backgroundColor: AppColors.instance.teal300,
-              child: Icon(
-                Icons.call,
-                size: 18,
-                color: AppColors.instance.black600,
+        // ✅ Actions
+        Row(
+          children: [
+            if (onChangePressed != null) ...[
+              InkWell(
+                onTap: onChangePressed,
+                borderRadius: BorderRadius.circular(40),
+                child: CircleAvatar(
+                  radius: 20,
+                  backgroundColor: AppColors.instance.teal300,
+                  child: Icon(
+                    Icons.call,
+                    size: 18,
+                    color: AppColors.instance.black600,
+                  ),
+                ),
               ),
-            ),
-          ),
+              const SizedBox(width: 8),
+            ],
+
+            if (email.isNotEmpty)
+              InkWell(
+                onTap: () {
+                  _launchEmail(email);
+                },
+                borderRadius: BorderRadius.circular(40),
+                child: CircleAvatar(
+                  radius: 20,
+                  backgroundColor: AppColors.instance.teal300,
+                  child: Icon(
+                    Icons.email,
+                    size: 18,
+                    color: AppColors.instance.black600,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ],
     );
   }

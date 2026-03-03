@@ -1,6 +1,5 @@
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
-import 'package:curnectgate/core/appErrorBody/emmergencyBody.dart';
 import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
@@ -27,7 +26,7 @@ class ActiveHistoryDataWidget extends ConsumerWidget {
       child: activeOtasync.when(
         data: (activeOpt) {
           final otp = activeOpt?.data;
-          if (otp!.otps.isNotEmpty) {
+          if (otp?.otps.isNotEmpty ?? false) {
             return Buildactivelist(otp: otp);
           } else {
             return _buildEmtyBody();
@@ -36,8 +35,8 @@ class ActiveHistoryDataWidget extends ConsumerWidget {
         loading: () {
           try {
             final otp = ref.read(getActiveOtpHistoryProvider).value;
-            return otp!.data!.otps.isNotEmpty
-                ? Buildactivelist(otp: otp.data)
+            return otp?.data?.otps.isNotEmpty ?? false
+                ? Buildactivelist(otp: otp?.data)
                 : Loadingstates();
           } catch (e) {
             return Loadingstates();
@@ -53,15 +52,8 @@ class ActiveHistoryDataWidget extends ConsumerWidget {
 
             // Try to show cached data
 
-            if (otp!.data!.otps.isNotEmpty) {
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Buildactivelist(otp: otp.data),
-                    Emmergencybody(error: error.toString()),
-                  ],
-                ),
-              );
+            if (otp?.data?.otps.isNotEmpty ?? false) {
+              return Buildactivelist(otp: otp?.data);
             }
 
             // No cached data available

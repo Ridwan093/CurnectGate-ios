@@ -1,13 +1,14 @@
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
-import 'package:curnectgate/core/appErrorBody/emmergencyBody.dart';
 import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/model/Work_permit/clearance_permit_data.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/Wor_permit_provider.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/getActiveOtpByfilter_provider.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/permit_history_list.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/textform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -27,8 +28,9 @@ class PermitData extends ConsumerWidget {
 
       child: activeOtasync.when(
         data: (activeOtp) {
-          if (activeOtp!.data!.permits!.isNotEmpty) {
-            return BuildPermitlist(otp: activeOtp.data);
+          if (activeOtp?.data?.permits?.isNotEmpty ?? false) {
+            var data = activeOtp?.data;
+            return _buildShearcWithDataBody(data!);
           } else {
             return _buildEmtyBody();
           }
@@ -38,10 +40,9 @@ class PermitData extends ConsumerWidget {
         loading: () {
           final cachedOtp = ref.read(getWorkpermitProvider).value;
 
-          if (cachedOtp != null &&
-              cachedOtp.status! &&
-              cachedOtp.data!.permits!.isNotEmpty) {
-            return BuildPermitlist(otp: cachedOtp.data);
+          if (cachedOtp?.data?.permits?.isNotEmpty ?? false) {
+            var data = cachedOtp?.data;
+            return _buildShearcWithDataBody(data!);
           }
 
           return const Loadingstates();
@@ -56,15 +57,9 @@ class PermitData extends ConsumerWidget {
 
             // Try to show cached data
 
-            if (otp!.data!.permits!.isNotEmpty) {
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    BuildPermitlist(otp: otp.data),
-                    Emmergencybody(error: error.toString()),
-                  ],
-                ),
-              );
+            if (otp?.data?.permits?.isNotEmpty ?? false) {
+              var data = otp?.data;
+              return _buildShearcWithDataBody(data!);
             }
 
             // No cached data available
@@ -98,6 +93,17 @@ class PermitData extends ConsumerWidget {
     );
   }
 
+  Widget _buildShearcWithDataBody(ClearancePermitData data) {
+    return Column(
+      children: [
+        PermitSearchField(),
+        SizedBox(height: 10),
+
+        Expanded(child: BuildPermitlist(otp: data)),
+      ],
+    );
+  }
+
   Widget _buildEmtyBody() {
     return Center(
       child: SingleChildScrollView(
@@ -107,7 +113,7 @@ class PermitData extends ConsumerWidget {
             Image.asset(AssetPaths.setCurfew, height: 100, width: 100),
             SizedBox(height: 10),
             Text(
-              "Your Active Otp permit appears here",
+              "Your permit appears here",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,

@@ -159,7 +159,7 @@ class DuePayment extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Due Payment",
+              "Pay Full Amount",
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
                 fontWeight: FontFamilies.bold,

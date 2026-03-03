@@ -3695,17 +3695,18 @@ class AppApiMethod {
     try {
       // Convert to Multipart
       FormData formData = FormData();
-
-      for (final f in file) {
-        formData.files.add(
-          MapEntry(
-            "after_photos[]",
-            await MultipartFile.fromFile(
-              f.path,
-              filename: f.path.split('/').last,
+      if (file.isNotEmpty) {
+        for (final f in file) {
+          formData.files.add(
+            MapEntry(
+              "after_photos[]",
+              await MultipartFile.fromFile(
+                f.path,
+                filename: f.path.split('/').last,
+              ),
             ),
-          ),
-        );
+          );
+        }
       }
 
       final response = await _dio.post(

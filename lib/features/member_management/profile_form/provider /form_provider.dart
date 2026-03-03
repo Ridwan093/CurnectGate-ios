@@ -657,23 +657,54 @@ class FormNotifier extends StateNotifier<FormStates> {
   }
 
   String extractValidationMessage(Map<String, dynamic> response) {
-    final errors = response["data"]?["errors"];
+    final List<String> messages = [];
 
-    if (errors is Map<String, dynamic>) {
-      final buffer = StringBuffer();
+    void extract(dynamic value) {
+      if (value == null) return;
 
-      for (final entry in errors.entries) {
-        final fieldErrors = entry.value;
-        if (fieldErrors is List && fieldErrors.isNotEmpty) {
-          buffer.writeln(fieldErrors.first);
-        }
+      // If it's a string → add it
+      if (value is String) {
+        messages.add(value);
+        return;
       }
 
-      final result = buffer.toString().trim();
-      if (result.isNotEmpty) return result;
+      // If it's a list → check each item
+      if (value is List) {
+        for (final item in value) {
+          extract(item);
+        }
+        return;
+      }
+
+      // If it's a map → recursively check values
+      if (value is Map) {
+        value.forEach((key, val) {
+          // Skip known metadata fields
+          if ([
+            "status",
+            "code",
+            "type",
+            "existing_user",
+            "suggestion",
+            "error_type",
+          ].contains(key)) {
+            return;
+          }
+
+          extract(val);
+        });
+      }
     }
 
-    return response["message"] ?? "Validation error occurred";
+    // Start extraction from response["data"] first
+    extract(response["data"]);
+
+    if (messages.isNotEmpty) {
+      return messages.join(" ");
+    }
+
+    // Fallback to general message
+    return response["message"] ?? "Validation error occurred.";
   }
 
   Future<void> completeRegristration({
@@ -2891,7 +2922,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (response['status'] == true) {
         updatedeGenerateOtpLoading(false);
-        context.pop();
+        closeAllBottomSheets(context);
         log("TRUE------->");
 
         showCustomSuccessToast(
@@ -3812,7 +3843,8 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
-        context.goNamed(AppRoutes.getMemberInfo);
+        // context.goNamed(AppRoutes.getMemberInfo);
+        closeAllBottomSheets(context);
 
         ref.read(houseProvider.notifier).refreshHuseHold(context, ref);
 
@@ -4050,7 +4082,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
-        context.goNamed(AppRoutes.getMemberInfo);
+        closeAllBottomSheets(context);
 
         ref.read(houseProvider.notifier).refreshHuseHold(context, ref);
 
@@ -4169,12 +4201,21 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
             rentfrequency: state.rentalfrequency?.toLowerCase() ?? "",
             status: 'Active',
-            agentFees: int.parse(state.agentFee ?? ""),
-            securitydeposit: int.parse(state.securityFees ?? ""),
+            agentFees:
+                (state.agentFee ?? "").isNotEmpty
+                    ? int.parse(state.agentFee ?? "")
+                    : 0,
+            securitydeposit:
+                (state.securityFees ?? "").isNotEmpty
+                    ? int.parse(state.securityFees ?? "")
+                    : 0,
             emergencyContactrelationshipRole: state.emenergencyRole ?? "",
             employee: state.employer ?? "",
             occupation: state.ocupation ?? "",
-            monthlyincome: int.parse(state.montlyIcom ?? ""),
+            monthlyincome:
+                (state.montlyIcom ?? "").isNotEmpty
+                    ? int.parse(state.montlyIcom ?? "")
+                    : 0,
           );
       log(response.toString());
       if (!context.mounted) return; // Always check first
@@ -4192,7 +4233,8 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
-        context.goNamed(AppRoutes.getMemberInfo);
+        // context.goNamed(AppRoutes.getMemberInfo);
+        closeAllBottomSheets(context);
 
         ref.read(houseProvider.notifier).refreshHuseHold(context, ref);
 

@@ -72,10 +72,12 @@ class Residentss extends ConsumerWidget {
             data:
                 (residentData) => Expanded(
                   child: SingleChildScrollView(
+                    padding: EdgeInsets.only(bottom: 10),
                     child: Column(
                       children: [
                         ...searchState.filteredResidents.map(
                           (resident) => ResidentCard(
+                            email: resident.email ?? "",
                             userName: resident.fullName,
                             block: resident.memberCode,
                             adrress: resident.address,
@@ -111,6 +113,7 @@ class Residentss extends ConsumerWidget {
                         children: [
                           ...searchState.filteredResidents.map(
                             (resident) => ResidentCard(
+                              email: resident.email ?? "",
                               userName: resident.fullName,
                               block: resident.memberCode,
                               adrress: resident.address,

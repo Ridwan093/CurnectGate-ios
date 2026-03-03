@@ -24,7 +24,7 @@ class Dashbordrowcard extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(8),
           child: Material(
-            elevation: 1,
+            elevation: 8,
             borderRadius: BorderRadius.circular(8),
             color: Colors.white,
             child: FittedBox(

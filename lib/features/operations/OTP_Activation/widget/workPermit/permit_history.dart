@@ -52,7 +52,7 @@ class _CheckInOtpTabState extends ConsumerState<CheckInOtpTab> {
         ),
         const SizedBox(height: 4),
         Text(
-          "View all visitor OTPs that include permit access.",
+          "Review visitor exit permits and their approval status.",
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,
             fontSize: 13,
@@ -68,13 +68,7 @@ class _CheckInOtpTabState extends ConsumerState<CheckInOtpTab> {
   Widget _buildContent(Size size, BuildContext context, WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(height: 10),
-
-        const SizedBox(height: 23),
-
-        Expanded(child: PermitData()),
-      ],
+      children: [SizedBox(height: 20), Expanded(child: PermitData())],
     );
   }
 }

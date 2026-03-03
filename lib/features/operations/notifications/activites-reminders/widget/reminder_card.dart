@@ -22,7 +22,7 @@ class ReminderCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     String truncatedTitle = truncateText(activity.title, 30);
     String truncatedDescription = truncateText(activity.description, 30);
-// default color
+    // default color
     switch (activity.category.toString()) {
       case "payment":
         break;
@@ -43,14 +43,19 @@ class ReminderCard extends ConsumerWidget {
     return InkWell(
       onTap: () {
         ref.watch(reminderProvider.notifier).resetAll();
-        showUserBottomSheet(
-          context: context,
-          headertitle: activity.title ?? "",
-          headersubtitle: activity.description ?? "",
-          ref: ref,
-          bottom: BottomSheetView.remidermarks,
-          id: activity.id,
-        );
+        if ((activity.status ?? "").contains("completed") ||
+            (activity.status ?? "").contains("cancel")) {
+        } else {
+          showUserBottomSheet(
+            context: context,
+            headertitle: activity.title ?? "",
+            headersubtitle: activity.description ?? "",
+            ref: ref,
+            bottom: BottomSheetView.remidermarks,
+            id: activity.id,
+            activity: activity,
+          );
+        }
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -90,7 +95,7 @@ class ReminderCard extends ConsumerWidget {
                   spacing: 5,
                   children: [
                     Text(
-                      "$truncatedTitle ${activity.isDue.toString()}",
+                      "$truncatedTitle",
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: AppColors.instance.black500,

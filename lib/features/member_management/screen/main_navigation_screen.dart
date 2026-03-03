@@ -70,88 +70,91 @@ class MainNavigationScreen extends ConsumerWidget {
         bottomNavigationBar:
             isTablet
                 ? null
-                : Container(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, -2),
-                      ),
-                    ],
-                  ),
-                  child: Stack(
-                    children: [
-                      BottomNavigationBar(
-                        selectedItemColor: AppColors.instance.black600,
-                        selectedLabelStyle: TextStyle(
-                          fontFamily: FontFamilies.interDisplay,
-                          color: AppColors.instance.black600,
-                          fontWeight: FontFamilies.bold,
+                : SafeArea(
+                  top: false,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, -2),
                         ),
-                        currentIndex: currentIndex,
-                        onTap: (index) => tabController.setTab(index),
-                        type: BottomNavigationBarType.fixed,
-                        backgroundColor: Colors.white,
-                        elevation: 0,
-                        items: [
-                          _buildTabItem(
-                            context,
-                            index: 0,
-                            currentIndex: currentIndex,
-                            normalIcon: AssetPaths.navHome,
-                            activeIcon: AssetPaths.navHomefilled,
-                            label: 'Home',
+                      ],
+                    ),
+                    child: Stack(
+                      children: [
+                        BottomNavigationBar(
+                          selectedItemColor: AppColors.instance.black600,
+                          selectedLabelStyle: TextStyle(
+                            fontFamily: FontFamilies.interDisplay,
+                            color: AppColors.instance.black600,
+                            fontWeight: FontFamilies.bold,
                           ),
-                          _buildTabItem(
-                            context,
-                            index: 1,
-                            currentIndex: currentIndex,
-                            normalIcon: AssetPaths.navCreditCard,
-                            activeIcon: AssetPaths.navCreditCardFilled,
-                            label: 'Payments',
-                          ),
-                          _buildTabItem(
-                            context,
-                            index: 2,
-                            currentIndex: currentIndex,
-                            normalIcon: AssetPaths.navEventCodeActive,
-                            activeIcon: AssetPaths.navEventCodeDeactive,
-                            label: 'Codes',
-                          ),
-                          _buildTabItem(
-                            context,
-                            index: 3,
-                            currentIndex: currentIndex,
-                            normalIcon: AssetPaths.navMessages,
-                            activeIcon: AssetPaths.navMessageactive,
-                            label: 'Chats',
-                          ),
+                          currentIndex: currentIndex,
+                          onTap: (index) => tabController.setTab(index),
+                          type: BottomNavigationBarType.fixed,
+                          backgroundColor: Colors.white,
+                          elevation: 0,
+                          items: [
+                            _buildTabItem(
+                              context,
+                              index: 0,
+                              currentIndex: currentIndex,
+                              normalIcon: AssetPaths.navHome,
+                              activeIcon: AssetPaths.navHomefilled,
+                              label: 'Home',
+                            ),
+                            _buildTabItem(
+                              context,
+                              index: 1,
+                              currentIndex: currentIndex,
+                              normalIcon: AssetPaths.navCreditCard,
+                              activeIcon: AssetPaths.navCreditCardFilled,
+                              label: 'Payments',
+                            ),
+                            _buildTabItem(
+                              context,
+                              index: 2,
+                              currentIndex: currentIndex,
+                              normalIcon: AssetPaths.navEventCodeDeactive,
+                              activeIcon: AssetPaths.navEventCodeActive,
+                              label: 'Codes',
+                            ),
+                            _buildTabItem(
+                              context,
+                              index: 3,
+                              currentIndex: currentIndex,
+                              normalIcon: AssetPaths.navMessages,
+                              activeIcon: AssetPaths.navMessageactive,
+                              label: 'Chats',
+                            ),
 
-                          _buildTabItem(
-                            context,
-                            index: 4,
-                            currentIndex: currentIndex,
-                            normalIcon: AssetPaths.navProfileInactive,
-                            activeIcon: AssetPaths.navProfileActive,
-                            label: 'Profile',
-                          ),
-                        ],
-                      ),
-                      // Indicator
-                      Positioned(
-                        top: 0,
-                        left:
-                            tabWidth * currentIndex +
-                            (tabWidth / 2) -
-                            (tabWidth / 4),
-                        child: Container(
-                          width: tabWidth / 2,
-                          height: 3,
-                          color: AppColors.instance.teal300,
+                            _buildTabItem(
+                              context,
+                              index: 4,
+                              currentIndex: currentIndex,
+                              normalIcon: AssetPaths.navProfileInactive,
+                              activeIcon: AssetPaths.navProfileActive,
+                              label: 'Profile',
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                        // Indicator
+                        Positioned(
+                          top: 0,
+                          left:
+                              tabWidth * currentIndex +
+                              (tabWidth / 2) -
+                              (tabWidth / 4),
+                          child: Container(
+                            width: tabWidth / 2,
+                            height: 3,
+                            color: AppColors.instance.teal300,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
       ),

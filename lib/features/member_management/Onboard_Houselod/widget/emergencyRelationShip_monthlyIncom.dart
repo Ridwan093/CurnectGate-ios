@@ -15,17 +15,39 @@ class MontlyIconAndEmergencyRole extends ConsumerStatefulWidget {
 class _ExperienceEducationRowState
     extends ConsumerState<MontlyIconAndEmergencyRole> {
   final List<String> _emergencyRoles = [
-    'Co-owner',
-    'Property manager',
-    'Family member',
-    'Staff',
-    "Tenant",
-        'Other',
+    "Family Member",
+
+    "Aunt",
+
+    "Wife",
+
+    "Uncle",
+
+    "Cousin",
+
+    "Neighbor",
+
+    "Friend",
+
+    "Child",
+
+    "Daughter",
+
+    "Son",
+
+    "Stepchild",
+
+    "Grandparent",
+
+    "Grandfather",
+
+    "Grandmother",
+
+    "Grandchild",
   ];
 
   @override
   Widget build(BuildContext context) {
-    final provider = ref.read(formProvider.notifier);
     final state = ref.watch(formProvider);
     return Row(
       children: [

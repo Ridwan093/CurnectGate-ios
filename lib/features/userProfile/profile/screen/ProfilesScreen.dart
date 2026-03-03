@@ -7,9 +7,12 @@ import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/workformprovider.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/member_management/tabState/tab_state.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
+import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
 import 'package:curnectgate/features/userProfile/profile/provider/profile_provider.dart';
 import 'package:curnectgate/features/userProfile/profile/widget/listTile.dart';
 import 'package:curnectgate/features/userProfile/profile/widget/profileCard.dart';
@@ -45,6 +48,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
     final role = ref.watch(userRoleProvider);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: _buildAppBar(ref: ref, context: context),
       body: RefreshIndicator(
         color: AppColors.instance.yellow500,
@@ -64,6 +68,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                     final user = profile?.data;
                     return user != null
                         ? Profilecard(
+                          onTap: () {
+                            context.pushNamed(
+                              AppRoutes.profileDeatil,
+                              extra: {
+                                "userProfilePix": user.mediaUrl,
+                                "userName": user.fullName,
+                                "userRole": user.role,
+                                "memberId": user.memberCode,
+
+                                "estateName": user.estateName,
+                                "lastLogin": user.lastLoginAt?.hour.toString(),
+                                "email": user.email,
+                                "phoneNumber": user.phone,
+                              },
+                            );
+                          },
                           userProfileUrl: user.mediaUrl,
                           role: user.role,
                           username: user.fullName,
@@ -87,6 +107,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                     final cachedProfile = ref.read(userProfileProvider).value;
                     return cachedProfile != null
                         ? Profilecard(
+                          onTap: () {
+                            context.pushNamed(
+                              AppRoutes.profileDeatil,
+                              extra: {
+                                "userProfilePix": cachedProfile.data.mediaUrl,
+                                "userName": cachedProfile.data.fullName,
+                                "userRole": cachedProfile.data.role,
+                                "memberId": cachedProfile.data.memberCode,
+
+                                "estateName": cachedProfile.data.estateName,
+                                "lastLogin":
+                                    cachedProfile.data.lastLoginAt?.hour
+                                        .toString(),
+                                "email": cachedProfile.data.email,
+                                "phoneNumber": cachedProfile.data.phone,
+                              },
+                            );
+                          },
                           userProfileUrl: cachedProfile.data.mediaUrl,
                           role: cachedProfile.data.role,
                           username: cachedProfile.data.fullName,
@@ -118,6 +156,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                       return Column(
                         children: [
                           Profilecard(
+                            onTap: () {
+                              context.pushNamed(
+                                AppRoutes.profileDeatil,
+                                extra: {
+                                  "userProfilePix": cachedProfile.data.mediaUrl,
+                                  "userName": cachedProfile.data.fullName,
+                                  "userRole": cachedProfile.data.role,
+                                  "memberId": cachedProfile.data.memberCode,
+
+                                  "estateName": cachedProfile.data.estateName,
+                                  "lastLogin":
+                                      cachedProfile.data.lastLoginAt?.hour
+                                          .toString(),
+                                  "email": cachedProfile.data.email,
+                                  "phoneNumber": cachedProfile.data.phone,
+                                },
+                              );
+                            },
                             userProfileUrl: cachedProfile.data.mediaUrl,
                             role: cachedProfile.data.role,
                             username: cachedProfile.data.fullName,
@@ -150,20 +206,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                   }
                 },
               ),
+              SizedBox(height: 10),
+              Divider(color: AppColors.instance.grey300),
+              SizedBox(height: 10),
+              _buildRow(context, ref),
+              SizedBox(height: 10),
+              Divider(color: AppColors.instance.grey300),
+              SizedBox(height: 10),
 
-              SizedBox(height: 25),
-              Text(
-                "Settings",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  fontSize: 19,
-                  color: AppColors.instance.black600,
-                  fontWeight: FontFamilies.bold,
-                ),
-              ),
-
-              // ... other widgets
-              SizedBox(height: 25),
               BuildListTile(
                 onTap: () async {
                   context.pushNamed(AppRoutes.termsAndcondition);
@@ -267,16 +317,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                 title: "Set Privacy",
                 iconPath: AssetPaths.setCurfew,
               ),
-              _buildSignOut(
-                ref: ref,
-                iconPath: AssetPaths.logOut,
-                title: "Sign out",
-                onTap: () {
-                  ref
-                      .read(authProvider.notifier)
-                      .logOut(ref: ref, context: context);
-                },
-              ),
             ],
           ),
         ),
@@ -293,12 +333,94 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
   //     memberId: user?.data.memberCode ?? "",
   //   );
   // }
+  Widget _buildRow(BuildContext context, WidgetRef ref) {
+    final reminderprovider = ref.read(reminderProvider.notifier);
+    final notifier = ref.read(workOrderFormProvider.notifier);
+    return Wrap(
+      // runAlignment: WrapAlignment.spaceBetween,
+      spacing: 5, // horizontal space
+      runSpacing: 10,
+      children: [
+        _builddirectriyButton(
+          title: "Directory",
+          icon: Icons.home_outlined,
+          color: AppColors.instance.yellow300,
+          onTap: () {
+            context.pushNamed(AppRoutes.residentDirectory);
+          },
+        ),
+
+        _builddirectriyButton(
+          title: "Chats",
+          icon: Icons.chat_bubble_outline,
+          color: AppColors.instance.teal300.withOpacity(.6),
+          onTap: () {
+            ref.read(tabStateProvider.notifier).resetTochat();
+          },
+        ),
+        _builddirectriyButton(
+          title: "Events",
+          icon: Icons.event,
+          color: AppColors.instance.blue100,
+          onTap: () {
+            reminderprovider.resetAll();
+            notifier.updateEndDate(null);
+            notifier.updateStartDate(null);
+            notifier.updateWorkType("", 0);
+            showUserBottomSheet(
+              context: context,
+              headertitle: "",
+              headersubtitle: "",
+              ref: ref,
+              bottom: BottomSheetView.seletctEvent,
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _builddirectriyButton({
+    required String title,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+
+          children: [
+            Icon(icon, color: AppColors.instance.black600, size: 20),
+            SizedBox(width: 10),
+            Text(
+              title,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                color: AppColors.instance.black600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   PreferredSizeWidget _buildAppBar({
     required WidgetRef ref,
     required BuildContext context,
   }) {
     return AppBar(
+      backgroundColor: Colors.white,
       leading: SizedBox.shrink(),
       leadingWidth: 0,
       centerTitle: false,
@@ -330,49 +452,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
 
         SizedBox(width: 12),
       ],
-    );
-  }
-
-  Widget _buildSignOut({
-    required String iconPath,
-    required String title,
-    required VoidCallback onTap,
-    required WidgetRef ref,
-  }) {
-    final formstate = ref.watch(formProvider);
-    return Padding(
-      padding: const EdgeInsets.only(top: 50),
-      child: Align(
-        alignment: Alignment.bottomLeft,
-        child: InkWell(
-          onTap: onTap,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                spacing: 8,
-                children: [
-                  Image.asset(iconPath, width: 24),
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      color: AppColors.instance.black600,
-                      fontSize: 17,
-                      fontWeight: FontFamilies.light,
-                    ),
-                  ),
-                ],
-              ),
-              formstate.logOutLoading
-                  ? CircularProgressIndicator(
-                    color: AppColors.instance.yellow500,
-                  )
-                  : SizedBox(),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

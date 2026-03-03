@@ -8,6 +8,7 @@ import 'package:curnectgate/features/operations/notifications/activites-reminder
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/filter_submit_buttion.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/reminderListTile.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/reminder_dropDown.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/remider/reminder_model.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,12 +20,14 @@ class AddReminder extends ConsumerStatefulWidget {
   final String subtitle;
   final String? isUpdate;
   final int? id;
+  ReminderModel? activity;
   AddReminder({
     super.key,
     this.isUpdate,
     required this.title,
     required this.subtitle,
     required this.id,
+    this.activity,
   });
 
   @override
@@ -56,6 +59,35 @@ class _AddReminderState extends ConsumerState<AddReminder> {
   final List<String> _peority = ["High", "Low"];
 
   final _focusNode = FocusNode();
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.activity != null) {
+      final activity = widget.activity!;
+
+      // Prefill text controllers
+      _titlecontroller.text = activity.title ?? '';
+      _deccontroller.text = activity.description ?? '';
+
+      // Sync provider state (VERY IMPORTANT)
+      Future.microtask(() {
+        final state = ref.read(reminderProvider.notifier);
+
+        state.updateTitle(activity.title ?? '');
+        state.updateDescription(activity.description ?? '');
+     
+
+       
+        state.updateRemberType(activity.reminderType ?? '');
+            state.updateTime(activity.createdAt ?? '');
+
+        state.updateIsSharedWithHousehold(
+          activity.isSharedWithHousehold ?? false,
+        );
+      });
+    }
+  }
 
   @override
   void dispose() {

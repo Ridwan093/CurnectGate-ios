@@ -1,6 +1,6 @@
-import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class CustomValidity extends ConsumerWidget {
   final Function(String) onChanged;
@@ -31,9 +31,11 @@ class CustomValidity extends ConsumerWidget {
                 return ListTile(
                   title: Text(hour),
                   onTap: () {
-                    ref.read(bottomSheetStateProvider.notifier).state =
-                        BottomSheetView.generateOtpwithperiod;
+                    // ref.read(bottomSheetStateProvider.notifier).state =
+                    //     BottomSheetView.generateOtpwithperiod;
+
                     onChanged(hour);
+                    context.pop();
                   },
                 );
               },

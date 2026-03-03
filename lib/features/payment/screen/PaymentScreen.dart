@@ -61,7 +61,7 @@ class PaymentScreen extends ConsumerWidget {
                       style: TextStyle(
                         fontFamily: FontFamilies.interDisplay,
                         fontWeight: FontFamilies.bold,
-                        fontSize: 10,
+                        fontSize: 13,
                         color: AppColors.instance.teal300,
                       ),
                     ),
@@ -89,7 +89,6 @@ class PaymentScreen extends ConsumerWidget {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 20),

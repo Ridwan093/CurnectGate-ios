@@ -6,6 +6,7 @@ class AppRoutes {
   static const String confirmInfomation = 'Onbordinfo';
   static const String estategetstart = 'estate';
 
+
   // ------------------------------------------------------------------
   // Auth Flow (Grouped with prefix)
   static const String signIN = 'auth_signIn';
@@ -29,8 +30,10 @@ class AppRoutes {
   static const String selectedMemeber = 'member_selected';
   static const String filleMemberInfo = 'member_fillInfo';
   static const String residentDirectory = 'resident';
-  // static const String memeberPage = 'member_page';
+  static const String profileDeatil = 'profileDeteails';
+  static const String activeOtpHistory = 'otp_history';
 
+  static const String recipPreview = "Recipt_preview";
   // ------------------------------------------------------------------
   // Estate Operations (Keep your exact flat names)
   static const String addHoused_CoOnwner = 'addMembers';
@@ -44,7 +47,7 @@ class AppRoutes {
   static const String notification = "notification";
   static const String securitynotification = "securitynotification";
   static const String propertyAgreement = "property";
-  static const String termsAndcondition ="terms";
+  static const String termsAndcondition = "terms";
   // ------------------------------------------------------------------
 
   //SECUTIY PATH

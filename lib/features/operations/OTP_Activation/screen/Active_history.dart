@@ -10,6 +10,7 @@ import 'package:curnectgate/features/operations/OTP_Activation/provider/history_
 import 'package:curnectgate/features/operations/OTP_Activation/widget/history_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class ActiveHistory extends ConsumerWidget {
   ActiveHistory({super.key});
@@ -21,13 +22,29 @@ class ActiveHistory extends ConsumerWidget {
     final size = MediaQuery.sizeOf(context);
 
     return Scaffold(
-      bottomNavigationBar: SizedBox(
-        height: 50,
-        child: _buildAddMemberButton(size, context, ref),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: 50,
+          child: _buildAddMemberButton(size, context, ref),
+        ),
       ),
       backgroundColor: Colors.white,
-
+      appBar: _buildAppBar(ref, context),
       body: _buildBody(size, ref, context),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar(WidgetRef ref, BuildContext context) {
+    return AppBar(
+      centerTitle: true,
+      backgroundColor: Colors.transparent,
+      leading: InkWell(
+        onTap: () {
+          context.pop();
+        },
+        child: const Icon(Icons.arrow_back_ios_new),
+      ),
     );
   }
 
@@ -52,25 +69,6 @@ class ActiveHistory extends ConsumerWidget {
         //   ),
         // ),
         // SizedBox(height: 40),
-        Text(
-          "OTP History",
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontWeight: FontFamilies.bold,
-            fontSize: 18,
-            color: AppColors.instance.black600,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          "Track who accessed your property and when.",
-          style: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontSize: 13,
-            color: AppColors.instance.black300,
-          ),
-        ),
-
         Expanded(child: _buildContent(size, context, ref)),
       ],
     );
@@ -88,7 +86,8 @@ class ActiveHistory extends ConsumerWidget {
         );
       },
       child: Container(
-        height: 50,
+        margin: EdgeInsets.only(left: 12, right: 12, bottom: 10),
+        // height: 50,
         width: size.width,
         decoration: BoxDecoration(
           color: AppColors.instance.black600,
@@ -110,33 +109,48 @@ class ActiveHistory extends ConsumerWidget {
 
   Widget _buildContent(Size size, BuildContext context, WidgetRef ref) {
     final filterPovider = ref.read(generateNotifierProvider.notifier);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(height: 10),
-        Row(
-          children: [
-            CustomStatusDropdown(
-              statusOptions: _statusOptions,
-              initialStatus: 'All',
-              onStatusChanged: (newStatus) {
-                log('Selected status: $newStatus');
-                filterPovider.setHistoryFilter(
-                  newStatus.isNotEmpty ? newStatus.toLowerCase() : "expire",
-                );
-                ref
-                    .read(getActiveOtpHistoryProvider.notifier)
-                    .refreshActive(context, ref);
-                // Handle status change
-              },
-            ),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  "OTP History",
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontWeight: FontFamilies.bold,
+                    fontSize: 18,
+                    color: AppColors.instance.black600,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              CustomStatusDropdown(
+                statusOptions: _statusOptions,
+                initialStatus: 'All',
+                onStatusChanged: (newStatus) {
+                  log('Selected status: $newStatus');
+                  filterPovider.setHistoryFilter(
+                    newStatus.isNotEmpty ? newStatus.toLowerCase() : "expire",
+                  );
+                  ref
+                      .read(getActiveOtpHistoryProvider.notifier)
+                      .refreshActive(context, ref);
+                  // Handle status change
+                },
+              ),
+            ],
+          ),
 
-        const SizedBox(height: 23),
+          const SizedBox(height: 10),
 
-        Expanded(child: ActiveHistoryDataWidget()),
-      ],
+          Expanded(child: ActiveHistoryDataWidget()),
+        ],
+      ),
     );
   }
 }

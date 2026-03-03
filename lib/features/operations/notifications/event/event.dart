@@ -45,10 +45,12 @@ class EventsBottomSheet extends ConsumerWidget {
                   const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
                   // Tab Content — takes all remaining space without overflow
-                  SliverFillRemaining(
-                    hasScrollBody: false, // Allows inner ListView to scroll
-                    child: _buildContent(ref, context),
-                  ),
+                  // SliverFillRemaining(
+                  //   hasScrollBody: false, // Allows inner ListView to scroll
+                  //   child: _buildContent(ref, context),
+                  // ),
+                  ..._buildContentSlivers(ref, context),
+
                 ],
               ),
               if (state.isLoading)
@@ -321,17 +323,33 @@ class EventsBottomSheet extends ConsumerWidget {
       },
     );
   }
+List<Widget> _buildContentSlivers(WidgetRef ref, BuildContext context) {
+  final state = ref.watch(eventsProvider);
 
-  Widget _buildContent(WidgetRef ref, BuildContext context) {
-    final state = ref.watch(eventsProvider);
-
-    return IndexedStack(
-      index: state.currentTab,
-      children: [
-        EventData(),
-        GoingEvents(going: "going"),
-        GoingEvents(going: "not_going"),
-      ],
-    );
+  switch (state.currentTab) {
+    case 0:
+      return EventDataSliver().buildSlivers(context, ref);
+    case 1:
+      return GoingEventsSliver(going: "going").buildSlivers(context, ref);
+    case 2:
+      return GoingEventsSliver(going: "not_going").buildSlivers(context, ref);
+    default:
+      return [];
   }
 }
+
+  // Widget _buildContent(WidgetRef ref, BuildContext context) {
+  //   final state = ref.watch(eventsProvider);
+
+  //   return IndexedStack(
+  //     index: state.currentTab,
+  //     children: [
+  //       EventData(),
+  //       GoingEvents(going: "going"),
+  //       GoingEvents(going: "not_going"),
+  //     ],
+  //   );
+  // }
+}
+
+

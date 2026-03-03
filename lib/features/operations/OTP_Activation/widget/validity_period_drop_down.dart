@@ -1,5 +1,6 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,7 +34,7 @@ class ValidityPickerTile extends ConsumerWidget {
           ),
           const Spacer(),
           Text(
-            selectedValue!.isEmpty ? "hrs" : selectedValue!,
+            selectedValue?.isEmpty ?? false ? "hrs" : selectedValue ?? "",
             style: TextStyle(
               fontSize: 14,
               fontFamily: FontFamilies.interDisplay,
@@ -80,9 +81,19 @@ class ValidityPickerTile extends ConsumerWidget {
 
     if (selected != null) {
       if (selected == 'Custom...') {
-        ref.read(bottomSheetStateProvider.notifier).state =
-            BottomSheetView.validatorcustom;
+        // ref.read(bottomSheetStateProvider.notifier).state =
+        //     BottomSheetView.validatorcustom;
+        showUserBottomSheet(
+          context: context,
+          headertitle: "",
+          headersubtitle: "",
+          ref: ref,
+          bottom: BottomSheetView.validatorcustom,
+          id: 0,
+        );
+        return; // ⭐ THIS WILL HELP A LOT
       }
+
       onChanged(selected);
     }
   }

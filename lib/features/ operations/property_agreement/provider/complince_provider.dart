@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
-import 'package:curnectgate/features/%20operations/property_agreement/model/agreements_response.dart';
 import 'package:curnectgate/features/%20operations/property_agreement/model/compliance/compliance_response.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
@@ -25,9 +24,7 @@ class AgreementNotifier extends AutoDisposeAsyncNotifier<ComplianceResponse?> {
 
     try {
       // Then try to fetch fresh data
-     
 
-    
       final freshAgreement =
           await ref.read(getApiServiceProvider).getMyComplence();
 

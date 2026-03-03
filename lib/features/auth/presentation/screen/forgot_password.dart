@@ -2,9 +2,9 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/estate_management/screen_managment.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/loading_screen/loading_page.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
-import 'package:curnectgate/features/estate_management/screen_managment.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +50,10 @@ class _PasswordResetState extends ConsumerState<PasswordReset> {
 
     return Scaffold(
       appBar: state.forgetPaSsLoading ? null : _buildAppBar(),
-      bottomNavigationBar: state.forgetPaSsLoading ? null : _buildBottomAction(),
+      bottomNavigationBar:
+          state.forgetPaSsLoading
+              ? null
+              : SafeArea(top: false, child: _buildBottomAction()),
       body:
           state.forgetPaSsLoading
               ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)

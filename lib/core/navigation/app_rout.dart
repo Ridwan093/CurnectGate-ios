@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/widgets/GetYourCode.dart';
@@ -32,23 +34,25 @@ import 'package:curnectgate/features/member_management/screen/main_navigation_sc
 import 'package:curnectgate/features/member_management/screen/otp_screen.dart';
 import 'package:curnectgate/features/member_management/screen/password_screen.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/screen/Activate_Otp_screen.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/screen/Active_history.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/activites_log.dart';
 import 'package:curnectgate/features/operations/violation/screens/reportViolation.dart';
 import 'package:curnectgate/features/payment/screen/Activites.dart';
 import 'package:curnectgate/features/payment/screen/ReviewPayment.dart';
 import 'package:curnectgate/features/payment/screen/payment_method_screen.dart';
 import 'package:curnectgate/features/payment/screen/success_error_scren/success_error.dart';
+import 'package:curnectgate/features/payment/services/pdf_preview_screen.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/due_model/outstanding_due.dart';
 import 'package:curnectgate/features/payment/widget/payment_data/due_payement_data.dart';
 import 'package:curnectgate/features/payment/widget/payment_data/select_due_payment_data.dart';
 import 'package:curnectgate/features/security/screen/sccurityTap_Screen.dart';
 import 'package:curnectgate/features/security/screen/security_notifier/notification.dart';
 import 'package:curnectgate/features/security/screen/violation_details.dart';
-
 import 'package:curnectgate/features/userProfile/Login_setting/manage_loging.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/screen/SetPreference.dart';
 import 'package:curnectgate/features/userProfile/Privacy_setting/screen/privacy_screen.dart';
 import 'package:curnectgate/features/userProfile/notification_setting/screen/notificationSetting_screen.dart';
+import 'package:curnectgate/features/userProfile/profile/screen/profile_deatail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -204,6 +208,41 @@ final routerProvider = Provider<GoRouter>((ref) {
           );
         },
       ),
+
+      GoRoute(
+        path: '/profile-deateil',
+        name: AppRoutes.profileDeatil,
+        builder: (context, state) {
+          // Safely cast the extra data
+
+          final extra = state.extra as Map<String, dynamic>? ?? {};
+
+          // Extract values with null checks
+
+          final userProfilePix = extra["userProfilePix"] as String? ?? "";
+          final userName = extra["userName"] as String? ?? "";
+          final userRole = extra["userRole"] as String? ?? "";
+          final memberId = extra["memberId"] as String? ?? "";
+          final estateName = extra["estateName"] as String? ?? "";
+          final lastLogin = extra["lastLogin"] as String? ?? "";
+          final email = extra["email"] as String? ?? "";
+          final phoneNumber = extra["phoneNumber"] as String? ?? "";
+          // All spread data is here
+
+          return ProfileDetailScreen(
+            profile: UserProfile(
+              userProfilePix: userProfilePix,
+              userName: userName,
+              userRole: userRole,
+              memberId: memberId,
+              estateName: estateName,
+              lastLogin: lastLogin,
+              email: email,
+              phoneNumber: phoneNumber,
+            ),
+          );
+        },
+      ),
       GoRoute(
         path: '/addHous_co',
         name: AppRoutes.addHoused_CoOnwner,
@@ -301,6 +340,17 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
 
       GoRoute(
+        path: '/active-History',
+        name: AppRoutes.activeOtpHistory,
+        builder: (context, state) {
+          // final extra = state.extra as Map<String, dynamic>? ?? {};
+
+          // Extract values with null checks
+          return ActiveHistory(key: ValueKey('otpHistory'));
+        },
+      ),
+
+      GoRoute(
         path: '/sec_violations',
         name: AppRoutes.securityViolationDeatails,
         builder: (context, state) {
@@ -308,6 +358,19 @@ final routerProvider = Provider<GoRouter>((ref) {
 
           // Extract values with null checks
           return ViolationDetailScreen(violationId: "2");
+        },
+      ),
+      GoRoute(
+        path: '/recip-prev',
+        name: AppRoutes.recipPreview,
+        builder: (context, state) {
+          // final extra = state.extra as Violation;
+          final extra = state.extra as Map<String, dynamic>;
+
+          final path = extra["file"] as String;
+
+          // Extract values with null checks
+          return PdfPreviewScreen(file: File(path));
         },
       ),
 

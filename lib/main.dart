@@ -38,7 +38,7 @@ void main() async {
     ProviderScope(
       // Wrap your app with ProviderScope
       child: DevicePreview(
-        enabled: false,
+        enabled: true,
         builder: (context) => MyApp(), // Wrap your app
       ),
     ),

@@ -31,6 +31,7 @@ class ResidentLists extends ConsumerWidget {
       itemBuilder: (context, index) {
         var res = data[index];
         return ResidentCard(
+          email: res.email ?? "",
           userName: res.fullName,
           block: res.memberCode,
           adrress: res.address,
