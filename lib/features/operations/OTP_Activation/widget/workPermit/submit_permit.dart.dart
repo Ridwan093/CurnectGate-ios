@@ -139,15 +139,10 @@ class _SubmitPermitBottomSheetState
                           onTap: () {
                             final data = {
                               "otp_id": widget.id,
-                              "items_description":
-                                  "hwdjhdhjwhwhjwdhhwd",
+                              "items_description": "",
 
                               "items": items,
-                              "metadata": {
-                                "notes": "jdjwhdjhwjhddh",
-                                "contact_person":
-                                    "hwdjhdjhwhwdjh",
-                              },
+                              "metadata": {"notes": "", "contact_person": ""},
                             };
                             form.addPermitToActiveOTP(
                               context: context,

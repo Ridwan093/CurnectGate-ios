@@ -5,9 +5,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'dart:math' as math;
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:curnectgate/core/%20utils/api/api_Service.dart';
 import 'package:curnectgate/core/%20utils/api/api_method.dart';
 import 'package:curnectgate/core/config/biometric_faceID/Helper/biometric_signature_helper.dart';
@@ -22,11 +20,7 @@ import 'package:curnectgate/features/%20operations/property_agreement/provider/c
 import 'package:curnectgate/features/auth/data/auth_model/OnboardingProgressManager.dart';
 import 'package:curnectgate/features/auth/data/auth_model/onbording_enum.dart';
 import 'package:curnectgate/features/auth/widget/tmporarypassword_dialog.dart';
-import 'package:curnectgate/features/chat/data/model/chat_message.dart';
-import 'package:curnectgate/features/chat/data/provider/chat_local_repository_provider.dart';
-import 'package:curnectgate/features/chat/data/provider/chat_messages_provider.dart';
-import 'package:curnectgate/features/chat/data/provider/reverb_provider.dart';
-import 'package:curnectgate/features/chat/services/reverb_service.dart';
+import 'package:curnectgate/features/chat/data/provider/get_provider/get_chat_settings.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/candidate_provider.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/eletion_provider.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/afterImage_provider.dart';
@@ -1416,30 +1410,9 @@ class FormNotifier extends StateNotifier<FormStates> {
       await DeviceInfoHelper.saveFirstTimeCheck(true);
       isBiometricEnabled.toggleBiometric(false);
     }
-
+    final int id = user['id'] ?? 0;
     // 🌐 Reverb setup (REALTIME)
-    try {
-      final reverbResponse =
-          await ref.read(getApiServiceProvider).getReverbConfig();
-
-      if (reverbResponse['status'] == true && token != null) {
-        final config = reverbResponse['data'];
-        ref.read(reverbConfigProvider.notifier).state = ReverbConfig.fromJson(
-          config,
-        );
-
-        await ReverbService.init(
-          token: token,
-          appKey: config['app_key'],
-          host: config['host'],
-          port: config['port'],
-          scheme: config['scheme'],
-          authEndpoint: config['auth_endpoint'],
-        );
-
-        await ReverbService.setupGlobalListener(user['id'].toString(), ref);
-      }
-    } catch (_) {
+    try {} catch (_) {
       // Fail silently — realtime is optional
     }
 
@@ -5351,10 +5324,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
 
-        ref
-            .read(permissionStatusProvider.notifier)
-            .refreshPermissionstatus(context, ref);
-
         // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
         //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
@@ -5467,13 +5436,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
-
-        ref
-            .read(permissionStatusProvider.notifier)
-            .refreshPermissionstatus(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         notifier.resetForm();
         updateBasicPermissionLoading(false);
@@ -9931,78 +9893,42 @@ class FormNotifier extends StateNotifier<FormStates> {
     }
   }
 
-  Future<void> sendMessage({
-    required BuildContext context,
-    required String message,
-    File? file,
-    required WidgetRef ref,
-    required int id,
-  }) async {
-    log("CHAT SEND START");
-
-    // 1️⃣ Create local message
-    final localId =
-        '${DateTime.now().millisecondsSinceEpoch}_${math.Random().nextInt(999)}';
-
-    final localMessage = ChatMessage(
-      localId: localId,
-      content: message,
-      senderId: "current_user_id", // replace with actual user id
-      createdAt: DateTime.now(),
-      isSynced: false,
-    );
-
-    // 2️⃣ Save locally & update UI immediately
-    await ref.read(chatLocalRepositoryProvider).save(localMessage);
-    ref.read(chatMessagesProvider.notifier).addLocalMessage(localMessage);
-
-    try {
-      // 3️⃣ Check connectivity (optional but recommended)
-      final connectivity = await Connectivity().checkConnectivity();
-      final isOnline = connectivity != ConnectivityResult.none;
-
-      if (!isOnline) {
-        log("OFFLINE — message queued");
-        return;
-      }
-
-      // 4️⃣ Attempt API send
-      final response = await ref
-          .read(profileRepositoryProvider)
-          .sendMessage(message: message, context: context, file: file, id: id);
-
-      if (!context.mounted) return;
-
-      if (response['status'] == true) {
-        // 5️⃣ Mark message as synced
-        await ref
-            .read(chatLocalRepositoryProvider)
-            .markSynced(
-              localId: localId,
-              serverId: response['data']['id'].toString(),
-            );
-
-        ref.read(chatMessagesProvider.notifier).refresh();
-
-        log("CHAT MESSAGE SYNCED");
-      }
-    } on DioException catch (e) {
-      log("NETWORK ERROR — message kept offline");
-      log(e.toString());
-    } catch (e) {
-      log("UNEXPECTED ERROR");
-      log(e.toString());
-    } finally {
-      log("CHAT SEND END");
-    }
-  }
-
   Future<void> markUnreadMessage({required WidgetRef ref}) async {
     log("START------->");
 
     try {
       final response =
           await ref.read(profileRepositoryProvider).markMessagCount();
+
+      log("befor isMouted------->");
+      log(response.toString());
+
+      log("after isMouted------->");
+      if (response['status'] == true) {
+      } else {}
+    } on DioException catch (e) {
+      if (e.error is SocketException) {
+        log(e.error.toString());
+      }
+      log(e.toString());
+    } catch (e) {
+      log("E-ERROR-MESSAGE------->");
+      log(e.toString());
+    } finally {
+      log("END------->");
+    }
+  }
+
+  Future<void> markMessageRead({
+    required WidgetRef ref,
+    required int id,
+  }) async {
+    log("START------->");
+
+    try {
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .markMessageRead(id: id);
 
       log("befor isMouted------->");
       log(response.toString());
@@ -10058,6 +9984,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
+        ref.read(getChatSettings(id).notifier).refreshChatSetting(context, ref, id);
       } else {
         showCustomSuccessToast(
           context: context,

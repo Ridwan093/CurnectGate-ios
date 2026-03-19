@@ -9,10 +9,12 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/workformprovider.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/member_management/tabState/tab_state.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
+import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:curnectgate/features/userProfile/profile/provider/profile_provider.dart';
 import 'package:curnectgate/features/userProfile/profile/widget/listTile.dart';
 import 'package:curnectgate/features/userProfile/profile/widget/profileCard.dart';
@@ -74,7 +76,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                               extra: {
                                 "userProfilePix": user.mediaUrl,
                                 "userName": user.fullName,
-                                "userRole": user.role,
+                                "userRole": user.role.replaceAll("_", " "),
                                 "memberId": user.memberCode,
 
                                 "estateName": user.estateName,
@@ -317,6 +319,60 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                 title: "Set Privacy",
                 iconPath: AssetPaths.setCurfew,
               ),
+
+               _buildSignOut(
+                ref: ref,
+                iconPath: AssetPaths.logOut,
+                title: "Sign out",
+                onTap: () {
+                  ref
+                      .read(authProvider.notifier)
+                      .logOut(ref: ref, context: context);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSignOut({
+    required String iconPath,
+    required String title,
+    required VoidCallback onTap,
+    required WidgetRef ref,
+  }) {
+    final formstate = ref.watch(formProvider);
+    return Padding(
+      padding: const EdgeInsets.only(top: 50),
+      child: Align(
+        alignment: Alignment.bottomLeft,
+        child: InkWell(
+          onTap: onTap,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                spacing: 8,
+                children: [
+                  Image.asset(iconPath, width: 24),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      color: AppColors.instance.black600,
+                      fontSize: 17,
+                      fontWeight: FontFamilies.light,
+                    ),
+                  ),
+                ],
+              ),
+              formstate.logOutLoading
+                  ? CircularProgressIndicator(
+                    color: AppColors.instance.yellow500,
+                  )
+                  : SizedBox(),
             ],
           ),
         ),

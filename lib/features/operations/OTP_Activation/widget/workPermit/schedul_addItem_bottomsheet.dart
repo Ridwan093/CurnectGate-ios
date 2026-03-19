@@ -24,9 +24,6 @@ class _AddItemBottomSheetState
   bool get _isValid {
     return _itemName.text.isNotEmpty &&
         _quantity.text.isNotEmpty &&
-        _category.text.isNotEmpty &&
-        _description.text.length > 9 &&
-        _category.text.length > 4 &&
         _itemName.text.length > 4;
   }
 
@@ -72,19 +69,19 @@ class _AddItemBottomSheetState
                 onChanged: (_) => setState(() {}),
                 onValidationChanged: (_) {},
               ),
-              const SizedBox(height: 8),
 
-              ReusabelProfileForm(
-                controller: _description,
-                fieldKey: 'description',
-                fieldType: FieldType.reason,
-                hintText: 'Enter description',
-                label: 'Description',
-                maxLines: 2,
-                onChanged: (_) => setState(() {}),
-                onValidationChanged: (_) {},
-              ),
+              // const SizedBox(height: 8),
 
+              // ReusabelProfileForm(
+              //   controller: _description,
+              //   fieldKey: 'description',
+              //   fieldType: FieldType.reason,
+              //   hintText: 'Enter description',
+              //   label: 'Description',
+              //   maxLines: 2,
+              //   onChanged: (_) => setState(() {}),
+              //   onValidationChanged: (_) {},
+              // ),
               const SizedBox(height: 40),
             ],
           ),

@@ -138,9 +138,9 @@ class _DenyEntryState extends ConsumerState<DenyPermitEntry> {
       label: 'Deny',
       onPressed:
           _securityNotedController.text.isNotEmpty &&
-                  _securityNotedController.text.length > 9 &&
+                  _securityNotedController.text.length > 4 &&
                   _reasonEditinControler.text.isNotEmpty &&
-                  _reasonEditinControler.text.length > 9
+                  _reasonEditinControler.text.length > 4
               ? () {
                 log(_securityNotedController.text);
                 providerState.permitdenyEntry(

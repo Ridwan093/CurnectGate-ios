@@ -3,6 +3,8 @@ import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/security/model/duty_model/duty_helper.dart';
+import 'package:curnectgate/features/security/provider/duty_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart'; // for nice date formatting
@@ -189,17 +191,20 @@ class _PremiumSecurityHeaderState extends ConsumerState<PremiumSecurityHeader>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _timeRow(
-                          "06:00 AM - 06:00 PM",
-                          Icons.access_time,
-                          true,
-                          fontScale,
-                        ),
+                        _buildDuty(),
+                        // _timeRow(
+                        //   "06:00 AM - 06:00 PM",
+                        //   "",
+                        //   Icons.access_time,
+                        //   true,
+                        //   fontScale,
+                        // ),
                         Divider(color: AppColors.instance.grey300),
                         GestureDetector(
                           onTap: () => _showDateDialog(context),
                           child: _timeRow(
                             _getFormattedDate(),
+                            "",
                             Icons.calendar_month,
                             false,
                             fontScale,
@@ -224,14 +229,103 @@ class _PremiumSecurityHeaderState extends ConsumerState<PremiumSecurityHeader>
     );
   }
 
-  Widget _timeRow(String text, IconData icon, bool isDuty, double scale) {
+  Widget _buildDuty() {
+    final isSmall = MediaQuery.sizeOf(context).width < 360;
+    final fontScale = isSmall ? 0.92 : 1.0;
+
+    final dutyState = ref.watch(dutyProvider);
+    return dutyState.when(
+      data: (profile) {
+        try {
+          final dutyData = profile?.data;
+          final dutyUi = DutyUiMapper.mapCurrentDuty(dutyData);
+          return _timeRow(
+            dutyUi.dutyTime,
+            dutyUi.label,
+            Icons.access_time,
+            true,
+            fontScale,
+          );
+        } catch (e) {
+          return _timeRow(
+            "----..----",
+            "----..----",
+            Icons.access_time,
+            true,
+            fontScale,
+          );
+        }
+      },
+      loading: () {
+        return _timeRow(
+          "----..----",
+          "----..----",
+          Icons.access_time,
+          true,
+          fontScale,
+        );
+      },
+      error: (error, stack) {
+        try {
+          // Handle session expiration
+          if (error.toString().contains("Unauthorized")) {
+            return _timeRow(
+              "----..----",
+              "----..----",
+              Icons.access_time,
+              true,
+              fontScale,
+            );
+          }
+
+          // Try to show cached data
+          final cachDuty = ref.read(dutyProvider).value;
+          if (cachDuty != null) {
+            final dutyUi = DutyUiMapper.mapCurrentDuty(cachDuty.data);
+            return _timeRow(
+              dutyUi.dutyTime,
+              dutyUi.label,
+              Icons.access_time,
+              true,
+              fontScale,
+            );
+          }
+
+          // No cached data available
+          return _timeRow(
+            "----..----",
+            "----..----",
+            Icons.access_time,
+            true,
+            fontScale,
+          );
+        } catch (e) {
+          return _timeRow(
+            "----..----",
+            "----..----",
+            Icons.access_time,
+            true,
+            fontScale,
+          );
+        }
+      },
+    );
+  }
+
+  Widget _timeRow(
+    String text,
+    String duty,
+    IconData icon,
+    bool isDuty,
+    double scale,
+  ) {
     return Row(
       children: [
         Icon(icon, size: 18, color: AppColors.instance.black400),
         const SizedBox(width: 8),
         if (isDuty)
           Text(
-            "Currently on duty: ",
+            duty,
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               fontSize: 14 * scale,

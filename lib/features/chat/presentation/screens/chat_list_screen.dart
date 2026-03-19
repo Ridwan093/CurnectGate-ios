@@ -1,20 +1,36 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/local_store/share_prefrence.dart';
+import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/chat/presentation/chat_widget/conversation_tile.dart';
+import 'package:curnectgate/features/chat/data/model/conversation.dart';
 import 'package:curnectgate/features/chat/data/provider/%20chat_list_provider.dart';
-import 'package:curnectgate/features/chat/data/provider/chat_provier.dart';
+import 'package:curnectgate/features/chat/data/provider/reverb_provider.dart';
 import 'package:curnectgate/features/chat/data/provider/search_provider.dart';
-import 'package:curnectgate/features/chat/presentation/screens/messagbody.dart';
+import 'package:curnectgate/features/chat/presentation/chat_widget/conversation_tile.dart';
+import 'package:curnectgate/features/chat/services/reverb_service.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:dart_pusher_channels/dart_pusher_channels.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-class ChatListScreen extends ConsumerWidget {
+import '../../../../core/local_store/User_localdata_provider.dart';
+
+class ChatListScreen extends ConsumerStatefulWidget {
   final String title;
   final String description;
   const ChatListScreen(this.title, this.description, {super.key});
+
+  @override
+  ConsumerState<ChatListScreen> createState() => _ChatListScreenState();
+}
+
+class _ChatListScreenState extends ConsumerState<ChatListScreen> {
   void _openChatOption(WidgetRef ref, BuildContext context) {
     showUserBottomSheet(
       context: context,
@@ -25,15 +41,33 @@ class ChatListScreen extends ConsumerWidget {
     );
   }
 
+  StreamSubscription<ChannelReadEvent>? _globalSub;
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final authState = ref.watch(authProvider);
+
+      final user = authState.user;
+      final userId = user?["id"] ?? "";
+      log("Ok let seee if you log ot not we see :${userId}");
+      await ReverbService.setupGlobalListener(userId, ref);
+      
+    });
+  }
+
+
+  @override
+  void dispose() {
+    _globalSub?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final searchState = ref.watch(searchProvider);
-    final chatState = ref.watch(chatProvider);
-    final conversations = ref.watch(chatListProvider);
-    // final filteredConversations =
-    //     searchState.query.isEmpty
-    //         ? conversations
-    //         : ref.read(chatListProvider.notifier).search(searchState.query);
+
+    final asyncConversations = ref.watch(conversationListProvider);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -43,50 +77,107 @@ class ChatListScreen extends ConsumerWidget {
               : _buildAction(ref, context),
       appBar: searchState.isSearching ? null : _buildAppBar(),
 
-      // appBar: AppBar(
-
-      //   bottom: PreferredSizeWidget(c),
-      //   title: const Text('All messages'),
-      //   actions: [
-      //     IconButton(
-      //       icon: const Icon(Icons.search),
-      //       onPressed: () => ref.read(searchProvider.notifier).toggleSearch(),
-      //     ),
-      //   ],
-      body:
-          // ignore: unnecessary_null_comparison
-          conversations.length != null
-              ? Stack(
-                children: [
-                  Column(
-                    children: [
-                      _buildSearchEnging(ref),
-
-                      SizedBox(height: 8),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: conversations.length,
-                          itemBuilder: (context, index) {
-                            final conversation = conversations[index];
-                            return ConversationTile(
-                              conversation: conversation,
-                              onTap: () => _navigateToChat(context),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  // Search Overlay
-                  if (searchState.isSearching)
-                    _buildSearchOverlay(context, ref),
-                ],
-              )
-              : _buildEmptyBody(
-                title: title,
-                description: description,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          // Pull-to-refresh → force API sync
+          await ref
+              .read(conversationListProvider.notifier)
+              .refreshConversations();
+        },
+        child: asyncConversations.when(
+          data: (conversations) {
+            if (conversations == null || conversations.isEmpty) {
+              return _buildEmptyBody(
+                title: widget.title,
+                description: widget.description,
                 context: context,
+              );
+            }
+
+            // Filter if searching
+            final filtered =
+                searchState.query.isEmpty
+                    ? conversations
+                    : ref
+                        .read(coversationSearchProvider.notifier)
+                        .search(
+                          searchState.query,
+                        ); // Keep your existing search logic
+
+            return Stack(
+              children: [
+                Column(
+                  children: [
+                    _buildSearchEnging(ref),
+                    SizedBox(height: 8),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: filtered.length,
+                        itemBuilder: (context, index) {
+                          final conversation = filtered[index];
+                          return ConversationTile(
+                            conversation: conversation,
+                            onTap:
+                                () => _navigateToChat(
+                                  context: context,
+                                  isOnline:
+                                      conversation
+                                          .participants
+                                          ?.last
+                                          .onlineStatus ??
+                                      "",
+                                  url:
+                                      conversation
+                                          .participants
+                                          ?.last
+                                          .avatarUrl ??
+                                      "",
+                                  userFullName:
+                                      conversation
+                                          .participants
+                                          ?.last
+                                          .fullName ??
+                                      "",
+                                  userRole:
+                                      conversation.participants?.last.role ??
+                                      "",
+                                  id: conversation.id ?? 0,
+                                  // conversation,
+                                  // ref.read(chatProvider),
+                                ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+
+                // Search Overlay (keep your existing)
+                if (searchState.isSearching) _buildSearchOverlay(context, ref),
+              ],
+            );
+          },
+
+          loading: () => Center(child: CircularProgressIndicator()),
+          error:
+              (e, stack) => Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Error loading conversations: $e"),
+                    ElevatedButton(
+                      onPressed:
+                          () =>
+                              ref
+                                  .read(conversationListProvider.notifier)
+                                  .refreshConversations(),
+                      child: Text("Retry"),
+                    ),
+                  ],
+                ),
               ),
+        ),
+      ),
     );
   }
 
@@ -124,7 +215,7 @@ class ChatListScreen extends ConsumerWidget {
   Widget _buildSearchOverlay(BuildContext context, WidgetRef ref) {
     final searchState = ref.watch(searchProvider);
     final filteredConversations = ref
-        .read(chatListProvider.notifier)
+        .read(coversationSearchProvider.notifier)
         .search(searchState.query);
 
     return Positioned.fill(
@@ -192,17 +283,21 @@ class ChatListScreen extends ConsumerWidget {
                             child: ListTile(
                               leading: CircleAvatar(
                                 backgroundImage: NetworkImage(
-                                  conversation.user.avatarUrl,
+                                  conversation.participants?.first.avatarUrl ??
+                                      "",
                                 ),
                               ),
                               title: Text(
-                                conversation.user.name,
+                                conversation.participants?.first.fullName ?? "",
                                 style: const TextStyle(color: Colors.white),
                               ),
                               subtitle:
-                                  conversation.lastMessage != null
+                                  conversation.latestMessage != null
                                       ? Text(
-                                        conversation.lastMessage!.text,
+                                        conversation
+                                                .latestMessage
+                                                ?.messageText ??
+                                            "",
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
@@ -213,7 +308,30 @@ class ChatListScreen extends ConsumerWidget {
                               onTap: () {
                                 ref.read(searchProvider.notifier).clearSearch();
                                 _navigateToChat(
-                                  context,
+                                  isOnline:
+                                      conversation
+                                          .participants
+                                          ?.last
+                                          .onlineStatus ??
+                                      "",
+                                  context: context,
+                                  url:
+                                      conversation
+                                          .participants
+                                          ?.last
+                                          .avatarUrl ??
+                                      "",
+                                  userFullName:
+                                      conversation
+                                          .participants
+                                          ?.last
+                                          .fullName ??
+                                      "",
+                                  userRole:
+                                      conversation.participants?.last.role ??
+                                      "",
+
+                                  id: conversation.id ?? 0,
                                   // conversation,
                                   // ref.read(chatProvider),
                                 );
@@ -229,10 +347,23 @@ class ChatListScreen extends ConsumerWidget {
     );
   }
 
-  void _navigateToChat(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MessageScreens(id: 8)),
+  void _navigateToChat({
+    required BuildContext context,
+    required String userRole,
+    required String userFullName,
+    required String url,
+    required String isOnline,
+    required int id,
+  }) {
+    context.pushNamed(
+      AppRoutes.messageBody,
+      extra: {
+        "id": id,
+        "username": userFullName,
+        "userRole": userRole,
+        "url": url,
+        "isOnline": isOnline,
+      },
     );
   }
 

@@ -1,152 +1,140 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:open_filex/open_filex.dart';
+import 'dart:io';
 
-class ShowFile extends ConsumerWidget {
-  final message;
-  const ShowFile(this.message, {super.key});
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
+
+class ShowFile extends StatefulWidget {
+  final String path; // can be local OR url
+  const ShowFile(this.path, {super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 4), // Space between chat bubbles
-      child: GestureDetector(
-        onTap: () => OpenFilex.open(message.file!),
-        child: Material(
-          elevation: 1, // More subtle shadow for chat
-          borderRadius: BorderRadius.circular(12),
+  State<ShowFile> createState() => _ShowFileState();
+}
+
+class _ShowFileState extends State<ShowFile> {
+  bool downloading = false;
+  String? localPath;
+  String size = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _prepare();
+  }
+
+  bool get isUrl => widget.path.startsWith("http");
+
+  String getFileName(String path) {
+    return path.split('/').last;
+  }
+
+  Future<void> _prepare() async {
+    if (!isUrl) {
+      localPath = widget.path;
+      size = await _getFileSize(widget.path);
+      setState(() {});
+    }
+  }
+
+  Future<String> _getFileSize(String path) async {
+    final file = File(path);
+    if (!file.existsSync()) return "";
+    final bytes = await file.length();
+
+    if (bytes < 1024) return "$bytes B";
+    if (bytes < 1024 * 1024) {
+      return "${(bytes / 1024).toStringAsFixed(1)} KB";
+    }
+    return "${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB";
+  }
+
+  Future<void> _download() async {
+    setState(() => downloading = true);
+
+    try {
+      final dir = await getApplicationDocumentsDirectory();
+
+      final filePath = "${dir.path}/${getFileName(widget.path)}";
+
+      final response = await Dio().download(widget.path, filePath);
+
+      localPath = filePath;
+      size = await _getFileSize(filePath);
+
+      setState(() {});
+    } catch (e) {
+      debugPrint("Download failed $e");
+    }
+
+    setState(() => downloading = false);
+  }
+
+  void _open() {
+    if (localPath != null) {
+      OpenFilex.open(localPath!);
+    } else if (isUrl) {
+      _download();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final fileName = getFileName(widget.path);
+
+    return GestureDetector(
+      onTap: _open,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        padding: const EdgeInsets.all(12),
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * .7,
+        ),
+        decoration: BoxDecoration(
           color: Colors.white,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth:
-                  MediaQuery.of(context).size.width * 0.7, // Responsive width
-              minWidth: 150,
-              maxHeight: 80,
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(12),
-              child: Row(
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [BoxShadow(blurRadius: 4, color: Colors.black12)],
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.picture_as_pdf, color: Colors.red),
+            const SizedBox(width: 10),
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // File icon container
-                  Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: _getFileColor(message.selectedFileName),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(
-                      _getFileIcon(message.selectedFileName),
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                  ),
+                  Text(fileName, maxLines: 1, overflow: TextOverflow.ellipsis),
 
-                  SizedBox(width: 12),
+                  const SizedBox(height: 4),
 
-                  // File info
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // File name
-                        Text(
-                          message.selectedFileName ?? 'Untitled',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          maxLines: 1,
-                        ),
-
-                        SizedBox(height: 4),
-
-                        // File size and type
-                        Text(
-                          '${_formatFileSize(message.selectedFileSize)} • ${_getFileType(message.selectedFileName)}',
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Download/Open indicator
-                  Icon(
-                    Icons.arrow_outward,
-                    size: 18,
-                    color: Colors.grey.shade500,
+                  Text(
+                    localPath != null
+                        ? size
+                        : downloading
+                        ? "Downloading..."
+                        : "Tap to download",
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ],
               ),
             ),
-          ),
+
+            if (downloading)
+              const SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            else
+              Icon(
+                localPath != null ? Icons.open_in_new : Icons.download,
+                size: 18,
+              ),
+          ],
         ),
       ),
     );
-  }
-
-  // Helper methods
-  String _formatFileSize(int? sizeInBytes) {
-    if (sizeInBytes == null) return '0 B';
-    if (sizeInBytes < 1024) return '$sizeInBytes B';
-    if (sizeInBytes < 1024 * 1024) {
-      return '${(sizeInBytes / 1024).toStringAsFixed(1)} KB';
-    }
-    return '${(sizeInBytes / (1024 * 1024)).toStringAsFixed(1)} MB';
-  }
-
-  String _getFileType(String? fileName) {
-    if (fileName == null) return 'File';
-    final ext = fileName.split('.').last.toLowerCase();
-    return ext.toUpperCase(); // Returns "PDF", "DOCX", etc.
-  }
-
-  IconData _getFileIcon(String? fileName) {
-    if (fileName == null) return Icons.insert_drive_file;
-    final ext = fileName.split('.').last.toLowerCase();
-    switch (ext) {
-      case 'pdf':
-        return Icons.picture_as_pdf;
-      case 'doc':
-      case 'docx':
-        return Icons.description;
-      case 'xls':
-      case 'xlsx':
-        return Icons.table_chart;
-      case 'ppt':
-      case 'pptx':
-        return Icons.slideshow;
-      case 'txt':
-        return Icons.notes;
-      case 'zip':
-      case 'rar':
-        return Icons.archive;
-      default:
-        return Icons.insert_drive_file;
-    }
-  }
-
-  Color _getFileColor(String? fileName) {
-    if (fileName == null) return Colors.blueAccent;
-    final ext = fileName.split('.').last.toLowerCase();
-    switch (ext) {
-      case 'pdf':
-        return Colors.redAccent;
-      case 'doc':
-      case 'docx':
-        return Colors.blueAccent;
-      case 'xls':
-      case 'xlsx':
-        return Colors.greenAccent;
-      case 'ppt':
-      case 'pptx':
-        return Colors.orangeAccent;
-      default:
-        return Colors.blueGrey;
-    }
   }
 }

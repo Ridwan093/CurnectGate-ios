@@ -118,7 +118,7 @@ class _DenyEntryState extends ConsumerState<GrantPermitEntry> {
       label: 'Grant Permit',
       onPressed:
           _securityNotedController.text.isNotEmpty &&
-                  _securityNotedController.text.length > 9
+                  _securityNotedController.text.length > 4
               ? () {
                 log(_securityNotedController.text);
                 providerState.permitGrantAccess(

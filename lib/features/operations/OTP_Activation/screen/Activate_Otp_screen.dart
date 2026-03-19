@@ -55,27 +55,6 @@ class Otpactivation extends ConsumerWidget {
           Row(
             children: [
               Expanded(
-                flex: 1,
-                child: _buildAddMemberButton(
-                  size,
-                  context,
-                  ref,
-                  buttonText: "My Permits",
-                  onTap: () {
-                    showUserBottomSheet(
-                      context: context,
-                      headertitle: "Select option",
-                      headersubtitle: "Manage OTPs for Visitor Access",
-                      ref: ref,
-                      bottom: BottomSheetView.activeOTPHistory,
-                    );
-                  },
-                  buttonColor: AppColors.instance.teal300,
-                  textColor: AppColors.instance.black600,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
                 flex: 2,
                 child: _buildAddMemberButton(
                   size,
@@ -95,6 +74,27 @@ class Otpactivation extends ConsumerWidget {
                   buttonColor: AppColors.instance.black600,
                 ),
               ),
+              const SizedBox(width: 16),
+              Expanded(
+                flex: 1,
+                child: _buildAddMemberButton(
+                  size,
+                  context,
+                  ref,
+                  buttonText: "My Permits",
+                  onTap: () {
+                    showUserBottomSheet(
+                      context: context,
+                      headertitle: "Select option",
+                      headersubtitle: "Manage OTPs for Visitor Access",
+                      ref: ref,
+                      bottom: BottomSheetView.activeOTPHistory,
+                    );
+                  },
+                  buttonColor: AppColors.instance.teal300,
+                  textColor: AppColors.instance.black600,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 30),
@@ -104,9 +104,7 @@ class Otpactivation extends ConsumerWidget {
               Expanded(
                 child: Text(
                   "Active OTPs",
-                  overflow:
-                      TextOverflow
-                          .ellipsis,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     fontSize: 24,
@@ -117,7 +115,7 @@ class Otpactivation extends ConsumerWidget {
               ),
 
               const SizedBox(width: 16),
-             
+
               CustomStatusDropdown(
                 statusOptions: _statusOptions,
                 initialStatus: 'All',

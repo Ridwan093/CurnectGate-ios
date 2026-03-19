@@ -229,8 +229,8 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
             error = '${widget.label} must be at least 20 characters';
           }
         case FieldType.reason:
-          if (value.length < 10) {
-            error = '${widget.label} must be at least 10 characters';
+          if (value.length < 5) {
+            error = '${widget.label} must be at least 5 characters';
           }
         case FieldType.itemName:
           if (value.length < 5) {

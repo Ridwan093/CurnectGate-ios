@@ -15,6 +15,8 @@ import 'package:curnectgate/features/auth/presentation/screen/memeber_getstarted
 import 'package:curnectgate/features/auth/presentation/screen/rest_pass_otp_screen.dart';
 import 'package:curnectgate/features/auth/presentation/screen/sign_in.dart';
 import 'package:curnectgate/features/auth/presentation/screen/splac_screen.dart';
+import 'package:curnectgate/features/chat/presentation/chat_widget/filePreview.dart';
+import 'package:curnectgate/features/chat/presentation/screens/messagbody.dart';
 import 'package:curnectgate/features/estate_management/elections/poll/poll.dart';
 import 'package:curnectgate/features/estate_management/elections/poll/poll_success.dart';
 import 'package:curnectgate/features/estate_management/elections/screens/election_dashboard.dart';
@@ -502,6 +504,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           );
         },
       ),
+
       GoRoute(
         path: '/succes_file_screen',
         name: AppRoutes.paymentSuccess,
@@ -519,6 +522,24 @@ final routerProvider = Provider<GoRouter>((ref) {
 
           // Extract values with null checks
           return PaymentSuccessScreen(isFaile: isFail, error: errorBody);
+        },
+      ),
+      GoRoute(
+        path: '/File-Privew',
+        name: AppRoutes.filePreview,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+
+          final id = extra["id"] as int;
+
+          // final lists =
+          //     (extra["list"] as Iterable?)
+          //         ?.whereType<OutstandingDue>()
+          //         .toList() ??
+          //     [];
+
+          // Extract values with null checks
+          return ChatPreviewScreen(conversationId: id);
         },
       ),
 
@@ -557,6 +578,26 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: AppRoutes.newPoll,
         builder: (context, state) {
           return PollScreen();
+        },
+      ),
+      GoRoute(
+        path: '/message-body',
+        name: AppRoutes.messageBody,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          final int id = extra["id"] as int;
+          final String userFullName = extra["username"] as String;
+          final String isOnline = extra["isOnline"] as String;
+          final String url = extra["url"] as String;
+          final String userRole = extra["userRole"] as String;
+
+          return MessageScreens(
+            id: id,
+            userFullName: userFullName,
+            userRole: userRole,
+            profileUrl: url,
+            isOnline: isOnline,
+          );
         },
       ),
 

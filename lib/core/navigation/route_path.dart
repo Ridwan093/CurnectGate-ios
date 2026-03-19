@@ -6,7 +6,6 @@ class AppRoutes {
   static const String confirmInfomation = 'Onbordinfo';
   static const String estategetstart = 'estate';
 
-
   // ------------------------------------------------------------------
   // Auth Flow (Grouped with prefix)
   static const String signIN = 'auth_signIn';
@@ -48,6 +47,8 @@ class AppRoutes {
   static const String securitynotification = "securitynotification";
   static const String propertyAgreement = "property";
   static const String termsAndcondition = "terms";
+  static const String filePreview = "File_previews";
+  static const String messageBody = "message_body";
   // ------------------------------------------------------------------
 
   //SECUTIY PATH

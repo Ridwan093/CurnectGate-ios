@@ -138,7 +138,7 @@ class _DenyEntryState extends ConsumerState<DenyVendorEntry> {
       label: 'Deny',
       onPressed:
           _securityNotedController.text.isNotEmpty &&
-                  _securityNotedController.text.length > 10
+                  _securityNotedController.text.length > 4
               ? () {
                 log(_securityNotedController.text);
                 providerState.allWorkersAccess(

@@ -570,6 +570,7 @@ class BottomsheetDetails extends ConsumerWidget {
     late String title;
 
     final chatNotifier = ref.watch(chatProvider.notifier);
+    final chatState = ref.watch(chatProvider);
 
     switch (bottom) {
       case BottomSheetView.vendorLog:
@@ -668,8 +669,7 @@ class BottomsheetDetails extends ConsumerWidget {
       case BottomSheetView.messageuplodefile:
       default:
         onTap = () async {
-          Navigator.of(context).pop();
-          await chatNotifier.pickImagefromcamera();
+          await chatNotifier.pickImagefromcamera(context, id);
         };
         leading = Container(
           height: 50,
@@ -721,6 +721,7 @@ class BottomsheetDetails extends ConsumerWidget {
     late String title;
 
     final chatNotifier = ref.watch(chatProvider.notifier);
+
     switch (bottom) {
       // case BottomSheetView.vendorLog:
       //   onTap = () {
@@ -793,8 +794,7 @@ class BottomsheetDetails extends ConsumerWidget {
         break;
       case BottomSheetView.messageuplodefile:
         onTap = () async {
-          Navigator.of(context).pop();
-          await chatNotifier.pickImage();
+          await chatNotifier.pickImage(context, id ?? 0);
         };
         leading = Container(
           height: 50,
@@ -865,6 +865,7 @@ class BottomsheetDetails extends ConsumerWidget {
     WidgetRef ref,
     BuildContext context,
   ) {
+  
     late VoidCallback onTap;
     late Widget leading;
     late String title;
@@ -873,8 +874,7 @@ class BottomsheetDetails extends ConsumerWidget {
     switch (bottom) {
       case BottomSheetView.messageuplodefile:
         onTap = () async {
-          Navigator.of(context).pop();
-          await chatNotifier.pickFile();
+          await chatNotifier.pickFile(context, id ?? 0);
         };
         leading = Container(
           height: 50,
@@ -920,7 +920,7 @@ class BottomsheetDetails extends ConsumerWidget {
       default:
         onTap = () async {
           Navigator.of(context).pop();
-          await chatNotifier.pickFile();
+          await chatNotifier.pickFile(context, id ?? 0);
         };
         leading = Container(
           height: 50,

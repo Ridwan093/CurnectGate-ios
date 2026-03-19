@@ -1,47 +1,153 @@
+import 'package:curnectgate/features/chat/data/model/attachment.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/model/nullSafty_model.dart';
 import 'package:hive/hive.dart';
 
 part 'chat_message.g.dart';
 
-@HiveType(typeId: 20)
-class ChatMessage extends HiveObject {
+@HiveType(typeId: 0)
+class Message extends HiveObject {
+  /// ================= SERVER FIELDS =================
+
   @HiveField(0)
-  final String localId;
+  final int? id;
 
   @HiveField(1)
-  final String content;
+  final int? conversationId;
 
   @HiveField(2)
-  final String senderId;
+  final int? senderId;
 
   @HiveField(3)
-  final DateTime createdAt;
+  final String? messageText;
 
   @HiveField(4)
-  final bool isSynced;
+  String? status;
 
   @HiveField(5)
-  final String? serverId;
+  final bool? isRead;
 
-  ChatMessage({
-    required this.localId,
-    required this.content,
-    required this.senderId,
-    required this.createdAt,
-    required this.isSynced,
+  @HiveField(6)
+  final bool? isSender;
+
+  @HiveField(7)
+  final String? timeAgo;
+
+  @HiveField(8)
+  List<Attachment>? attachments;
+
+  @HiveField(9)
+  final String? senderName;
+
+  @HiveField(10)
+  final String? senderAvatar;
+
+  @HiveField(11)
+  String? createdAt;
+
+  @HiveField(12)
+  final String? updatedAt;
+
+  /// ================= LOCAL UI STATE =================
+
+  @HiveField(13)
+  bool? isSending;
+
+  @HiveField(14)
+  bool? isFailed;
+
+  /// ================= OFFLINE ENGINE =================
+
+  @HiveField(15)
+  String? localId;
+
+  @HiveField(16)
+  int? serverId;
+
+  @HiveField(17)
+  DateTime? createdLocalAt;
+
+  @HiveField(18)
+  String? syncStatus;
+  @HiveField(19)
+  int? hiveKey;
+
+  Message({
+    this.id,
+    this.conversationId,
+    this.senderId,
+    this.messageText,
+    this.status,
+    this.isRead,
+    this.isSender,
+    this.timeAgo,
+    this.attachments,
+    this.senderName,
+    this.senderAvatar,
+    this.createdAt,
+    this.updatedAt,
+    this.isSending = false,
+    this.isFailed = false,
+    this.hiveKey = 0,
+    this.localId,
     this.serverId,
+    this.createdLocalAt,
+    this.syncStatus,
   });
 
-  ChatMessage copyWith({
-    bool? isSynced,
-    String? serverId,
-  }) {
-    return ChatMessage(
-      localId: localId,
-      content: content,
-      senderId: senderId,
-      createdAt: createdAt,
-      isSynced: isSynced ?? this.isSynced,
-      serverId: serverId ?? this.serverId,
+  /// ================= SAFE JSON =================
+
+  factory Message.safeFromJson(Map<String, dynamic>? json) {
+    return Message(
+      id: NullSafetyHelper.safeInt(json?['id']),
+      serverId: NullSafetyHelper.safeInt(json?['id']),
+      conversationId: NullSafetyHelper.safeInt(json?['conversation_id']),
+      senderId: NullSafetyHelper.safeInt(json?['sender_id']),
+      messageText: NullSafetyHelper.safeString(json?['message_text']),
+      status: NullSafetyHelper.safeString(json?['status']),
+      isRead: NullSafetyHelper.safeBool(json?['read']),
+      isSender: NullSafetyHelper.safeBool(json?['is_sender']),
+      timeAgo: NullSafetyHelper.safeString(json?['time_ago']),
+      attachments:
+          NullSafetyHelper.safeMapList(
+            json?['attachments'],
+          ).map((e) => Attachment.safeFromJson(e)).toList(),
+      senderName: NullSafetyHelper.safeString(json?['sender']?['full_name']),
+      senderAvatar: NullSafetyHelper.safeString(json?['sender']?['avatar_url']),
+      createdAt: NullSafetyHelper.safeString(json?['created_at']),
+      updatedAt: NullSafetyHelper.safeString(json?['updated_at']),
+      isSending: false,
+      isFailed: false,
+      localId: null,
+      createdLocalAt: null,
+      hiveKey: 0,
+      syncStatus: 'sent',
+    );
+  }
+
+  /// ================= EMPTY =================
+
+  factory Message.empty() {
+    return Message(
+      id: 0,
+      serverId: 0,
+      conversationId: 0,
+      senderId: 0,
+      messageText: '',
+      status: '',
+      isRead: false,
+      isSender: false,
+      timeAgo: '',
+      attachments: const [],
+      senderName: '',
+      senderAvatar: '',
+      createdAt: '',
+      updatedAt: '',
+      isSending: false,
+      isFailed: false,
+      localId: '',
+      createdLocalAt: DateTime.now(),
+      syncStatus: 'sent',
+      hiveKey: 0,
     );
   }
 }

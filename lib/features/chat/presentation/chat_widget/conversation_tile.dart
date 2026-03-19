@@ -1,5 +1,6 @@
 
 import 'package:curnectgate/features/chat/data/chat_model/%20chat_user.dart';
+import 'package:curnectgate/features/chat/data/model/conversation.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/customise_conversation_tile.dart';
 import 'package:flutter/material.dart';
 

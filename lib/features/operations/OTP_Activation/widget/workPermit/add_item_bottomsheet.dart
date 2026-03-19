@@ -32,7 +32,7 @@ class _AddItemBottomSheetState extends ConsumerState<AddItemBottomSheet> {
   bool get _isValid {
     return _itemName.text.isNotEmpty &&
         _quantity.text.isNotEmpty &&
-        _description.text.length > 9 &&
+        _description.text.length > 4 &&
         _itemName.text.length > 4;
   }
 
@@ -504,7 +504,7 @@ class _AddItemBottomSheetState extends ConsumerState<AddItemBottomSheet> {
       "item_name": _itemName.text,
       "quantity": int.tryParse(_quantity.text) ?? 1,
       "description": _description.text,
-      "item_category": "Phones",
+      // "item_category": "Phones",
     };
 
     final list = ref.read(itemListProvider);

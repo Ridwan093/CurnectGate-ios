@@ -51,12 +51,12 @@ class _SubmitPermitBottomSheetState extends ConsumerState<CreatEvent> {
     return descriptionController.text.trim().isNotEmpty &&
         guestNumberController.text.trim().isNotEmpty &&
         eventTitleController.text.trim().isNotEmpty &&
-        descriptionController.text.trim().length > 9 &&
-        eventTitleController.text.trim().length > 5 &&
+        descriptionController.text.trim().length > 4 &&
+        eventTitleController.text.trim().length > 4 &&
         specialInstructionController.text.trim().isNotEmpty &&
         eventLocationController.text.trim().isNotEmpty &&
-        specialInstructionController.text.trim().length > 5 &&
-        eventLocationController.text.trim().length > 5 &&
+        specialInstructionController.text.trim().length > 4 &&
+        eventLocationController.text.trim().length > 4 &&
         startDate != null &&
         endDate != null &&
         workType != null;

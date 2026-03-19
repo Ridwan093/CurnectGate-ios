@@ -6,8 +6,12 @@ import 'package:curnectgate/features/%20operations/property_agreement/model/agre
 import 'package:curnectgate/features/%20operations/property_agreement/model/compliance/compliance_response.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/comittee_model/committees_response_model.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resident_directory_respond.dart';
+import 'package:curnectgate/features/auth/data/auth_model/get_start_model/onboarding_slider_response.dart';
 import 'package:curnectgate/features/chat/data/chat_model/availableAdmin/estate_admins_response.dart';
 import 'package:curnectgate/features/chat/data/chat_model/availableCommitte/committee_members_response.dart';
+import 'package:curnectgate/features/chat/data/model/chat_message.dart';
+import 'package:curnectgate/features/chat/data/model/conversation.dart';
+import 'package:curnectgate/features/chat/data/model/get_model/conversation_settings_response.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate/candidates_response.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate_result/live_results_response.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/election_Setting/voting_settings_response.dart';
@@ -24,9 +28,9 @@ import 'package:curnectgate/features/member_management/Onboard_Houselod/model/pe
     as status_model;
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/property_model/property_response.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/setCurfew/curfew_response_model.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/model/set_restriction/restriction_status_response.dart';
 import 'package:curnectgate/features/member_management/estate_settings/setting_model/estate_settings_response.dart';
 import 'package:curnectgate/features/member_management/membership_ID/model/digital_id_status.dart';
-
 import 'package:curnectgate/features/member_management/membership_ID/model/digital_member_id_response.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/model/Work_permit/clearance_permit_response.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/model/active_Otp_count/Expired_count/expired_count_response.dart';
@@ -53,6 +57,7 @@ import 'package:curnectgate/features/payment/state_model/payment_model/wallet_hi
 import 'package:curnectgate/features/security/model/checkIn_ceckOut_model/api_response_model.dart';
 import 'package:curnectgate/features/security/model/checkIn_ceckOut_model/checkOut/checkout_history_response_model.dart';
 import 'package:curnectgate/features/security/model/count_model/violation_count_response.dart';
+import 'package:curnectgate/features/security/model/duty_model/duty_response.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/model/get_user_notifications.dart';
 import 'package:curnectgate/features/userProfile/Privacy_setting/model/get_user_privacy_settings.dart';
 import 'package:curnectgate/features/userProfile/notification_setting/model/get_user_notification_settings.dart';
@@ -214,7 +219,7 @@ class GetApiService {
         //   headers: {
         //     'Accept': 'application/json',
         //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
+        //     'X-Requ ested-With': 'XMLHttpRequest',
         //   },
         // ),
       );
@@ -536,6 +541,20 @@ class GetApiService {
       log(response.data.toString());
 
       return PropertyResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<RestrictionStatusResponse> getRestriced({required int id}) async {
+    try {
+      final response = await _dio.get(
+        "/api/v1/estates/owner-portal/digital-member-id/$id/restriction-status", // Update with your actual endpoint
+      );
+      log(response.data.toString());
+
+      return RestrictionStatusResponse.fromJson(response.data);
     } on DioException catch (e) {
       log('Error getting profile: ${e.message}');
       throw _handleError(e);
@@ -1222,6 +1241,27 @@ class GetApiService {
     }
   }
 
+  Future<ConversationSettingsResponse> getChatSettings(String id) async {
+    try {
+      final response = await _dio.get(
+        "/api/v1/estates/general/messaging/conversations/$id/settings", // Update with your actual endpoint
+        // options: Options(
+        //   headers: {
+        //     'Accept': 'application/json',
+        //     'Authorization': 'Bearer $bearerToken',
+        //     'X-Requested-With': 'XMLHttpRequest',
+        //   },
+        // ),
+      );
+      log(response.data.toString());
+
+      return ConversationSettingsResponse.fromSafeJson(response.data);
+    } on DioException catch (e) {
+      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
   Future<CommitteeMembersResponse> getComitteList() async {
     try {
       final response = await _dio.get(
@@ -1277,6 +1317,82 @@ class GetApiService {
     } on DioException catch (e) {
       log('Error fetching Reverb config: ${e.message}');
       throw _handleError(e); // Reuse your existing error handler
+    }
+  }
+
+  Future<OnboardingSliderResponse> getSlider() async {
+    try {
+      final response = await _dio.get(sliderEnpoint);
+
+      log('Reverb Config Response: ${response.data}');
+
+      return OnboardingSliderResponse.fromSafeJson(response.data);
+    } on DioException catch (e) {
+      log('Error fetching Reverb config: ${e.message}');
+      throw _handleError(e); // Reuse your existing error handler
+    }
+  }
+
+  Future<DutyResponse> getDuty() async {
+    try {
+      final response = await _dio.get(
+        sliderEnpoint,
+        options: Options(extra: {'requiresAuth': true}),
+      );
+
+      log('Reverb Config Response: ${response.data}');
+
+      return DutyResponse.safeFromJson(response.data);
+    } on DioException catch (e) {
+      log('Error fetching Reverb config: ${e.message}');
+      throw _handleError(e); // Reuse your existing error handler
+    }
+  }
+
+  // 2. Your API method (fixed to return List<Conversation>)
+  Future<List<Conversation>> getListConversation() async {
+    try {
+      final response = await _dio.get(getConversation);
+
+      // log('Conversations Response: ${response.data}');
+
+      if (response.data['success'] != true) {
+        throw Exception(
+          response.data['message'] ?? 'Failed to load conversations',
+        );
+      }
+
+      // Extract the list from your API structure
+      final List<dynamic> convList =
+          response.data['data']['conversations'] ?? [];
+
+      return convList.map((json) => Conversation.safeFromJson(json)).toList();
+    } on DioException catch (e) {
+      log('Error fetching conversations: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<List<Message>> getMessages(int conversationId) async {
+    try {
+      final response = await _dio.get(
+        "/api/v1/estates/general/messaging/conversations/$conversationId/messages",
+        options: Options(extra: {'requiresAuth': true}),
+      );
+
+      // log('Messages Response: ${response.data}');
+
+      if (response.data['success'] != true) {
+        throw Exception(response.data['message'] ?? 'Failed to load messages');
+      }
+
+      // Extract the array from your real API structure
+      final List<dynamic> msgList = response.data['data']['messages'] ?? [];
+
+      return msgList.map((json) => Message.safeFromJson(json)).toList();
+    } on DioException catch (e) {
+      log('Error fetching messages: ${e.message}');
+      throw _handleError(e);
     }
   }
 

@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/chat/data/chat_model/%20chat_user.dart';
-import 'package:curnectgate/features/chat/data/chat_model/message_state.dart';
+import 'package:curnectgate/features/chat/data/model/attachment.dart';
+import 'package:curnectgate/features/chat/data/model/conversation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -9,12 +11,37 @@ import 'package:intl/intl.dart';
 class CustomiseConversationTile extends ConsumerWidget {
   final VoidCallback onTap;
   final Conversation conversation;
-  const CustomiseConversationTile( {super.key, required  this.onTap, required this.conversation});
+  const CustomiseConversationTile({
+    super.key,
+    required this.onTap,
+    required this.conversation,
+  });
+
+  String getFormattedTime(String? dateString) {
+    if (dateString == null || dateString.isEmpty) return '';
+
+    try {
+      final dateTime = DateTime.parse(
+        dateString,
+      ); // parse the string into DateTime
+      return DateFormat('hh:mm a').format(dateTime); // format it
+    } catch (e) {
+      return ''; // fallback if parsing fails
+    }
+  }
+
+  String iwprk() {
+    return "";
+    // for(var i in conversation.participants??[]){
+    //   if()
+    // }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-        final lastMessage = conversation.lastMessage;
-  final double avatarSize = MediaQuery.of(context).size.width * 0.12; // Responsive avatar size
+    final lastMessage = conversation.latestMessage;
+    final double avatarSize =
+        MediaQuery.of(context).size.width * 0.12; // Responsive avatar size
     return InkWell(
       onTap: onTap,
       child: Container(
@@ -26,9 +53,49 @@ class CustomiseConversationTile extends ConsumerWidget {
             // Avatar
             Padding(
               padding: const EdgeInsets.only(right: 16),
-              child: CircleAvatar(
-                radius: avatarSize / 2,
-                backgroundImage: NetworkImage(conversation.user.avatarUrl),
+              child: Stack(
+                clipBehavior: Clip.none, // allows badge to overflow the circle
+                children: [
+                  CircleAvatar(
+                    radius: avatarSize / 2,
+                    backgroundColor: Colors.grey.shade200,
+                    child: ClipOval(
+                      child: CachedNetworkImage(
+                        imageUrl: lastMessage?.sender?.avatarUrl ?? "",
+                        width: avatarSize,
+                        height: avatarSize,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => const Loadingstates(),
+                        errorWidget:
+                            (context, url, error) => const Icon(Icons.person),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0, // place at bottom-right
+                    right: 0,
+                    child: Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color:
+                            (conversation.participants?.first.onlineStatus ??
+                                        "offline")
+                                    .toLowerCase()
+                                    .contains("online")
+                                ? AppColors.instance.teal500
+                                : Colors.grey, // online status color
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color:
+                              Colors
+                                  .white, // add border to separate from avatar
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
 
@@ -47,7 +114,7 @@ class CustomiseConversationTile extends ConsumerWidget {
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
                             Text(
-                              conversation.user.name,
+                              conversation.title ?? "",
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontFamily: FontFamilies.interDisplay,
@@ -64,7 +131,7 @@ class CustomiseConversationTile extends ConsumerWidget {
                               ),
                             ),
                             Text(
-                              conversation.user.role,
+                              conversation.type ?? "",
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontFamily: FontFamilies.interDisplay,
@@ -82,7 +149,7 @@ class CustomiseConversationTile extends ConsumerWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 8),
                           child: Text(
-                            DateFormat('HH:mm').format(lastMessage.time),
+                            getFormattedTime(lastMessage.createdAt),
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ),
@@ -103,44 +170,39 @@ class CustomiseConversationTile extends ConsumerWidget {
               ),
             ),
 
-            // Unread Indicator
-            // if (conversation.unreadCount > 0) ...[
-            //   const SizedBox(width: 8),
-            //   Container(
-            //     padding: const EdgeInsets.all(6),
-            //     decoration: const BoxDecoration(
-            //       color: Colors.red,
-            //       shape: BoxShape.circle,
-            //     ),
-            //     child: Text(
-            //       conversation.unreadCount.toString(),
-            //       style: const TextStyle(
-            //         color: Colors.white,
-            //         fontSize: 12,
-            //       ),
-            //     ),
-            //   ),
-            // ],
+            if (conversation.unreadCount! > 0) ...[
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: AppColors.instance.error600,
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  conversation.unreadCount.toString(),
+                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ),
+            ],
           ],
         ),
       ),
     );
   }
 
-
-  Widget _buildMessagePreview(ChatMessage message) {
+  Widget _buildMessagePreview(LatestMessage message) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(height: 6),
-        if (message.text.isNotEmpty)
+        if ((message.messageText ?? "").isNotEmpty)
           LayoutBuilder(
             builder: (context, constraints) {
               // Check if text is longer than our threshold (27 chars)
-              if (message.text.length <= 27) {
+              if ((message.messageText ?? "").length <= 27) {
                 // Single line with ellipsis if needed
                 return Text(
-                  message.text,
+                  message.messageText ?? "",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -150,8 +212,8 @@ class CustomiseConversationTile extends ConsumerWidget {
                 );
               } else {
                 // For texts longer than 27 characters
-                final firstLine = message.text.substring(0, 27);
-                final remaining = message.text.substring(27);
+                final firstLine = (message.messageText ?? "").substring(0, 27);
+                final remaining = (message.messageText ?? "").substring(27);
 
                 // Check if remaining text is very short (4 chars or less)
                 if (remaining.length <= 4) {
@@ -190,43 +252,52 @@ class CustomiseConversationTile extends ConsumerWidget {
               }
             },
           ),
-        if (message.image != null || message.file != null) ...[
-          const SizedBox(height: 10),
 
-          Container(
-            margin: const EdgeInsets.only(left: 10),
-            constraints: const BoxConstraints(maxWidth: 200),
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              border: Border.all(color: AppColors.instance.grey400, width: 0.7),
-              borderRadius: BorderRadius.circular(7),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  message.image != null ? Icons.image : Icons.insert_drive_file,
-                  size: 16,
-                  color: AppColors.instance.teal300,
+        if (message.attachments != null && message.attachments!.isNotEmpty)
+          ...message.attachments!.map((attachment) {
+            return Container(
+              margin: const EdgeInsets.only(left: 10, bottom: 4),
+              constraints: const BoxConstraints(maxWidth: 200),
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: AppColors.instance.grey400,
+                  width: 0.7,
                 ),
-                const SizedBox(width: 4),
-                Flexible(
-                  child: Text(
-                    message.selectedFileName ??
-                        (message.image != null ? 'Image' : 'File'),
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.instance.black300,
-                      fontFamily: FontFamilies.interDisplay,
+                borderRadius: BorderRadius.circular(7),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    _getAttachmentIcon(attachment),
+                    size: 16,
+                    color: AppColors.instance.teal300,
+                  ),
+                  const SizedBox(width: 4),
+                  Flexible(
+                    child: Text(
+                      attachment.fileName ?? attachment.fileType ?? "",
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.instance.black300,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        ],
+                ],
+              ),
+            );
+          }).toList(),
       ],
     );
+  }
+
+  IconData _getAttachmentIcon(Attachment attachment) {
+    if (attachment.isImage ?? false) return Icons.image;
+    if (attachment.isDocument ?? false) return Icons.picture_as_pdf;
+    if (attachment.isVideo ?? false) return Icons.videocam;
+
+    return Icons.insert_drive_file; // fallback for unknown types
   }
 }

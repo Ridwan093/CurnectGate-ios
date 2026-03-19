@@ -16,6 +16,7 @@ const String refresToken = "/api/v1/auth/refresh-token";
 const String setUpBiometri = "/api/v1/auth/biometric/setup";
 const String enableBiometric = "/api/v1/auth/biometric/disable";
 const String reverb = "/api/v1/config/reverb";
+const String sliderEnpoint ="/api/v1/app-sliders";
 // AGREEMENT POST'
 
 const String onboardingHouseHold =
@@ -213,6 +214,7 @@ const String getValidatorHistory =
     "/api/v1/estates/security/validations/history";
 const String getAllviolation = "/api/v1/estates/general/violations";
 const String deleteViolation = "/api/v1/estates/violations/4";
+const String getDuty ="/api/v1/estates/security/duty/current";
 
 /// RESINDE/COMMITTEE
 /// /api/v1/estates/general/committees
@@ -262,3 +264,5 @@ const String markUnreadCount =
 // const String getPaymentHistorys = "/api/v1/estates/general/payments/history";
 // const String getPaymentMethod =
 //     "/api/v1/estates/general/payment-config/methods";
+//// GET MESSAGE/CONVERSATION ENDPIONT 
+const String getConversation = "/api/v1/estates/general/messaging/conversations";

@@ -60,7 +60,7 @@ class GetReportNotifer extends AutoDisposeAsyncNotifier<ViolationResponse?> {
     state = await AsyncValue.guard(() async {
       try {
         final token = await ref.watch(accessTokenProvider.future);
-        final filter = ref.read(reportProvider).report.reportfilter;
+        
         final freshReoprt = await ref
             .read(getApiServiceProvider)
             .getreport(bearerToken: token!, filter: "dismissed");

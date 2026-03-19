@@ -106,59 +106,7 @@ class _ProfileDetailScreenState extends ConsumerState<ProfileDetailScreen>
               const SizedBox(height: 24),
               _buildInfoCard(profile),
               const SizedBox(height: 32),
-              _buildSignOut(
-                ref: ref,
-                iconPath: AssetPaths.logOut,
-                title: "Sign out",
-                onTap: () {
-                  ref
-                      .read(authProvider.notifier)
-                      .logOut(ref: ref, context: context);
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSignOut({
-    required String iconPath,
-    required String title,
-    required VoidCallback onTap,
-    required WidgetRef ref,
-  }) {
-    final formstate = ref.watch(formProvider);
-    return Padding(
-      padding: const EdgeInsets.only(top: 50),
-      child: Align(
-        alignment: Alignment.bottomLeft,
-        child: InkWell(
-          onTap: onTap,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                spacing: 8,
-                children: [
-                  Image.asset(iconPath, width: 24),
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      color: AppColors.instance.black600,
-                      fontSize: 17,
-                      fontWeight: FontFamilies.light,
-                    ),
-                  ),
-                ],
-              ),
-              formstate.logOutLoading
-                  ? CircularProgressIndicator(
-                    color: AppColors.instance.yellow500,
-                  )
-                  : SizedBox(),
+             
             ],
           ),
         ),

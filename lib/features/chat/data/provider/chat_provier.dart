@@ -1,9 +1,12 @@
 // Riverpod provider for chat state
 import 'dart:developer';
+
+import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/features/chat/data/chat_model/message_state.dart';
-import 'package:curnectgate/features/chat/data/provider/%20chat_list_provider.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 final chatProvider = StateNotifierProvider<ChatNotifier, ChatState>((ref) {
@@ -37,28 +40,34 @@ class ChatNotifier extends StateNotifier<ChatState> {
       selectedImage: null,
       selectedFilePath: null,
     );
-    ref.read(chatListProvider.notifier).updateFromChatState(state);
+    // ref.read(chatListProvider.notifier).updateFromChatState(state);
   }
 
-  Future<void> pickImage() async {
+  Future<void> pickImage(BuildContext context, int id) async {
     final picker = ImagePicker();
     clearImage();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       state = state.copyWith(selectedImage: pickedFile.path);
+      if (state.selectedImage != null) {
+        context.pushNamed(AppRoutes.filePreview, extra: {"id": id});
+      }
     }
   }
 
-  Future<void> pickImagefromcamera() async {
+  Future<void> pickImagefromcamera(BuildContext context, int id) async {
     final picker = ImagePicker();
     clearImage();
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       state = state.copyWith(selectedImage: pickedFile.path);
     }
+    if (state.selectedImage != null) {
+      context.pushNamed(AppRoutes.filePreview, extra: {"id": id});
+    }
   }
 
-  Future<void> pickFile() async {
+  Future<void> pickFile(BuildContext context, int id) async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf', 'doc', 'docx', 'txt'],
@@ -71,6 +80,10 @@ class ChatNotifier extends StateNotifier<ChatState> {
         selectedFileName: file.name,
         selectedFileSize: file.size, // in bytes
       );
+    }
+
+    if (state.selectedFilePath != null) {
+      context.pushNamed(AppRoutes.filePreview, extra: {"id": id});
     }
   }
 

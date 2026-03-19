@@ -2,10 +2,13 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/%20utils/service/app_lifecycle_service.dart';
 import 'package:curnectgate/core/%20utils/service/notification_service.dart';
+import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
 import 'package:curnectgate/core/navigation/app_rout.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/chat/data/hive_migration.dart';
-import 'package:curnectgate/features/chat/data/model/chat_message.dart';
+import 'package:curnectgate/features/chat/services/reverb_service.dart';
+// Your models (from earlier steps)
+
 import 'package:curnectgate/features/signOut/errorWidget/sesional_expired.dart';
 import 'package:curnectgate/firebase_options.dart';
 import 'package:device_preview/device_preview.dart';
@@ -18,38 +21,28 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   await FlutterLocalization.instance.ensureInitialized();
+
   await NotificationService().initialize();
-  // Initialize Hive with your app's documents directory
+
   await Hive.initFlutter();
-  // Hive.registerAdapter(MessagesAdapter());
+
   try {
-    await HiveMigration.migrateMessages();
+    await initChatHive();
+    await getConversationsBox();
   } catch (e) {
     log('Migration error: $e');
   }
-  // Open message boxes
-  await Hive.openBox<ChatMessage>('messages');
-
-  // SharedPreferences preferences = await SharedPreferences.getInstance();
 
   runApp(
     ProviderScope(
-      // Wrap your app with ProviderScope
-      child: DevicePreview(
-        enabled: true,
-        builder: (context) => MyApp(), // Wrap your app
-      ),
+      child: DevicePreview(enabled: false, builder: (context) => MyApp()),
     ),
   );
-} //// 936481 permit / 098550/468131 /workOder=Y0RUH
-//  MaterialApp(
-//         debugShowCheckedModeBanner: false,
-//         home: id != null ? EstateOnboardingScreen() : ActivityPage(),
-//       ),
-//     ),
-//   );
+}
 
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
@@ -65,6 +58,7 @@ class _MyAppState extends ConsumerState<MyApp> {
   void initState() {
     super.initState();
     // Create service with ref
+
     _lifecycleService = AppLifecycleService(ref);
   }
 
@@ -76,7 +70,16 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final router = ref.watch(routerProvider); // Get the router
+    final router = ref.watch(routerProvider);
+
+    ref.listen(authProvider, (previous, next) {
+      final authState = ref.watch(authProvider);
+      final user = authState.user;
+
+      if (user != null) {
+        ReverbService.initRealtime(ref, user["id"] ?? "");
+      }
+    }); // Get the router
 
     return SessionExpiryListener(
       child: MaterialApp.router(
@@ -108,3 +111,10 @@ class _MyAppState extends ConsumerState<MyApp> {
     );
   }
 }
+
+//// SECURITY LOGIN 
+
+///.  ----panemej568@flosek.com-----
+///.  ----jijeter168@hlkes.com-----Landlord tempt pass => oxKIWp7d
+/// ---wecih87431@hlkes.com--- spouse
+

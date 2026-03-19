@@ -35,7 +35,7 @@ class _ActiveOtpBody extends ConsumerWidget {
 
     return activeOtpAsync.when(
       data: (activeOtp) {
-        if (activeOtp!.data!.otps.isNotEmpty == true) {
+        if (activeOtp!.data!.otps.isNotEmpty) {
           return Consumer(
             // ← Isolate rebuilds here
             builder: (context, ref, child) {
@@ -43,8 +43,9 @@ class _ActiveOtpBody extends ConsumerWidget {
               return Buildactivelist(otp: activeOtp.data);
             },
           );
+        } else {
+          return _buildEmptyBody();
         }
-        return _buildEmptyBody();
       },
       loading: () {
         final cachedOtp = ref.read(getActiveOtpProvider).value;
@@ -58,26 +59,39 @@ class _ActiveOtpBody extends ConsumerWidget {
         return const Loadingstates();
       },
       error: (error, stack) {
-        if (error.toString().contains("Unauthorized")) {
-          return const Expiresessionbody();
-        }
+        try {
+          // Handle session expiration
+          if (error.toString().contains("Unauthorized")) {
+            return Expiresessionbody();
+          }
 
-        final cachedOtp = ref.read(getActiveOtpProvider).value;
+          final cachedOtp = ref.read(getActiveOtpProvider).value;
 
-        if (cachedOtp != null && cachedOtp.data!.otps.isNotEmpty) {
-          return SingleChildScrollView(
-            child: Column(children: [Buildactivelist(otp: cachedOtp.data)]),
+          if (cachedOtp != null && cachedOtp.data!.otps.isNotEmpty) {
+            return SingleChildScrollView(
+              child: Column(children: [Buildactivelist(otp: cachedOtp.data)]),
+            );
+          }
+          ;
+          // No cached data available
+          return Builderroul(
+            error: error.toString(),
+            onTap:
+                () => ref
+                    .read(getActiveOtpProvider.notifier)
+                    .refreshActive(context, ref),
+            firstMessae: "Failed to load Active OTPs?",
+          );
+        } catch (e) {
+          return Builderroul(
+            error: error.toString(),
+            onTap:
+                () => ref
+                    .read(getActiveOtpProvider.notifier)
+                    .refreshActive(context, ref),
+            firstMessae: "Failed to load Active OTPs?",
           );
         }
-
-        return Builderroul(
-          error: error.toString(),
-          onTap:
-              () => ref
-                  .read(getActiveOtpProvider.notifier)
-                  .refreshActive(context, ref),
-          firstMessae: "Failed to load Active OTPs?",
-        );
       },
     );
   }

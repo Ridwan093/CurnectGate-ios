@@ -192,12 +192,14 @@ class SecurityTapScreen extends ConsumerWidget {
   ) {
     return NavigationRailDestination(
       icon: ImageTab(
+        label: label,
         normalImage: inactiveIcon,
         activeImage: inactiveIcon,
         isActive: false,
         size: 28,
       ),
       selectedIcon: ImageTab(
+        label: label,
         normalImage: activeIcon,
         activeImage: activeIcon,
         isActive: true,
@@ -228,6 +230,7 @@ class SecurityTapScreen extends ConsumerWidget {
           Container(height: 3, color: const Color.fromRGBO(0, 0, 0, 0)),
           const SizedBox(height: 4),
           ImageTab(
+            label: label,
             normalImage: normalIcon,
             activeImage: activeIcon,
             isActive: currentIndex == index,

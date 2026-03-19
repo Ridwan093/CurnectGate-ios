@@ -2257,27 +2257,13 @@ class AppApiMethod {
     required BuildContext context,
   }) async {
     try {
-      final Map<String, dynamic> requestData = {
-        "days": 1, // optional (filter)
-      };
-
       // Log the exact request being sent
-      log('Request payload: $requestData');
 
       final response = await _dio.delete(
-        "/api/v1/estates/general/owner-portal/digital-member-id/member/$id/restrictions",
-        data: requestData,
-        options: Options(
-          // headers: {
-          //   'Accept': 'application/json',
-          //   'Authorization': 'Bearer $token',
-          //   'X-Requested-With': 'XMLHttpRequest',
-          // },
-          validateStatus: (status) => status! < 500, // Accept 422 as valid
-        ),
-      );
+        "/api/v1/estates/owner-portal/digital-member-id/$id/restrictions",
 
-      log('Request payload: $requestData');
+        options: Options(validateStatus: (status) => status! < 500),
+      );
 
       log('Response: ${response.data}');
       return response.data;
@@ -4405,6 +4391,32 @@ class AppApiMethod {
     }
   }
 
+  Future<Map<String, dynamic>> deleteMessage({
+    required BuildContext context,
+    required int id,
+  }) async {
+    try {
+      final response = await _dio.delete(
+        "/api/v1/estates/general/messaging/messages/$id",
+
+        options: Options(
+          validateStatus: (status) => status != null && status < 500,
+          headers: {"Accept": "application/json"},
+        ),
+      );
+
+      log('Response: ${response.data}');
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      log('Dio Error');
+      log('Status: ${e.response?.statusCode}');
+      log('Response: ${e.response?.data}');
+      log('Headers: ${e.response?.headers}');
+      log('Request Data: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
   Future<Map<String, dynamic>> sendMessage({
     required String message,
     File? file,
@@ -4434,8 +4446,31 @@ class AppApiMethod {
       log('Request payload: $requestData');
 
       final response = await _dio.post(
-        "/api/v1/estates/general/messaging/conversations/id/messages",
+        "/api/v1/estates/general/messaging/conversations/$id/messages",
         data: requestData,
+        options: Options(
+          validateStatus: (status) => status != null && status < 500,
+          headers: {"Accept": "application/json"},
+        ),
+      );
+
+      log('Response: ${response.data}');
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      log('Dio Error');
+      log('Status: ${e.response?.statusCode}');
+      log('Response: ${e.response?.data}');
+      log('Headers: ${e.response?.headers}');
+      log('Request Data: ${e.requestOptions.data}');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> markMessageRead({required int id}) async {
+    try {
+      final response = await _dio.post(
+        "/api/v1/estates/security/messaging/conversations/$id/mark-read",
+
         options: Options(
           validateStatus: (status) => status != null && status < 500,
           headers: {"Accept": "application/json"},

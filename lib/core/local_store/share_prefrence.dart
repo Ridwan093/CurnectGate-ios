@@ -6,8 +6,11 @@ import 'package:curnectgate/features/%20operations/property_agreement/model/agre
 import 'package:curnectgate/features/%20operations/property_agreement/model/compliance/compliance_response.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/comittee_model/committees_response_model.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resident_directory_respond.dart';
+import 'package:curnectgate/features/auth/data/auth_model/get_start_model/onboarding_slider_response.dart';
 import 'package:curnectgate/features/chat/data/chat_model/availableAdmin/estate_admins_response.dart';
 import 'package:curnectgate/features/chat/data/chat_model/availableCommitte/committee_members_response.dart';
+import 'package:curnectgate/features/chat/data/model/get_model/conversation_settings_response.dart';
+import 'package:curnectgate/features/chat/data/provider/reverb_provider.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate/candidates_response.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate_result/live_results_response.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/election_Setting/voting_settings_response.dart';
@@ -24,6 +27,7 @@ import 'package:curnectgate/features/member_management/Onboard_Houselod/model/pe
     as status_model;
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/property_model/property_response.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/setCurfew/curfew_response_model.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/model/set_restriction/restriction_status_response.dart';
 import 'package:curnectgate/features/member_management/estate_settings/setting_model/estate_settings_response.dart';
 import 'package:curnectgate/features/member_management/membership_ID/model/digital_member_id_response.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/model/Work_permit/clearance_permit_response.dart';
@@ -51,6 +55,7 @@ import 'package:curnectgate/features/payment/state_model/payment_model/wallet_hi
 import 'package:curnectgate/features/security/model/checkIn_ceckOut_model/api_response_model.dart';
 import 'package:curnectgate/features/security/model/checkIn_ceckOut_model/checkOut/checkout_history_response_model.dart';
 import 'package:curnectgate/features/security/model/count_model/violation_count_response.dart';
+import 'package:curnectgate/features/security/model/duty_model/duty_response.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/model/get_user_notifications.dart';
 import 'package:curnectgate/features/userProfile/Privacy_setting/model/get_user_privacy_settings.dart';
 import 'package:curnectgate/features/userProfile/notification_setting/model/get_user_notification_settings.dart';
@@ -156,6 +161,13 @@ class SharedPrefsService {
   static const String _agreement_Key = "agreement_key";
   static const String _activePermit = "active_permit";
   static const String _compliancKey = "comp_Key";
+  static const String _sliderKey = "slider_key";
+  static const String _dutyKey = "duty_key";
+  static const String _restricKey = "Rest_Key";
+  static const String _reverbConfigKey = 'reverb_config';
+  static const String _chatSettings = "chat_settings";
+
+  /// Save ReverbConfig to SharedPreferences
 
   //// CHATTING SERVECE
 
@@ -170,6 +182,23 @@ class SharedPrefsService {
     final data = prefs.getString(_getAdminList);
     if (data != null) {
       return EstateAdminsResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> saveChatSettings(
+    ConversationSettingsResponse privacy,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_chatSettings, jsonEncode(privacy.toJson()));
+  }
+
+  //  flutter pub run build_runner build --delete-conflicting-outputs --build-filter="lib/features/userProfile/notification_setting/model**"
+  static Future<ConversationSettingsResponse?> getChatSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_chatSettings);
+    if (data != null) {
+      return ConversationSettingsResponse.fromSafeJson(jsonDecode(data));
     }
     return null;
   }
@@ -597,11 +626,28 @@ class SharedPrefsService {
     await prefs.setString(_propertyIDKey, jsonEncode(preference.toJson()));
   }
 
+  //RestrictionStatusResponse
   static Future<PropertyResponse?> getProperty() async {
     final prefs = await SharedPreferences.getInstance();
     final data = prefs.getString(_propertyIDKey);
     if (data != null) {
       return PropertyResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> saveRestricted(
+    RestrictionStatusResponse preference,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_restricKey, jsonEncode(preference.toJson()));
+  }
+
+  static Future<RestrictionStatusResponse?> getRestricted() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_restricKey);
+    if (data != null) {
+      return RestrictionStatusResponse.safeFromJson(jsonDecode(data));
     }
     return null;
   }
@@ -882,6 +928,20 @@ class SharedPrefsService {
     return null;
   }
 
+  static Future<void> saveDuty(DutyResponse preference) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_dutyKey, jsonEncode(preference.toJson()));
+  }
+
+  static Future<DutyResponse?> getDuty() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_dutyKey);
+    if (data != null) {
+      return DutyResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
   ///PREFRENCES SETTINGS
   static Future<void> savePrefrencSettings(
     GetuserNotifications preference,
@@ -921,6 +981,20 @@ class SharedPrefsService {
     final data = prefs.getString(_agreement_Key);
     if (data != null) {
       return AgreementsResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> saveSlider(OnboardingSliderResponse slider) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_sliderKey, jsonEncode(slider.toJson()));
+  }
+
+  static Future<OnboardingSliderResponse?> getSlider() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_sliderKey);
+    if (data != null) {
+      return OnboardingSliderResponse.fromSafeJson(jsonDecode(data));
     }
     return null;
   }
@@ -1014,6 +1088,34 @@ class SharedPrefsService {
       return PaymentMethodsResponse.safeFromJson(jsonDecode(data));
     }
     return null;
+  }
+
+  Future<void> saveReverbConfig(ReverbConfig config) async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = jsonEncode(config.toJson());
+    await prefs.setString(_reverbConfigKey, jsonString);
+  }
+
+  /// Get ReverbConfig from SharedPreferences
+  Future<ReverbConfig?> getReverbConfig() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString(_reverbConfigKey);
+    if (jsonString == null) return null;
+
+    try {
+      final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+      return ReverbConfig.fromJson(jsonMap);
+    } catch (e) {
+      // If parsing fails, remove invalid value
+      await prefs.remove(_reverbConfigKey);
+      return null;
+    }
+  }
+
+  /// Remove ReverbConfig
+  Future<void> clearReverbConfig() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_reverbConfigKey);
   }
 
   static Future<void> savePaymenWallettHistory(
@@ -1112,6 +1214,11 @@ class SharedPrefsService {
     await prefs.remove(_permissionStaticKey);
   }
 
+  static Future<void> clearChatSeetings() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_chatSettings);
+  }
+
   Future<void> saveSessionCookie(String cookie) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('session_cookie', cookie);
@@ -1145,6 +1252,11 @@ class SharedPrefsService {
   static Future<void> clearLiveResultSummary() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_summary_resultKey);
+  }
+
+  static Future<void> clearRestricted() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_restricKey);
   }
 
   static Future<void> clearPermissionstatus() async {
@@ -1295,6 +1407,11 @@ class SharedPrefsService {
     await prefs.remove(_violationCountKey);
   }
 
+  static Future<void> clearSlider() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_sliderKey);
+  }
+
   static Future<void> clearActivePermit() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_activePermit);
@@ -1399,6 +1516,10 @@ class SharedPrefsService {
     clearAgreement();
     clearActivePermit();
     clearComplaince();
+    clearSlider();
+    clearRestricted();
+    clearReverbConfig();
+    clearChatSeetings();
     await prefs.remove(_keyAuthData);
   }
 }

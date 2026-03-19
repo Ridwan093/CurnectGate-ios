@@ -214,9 +214,12 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
       bottomNavigationBar:
           provider.workOderLoading
               ? null
-              : WorkSubmitbutton(
-                label: "Generate access code",
-                onPressed: isValid ? () => _submitForm(context) : null,
+              : SafeArea(
+                top: false,
+                child: WorkSubmitbutton(
+                  label: "Generate access code",
+                  onPressed: isValid ? () => _submitForm(context) : null,
+                ),
               ),
       body:
           provider.workOderLoading
@@ -293,11 +296,11 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
                     ReusabelProfileForm(
                       controller: _discriptionController,
                       fieldKey: 'Work Description',
-                      fieldType: FieldType.general,
+                      fieldType: FieldType.reason,
                       hintText: 'Enter work description',
                       label: 'Description',
                       maxLength: 100,
-                      maxLines: 5,
+                      maxLines: 2,
                       onChanged: (value) {},
                       onValidationChanged: (value) {
                         notifier.updateWorkDescription(

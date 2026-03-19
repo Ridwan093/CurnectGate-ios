@@ -134,7 +134,6 @@ class WorkOrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    
 
     return Padding(
       padding: EdgeInsets.only(top: 12, bottom: 10),
@@ -252,7 +251,7 @@ class _Header extends ConsumerWidget {
               ),
             ],
 
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             Row(
               children: [
                 Text(

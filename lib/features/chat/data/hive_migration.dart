@@ -1,62 +1,218 @@
-import 'dart:developer';
-import 'dart:io';
-import 'package:curnectgate/features/chat/data/chat_model/message_model.dart';
+import 'package:curnectgate/features/chat/data/model/attachment.dart';
+import 'package:curnectgate/features/chat/data/model/chat_message.dart';
+import 'package:curnectgate/features/chat/data/model/conversation.dart';
 import 'package:hive/hive.dart';
-import 'package:path_provider/path_provider.dart';
 
-class HiveMigration {
-  static Future<void> migrateMessages() async {
-    try {
-      final appDir = await getApplicationDocumentsDirectory();
-      
-      // Step 1: Check if old box exists
-      final oldBoxFile = File('${appDir.path}/chat_messages.hive');
-      if (!await oldBoxFile.exists()) return;
 
-      // Step 2: Open both boxes
-      final oldBox = await Hive.openBox('chat_messages');
-      final newBox = await Hive.openBox<Messages>('chat_messages_new');
-
-      // Step 3: Migrate data
-      for (var key in oldBox.keys) {
-        final oldMsg = oldBox.get(key);
-        if (oldMsg is Map) {  // Handle raw untyped data
-          newBox.put(key, Messages(
-            senderID: oldMsg['senderID'],
-            reciverID: oldMsg['reciverID'],
-           
-      text: oldMsg['text'],
-      type: oldMsg['type'],
-      messageId: oldMsg['messageId'] ,
-      isSeen: oldMsg['isSeen'],
-      timeSend:oldMsg['timeSend'],
-      senderusername:oldMsg['senderusername'],
-      reciverusername: oldMsg['reciverusername'],
-      repliedMessage: oldMsg['repliedMessage'] ?? '',
-      repliedTo: oldMsg['repliedTo'],
-      repliedMessageType: oldMsg['repliedMessageType'],
-      isFailed: oldMsg['isFailed'],
-
-            // ... map all other fields ...
-            isReceiverCopy: key.toString().contains('-receiver'),
-          ));
-        }
-      }
-
-      // Step 4: Close and delete old box
-      await oldBox.close();
-      await oldBoxFile.delete();
-
-      // Step 5: Rename new box by moving files
-      final newBoxFile = File('${appDir.path}/chat_messages_new.hive');
-      await newBoxFile.rename('${appDir.path}/chat_messages.hive');
-
-      // Step 6: Reopen with correct name
-      await Hive.openBox<Messages>('chat_messages');
-      
-    } catch (e) {
-      log('Migration failed: $e');
-      // Consider keeping both boxes as fallback
-    }
+Future<void> initChatHive() async {
+  /// register adapters ONLY once
+  if (!Hive.isAdapterRegistered(0)) {
+    Hive.registerAdapter(MessageAdapter());
   }
+
+  if (!Hive.isAdapterRegistered(2)) {
+    Hive.registerAdapter(ConversationAdapter());
+  }
+
+  if (!Hive.isAdapterRegistered(3)) {
+    Hive.registerAdapter(ParticipantAdapter());
+  }
+
+  if (!Hive.isAdapterRegistered(4)) {
+    Hive.registerAdapter(LatestMessageAdapter());
+  }
+
+  if (!Hive.isAdapterRegistered(5)) {
+    Hive.registerAdapter(SenderAdapter());
+  }
+
+  if (!Hive.isAdapterRegistered(6)) {
+    Hive.registerAdapter(ConversationSettingsAdapter());
+  }
+
+  if (!Hive.isAdapterRegistered(1)) {
+    Hive.registerAdapter(AttachmentAdapter());
+  }
+
+  /// OPEN chat_messages safely
+  if (!Hive.isBoxOpen('chat_messages')) {
+    await Hive.openBox<Message>('chat_messages');
+  }
+
+  
+
+  
 }
+
+Future<Box<Conversation>> getConversationsBox() async {
+  if (!Hive.isBoxOpen('conversations')) {
+    await Hive.openBox<Conversation>('conversations');
+  }
+  return Hive.box<Conversation>('conversations');
+}
+ 
+
+
+
+////attctmene 
+///
+///
+/// return Attachment(
+    //   id: NullSafetyHelper.safeInt(fields[0]),
+    //   fileName: NullSafetyHelper.safeString(fields[1]),
+    //   fileUrl: NullSafetyHelper.safeString(fields[2]),
+    //   fileType: NullSafetyHelper.safeString(fields[3]),
+    //   mimeType: NullSafetyHelper.safeString(fields[4]),
+    //   fileSize: NullSafetyHelper.safeInt(fields[5]),
+    //   fileSizeReadable: NullSafetyHelper.safeString(fields[6]),
+    //   thumbnailUrl: NullSafetyHelper.safeString(fields[7]),
+    //   isImage: NullSafetyHelper.safeBool(fields[8]),
+    //   isDocument: NullSafetyHelper.safeBool(fields[9]),
+    //   isVideo: NullSafetyHelper.safeBool(fields[10]),
+    //   localPath: NullSafetyHelper.safeString(fields[11]),
+    // );////
+
+
+    ////// MESSAGE 
+    ///
+
+
+
+
+
+    // Message(
+    //   id: NullSafetyHelper.safeInt(fields[0]),
+    //   conversationId: NullSafetyHelper.safeInt(fields[1]),
+    //   senderId: NullSafetyHelper.safeInt(fields[2]),
+    //   messageText: NullSafetyHelper.safeString(fields[3]),
+    //   status: NullSafetyHelper.safeString(fields[4]),
+    //   isRead: NullSafetyHelper.safeBool(fields[5]),
+    //   isSender: NullSafetyHelper.safeBool(fields[6]),
+    //   timeAgo: NullSafetyHelper.safeString(fields[7]),
+
+    //   attachments:
+    //       fields[8] is List
+    //           ? (fields[8] as List)
+    //               .map((e) => e is Attachment ? e : null)
+    //               .whereType<Attachment>()
+    //               .toList()
+    //           : null,
+
+    //   senderName: NullSafetyHelper.safeString(fields[9]),
+    //   senderAvatar: NullSafetyHelper.safeString(fields[10]),
+    //   createdAt: NullSafetyHelper.safeString(fields[11]),
+    //   updatedAt: NullSafetyHelper.safeString(fields[12]),
+
+    //   isSending: NullSafetyHelper.safeBool(fields[13]),
+    //   isFailed: NullSafetyHelper.safeBool(fields[14]),
+    //   localId: NullSafetyHelper.safeString(fields[15]),
+    //   serverId: NullSafetyHelper.safeInt(fields[16]),
+
+    //   createdLocalAt: fields[17] is DateTime ? fields[17] : DateTime.now(),
+
+    //   syncStatus: NullSafetyHelper.safeString(fields[18]),
+    //   hiveKey: NullSafetyHelper.safeInt(fields[19]),
+    // );
+
+
+
+
+
+    ///////CONVERSATION 
+    ///
+    ///
+    ///Conversation(
+//       id: NullSafetyHelper.safeInt(fields[0]),
+//       estateId: NullSafetyHelper.safeInt(fields[1]),
+//       type: NullSafetyHelper.safeString(fields[2]),
+//       title: NullSafetyHelper.safeString(fields[3]),
+
+//       participants: participants,
+
+//       latestMessage: fields[5] is LatestMessage ? fields[5] : null,
+
+//       lastMessageAt: NullSafetyHelper.safeString(fields[6]),
+
+//       unreadCount: NullSafetyHelper.safeInt(fields[7]),
+
+//       settings: fields[8] is ConversationSettings ? fields[8] : null,
+
+//       createdAt: NullSafetyHelper.safeString(fields[9]),
+//       updatedAt: NullSafetyHelper.safeString(fields[10]),
+//     );
+// Participant(
+//       userId: NullSafetyHelper.safeInt(fields[0]),
+//       fullName: NullSafetyHelper.safeString(fields[1]),
+//       avatarUrl: NullSafetyHelper.safeString(fields[2]),
+//       role: NullSafetyHelper.safeString(fields[3]),
+//       onlineStatus: NullSafetyHelper.safeString(fields[4]),
+//       unreadCount: NullSafetyHelper.safeInt(fields[5]),
+//       lastReadAt: NullSafetyHelper.safeString(fields[6]),
+//     );
+// LatestMessage(
+//       id: NullSafetyHelper.safeInt(fields[0]),
+//       conversationId: NullSafetyHelper.safeInt(fields[1]),
+//       senderId: NullSafetyHelper.safeInt(fields[2]),
+
+//       sender: fields[3] is Sender ? fields[3] : null,
+
+//       messageText: NullSafetyHelper.safeString(fields[4]),
+//       status: NullSafetyHelper.safeString(fields[5]),
+//       read: NullSafetyHelper.safeBool(fields[6]),
+//       isSender: NullSafetyHelper.safeBool(fields[7]),
+
+//       createdAt: NullSafetyHelper.safeString(fields[8]),
+//       updatedAt: NullSafetyHelper.safeString(fields[9]),
+//       timeAgo: NullSafetyHelper.safeString(fields[10]),
+//       attachments:
+//           fields[11] is List
+//               ? (fields[11] as List)
+//                   .map((e) => e is Attachment ? e : null)
+//                   .whereType<Attachment>()
+//                   .toList()
+//               : null,
+//     );
+// Sender(
+//       id: NullSafetyHelper.safeInt(fields[0]),
+//       firstname: NullSafetyHelper.safeString(fields[1]),
+//       lastname: NullSafetyHelper.safeString(fields[2]),
+//       fullName: NullSafetyHelper.safeString(fields[3]),
+//       avatarUrl: NullSafetyHelper.safeString(fields[4]),
+//       role: NullSafetyHelper.safeString(fields[5]),
+//     );
+
+//     return ConversationSettings(
+//       id: NullSafetyHelper.safeInt(fields[0]),
+//       conversationId: NullSafetyHelper.safeInt(fields[1]),
+//       notificationsEnabled: NullSafetyHelper.safeBool(fields[2]),
+//       doNotDisturb: NullSafetyHelper.safeBool(fields[3]),
+//       dndUntil: NullSafetyHelper.safeString(fields[4]),
+//       dndActive: NullSafetyHelper.safeBool(fields[5]),
+//       archived: NullSafetyHelper.safeBool(fields[6]),
+//       pinned: NullSafetyHelper.safeBool(fields[7]),
+//       createdAt: NullSafetyHelper.safeString(fields[8]),
+//       updatedAt: NullSafetyHelper.safeString(fields[9]),
+//     );
+    ///
+    ///
+    ///
+    ///
+    ///
+    ///
+    ///
+    ///
+    ///
+    ///
+    ///
+
+
+
+
+
+
+
+
+
+
+
+

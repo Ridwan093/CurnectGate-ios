@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
@@ -28,8 +26,7 @@ class SecurityDashboard extends ConsumerStatefulWidget {
 class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
-  static const double _floatingHeaderHeight = 84;
-  static const double _headerOverlap = 90;
+
   @override
   void initState() {
     super.initState();
@@ -60,6 +57,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
     final isScanning = ref.watch(qrScanProvider);
 
     final size = MediaQuery.sizeOf(context);
+    final isSmallScreen = size.height < 700 || size.width < 380;
 
     return PopScope(
       canPop: false,
@@ -70,7 +68,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.grey[100],
+        backgroundColor: AppColors.instance.grey200,
 
         body: Stack(
           children: [
@@ -83,38 +81,28 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
   }
 
   Widget _buildBody(Size size, WidgetRef ref) {
-    final t = ((size.height - 600) / (1000 - 600)).clamp(0.0, 1.0);
-    final height = lerpDouble(170.0, 260.0, t)!;
-
-    final safeTop = MediaQuery.of(context).padding.top;
+    final isSmallScreen = size.height < 700 || size.width < 380;
 
     return SizedBox(
       height: size.height,
-      child: Stack(
+      width: size.height,
+      child: Column(
         children: [
-          /// ✅ BACKGROUND (pure paint — never used for layout math)
-          Column(
-            children: [
-              Container(
-                width: size.width,
-                height: height,
-                color: AppColors.instance.teal400,
-              ),
-              Expanded(child: Container(color: Colors.grey[100])),
-            ],
+          SizedBox(
+            child: Container(
+              padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+              color: AppColors.instance.grey200,
+              child: _buildHeader(ref),
+            ),
           ),
-
-          /// ✅ FLOATING PROFILE HEADER (LOCKED & STABLE)
-
-          /// ✅ SCROLL CONTENT (PROFESSIONAL OFFSET)
-          Positioned.fill(
+          Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.only(
-                top: height - _headerOverlap,
                 left: 10,
                 right: 10,
                 bottom: 16,
+                top: isSmallScreen ? 10 : 25,
               ),
               child: Column(
                 children: [
@@ -129,18 +117,6 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
               ),
             ),
           ),
-          Positioned(
-            top: safeTop + 12,
-            left: 10,
-            right: 10,
-            child: SizedBox(
-              height: _floatingHeaderHeight,
-              child: Container(
-                color: AppColors.instance.teal400,
-                child: _buildHeader(ref),
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -150,7 +126,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
     final authState = ref.watch(authProvider);
     final user = authState.user;
     final fullname = authState.fullname ?? "User";
-    final role = user?["role"] ?? "Security Officer";
+    final String role = user?["role"] ?? "Security Officer";
 
     final profilePhoto = user?['profile_photo'] ?? null;
 
@@ -160,60 +136,63 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
     final fontScale = isSmallScreen ? 0.9 : 1.0;
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: isSmallScreen ? 26 : 32,
-              backgroundImage:
-                  profilePhoto != null ? AssetImage(profilePhoto) : null,
-              backgroundColor: Colors.white,
-              child: Center(
+     
+        Expanded(
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: isSmallScreen ? 26 : 32,
+                backgroundImage:
+                    profilePhoto != null ? AssetImage(profilePhoto) : null,
+                backgroundColor: AppColors.instance.teal100,
                 child:
                     profilePhoto != null
                         ? null
                         : Image.asset(
                           AssetPaths.navProfileActive,
                           width: 25,
-
-                          color: AppColors.instance.teal400,
+                          color: AppColors.instance.black600,
                         ),
               ),
-            ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  fullname,
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontSize: 18 * fontScale,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    role,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 14 * fontScale,
-                      color: Colors.white70,
+              const SizedBox(width: 12),
+
+              /// ⭐ TEXT AREA MUST ALSO EXPAND
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      fullname,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        fontSize: 18 * fontScale,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.instance.black600,
+                      ),
                     ),
-                  ),
+                    Text(
+                      role.replaceAll("_", " "),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 14 * fontScale,
+                        color: AppColors.instance.black600,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
 
+        /// RIGHT SIDE
         NotificationCount(
-          color: AppColors.instance.grey200,
+          color: AppColors.instance.black600,
           onTap: () {
             context.pushNamed(AppRoutes.securitynotification);
           },
@@ -319,6 +298,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
     final state = ref.read(oTpformProvider.notifier);
 
     return Stack(
+      alignment: Alignment.center,
       children: [
         Column(
           children: [
@@ -329,7 +309,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
                 Expanded(
                   child: _buildFeatureButton(
                     AssetPaths.maintenanceLog,
-                    "Validate Entry",
+                    "Validate Entry      ",
                     () {
                       state.resetForm();
                       showUserBottomSheet(
@@ -407,10 +387,9 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
           ],
         ),
         Positioned(
-          left: 0,
-          right: 0,
-          top: 10,
-
+          // left: 0,
+          // right: 0,
+          // top: 25,
           child: _buildCenterClickButton(
             onTap: () async {
               final hasPermission = await checkCameraPermission(context);
@@ -470,7 +449,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
             ),
             child: Center(
               child: Icon(
-                Icons.ads_click_outlined,
+                Icons.qr_code_scanner,
                 color: AppColors.instance.teal400,
               ),
             ),
@@ -502,10 +481,15 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
             Image.asset(icon, width: 30, height: 30),
             SizedBox(height: 8),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
+              padding: EdgeInsets.symmetric(horizontal: 0),
               child: Text(
                 label,
-                textAlign: TextAlign.center,
+                maxLines:
+                    label.toLowerCase().contains("validate entry") ? 2 : null,
+                textAlign:
+                    label.toLowerCase().contains("validate entry")
+                        ? TextAlign.left
+                        : TextAlign.center,
 
                 style: TextStyle(
                   fontSize: 12,

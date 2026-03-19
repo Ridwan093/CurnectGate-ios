@@ -426,6 +426,7 @@ class WorkpermitCard extends ConsumerWidget {
     final notifier = ref.read(reminderProvider.notifier);
 
     return Container(
+      margin: EdgeInsets.only(bottom: 15),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -493,13 +494,11 @@ class WorkpermitCard extends ConsumerWidget {
                       );
                     },
                     icon: const Icon(Icons.add_circle_sharp, size: 16),
-                    label: Flexible(
-                      child: const Text(
-                        "Add",
-                        style: TextStyle(
-                          fontFamily: FontFamilies.lato,
-                          fontSize: 15,
-                        ),
+                    label: const Text(
+                      "Add",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.lato,
+                        fontSize: 15,
                       ),
                     ),
                     style: TextButton.styleFrom(

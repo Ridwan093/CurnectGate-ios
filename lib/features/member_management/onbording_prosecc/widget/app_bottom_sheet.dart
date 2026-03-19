@@ -56,65 +56,62 @@ void showUserBottomSheet({
       final bottomInset = MediaQuery.of(context).viewInsets.bottom;
       final safeBottom = MediaQuery.of(context).padding.bottom;
 
-      return SafeArea(
-        top: false, // important for bottom sheets
-        child: Container(
-          width: MediaQuery.sizeOf(context).width,
-          padding:
-              bottom == BottomSheetView.securityViolationTrack ||
-                      bottom == BottomSheetView.mentainLog ||
-                      bottom == BottomSheetView.optionForIdAndCode ||
-                      bottom == BottomSheetView.optionForAll ||
-                      bottom == BottomSheetView.optionForScan ||
-                      bottom == BottomSheetView.events ||
-                      bottom == BottomSheetView.eventsDetails ||
-                      bottom == BottomSheetView.workOderSeletion ||
-                      bottom == BottomSheetView.eventRsvpDetails ||
-                      bottom == BottomSheetView.afterphoto ||
-                      bottom == BottomSheetView.permitAccces
-                  ? null
-                  : const EdgeInsets.all(20),
+      return Container(
+        width: MediaQuery.sizeOf(context).width,
+        padding:
+            bottom == BottomSheetView.securityViolationTrack ||
+                    bottom == BottomSheetView.mentainLog ||
+                    bottom == BottomSheetView.optionForIdAndCode ||
+                    bottom == BottomSheetView.optionForAll ||
+                    bottom == BottomSheetView.optionForScan ||
+                    bottom == BottomSheetView.events ||
+                    bottom == BottomSheetView.eventsDetails ||
+                    bottom == BottomSheetView.workOderSeletion ||
+                    bottom == BottomSheetView.eventRsvpDetails ||
+                    bottom == BottomSheetView.afterphoto ||
+                    bottom == BottomSheetView.permitAccces
+                ? null
+                : const EdgeInsets.all(20),
 
-          // ✅ PRO FIX — handle BOTH keyboard and nav bar
-          margin: EdgeInsets.only(bottom: bottomInset),
+        // ✅ PRO FIX — handle BOTH keyboard and nav bar
+        margin: EdgeInsets.only(bottom: bottomInset),
 
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
 
-          child: Padding(
-            // ✅ protects against nav bar
-            padding: EdgeInsets.only(bottom: safeBottom),
-            child: Consumer(
-              builder: (context, ref, _) {
-                final currentView = ref.watch(bottomSheetStateProvider);
+        child: Padding(
+          // ✅ protects against nav bar
+          padding: EdgeInsets.only(bottom: safeBottom),
+          child: Consumer(
+            builder: (context, ref, _) {
+              final currentView = ref.watch(bottomSheetStateProvider);
 
-                return AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child: _buildCurrentView(
-                    currentView,
-                    context,
-                    ref,
-                    headertitle,
-                    headersubtitle,
-                    bottom,
-                    event,
-                    eventCode,
-                    dashbordData,
-                    id,
-                    digital_id_code,
-                    access_type,
-                    location,
-                    additional_notes,
-                    device_id,
-                    rsvpdata,
-                    vendor,
-                    activity,
-                  ),
-                );
-              },
-            ),
+              return AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: _buildCurrentView(
+                  currentView,
+                  context,
+                  ref,
+                  headertitle,
+                  headersubtitle,
+                  bottom,
+                  event,
+                  eventCode,
+                  dashbordData,
+                  id,
+                  digital_id_code,
+                  access_type,
+                  location,
+                  additional_notes,
+                  device_id,
+                  rsvpdata,
+                  vendor,
+                  activity,
+                ),
+              );
+            },
           ),
         ),
       );
@@ -645,6 +642,7 @@ Widget _buildCurrentView(
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
+        id: id,
       );
     //messageEmagency bottom sheet
     case BottomSheetView.messageEmergency:

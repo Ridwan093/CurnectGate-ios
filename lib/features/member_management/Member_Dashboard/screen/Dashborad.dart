@@ -44,101 +44,109 @@ class Dashborad extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: _buildAppBar(context, ref),
+
       body: SizedBox(
         height: size.height,
         width: size.width,
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Headcard(),
-              SizedBox(height: 15),
-              _buildRow(context, ref),
-              SizedBox(height: 15),
+        child: Column(
+          children: [
+            _buildAppBar(context, ref),
 
-              // Votingsettingcheck(child: PollDatas(canRoute: true)),
-              // SizedBox(height: 10),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Headcard(),
+                    SizedBox(height: 15),
+                    _buildRow(context, ref),
+                    SizedBox(height: 15),
 
-              // Text(
-              //   "YOUR DUES",
-              //   style: TextStyle(
-              //     fontFamily: FontFamilies.interDisplay,
-              //     color: AppColors.instance.black300,
-              //     fontWeight: FontFamilies.bold,
-              //   ),
-              // ),
-              // SizedBox(height: 15),
-              DashbordData(
-                builder:
-                    (context, data) => _buildDueCard(
-                      data as PaymentDashboardData,
-                      context,
-                      ref,
+                    // Votingsettingcheck(child: PollDatas(canRoute: true)),
+                    // SizedBox(height: 10),
+
+                    // Text(
+                    //   "YOUR DUES",
+                    //   style: TextStyle(
+                    //     fontFamily: FontFamilies.interDisplay,
+                    //     color: AppColors.instance.black300,
+                    //     fontWeight: FontFamilies.bold,
+                    //   ),
+                    // ),
+                    // SizedBox(height: 15),
+                    DashbordData(
+                      builder:
+                          (context, data) => _buildDueCard(
+                            data as PaymentDashboardData,
+                            context,
+                            ref,
+                          ),
                     ),
+
+                    SizedBox(height: 20),
+                    _buildTopTitile("STATISTICS"),
+                    SizedBox(height: 10),
+                    // _buildvisitorRow(),
+                    Statistics(),
+
+                    // _buildContent(size, context, ref),
+                    SizedBox(height: 20),
+                    _buildTopTitile("QUICK LINK"),
+
+                    SizedBox(height: 10),
+
+                    // role.when(
+                    //   data: (data) {
+                    //     if (data.isNotEmpty) {
+                    //       if (data.toLowerCase().contains("landlord") ||
+                    //           data.toLowerCase().contains("spouse")) {
+                    //         return _otherLinks(
+                    //           title: "ADD FAMILY",
+                    //           onTap: () async {
+                    //             context.pushNamed(AppRoutes.getMemberInfo);
+                    //           },
+                    //         );
+                    //       } else {
+                    //         return SizedBox();
+                    //       }
+                    //     } else {
+                    //       return SizedBox();
+                    //     }
+                    //   },
+                    //   error: (e, s) {
+                    //     return SizedBox();
+                    //   },
+                    //   loading: () {
+                    //     return SizedBox();
+                    //   },
+                    // ),
+                    _buildQuikLink(ref, context),
+                    // Divider(color: AppColors.instance.grey400),
+                    // _otherLinks(
+                    //   title: "ACCOUNT SETTINGS",
+                    //   onTap: () {
+                    //     context.pushNamed(AppRoutes.manageLoging);
+                    //   },
+                    // ),
+                    // Divider(color: AppColors.instance.grey400),
+                    // SizedBox(height: 5),
+                    // _otherLinks(
+                    //   title: "RESIDENT DIRECTORY",
+                    //   onTap: () {
+                    //     context.pushNamed(AppRoutes.residentDirectory);
+                    //   },
+                    // ),
+                    // SizedBox(height: 20),
+                    // _buildTopTitile("NEED SAFETY HELP"),
+
+                    // SizedBox(height: 10),
+                    // _buildSaftyRow(context, ref),
+                  ],
+                ),
               ),
-
-              SizedBox(height: 20),
-              _buildTopTitile("STATISTICS"),
-              SizedBox(height: 10),
-              // _buildvisitorRow(),
-              Statistics(),
-
-              // _buildContent(size, context, ref),
-              SizedBox(height: 20),
-              _buildTopTitile("QUICK LINK"),
-
-              SizedBox(height: 10),
-
-              // role.when(
-              //   data: (data) {
-              //     if (data.isNotEmpty) {
-              //       if (data.toLowerCase().contains("landlord") ||
-              //           data.toLowerCase().contains("spouse")) {
-              //         return _otherLinks(
-              //           title: "ADD FAMILY",
-              //           onTap: () async {
-              //             context.pushNamed(AppRoutes.getMemberInfo);
-              //           },
-              //         );
-              //       } else {
-              //         return SizedBox();
-              //       }
-              //     } else {
-              //       return SizedBox();
-              //     }
-              //   },
-              //   error: (e, s) {
-              //     return SizedBox();
-              //   },
-              //   loading: () {
-              //     return SizedBox();
-              //   },
-              // ),
-              _buildQuikLink(ref, context),
-              // Divider(color: AppColors.instance.grey400),
-              // _otherLinks(
-              //   title: "ACCOUNT SETTINGS",
-              //   onTap: () {
-              //     context.pushNamed(AppRoutes.manageLoging);
-              //   },
-              // ),
-              // Divider(color: AppColors.instance.grey400),
-              // SizedBox(height: 5),
-              // _otherLinks(
-              //   title: "RESIDENT DIRECTORY",
-              //   onTap: () {
-              //     context.pushNamed(AppRoutes.residentDirectory);
-              //   },
-              // ),
-              // SizedBox(height: 20),
-              // _buildTopTitile("NEED SAFETY HELP"),
-
-              // SizedBox(height: 10),
-              // _buildSaftyRow(context, ref),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -310,6 +318,36 @@ class Dashborad extends ConsumerWidget {
             return SizedBox();
           },
         ),
+        QuikLinkCard(
+          isfund: false,
+          onTap: () {
+            showUserBottomSheet(
+              context: context,
+              headertitle: "",
+              headersubtitle: "",
+              ref: ref,
+              bottom: BottomSheetView.events,
+            );
+          },
+          title: "Event",
+          icon: Icons.event,
+        ),
+        QuikLinkCard(
+          isfund: true,
+          onTap: () {
+            context.pushNamed(AppRoutes.paymentMethod);
+          },
+          title: "Add Fund",
+          icon: Icons.payments,
+        ),
+        QuikLinkCard(
+          isfund: false,
+          onTap: () {
+            context.pushNamed(AppRoutes.residentDirectory);
+          },
+          title: "Resident",
+          icon: Icons.home_outlined,
+        ),
 
         QuikLinkCard(
           isfund: false,
@@ -324,21 +362,6 @@ class Dashborad extends ConsumerWidget {
           },
           title: "Emergency",
           icon: Icons.emergency,
-        ),
-
-        QuikLinkCard(
-          isfund: true,
-          onTap: () {},
-          title: "Add Fund",
-          icon: Icons.payments,
-        ),
-        QuikLinkCard(
-          isfund: false,
-          onTap: () {
-            context.pushNamed(AppRoutes.residentDirectory);
-          },
-          title: "Resident",
-          icon: Icons.home_outlined,
         ),
         QuikLinkCard(
           isfund: false,
@@ -383,75 +406,86 @@ class Dashborad extends ConsumerWidget {
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context, WidgetRef ref) {
+  Widget _buildAppBar(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
     final reminderprovider = ref.read(reminderProvider.notifier);
     final notifier = ref.read(workOrderFormProvider.notifier);
-    final isSmallScreen = size.height < 700 || size.width < 380;
-    final profileFile = ref.watch(profilePicProvider);
-    return AppBar(
-      backgroundColor: Colors.white,
-      leadingWidth: 50,
-      leading: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: CircleAvatar(
-          radius: isSmallScreen ? 26 : 32,
-          backgroundImage: profileFile != null ? FileImage(profileFile) : null,
-          backgroundColor: Colors.white,
-          child: Center(
-            child:
-                profileFile != null
-                    ? null
-                    : Image.asset(
-                      AssetPaths.navProfileActive,
-                      width: 25,
 
-                      color: AppColors.instance.teal400,
+    final profileFile = ref.watch(profilePicProvider);
+    return SafeArea(
+      child: Container(
+        height: 70,
+        width: size.width,
+        child: Row(
+          children: [
+            Container(
+              height: 50,
+              width: 50,
+              margin: EdgeInsets.only(left: 12),
+              decoration: BoxDecoration(
+                color: AppColors.instance.teal100,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  style: BorderStyle.solid,
+                  color: AppColors.instance.teal400,
+                ),
+                image:
+                    profileFile != null
+                        ? DecorationImage(
+                          image: FileImage(profileFile),
+                          fit: BoxFit.cover,
+                        )
+                        : null,
+              ),
+              child: Center(
+                child:
+                    profileFile != null
+                        ? null
+                        : Image.asset(
+                          AssetPaths.navProfileActive,
+                          width: 25,
+
+                          color: AppColors.instance.black600,
+                        ),
+              ),
+            ),
+            Spacer(),
+            Row(
+              children: [
+                Tooltip(
+                  message: "Events", // Clear label
+                  preferBelow: false,
+                  child: InkWell(
+                    onTap: () {
+                      reminderprovider.resetAll();
+                      notifier.updateEndDate(null);
+                      notifier.updateStartDate(null);
+                      notifier.updateWorkType("", 0);
+                      showUserBottomSheet(
+                        context: context,
+                        headertitle: "",
+                        headersubtitle: "",
+                        ref: ref,
+                        bottom: BottomSheetView.seletctEvent,
+                      );
+                    },
+                    child: Icon(
+                      Icons.event,
+                      color: AppColors.instance.black600,
                     ),
-          ),
+                  ),
+                ),
+                SizedBox(width: 15),
+                NotificationCount(
+                  onTap: () {
+                    context.pushNamed(AppRoutes.notification);
+                  },
+                ),
+              ],
+            ),
+          ],
         ),
       ),
-      actions: [
-        // Tooltip(
-        //   message: "Polls",
-        //   preferBelow: false,
-        //   child: InkWell(
-        //     onTap: () {
-        //       context.pushNamed(AppRoutes.newPoll);
-        //     },
-        //     child: const Padding(
-        //       padding: EdgeInsets.all(12.0),
-        //       child: Icon(Icons.poll_outlined, size: 26),
-        //     ),
-        //   ),
-        // ),
-        Tooltip(
-          message: "Events", // Clear label
-          preferBelow: false,
-          child: InkWell(
-            onTap: () {
-              reminderprovider.resetAll();
-              notifier.updateEndDate(null);
-              notifier.updateStartDate(null);
-              notifier.updateWorkType("", 0);
-              showUserBottomSheet(
-                context: context,
-                headertitle: "",
-                headersubtitle: "",
-                ref: ref,
-                bottom: BottomSheetView.seletctEvent,
-              );
-            },
-            child: Icon(Icons.event, color: AppColors.instance.black600),
-          ),
-        ),
-        SizedBox(width: 15),
-        NotificationCount(
-          onTap: () {
-            context.pushNamed(AppRoutes.notification);
-          },
-        ),
-      ],
     );
   }
 
@@ -641,7 +675,7 @@ class Dashborad extends ConsumerWidget {
         ),
         SizedBox(width: 10),
         Dashbordrowcard(
-          title: "Report",
+          title: "Violation",
           icon: AssetPaths.dashboardReports,
           onTap: () {
             context.pushNamed(AppRoutes.violation);

@@ -178,7 +178,7 @@ class Profilecard extends StatelessWidget {
                         const SizedBox(width: 4),
                         Flexible(
                           child: Text(
-                            role,
+                            role.replaceAll("_", " "),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             style: TextStyle(
