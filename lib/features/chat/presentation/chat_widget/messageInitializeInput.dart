@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
@@ -7,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ChatMessageInput extends ConsumerStatefulWidget {
   final String type;
   final String id;
+  final String recipientName;
+  final String recipientRole;
   final VoidCallback onSendPressed;
   final Function(String) onMessageChanged;
 
@@ -15,7 +18,9 @@ class ChatMessageInput extends ConsumerStatefulWidget {
     required this.onSendPressed,
     required this.onMessageChanged,
     required this.id,
-    required this.type
+    required this.type,
+    required this.recipientName,
+    required this.recipientRole,
   });
 
   @override
@@ -25,6 +30,7 @@ class ChatMessageInput extends ConsumerStatefulWidget {
 class _ChatMessageInputState extends ConsumerState<ChatMessageInput> {
   final TextEditingController _controller = TextEditingController();
   bool _isTyping = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -43,26 +49,35 @@ class _ChatMessageInputState extends ConsumerState<ChatMessageInput> {
     super.dispose();
   }
 
-  void _sendMessage() {
-    if (_isTyping) {
+  void _sendMessage() async {
+    if (_isTyping && !_isLoading) {
       widget.onSendPressed();
-
-      ref
+     
+      String formattedType = widget.type.toLowerCase();
+      if (formattedType == 'security_personnel') {
+        formattedType = 'security';
+      } else if (formattedType == 'estate_admin') {
+        formattedType = 'admin';
+      } else if (formattedType == 'estate_committe') {
+        formattedType = 'committe';
+      }
+      await ref
           .read(formProvider.notifier)
           .initialisMessage(
             context: context,
             message: _controller.text.trim(),
             id: widget.id,
-            type: widget.type,
+            type: formattedType,
             ref: ref,
           );
-      _controller.clear();
-      setState(() => _isTyping = false);
+
+     
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(formProvider).initMessageLoading;
     return SafeArea(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -119,21 +134,24 @@ class _ChatMessageInputState extends ConsumerState<ChatMessageInput> {
 
           // Send Button — only visible when typing
           AnimatedOpacity(
-            opacity: _isTyping ? 1.0 : 0.0,
+            opacity: (_isTyping || isLoading) ? 1.0 : 0.0,
             duration: const Duration(milliseconds: 200),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              width: _isTyping ? 48 : 0,
+              width: (_isTyping || isLoading) ? 48 : 0,
               child: FloatingActionButton(
                 mini: true,
-                onPressed: _sendMessage,
+                onPressed: isLoading ? null : _sendMessage,
                 backgroundColor: AppColors.instance.teal400,
                 elevation: 4,
-                child: Icon(
-                  Icons.send_rounded,
-                  size: 20,
-                  color: AppColors.instance.grey200,
-                ),
+                child:
+                    isLoading
+                        ? Loadingstates()
+                        : Icon(
+                          Icons.send_rounded,
+                          size: 20,
+                          color: AppColors.instance.grey200,
+                        ),
               ),
             ),
           ),

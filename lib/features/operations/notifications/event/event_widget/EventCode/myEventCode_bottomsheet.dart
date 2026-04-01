@@ -5,7 +5,6 @@ import 'package:curnectgate/features/member_management/tabState/permission_tab_s
 import 'package:curnectgate/features/operations/notifications/event/event_widget/EventCode/eventCode_Data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class MyEventCode extends ConsumerWidget {
   final bool isTab;
@@ -19,42 +18,36 @@ class MyEventCode extends ConsumerWidget {
           isTab
               ? const EdgeInsets.only(left: 10, right: 10, bottom: 8)
               : EdgeInsets.zero,
-      child: Column(
-        key: const ValueKey('userDetails'),
-
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Header section
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (!isTab)
-                Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                    onPressed: () => context.pop(),
-                    icon: const Icon(Icons.close),
+      child: SafeArea(
+        child: Column(
+          key: const ValueKey('userDetails'),
+        
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Header section
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 30),
+                _buildAddMemberButton(size, context, ref),
+                const SizedBox(height: 30),
+        
+                Text(
+                  "Event code",
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontWeight: FontFamilies.bold,
+                    fontSize: 20,
+                    color: AppColors.instance.black600,
                   ),
                 ),
-              const SizedBox(height: 10),
-              _buildAddMemberButton(size, context, ref),
-              const SizedBox(height: 30),
-
-              Text(
-                "Event code",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  fontWeight: FontFamilies.bold,
-                  fontSize: 20,
-                  color: AppColors.instance.black600,
-                ),
-              ),
-              const SizedBox(height: 4),
-            ],
-          ),
-          const SizedBox(height: 35),
-          Expanded(child: EventCodeData()),
-        ],
+                const SizedBox(height: 4),
+              ],
+            ),
+            const SizedBox(height: 35),
+            Expanded(child: EventCodeData()),
+          ],
+        ),
       ),
     );
   }

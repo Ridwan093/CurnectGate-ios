@@ -181,7 +181,7 @@ class _AddItemBottomSheetState extends ConsumerState<AddItemBottomSheet> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           style: BorderStyle.solid,
-          color: AppColors.instance.teal500,
+          color: AppColors.instance.black400,
         ),
       ),
       child: Column(
@@ -216,7 +216,7 @@ class _AddItemBottomSheetState extends ConsumerState<AddItemBottomSheet> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.instance.yellow600),
+        border: Border.all(color: AppColors.instance.black400),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -526,13 +526,13 @@ class _SubmitButton extends StatelessWidget {
       duration: const Duration(milliseconds: 200),
       opacity: isEnabled ? 1 : 0.5,
       child: Material(
-        color: isEnabled ? AppColors.instance.teal400 : Colors.grey.shade300,
+        color: isEnabled ? AppColors.instance.black600 : Colors.grey.shade300,
         borderRadius: BorderRadius.circular(10),
         child: InkWell(
           onTap: isEnabled ? onTap : null,
           borderRadius: BorderRadius.circular(10),
           child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
             child: Text(
               "Submit for Approval",
               maxLines: 1,

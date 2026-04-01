@@ -50,21 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDfgwbmq6ndjrVc51qYvaMJweBQKCCsLtE',
-    appId: '1:1018103511909:android:939fd4eb040f162087ff8c',
-    messagingSenderId: '1018103511909',
-    projectId: 'curnect-test-f9bc0',
-    databaseURL: 'https://curnect-test-f9bc0-default-rtdb.firebaseio.com',
-    storageBucket: 'curnect-test-f9bc0.firebasestorage.app',
+    apiKey: 'AIzaSyCDN09etKnt_2_p1XohbtBPmxE3Jhp48Wk',
+    appId: '1:1038277350674:android:1901735c1ba2d55ef94fcb',
+    messagingSenderId: '1038277350674',
+    projectId: 'curnectgate-f9770',
+    storageBucket: 'curnectgate-f9770.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAxyKEEz9b_lgORHJ4KqhOtcSR5TnHH6A0',
-    appId: '1:1018103511909:ios:56501d892afbf46f87ff8c',
-    messagingSenderId: '1018103511909',
-    projectId: 'curnect-test-f9bc0',
-    databaseURL: 'https://curnect-test-f9bc0-default-rtdb.firebaseio.com',
-    storageBucket: 'curnect-test-f9bc0.firebasestorage.app',
-    iosBundleId: 'com.example.curnectgate',
+    apiKey: 'AIzaSyCvWrzPP-YzjJninbgasSUsqRh9HgManzY',
+    appId: '1:1038277350674:ios:def8d65c4c523de7f94fcb',
+    messagingSenderId: '1038277350674',
+    projectId: 'curnectgate-f9770',
+    storageBucket: 'curnectgate-f9770.firebasestorage.app',
+    iosBundleId: 'com.curnect.gate',
   );
+
 }

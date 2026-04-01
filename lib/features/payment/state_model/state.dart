@@ -1,6 +1,4 @@
 // tab_state.dart
-import 'package:curnectgate/core/constants/asset_paths.dart';
-import 'package:curnectgate/features/payment/state_model/state_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // ignore: constant_identifier_names

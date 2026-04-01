@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyAxyKEEz9b_lgORHJ4KqhOtcSR5TnHH6A0</string>
+	<string>AIzaSyCvWrzPP-YzjJninbgasSUsqRh9HgManzY</string>
 	<key>GCM_SENDER_ID</key>
-	<string>1018103511909</string>
+	<string>1038277350674</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.curnectgate</string>
+	<string>com.curnect.gate</string>
 	<key>PROJECT_ID</key>
-	<string>curnect-test-f9bc0</string>
+	<string>curnectgate-f9770</string>
 	<key>STORAGE_BUCKET</key>
-	<string>curnect-test-f9bc0.firebasestorage.app</string>
+	<string>curnectgate-f9770.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,8 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1018103511909:ios:56501d892afbf46f87ff8c</string>
-	<key>DATABASE_URL</key>
-	<string>https://curnect-test-f9bc0-default-rtdb.firebaseio.com</string>
+	<string>1:1038277350674:ios:def8d65c4c523de7f94fcb</string>
 </dict>
 </plist>

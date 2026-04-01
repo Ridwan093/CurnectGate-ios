@@ -78,7 +78,7 @@ class ChatInitialMessage extends StatelessWidget {
 
             // Role + Estate
             Text(
-              "$recipientRole • $estateName",
+              "${recipientRole.replaceAll("-", " ")}. • $estateName",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
@@ -130,6 +130,8 @@ class ChatInitialMessage extends StatelessWidget {
               child: ChatMessageInput(
                 type: type,
                 id: id,
+                recipientName: recipientName,
+                recipientRole: recipientRole,
                 onMessageChanged: (text) {
                   // Optional: save draft, update state, etc.
                 },

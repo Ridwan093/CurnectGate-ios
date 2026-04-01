@@ -1,5 +1,6 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
+import 'package:curnectgate/core/local_store/getUserprofile_file_provider.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -123,12 +124,11 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
   }
 
   Widget _buildHeader(WidgetRef ref) {
+    final profileFile = ref.watch(profilePicProvider);
     final authState = ref.watch(authProvider);
     final user = authState.user;
     final fullname = authState.fullname ?? "User";
     final String role = user?["role"] ?? "Security Officer";
-
-    final profilePhoto = user?['profile_photo'] ?? null;
 
     final size = MediaQuery.of(context).size;
     final isSmallScreen = size.height < 700 || size.width < 380;
@@ -137,17 +137,16 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
 
     return Row(
       children: [
-     
         Expanded(
           child: Row(
             children: [
               CircleAvatar(
                 radius: isSmallScreen ? 26 : 32,
                 backgroundImage:
-                    profilePhoto != null ? AssetImage(profilePhoto) : null,
+                    profileFile != null ? FileImage(profileFile) : null,
                 backgroundColor: AppColors.instance.teal100,
                 child:
-                    profilePhoto != null
+                    profileFile != null
                         ? null
                         : Image.asset(
                           AssetPaths.navProfileActive,

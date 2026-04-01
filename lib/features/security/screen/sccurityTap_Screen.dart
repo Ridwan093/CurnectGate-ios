@@ -2,6 +2,7 @@ import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/navigation/back_manageent/back_widget/back_navigator.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/chat/data/provider/get_provider/unread_counts_provider.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/image_tab.dart';
 import 'package:curnectgate/features/member_management/screen/tab_screen/CommunityScreen.dart';
 import 'package:curnectgate/features/member_management/tabState/tab_state.dart';
@@ -20,13 +21,16 @@ class SecurityTapScreen extends ConsumerWidget {
     final tabController = ref.read(tabStateProvider.notifier);
     final isScanning = ref.watch(qrScanProvider);
 
+    final tabCount = 3;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final tabWidth = screenWidth / tabCount;
+
     final List<Widget> screens = [
-      SecurityDashboard(), // Your existing dashboard
+      SecurityDashboard(),
       const CommunityScreen(),
       const ProfileScreen(),
     ];
 
-    // Detect if we're on tablet (width >= 600 is Material Design recommendation)
     final bool isTablet = MediaQuery.of(context).size.width >= 600;
 
     return BackButtonHandler(
@@ -35,23 +39,21 @@ class SecurityTapScreen extends ConsumerWidget {
         body: SafeArea(
           child: Row(
             children: [
-              // === Tablet: Show NavigationRail on the left ===
               if (isTablet)
                 Container(
                   width: 80,
                   color: Colors.white,
-                  child: _buildNavigationRail(currentIndex, tabController),
+                  child: _buildNavigationRail(
+                    currentIndex,
+                    tabController,
+                    ref, // ✅ PASS REF
+                  ),
                 ),
 
-              // === Main Content Area ===
               Expanded(
                 child: Builder(
                   builder: (context) {
-                    final bool isTablet =
-                        MediaQuery.of(context).size.width >= 600;
-
                     if (!isTablet) {
-                      // Phone: keep phone-like centered width (optional, or remove if you want full on phone too)
                       return Center(
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 600),
@@ -59,8 +61,6 @@ class SecurityTapScreen extends ConsumerWidget {
                         ),
                       );
                     }
-
-                    // Tablet: FULL WIDTH — no constraints!
                     return screens[currentIndex];
                   },
                 ),
@@ -69,7 +69,6 @@ class SecurityTapScreen extends ConsumerWidget {
           ),
         ),
 
-        // === Phone: Show BottomNavigationBar ===
         bottomNavigationBar:
             isTablet || isScanning
                 ? null
@@ -100,6 +99,7 @@ class SecurityTapScreen extends ConsumerWidget {
                         items: [
                           _buildTabItem(
                             context,
+                            ref,
                             index: 0,
                             currentIndex: currentIndex,
                             normalIcon: AssetPaths.navHome,
@@ -108,6 +108,7 @@ class SecurityTapScreen extends ConsumerWidget {
                           ),
                           _buildTabItem(
                             context,
+                            ref,
                             index: 1,
                             currentIndex: currentIndex,
                             normalIcon: AssetPaths.navMessages,
@@ -116,6 +117,7 @@ class SecurityTapScreen extends ConsumerWidget {
                           ),
                           _buildTabItem(
                             context,
+                            ref,
                             index: 2,
                             currentIndex: currentIndex,
                             normalIcon: AssetPaths.navProfileInactive,
@@ -124,17 +126,16 @@ class SecurityTapScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
+
                       // Indicator
                       Positioned(
                         top: 0,
                         left:
-                            MediaQuery.of(context).size.width /
-                                3 *
-                                currentIndex +
-                            MediaQuery.of(context).size.width / 6 -
-                            (MediaQuery.of(context).size.width / 7) / 2,
+                            tabWidth * currentIndex +
+                            (tabWidth / 2) -
+                            (tabWidth / 4),
                         child: Container(
-                          width: MediaQuery.of(context).size.width / 7,
+                          width: tabWidth / 2,
                           height: 3,
                           color: AppColors.instance.teal300,
                         ),
@@ -146,25 +147,15 @@ class SecurityTapScreen extends ConsumerWidget {
     );
   }
 
-  // New: NavigationRail for tablets
-  Widget _buildNavigationRail(int currentIndex, dynamic tabController) {
+  Widget _buildNavigationRail(
+    int currentIndex,
+    dynamic tabController,
+    WidgetRef ref,
+  ) {
     return NavigationRail(
       selectedIndex: currentIndex,
       onDestinationSelected: (index) => tabController.setTab(index),
       labelType: NavigationRailLabelType.all,
-      backgroundColor: Colors.white,
-      indicatorColor: AppColors.instance.teal100,
-      selectedIconTheme: IconThemeData(color: AppColors.instance.teal400),
-      unselectedIconTheme: IconThemeData(color: AppColors.instance.black400),
-      minWidth: 80, // Keeps it compact and clean
-      // leading: const SizedBox(height: 20), // Top padding
-      // trailing: const SizedBox(
-      //   height: 20,
-      // ), // Bottom padding (optional, can add safe area)
-      // This is the key: distribute items evenly with space between
-      groupAlignment:
-          .9, //  -1 = top, 0 = center, 1 = bottom → we want centered like mobile
-
       destinations: [
         _buildRailDestination(
           AssetPaths.navHomefilled,
@@ -175,6 +166,8 @@ class SecurityTapScreen extends ConsumerWidget {
           AssetPaths.navMessageactive,
           AssetPaths.navMessages,
           "Chats",
+          index: 1, // ✅ chats index
+          ref: ref,
         ),
         _buildRailDestination(
           AssetPaths.navProfileActive,
@@ -188,57 +181,171 @@ class SecurityTapScreen extends ConsumerWidget {
   NavigationRailDestination _buildRailDestination(
     String activeIcon,
     String inactiveIcon,
-    String label,
-  ) {
+    String label, {
+    int? index,
+    WidgetRef? ref,
+  }) {
+    final unreadAsync = ref?.watch(unreadCountsProvider);
+
+    Widget buildIcon(String icon, bool isActive) {
+      final base = ImageTab(
+        label: label,
+        normalImage: icon,
+        activeImage: icon,
+        isActive: isActive,
+        size: 28,
+      );
+
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          base,
+          if (index == 1)
+            unreadAsync!.when(
+              data: (data) {
+                final count = data?.totalUnreadMessages ?? 0;
+                if (count > 0) {
+                  return Positioned(top: -6, right: -6, child: _badge(count));
+                } else {
+                  return SizedBox.shrink();
+                }
+              },
+              error: (error, stack) {
+                try {
+                  // Handle session expiration
+                  if (error.toString().contains("Unauthorized")) {
+                    return SizedBox.shrink();
+                  }
+
+                  // Try to show cached data
+                  final cachedAdmin = ref?.read(unreadCountsProvider).value;
+                  if (cachedAdmin?.totalUnreadMessages != null) {
+                    final unreadCount = cachedAdmin?.totalUnreadMessages ?? 0;
+                    return Positioned(
+                      top: -6,
+                      right: -6,
+                      child: _badge(unreadCount),
+                    );
+                  }
+
+                  // No cached data available
+                  return SizedBox.shrink();
+                } catch (e) {
+                  return SizedBox.shrink();
+                }
+              },
+              loading: () {
+                return SizedBox.shrink();
+              },
+            ),
+        ],
+      );
+    }
+
     return NavigationRailDestination(
-      icon: ImageTab(
-        label: label,
-        normalImage: inactiveIcon,
-        activeImage: inactiveIcon,
-        isActive: false,
-        size: 28,
-      ),
-      selectedIcon: ImageTab(
-        label: label,
-        normalImage: activeIcon,
-        activeImage: activeIcon,
-        isActive: true,
-        size: 28,
-      ),
-      label: Text(
-        label,
-        style: TextStyle(
-          fontFamily: FontFamilies.interDisplay,
-          fontWeight: FontFamilies.bold,
-        ),
-      ),
+      icon: buildIcon(inactiveIcon, false),
+      selectedIcon: buildIcon(activeIcon, true),
+      label: Text(label),
     );
   }
 
-  // Your existing _buildTabItem remains unchanged
   BottomNavigationBarItem _buildTabItem(
-    BuildContext context, {
+    BuildContext context,
+    WidgetRef ref, {
     required int index,
     required int currentIndex,
     required String normalIcon,
     required String activeIcon,
     required String label,
   }) {
+    final unreadAsync = ref.watch(unreadCountsProvider);
+
     return BottomNavigationBarItem(
       icon: Column(
         children: [
-          Container(height: 3, color: const Color.fromRGBO(0, 0, 0, 0)),
+          // Transparent space for the indicator
+          Container(height: 3, color: Colors.transparent),
           const SizedBox(height: 4),
-          ImageTab(
-            label: label,
-            normalImage: normalIcon,
-            activeImage: activeIcon,
-            isActive: currentIndex == index,
-            size: 24,
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              ImageTab(
+                label: label,
+                normalImage: normalIcon,
+                activeImage: activeIcon,
+                isActive: currentIndex == index,
+                size: 24,
+              ),
+
+              if (index == 1)
+                unreadAsync.when(
+                  data: (data) {
+                    final count = data?.totalUnreadMessages ?? 0;
+                    if (count > 0) {
+                      return Positioned(
+                        top: -6,
+                        right: -6,
+                        child: _badge(count),
+                      );
+                    } else {
+                      return SizedBox.shrink();
+                    }
+                  },
+                  error: (error, stack) {
+                    try {
+                      // Handle session expiration
+                      if (error.toString().contains("Unauthorized")) {
+                        return SizedBox.shrink();
+                      }
+
+                      // Try to show cached data
+                      final cachedAdmin = ref.read(unreadCountsProvider).value;
+                      if (cachedAdmin?.totalUnreadMessages != null) {
+                        final unreadCount =
+                            cachedAdmin?.totalUnreadMessages ?? 0;
+                        return Positioned(
+                          top: -6,
+                          right: -6,
+                          child: _badge(unreadCount),
+                        );
+                      }
+
+                      // No cached data available
+                      return SizedBox.shrink();
+                    } catch (e) {
+                      return SizedBox.shrink();
+                    }
+                  },
+                  loading: () {
+                    return SizedBox.shrink();
+                  },
+                ),
+            ],
           ),
         ],
       ),
       label: label,
+    );
+  }
+
+  Widget _badge(int count) {
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: AppColors.instance.teal400,
+        shape: BoxShape.circle,
+      ),
+      constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+      child: Center(
+        child: Text(
+          count > 99 ? '99+' : count.toString(),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
     );
   }
 }

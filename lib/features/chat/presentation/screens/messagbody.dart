@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -6,6 +7,7 @@ import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/chat/data/model/chat_message.dart';
 import 'package:curnectgate/features/chat/data/provider/chat_provier.dart';
 import 'package:curnectgate/features/chat/data/provider/get_provider/get_list_message.dart';
 import 'package:curnectgate/features/chat/data/provider/typingindicator_provider.dart';
@@ -14,7 +16,6 @@ import 'package:curnectgate/features/chat/services/reverb_service.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
-import 'package:curnectgate/features/operations/violation/screens/reportViolation.dart';
 import 'package:dart_pusher_channels/dart_pusher_channels.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,10 +41,20 @@ class MessageScreens extends ConsumerStatefulWidget {
   ConsumerState<MessageScreens> createState() => _MessageScreenState();
 }
 
+String _formatRole(String role) {
+  return role
+      .replaceAll('_', ' ')
+      .split(' ')
+      .map((e) => e.isNotEmpty ? e[0].toUpperCase() + e.substring(1) : '')
+      .join(' ');
+}
+
 class _MessageScreenState extends ConsumerState<MessageScreens> {
   final TextEditingController _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
+  bool _isTypingSent = false;
+  Timer? _debounceTimer;
 
   /// Chat channel & subscriptions
   PrivateChannel? _chatChannel;
@@ -63,6 +74,15 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
       ReverbService.subscribeChat(chatId: widget.id, ref: ref);
 
       markAsRead();
+    });
+
+    // Automatically trigger markAsRead when reaching the bottom
+    _scrollController.addListener(() {
+      if (_scrollController.hasClients &&
+          _scrollController.position.pixels <=
+              _scrollController.position.minScrollExtent + 50) {
+        markAsRead();
+      }
     });
 
     /// 2️⃣ Retry pending messages on connectivity restore
@@ -87,42 +107,67 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
     ref.read(formProvider.notifier).markMessageRead(ref: ref, id: widget.id);
   }
 
-  void onTextChanged(String text) {
-    final authState = ref.watch(authProvider);
+  void _sendTypingStatus(bool isTyping) {
+    if (!mounted || _isTypingSent == isTyping) return;
 
-    final user = authState.user;
-
-    final userId = user?["id"] ?? "";
-    final isTyping = text.isNotEmpty;
-
-    // Update local typing state for self
+    _isTypingSent = isTyping;
     ref
-        .read(typingStatusProvider(widget.id).notifier)
-        .updateTyping(userId, isTyping);
+        .read(profileRepositoryProvider)
+        .updateTypingStatus(
+          context: context,
+          conversationId: widget.id,
+          isTyping: isTyping,
+        )
+        .catchError((e) {
+          return <String, dynamic>{};
+        });
+  }
 
-    // Send typing event to Reverb
-    // ReverbService.sendTyping(
-    //   chatId: widget.id,
-    //   userId: userId,
-    //   isTyping: isTyping,
-    // );
+  void onTextChanged(String text) {
+    _debounceTimer?.cancel();
+
+    if (text.isEmpty) {
+      // If text is cleared, send "not typing" almost immediately
+      _debounceTimer = Timer(const Duration(milliseconds: 300), () {
+        _sendTypingStatus(false);
+      });
+    } else {
+      // If not already sent, send "typing" immediately
+      if (!_isTypingSent) {
+        _sendTypingStatus(true);
+      }
+
+      // Set a timer to send "not typing" after 2 seconds of inactivity
+      _debounceTimer = Timer(const Duration(milliseconds: 2000), () {
+        _sendTypingStatus(false);
+      });
+    }
   }
 
   Widget _buildTypingIndicator(int chatId) {
     final typingUsers = ref.watch(typingStatusProvider(chatId));
     if (typingUsers.isEmpty) return const SizedBox.shrink();
 
-    // final names = typingUsers.entries
-    //     .where((e) => e.value)
-    //     .map((e) => "User ${e.key}") // replace with actual user names if you have
-    //     .join(", ");
+    // Check if ANY user other than current user is typing
+    final authState = ref.watch(authProvider);
+    final myUserId = authState.user?["id"];
+
+    bool isOtherTyping = false;
+    for (var entry in typingUsers.entries) {
+      if (entry.value == true && entry.key.toString() != myUserId?.toString()) {
+        isOtherTyping = true;
+        break;
+      }
+    }
+
+    if (!isOtherTyping) return const SizedBox.shrink();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
-          "${widget.userFullName} typing...",
+          "${widget.userFullName} is typing...",
           style: const TextStyle(
             fontStyle: FontStyle.italic,
             fontSize: 12,
@@ -133,19 +178,10 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
     );
   }
 
-  /// Scroll to bottom with animation
-  void _scrollToBottomAnimated() {
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        0,
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeOut,
-      );
-    }
-  }
-
   @override
   void dispose() {
+    _sendTypingStatus(false);
+    _debounceTimer?.cancel();
     _textController.dispose();
     _focusNode.dispose();
     _scrollController.dispose();
@@ -159,13 +195,62 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
 
   @override
   Widget build(BuildContext context) {
-    final asyncMessages = ref.watch(messagesProvider(widget.id));
+    final messages = ref.watch(messagesProvider(widget.id));
+
+    // Listen for new messages to trigger markAsRead in real-time
+    ref.listen<List<Message>>(messagesProvider(widget.id), (
+      previous,
+      next,
+    ) async {
+      if (next.length > (previous?.length ?? 0)) {
+        // If the last message is from someone else, mark as read
+        final lastMessage = next.last;
+        final authUser = ref.read(authProvider).user;
+        final myId = authUser?['id'];
+
+        if (lastMessage.senderId.toString() != myId.toString()) {
+          // If we are already at the bottom or near it, mark as read
+          if (_scrollController.hasClients &&
+              _scrollController.position.pixels <=
+                  _scrollController.position.minScrollExtent + 100) {
+            markAsRead();
+          }
+        }
+      }
+    });
+
     final chatNotifier = ref.read(chatProvider.notifier);
     final authState = ref.watch(authProvider);
 
     final user = authState.user;
 
     final userId = user?["id"] ?? "";
+
+    if (!_initialJumpDone && messages.isNotEmpty) {
+      _initialJumpDone = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _jumpToBottom();
+      });
+    }
+
+    final List<dynamic> items = [];
+    String? lastDate;
+
+    for (final m in messages) {
+      DateTime created;
+      try {
+        created = DateTime.parse(m.createdAt ?? "");
+      } catch (_) {
+        created = DateTime.now();
+      }
+
+      final label = _formatMessageDate(created);
+      if (lastDate != label) {
+        items.add(label);
+        lastDate = label;
+      }
+      items.add(m);
+    }
 
     return Scaffold(
       appBar: _buildAppBar(context),
@@ -174,71 +259,30 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
           Expanded(
             child: Stack(
               children: [
-                asyncMessages.when(
-                  skipLoadingOnReload: true,
-                  data: (messages) {
-                    if (!_initialJumpDone) {
-                      _initialJumpDone = true;
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        _jumpToBottom();
-                      });
-                    }
-
-                    final List<dynamic> items = [];
-                    String? lastDate;
-
-                    for (final m in messages ?? []) {
-                      DateTime created;
-                      try {
-                        created = DateTime.parse(m.createdAt ?? "");
-                      } catch (_) {
-                        created = DateTime.now();
+                if (messages.isEmpty)
+                  ListView(
+                    controller: _scrollController,
+                    reverse: true,
+                    children: [_buildHeaderInfo()],
+                  )
+                else
+                  ListView.builder(
+                    controller: _scrollController,
+                    reverse: true,
+                    padding: const EdgeInsets.only(bottom: 10, top: 10),
+                    itemCount: items.length,
+                    itemBuilder: (_, i) {
+                      final item = items[items.length - 1 - i];
+                      if (item is String) {
+                        return _buildDateHeader(item);
                       }
-
-                      final label = _formatMessageDate(created);
-                      if (lastDate != label) {
-                        items.add(label);
-                        lastDate = label;
-                      }
-                      items.add(m);
-                    }
-
-                    return ListView.builder(
-                      controller: _scrollController,
-                      reverse: true,
-                      padding: const EdgeInsets.only(bottom: 100, top: 10),
-                      itemCount: items.length,
-                      itemBuilder: (_, i) {
-                        final item = items[items.length - 1 - i];
-                        if (item is String) {
-                          return _buildDateHeader(item);
-                        }
-                        return ChatBubble(message: item);
-                      },
-                    );
-                  },
-                  loading:
-                      () => ListView(
-                        controller: _scrollController,
-                        reverse: true,
-                        children: [_buildHeaderInfo()],
-                      ),
-                  error:
-                      (_, __) => ListView(
-                        controller: _scrollController,
-                        reverse: true,
-                        children: [_buildHeaderInfo()],
-                      ),
-                ),
+                      return ChatBubble(message: item);
+                    },
+                  ),
               ],
             ),
           ),
-          // Positioned(
-          //   left: 0,
-          //   right: 0,
-          //   bottom: 70, // above input
-          //   child: _buildTypingIndicator(widget.id),
-          // ),
+          _buildTypingIndicator(widget.id),
           SafeArea(child: _buildMessageInput(chatNotifier, userId)),
         ],
       ),
@@ -313,14 +357,23 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
                 if (_textController.text.trim().isNotEmpty ||
                     ref.read(chatProvider).selectedImage != null ||
                     ref.read(chatProvider).selectedFilePath != null) {
+                  final chatState = ref.read(chatProvider);
+                  final fileToUpload =
+                      chatState.selectedImage != null
+                          ? File(chatState.selectedImage!)
+                          : (chatState.selectedFilePath != null
+                              ? File(chatState.selectedFilePath!)
+                              : null);
+
                   ref
                       .read(messagesProvider(widget.id).notifier)
                       .sendMessage(
                         context: context,
                         text: _textController.text.trim(),
-                        file: null,
+                        file: fileToUpload,
                       );
                   _textController.clear();
+                  _sendTypingStatus(false);
                   chatNotifier.clearImage();
                 }
               },
@@ -353,13 +406,7 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
                 id: widget.id,
                 bottom: BottomSheetView.residentEmgencyContacts,
               );
-              // showUserBottomSheet(
-              //   context: context,
-              //   headertitle: "Have an emergency?",
-              //   headersubtitle: "Call this emergency contact",
-              //   ref: ref,
-              //   bottom: BottomSheetView.messageEmergency,
-              // );
+             
             },
           ),
           IconButton(
@@ -371,6 +418,7 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
                 headersubtitle: "",
                 ref: ref,
                 bottom: BottomSheetView.chatSettings,
+                id: widget.id,
               );
             },
           ),
@@ -393,7 +441,10 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
                     fit: BoxFit.cover,
                     placeholder: (context, url) => const Loadingstates(),
                     errorWidget:
-                        (context, url, error) => const Icon(Icons.person),
+                        (context, url, error) => Icon(
+                          Icons.person,
+                          color: AppColors.instance.black600,
+                        ),
                   ),
                 ),
               ),
@@ -402,43 +453,34 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  InkWell(
-                    onTap:
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (contexr) => ReportViolation(),
-                          ),
+                  Row(
+                    children: [
+                      Text(
+                        widget.userFullName,
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          fontWeight: FontFamilies.bold,
+                          fontSize: 16,
                         ),
-                    child: Row(
-                      children: [
-                        Text(
-                          widget.userFullName,
-                          style: TextStyle(
-                            fontFamily: FontFamilies.interDisplay,
-                            fontWeight: FontFamilies.bold,
-                            fontSize: 16,
-                          ),
-                        ),
+                      ),
 
-                        const SizedBox(width: 6),
+                      const SizedBox(width: 6),
 
-                        Container(
-                          width: 10,
-                          height: 10,
-                          decoration: BoxDecoration(
-                            color:
-                                widget.isOnline.toLowerCase().contains("online")
-                                    ? AppColors.instance.teal500
-                                    : AppColors.instance.grey400,
-                            shape: BoxShape.circle,
-                          ),
+                      Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color:
+                              widget.isOnline.toLowerCase().contains("online")
+                                  ? AppColors.instance.teal500
+                                  : AppColors.instance.grey400,
+                          shape: BoxShape.circle,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   Text(
-                    widget.userRole,
+                    _formatRole(widget.userRole),
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       color: AppColors.instance.black300,
@@ -464,26 +506,6 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
           fontFamily: FontFamilies.interDisplay,
           color: AppColors.instance.black400,
           fontSize: 12,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildimageClearbutton(ChatNotifier chatNotifier) {
-    return Positioned(
-      bottom: 48,
-      right: 6,
-      child: GestureDetector(
-        onTap: () {
-          chatNotifier.clearImage();
-        },
-        child: Container(
-          padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            color: AppColors.instance.black300,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(Icons.close, size: 16, color: AppColors.instance.grey200),
         ),
       ),
     );
@@ -526,45 +548,4 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
       ),
     );
   }
-
-  //   Widget _buildFilePreview(ChatState chatState) {
-  //     final filePath = chatState.selectedFilePath;
-  //     final fileName = chatState.selectedFileName;
-  //     final fileSize = chatState.selectedFileSize;
-
-  //     if (filePath == null) return const SizedBox.shrink();
-
-  //     return GestureDetector(
-  //       onTap: () => OpenFilex.open(filePath),
-  //       child: Container(
-  //         padding: const EdgeInsets.all(12),
-  //         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-  //         decoration: BoxDecoration(
-  //           color: Colors.grey[200],
-  //           borderRadius: BorderRadius.circular(10),
-  //         ),
-  //         child: Row(
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: [
-  //             // Icon(_getFileIcon(fileName), color: Colors.blueAccent, size: 32),
-  //             const SizedBox(width: 10),
-  //             Column(
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 Text(
-  //                   fileName ?? "Unknown file",
-  //                   style: const TextStyle(fontWeight: FontWeight.w600),
-  //                 ),
-  //                 const SizedBox(height: 4),
-  //                 Text(
-  //                   "    _formatFileSize(fileSize),",
-  //                   style: TextStyle(color: Colors.grey[600], fontSize: 12),
-  //                 ),
-  //               ],
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     );
-  //   }
 }

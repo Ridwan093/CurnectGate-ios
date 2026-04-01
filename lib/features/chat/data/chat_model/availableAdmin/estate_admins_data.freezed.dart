@@ -22,6 +22,8 @@ EstateAdminsData _$EstateAdminsDataFromJson(Map<String, dynamic> json) {
 mixin _$EstateAdminsData {
   List<EstateAdmin>? get admins => throw _privateConstructorUsedError;
   int? get count => throw _privateConstructorUsedError;
+  String? get role => throw _privateConstructorUsedError;
+  String? get roleBadge => throw _privateConstructorUsedError;
 
   /// Serializes this EstateAdminsData to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -39,7 +41,8 @@ abstract class $EstateAdminsDataCopyWith<$Res> {
           EstateAdminsData value, $Res Function(EstateAdminsData) then) =
       _$EstateAdminsDataCopyWithImpl<$Res, EstateAdminsData>;
   @useResult
-  $Res call({List<EstateAdmin>? admins, int? count});
+  $Res call(
+      {List<EstateAdmin>? admins, int? count, String? role, String? roleBadge});
 }
 
 /// @nodoc
@@ -59,6 +62,8 @@ class _$EstateAdminsDataCopyWithImpl<$Res, $Val extends EstateAdminsData>
   $Res call({
     Object? admins = freezed,
     Object? count = freezed,
+    Object? role = freezed,
+    Object? roleBadge = freezed,
   }) {
     return _then(_value.copyWith(
       admins: freezed == admins
@@ -69,6 +74,14 @@ class _$EstateAdminsDataCopyWithImpl<$Res, $Val extends EstateAdminsData>
           ? _value.count
           : count // ignore: cast_nullable_to_non_nullable
               as int?,
+      role: freezed == role
+          ? _value.role
+          : role // ignore: cast_nullable_to_non_nullable
+              as String?,
+      roleBadge: freezed == roleBadge
+          ? _value.roleBadge
+          : roleBadge // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -81,7 +94,8 @@ abstract class _$$EstateAdminsDataImplCopyWith<$Res>
       __$$EstateAdminsDataImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<EstateAdmin>? admins, int? count});
+  $Res call(
+      {List<EstateAdmin>? admins, int? count, String? role, String? roleBadge});
 }
 
 /// @nodoc
@@ -99,6 +113,8 @@ class __$$EstateAdminsDataImplCopyWithImpl<$Res>
   $Res call({
     Object? admins = freezed,
     Object? count = freezed,
+    Object? role = freezed,
+    Object? roleBadge = freezed,
   }) {
     return _then(_$EstateAdminsDataImpl(
       admins: freezed == admins
@@ -109,6 +125,14 @@ class __$$EstateAdminsDataImplCopyWithImpl<$Res>
           ? _value.count
           : count // ignore: cast_nullable_to_non_nullable
               as int?,
+      role: freezed == role
+          ? _value.role
+          : role // ignore: cast_nullable_to_non_nullable
+              as String?,
+      roleBadge: freezed == roleBadge
+          ? _value.roleBadge
+          : roleBadge // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -117,7 +141,8 @@ class __$$EstateAdminsDataImplCopyWithImpl<$Res>
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class _$EstateAdminsDataImpl implements _EstateAdminsData {
-  const _$EstateAdminsDataImpl({final List<EstateAdmin>? admins, this.count})
+  const _$EstateAdminsDataImpl(
+      {final List<EstateAdmin>? admins, this.count, this.role, this.roleBadge})
       : _admins = admins;
 
   factory _$EstateAdminsDataImpl.fromJson(Map<String, dynamic> json) =>
@@ -135,10 +160,14 @@ class _$EstateAdminsDataImpl implements _EstateAdminsData {
 
   @override
   final int? count;
+  @override
+  final String? role;
+  @override
+  final String? roleBadge;
 
   @override
   String toString() {
-    return 'EstateAdminsData(admins: $admins, count: $count)';
+    return 'EstateAdminsData(admins: $admins, count: $count, role: $role, roleBadge: $roleBadge)';
   }
 
   @override
@@ -147,13 +176,16 @@ class _$EstateAdminsDataImpl implements _EstateAdminsData {
         (other.runtimeType == runtimeType &&
             other is _$EstateAdminsDataImpl &&
             const DeepCollectionEquality().equals(other._admins, _admins) &&
-            (identical(other.count, count) || other.count == count));
+            (identical(other.count, count) || other.count == count) &&
+            (identical(other.role, role) || other.role == role) &&
+            (identical(other.roleBadge, roleBadge) ||
+                other.roleBadge == roleBadge));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(_admins), count);
+  int get hashCode => Object.hash(runtimeType,
+      const DeepCollectionEquality().hash(_admins), count, role, roleBadge);
 
   /// Create a copy of EstateAdminsData
   /// with the given fields replaced by the non-null parameter values.
@@ -175,7 +207,9 @@ class _$EstateAdminsDataImpl implements _EstateAdminsData {
 abstract class _EstateAdminsData implements EstateAdminsData {
   const factory _EstateAdminsData(
       {final List<EstateAdmin>? admins,
-      final int? count}) = _$EstateAdminsDataImpl;
+      final int? count,
+      final String? role,
+      final String? roleBadge}) = _$EstateAdminsDataImpl;
 
   factory _EstateAdminsData.fromJson(Map<String, dynamic> json) =
       _$EstateAdminsDataImpl.fromJson;
@@ -184,6 +218,10 @@ abstract class _EstateAdminsData implements EstateAdminsData {
   List<EstateAdmin>? get admins;
   @override
   int? get count;
+  @override
+  String? get role;
+  @override
+  String? get roleBadge;
 
   /// Create a copy of EstateAdminsData
   /// with the given fields replaced by the non-null parameter values.

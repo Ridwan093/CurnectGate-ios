@@ -1,4 +1,3 @@
-// get_api_service.dart
 import 'dart:developer';
 
 import 'package:curnectgate/core/%20utils/api/api_url.dart';
@@ -9,9 +8,11 @@ import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resi
 import 'package:curnectgate/features/auth/data/auth_model/get_start_model/onboarding_slider_response.dart';
 import 'package:curnectgate/features/chat/data/chat_model/availableAdmin/estate_admins_response.dart';
 import 'package:curnectgate/features/chat/data/chat_model/availableCommitte/committee_members_response.dart';
+import 'package:curnectgate/features/chat/data/chat_model/availableSecurity/securityResponde.dart';
 import 'package:curnectgate/features/chat/data/model/chat_message.dart';
 import 'package:curnectgate/features/chat/data/model/conversation.dart';
 import 'package:curnectgate/features/chat/data/model/get_model/conversation_settings_response.dart';
+import 'package:curnectgate/features/chat/data/model/get_model/unread_counts_response.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate/candidates_response.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate_result/live_results_response.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/election_Setting/voting_settings_response.dart';
@@ -71,20 +72,9 @@ class GetApiService {
 
   Future<GetUserProfile> getUserProfile({required String bearerToken}) async {
     try {
-      final response = await _dio.get(
-        getUserprofile, // Update with your actual endpoint
-        // options: Options(
-        //   // headers: {
-        //   //   'Accept': 'application/json',
-        //   //   'Authorization': 'Bearer $bearerToken',
-        //   //   'X-Requested-With': 'XMLHttpRequest',
-        //   // },
-        // ),
-      );
-
+      final response = await _dio.get(getUserprofile);
       return GetUserProfile.fromSafeJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -93,20 +83,9 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        getNotification, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-
+      final response = await _dio.get(getNotification);
       return GetUserNotificationSettings.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -115,27 +94,16 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        getSettingPrivacy, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-
+      final response = await _dio.get(getSettingPrivacy);
       return GetUserPrivacySettings.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
 
   Future<Map<String, dynamic>> signOut({required String token}) async {
     final response = await _dio.get(
-      appLogOut, // Update with your actual endpoint
+      appLogOut,
       options: Options(validateStatus: (status) => status! < 500),
     );
     return response.data;
@@ -145,21 +113,9 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        getSettingPreferences, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getSettingPreferences);
       return GetuserNotifications.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -168,19 +124,9 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        getNotificationApi, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
+      final response = await _dio.get(getNotificationApi);
       return NotificationResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -191,20 +137,10 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(
-        "/api/v1/estates/general/reminders?category=$category", // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
+        "estates/general/reminders?category=$category",
       );
-      log(response.data.toString());
-
       return RemindersResponseModel.fromSafeJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -213,21 +149,9 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        getViolationLocation, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requ ested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getViolationLocation);
       return EstateAddressResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -236,21 +160,9 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        getViolationCategorys, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getViolationCategorys);
       return ViolationCategoryResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -259,7 +171,6 @@ class GetApiService {
     switch (status) {
       case "all":
         return {"filter": status};
-
       default:
         return {"status": status};
     }
@@ -273,24 +184,9 @@ class GetApiService {
       final Map<String, dynamic> requestDatas = requestData(
         filter.toLowerCase(),
       );
-      log(requestDatas.toString());
-
-      final response = await _dio.get(
-        data: requestDatas,
-        listOfViolation, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(listOfViolation, data: requestDatas);
       return ViolationResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -300,27 +196,12 @@ class GetApiService {
     required int id,
   }) async {
     try {
-      final response = await _dio.get(
-        "/api/v1/estates/general/violations/$id/history",
-
-        // // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get("estates/general/violations/$id/history");
       return StatusHistoryResponse.fromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
-  // status
 
   Future<CommentResponse> getreportComment({
     required String bearerToken,
@@ -328,20 +209,10 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(
-        "/api/v1/estates/general/violations/$id/comments", // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
+        "estates/general/violations/$id/comments",
       );
-      log(response.data.toString());
-
       return CommentResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -352,23 +223,9 @@ class GetApiService {
   }) async {
     try {
       final Map<String, dynamic> requestData = {"status": status};
-      log("requestBody:${requestData.toString()}");
-      final response = await _dio.get(
-        data: requestData,
-        getVisitorByfirter, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      // log(response.data.toString());
-
+      final response = await _dio.get(getVisitorByfirter, data: requestData);
       return OtpResponseModel.fromSafeJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -378,46 +235,18 @@ class GetApiService {
     required String status,
   }) async {
     try {
-      // final Map<String, dynamic> requestData = {"status": status};
-      log("requestBody:${requestData.toString()}");
-      final response = await _dio.get(
-        getWorkpermit, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getWorkpermit);
       return ClearancePermitResponse.fromSafeJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
 
   Future<ActiveOtpResponse> geActivePermit() async {
     try {
-      // final Map<String, dynamic> requestData = {"status": status};
-
-      final response = await _dio.get(
-        getActivePermit, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getActivePermit);
       return ActiveOtpResponse.fromSafeJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -426,56 +255,27 @@ class GetApiService {
     required String used_expired,
   }) async {
     try {
-      final response = await _dio.get(
-        "$activeCount$used_expired", // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get("$activeCount$used_expired");
       return ExpiredCountResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
 
   Future<ViolationCountResponse> getViolationCounts() async {
     try {
-      final response = await _dio.get(
-        getViolationCount, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getViolationCount);
       return ViolationCountResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
 
   Future<ActiveCountResponse> getActiveCount() async {
     try {
-      final response = await _dio.get(
-        "${activeCount}currently-active", // Update with your actual endpoint
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get("${activeCount}currently-active");
       return ActiveCountResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -484,21 +284,9 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        getDigitalIDCode, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getDigitalIDCode);
       return DigitalMemberIdResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -507,42 +295,18 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        getHouseHold, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getHouseHold);
       return HouseholdMembersResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
 
   Future<PropertyResponse> getProperty({required String bearerToken}) async {
     try {
-      final response = await _dio.get(
-        getPropertya, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getPropertya);
       return PropertyResponse.fromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -550,13 +314,10 @@ class GetApiService {
   Future<RestrictionStatusResponse> getRestriced({required int id}) async {
     try {
       final response = await _dio.get(
-        "/api/v1/estates/owner-portal/digital-member-id/$id/restriction-status", // Update with your actual endpoint
+        "estates/owner-portal/digital-member-id/$id/restriction-status",
       );
-      log(response.data.toString());
-
       return RestrictionStatusResponse.fromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -567,20 +328,10 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(
-        "/api/v1/estates/owner-portal/households/members/permission/$id/status", // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
+        "estates/owner-portal/households/members/permission/$id/status",
       );
-      log(response.data.toString());
-
       return status_model.PermissionsResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -591,20 +342,10 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(
-        "/api/v1/estates/owner-portal/households/members/permission/$id/specific", // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
+        "estates/owner-portal/households/members/permission/$id/specific",
       );
-      // log(response.data.toString());
-
       return slug_model.PermissionsResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -615,20 +356,10 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(
-        "/api/v1/estates/owner-portal/households/members/permission/$id/curfew", // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
+        "estates/owner-portal/households/members/permission/$id/curfew",
       );
-      // log(response.data.toString());
-
       return CurfewResponse.fromSafeJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -637,42 +368,18 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        getCheckOutVisitor, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getCheckOutVisitor);
       return CheckoutHistoryResponseModel.fromSafeJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
 
   Future<ApiResponseModel> getCheckIn({required String bearerToken}) async {
     try {
-      final response = await _dio.get(
-        getCheckInVisitor, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getCheckInVisitor);
       return ApiResponseModel.fromSafeJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -681,63 +388,27 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        notificationCount, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(notificationCount);
       return NotificationCountResponse.fromSafeJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
 
   Future<EventsResponse> getCalender({required String bearerToken}) async {
     try {
-      final response = await _dio.get(
-        getCalenders, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log("Calender Event:" + response.data.toString());
-
+      final response = await _dio.get(getCalenders);
       return EventsResponse.fromSafeJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
 
   Future<EventCodesResponse> getEventCode({required String bearerToken}) async {
     try {
-      final response = await _dio.get(
-        getEventCodes, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log("Calender Event:" + response.data.toString());
-
+      final response = await _dio.get(getEventCodes);
       return EventCodesResponse.fromSafeJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -750,21 +421,11 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(
-        // "/api/v1/estates/general/events?status=cancelled",
-        "/api/v1/estates/general/events?status=$statuse&limit=$limit&upcoming=1&start_date=${date ?? ""}", // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
+        "estates/general/events?status=$statuse&limit=$limit&upcoming=1&start_date=${date ?? ""}",
       );
-      log(response.data.toString());
-
+      log(response.toString());
       return CalendarEventsResponse.fromSafeJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -776,22 +437,9 @@ class GetApiService {
       "limit": 50,
     };
     try {
-      final response = await _dio.get(
-        getEventRsvp, // Update with your actual endpoint
-        data: respondBody,
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getEventRsvp, data: respondBody);
       return RsvpEventsResponse.fromSafeJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -800,21 +448,9 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        getResinde, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getResinde);
       return ResidentDirectoryResponse.fromSafeJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -823,21 +459,9 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        getCommitt, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getCommitt);
       return CommitteesResponse.fromSafeJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -846,21 +470,9 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        workOrdercategorie, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(workOrdercategorie);
       return WorkOrderCategoriesResponse.fromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -869,21 +481,9 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        getworkOrder, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getworkOrder);
       return WorkOrderResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -892,25 +492,9 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        getDigitalStatus, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-
-      log("Digital Check Here -------->");
-
-      log(response.data.toString());
-
+      final response = await _dio.get(getDigitalStatus);
       return DigitalIdStatus.fromJson(response.data);
-    } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
-
+    } on DioException {
       return DigitalIdStatus(hasDigitalId: false);
     }
   }
@@ -921,20 +505,10 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(
-        "/api/v1/estates/general/voting/polls/$id/candidates", // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
+        "estates/general/voting/polls/$id/candidates",
       );
-      log(response.data.toString());
-
       return CandidatesResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -945,20 +519,10 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(
-        "/api/v1/estates/general/voting/polls/$id/live-results", // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
+        "estates/general/voting/polls/$id/live-results",
       );
-      log(response.data.toString());
-
       return LiveResultsResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -969,20 +533,10 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(
-        "/api/v1/estates/general/voting/polls/$id/results", // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
+        "estates/general/voting/polls/$id/results",
       );
-      log(response.data.toString());
-
       return ResultsResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -992,21 +546,9 @@ class GetApiService {
     required String id,
   }) async {
     try {
-      final response = await _dio.get(
-        "/api/v1/estates/general/voting/polls/$id", // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get("estates/general/voting/polls/$id");
       return PollDetailsResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -1016,21 +558,9 @@ class GetApiService {
     required String id,
   }) async {
     try {
-      final response = await _dio.get(
-        getVoteHistory, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getVoteHistory);
       return PollHistoryResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -1039,21 +569,9 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        votingSetting, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(votingSetting);
       return VotingSettingsResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -1063,21 +581,9 @@ class GetApiService {
     required String id,
   }) async {
     try {
-      final response = await _dio.get(
-        votingPoll, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(votingPoll);
       return PollsResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -1086,21 +592,9 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        getPaymentDashbords, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getPaymentDashbords);
       return PaymentDashboardResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -1109,21 +603,9 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        getDuePayments, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getDuePayments);
       return OutstandingDuesResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -1132,21 +614,9 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        getWalletHistorys, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getWalletHistorys);
       return WalletHistoryResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -1155,21 +625,9 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        getPaymentHistorys, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getPaymentHistorys);
       return PaymentHistoryResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -1178,21 +636,9 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        emergencyContact, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(emergencyContact);
       return EstateSettingsResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -1201,42 +647,19 @@ class GetApiService {
     required String bearerToken,
   }) async {
     try {
-      final response = await _dio.get(
-        getPaymentMethod, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getPaymentMethod);
       return PaymentMethodsResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
 
   Future<EstateAdminsResponse> getAdminList() async {
     try {
-      final response = await _dio.get(
-        getAvailableAdmin, // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
-      );
-      log(response.data.toString());
+      final response = await _dio.get(getAvailableAdmin);
 
       return EstateAdminsResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -1244,62 +667,47 @@ class GetApiService {
   Future<ConversationSettingsResponse> getChatSettings(String id) async {
     try {
       final response = await _dio.get(
-        "/api/v1/estates/general/messaging/conversations/$id/settings", // Update with your actual endpoint
-        // options: Options(
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Authorization': 'Bearer $bearerToken',
-        //     'X-Requested-With': 'XMLHttpRequest',
-        //   },
-        // ),
+        "estates/general/messaging/conversations/$id/settings",
       );
-      log(response.data.toString());
-
       return ConversationSettingsResponse.fromSafeJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
 
   Future<CommitteeMembersResponse> getComitteList() async {
     try {
-      final response = await _dio.get(
-        getAvailabeCommeti, // Update with your actual endpoint
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(getAvailabeCommeti);
+      log(response.toString());
       return CommitteeMembersResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<SecurityPersonnelResponse> getSecurityList() async {
+    try {
+      final response = await _dio.get(getAvailableScurity);
+      return SecurityPersonnelResponse.fromSafeJson(response.data);
+    } on DioException catch (e) {
       throw _handleError(e);
     }
   }
 
   Future<AgreementsResponse> getAgreement() async {
     try {
-      final response = await _dio.get(
-        aGREEMENT, // Update with your actual endpoint
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(aGREEMENT);
       return AgreementsResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
 
   Future<ComplianceResponse> getMyComplence() async {
     try {
-      final response = await _dio.get(
-        compliance, // Update with your actual endpoint
-      );
-      log(response.data.toString());
-
+      final response = await _dio.get(compliance);
       return ComplianceResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error getting profile: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -1310,26 +718,18 @@ class GetApiService {
         reverb,
         options: Options(extra: {'requiresAuth': true}),
       );
-
-      log('Reverb Config Response: ${response.data}');
-
       return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
-      log('Error fetching Reverb config: ${e.message}');
-      throw _handleError(e); // Reuse your existing error handler
+      throw _handleError(e);
     }
   }
 
   Future<OnboardingSliderResponse> getSlider() async {
     try {
       final response = await _dio.get(sliderEnpoint);
-
-      log('Reverb Config Response: ${response.data}');
-
       return OnboardingSliderResponse.fromSafeJson(response.data);
     } on DioException catch (e) {
-      log('Error fetching Reverb config: ${e.message}');
-      throw _handleError(e); // Reuse your existing error handler
+      throw _handleError(e);
     }
   }
 
@@ -1339,22 +739,15 @@ class GetApiService {
         sliderEnpoint,
         options: Options(extra: {'requiresAuth': true}),
       );
-
-      log('Reverb Config Response: ${response.data}');
-
       return DutyResponse.safeFromJson(response.data);
     } on DioException catch (e) {
-      log('Error fetching Reverb config: ${e.message}');
-      throw _handleError(e); // Reuse your existing error handler
+      throw _handleError(e);
     }
   }
 
-  // 2. Your API method (fixed to return List<Conversation>)
   Future<List<Conversation>> getListConversation() async {
     try {
       final response = await _dio.get(getConversation);
-
-      // log('Conversations Response: ${response.data}');
 
       if (response.data['success'] != true) {
         throw Exception(
@@ -1362,13 +755,10 @@ class GetApiService {
         );
       }
 
-      // Extract the list from your API structure
       final List<dynamic> convList =
           response.data['data']['conversations'] ?? [];
-
       return convList.map((json) => Conversation.safeFromJson(json)).toList();
     } on DioException catch (e) {
-      log('Error fetching conversations: ${e.message}');
       throw _handleError(e);
     }
   }
@@ -1376,35 +766,37 @@ class GetApiService {
   Future<List<Message>> getMessages(int conversationId) async {
     try {
       final response = await _dio.get(
-        "/api/v1/estates/general/messaging/conversations/$conversationId/messages",
+        "estates/general/messaging/conversations/$conversationId/messages",
         options: Options(extra: {'requiresAuth': true}),
       );
-
-      // log('Messages Response: ${response.data}');
 
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? 'Failed to load messages');
       }
 
-      // Extract the array from your real API structure
       final List<dynamic> msgList = response.data['data']['messages'] ?? [];
-
       return msgList.map((json) => Message.safeFromJson(json)).toList();
     } on DioException catch (e) {
-      log('Error fetching messages: ${e.message}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<UnreadCountsResponse> getUnreadCounts() async {
+    try {
+      final response = await _dio.get(getUnredCounts);
+      return UnreadCountsResponse.fromSafeJson(response.data);
+    } on DioException catch (e) {
       throw _handleError(e);
     }
   }
 
   dynamic _handleError(DioException e) {
     if (e.response != null) {
-      // Handle specific status codes
       if (e.response!.statusCode == 401) {
         return 'Unauthorized - Please login again';
       } else if (e.response!.statusCode == 404) {
         return 'Resource not found';
       }
-      // Try to parse error message from response
       try {
         final errorData = e.response!.data;
         return errorData['message'] ?? errorData['error'] ?? 'Unknown error';

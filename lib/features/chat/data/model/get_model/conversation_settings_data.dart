@@ -13,13 +13,12 @@ class ConversationSettingsData with _$ConversationSettingsData {
 
   factory ConversationSettingsData.fromJson(Map<String, dynamic> json) =>
       _$ConversationSettingsDataFromJson(json);
-
   factory ConversationSettingsData.fromSafeJson(Map<String, dynamic> json) {
-    return ConversationSettingsData.fromJson({
-      "settings":
+    return ConversationSettingsData(
+      settings:
           json["settings"] != null
               ? ConversationSettings.fromSafeJson(json["settings"])
               : null,
-    });
+    );
   }
 }

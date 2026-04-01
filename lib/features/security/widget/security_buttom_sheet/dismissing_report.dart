@@ -139,7 +139,7 @@ class _DismissingReportState extends ConsumerState<DismissingReport> {
                           state.isLoading
                               ? Loadingstates()
                               : Text(
-                                'Submit${widget.id.toString()}',
+                                'Submit',
                                 style: TextStyle(
                                   fontFamily: FontFamilies.interDisplay,
                                   color: AppColors.instance.grey200,

@@ -42,7 +42,7 @@ class UserPrivacyNotifer
       }
 
       return freshPrivacy;
-    } catch (e, stack) {
+    } catch (e) {
       // If error occurs, return local data if available
       log("$e");
       if (localprivacy != null) {

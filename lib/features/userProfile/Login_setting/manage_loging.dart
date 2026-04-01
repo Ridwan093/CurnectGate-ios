@@ -177,7 +177,7 @@ class _ManageLogingState extends ConsumerState<ManageLoging> {
                 },
               ),
               _buildReusableTiles(
-                title: "Deactive Account",
+                title: "Deactivate Account",
                 onTap: () {
                   showUserBottomSheet(
                     context: context,

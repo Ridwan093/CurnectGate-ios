@@ -17,26 +17,25 @@ class ProfilePicNotifier extends StateNotifier<File?> {
     loadProfilePic();
   }
   Future<void> clearAllProfilePics() async {
-  final dir = await getApplicationDocumentsDirectory();
-  final files = dir.listSync();
+    final dir = await getApplicationDocumentsDirectory();
+    final files = dir.listSync();
 
-  for (var file in files) {
-    if (file.path.contains("profile_") && file is File) {
-      await file.delete();
+    for (var file in files) {
+      if (file.path.contains("profile_") && file is File) {
+        await file.delete();
+      }
     }
+
+    state = null;
   }
-
-  state = null;
-}
-
 
   Future<void> loadProfilePic() async {
     final url = await SharedPrefsService().getMedialUrl();
     final user = await SharedPrefsService().getAuthData(); // YOUR METHOD
 
-    final userId = user?["id"] ?? 0;
+    final userId = user?["user"]["id"] ?? 0;
 
-    if (url == null || userId == null) return;
+    if (url == null || userId == 0) return;
 
     final dir = await getApplicationDocumentsDirectory();
     final filePath = '${dir.path}/profile_$userId.jpg';
@@ -66,11 +65,9 @@ class ProfilePicNotifier extends StateNotifier<File?> {
     final url = await SharedPrefsService().getMedialUrl();
     final user = await SharedPrefsService().getAuthData(); // YOUR METHOD
 
-    final userId = user?["id"] ?? 0;
+    final userId = user?["user"]["id"] ?? 0;
 
-    log("Here is the refrefrProfile $userId");
-
-    if (url == null || userId == null) return;
+    if (url == null || userId == 0) return;
 
     final dir = await getApplicationDocumentsDirectory();
     final filePath = '${dir.path}/profile_$userId.jpg';

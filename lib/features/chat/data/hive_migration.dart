@@ -3,52 +3,75 @@ import 'package:curnectgate/features/chat/data/model/chat_message.dart';
 import 'package:curnectgate/features/chat/data/model/conversation.dart';
 import 'package:hive/hive.dart';
 
+/// Returns the Hive box name for chat messages scoped to a specific user.
+/// e.g. "chat_messages_42" for user with ID 42.
+String chatMessagesBoxName(String userId) => 'chat_messages_$userId';
 
+/// Returns the Hive box name for conversations scoped to a specific user.
+/// e.g. "conversations_42" for user with ID 42.
+String conversationsBoxName(String userId) => 'conversations_$userId';
+
+/// Registers all Hive adapters. Must be called once at app start (before
+/// any user-specific box is opened).
 Future<void> initChatHive() async {
-  /// register adapters ONLY once
   if (!Hive.isAdapterRegistered(0)) {
     Hive.registerAdapter(MessageAdapter());
   }
-
   if (!Hive.isAdapterRegistered(2)) {
     Hive.registerAdapter(ConversationAdapter());
   }
-
   if (!Hive.isAdapterRegistered(3)) {
     Hive.registerAdapter(ParticipantAdapter());
   }
-
   if (!Hive.isAdapterRegistered(4)) {
     Hive.registerAdapter(LatestMessageAdapter());
   }
-
   if (!Hive.isAdapterRegistered(5)) {
     Hive.registerAdapter(SenderAdapter());
   }
-
   if (!Hive.isAdapterRegistered(6)) {
     Hive.registerAdapter(ConversationSettingsAdapter());
   }
-
   if (!Hive.isAdapterRegistered(1)) {
     Hive.registerAdapter(AttachmentAdapter());
   }
-
-  /// OPEN chat_messages safely
-  if (!Hive.isBoxOpen('chat_messages')) {
-    await Hive.openBox<Message>('chat_messages');
-  }
-
-  
-
-  
 }
 
-Future<Box<Conversation>> getConversationsBox() async {
-  if (!Hive.isBoxOpen('conversations')) {
-    await Hive.openBox<Conversation>('conversations');
+/// Opens (or returns already-open) the messages box for [userId].
+Future<Box<Message>> openMessagesBox(String userId) async {
+  final name = chatMessagesBoxName(userId);
+  if (!Hive.isBoxOpen(name)) {
+    await Hive.openBox<Message>(name);
   }
-  return Hive.box<Conversation>('conversations');
+  return Hive.box<Message>(name);
+}
+
+/// Opens (or returns already-open) the conversations box for [userId].
+Future<Box<Conversation>> getConversationsBox(String userId) async {
+  final name = conversationsBoxName(userId);
+  if (!Hive.isBoxOpen(name)) {
+    await Hive.openBox<Conversation>(name);
+  }
+  return Hive.box<Conversation>(name);
+}
+
+/// Deletes all local chat data for [userId] from disk.
+/// Call this during logout so the next user gets a clean slate.
+Future<void> clearUserHiveBoxes(String userId) async {
+  final msgName = chatMessagesBoxName(userId);
+  final convName = conversationsBoxName(userId);
+
+  if (Hive.isBoxOpen(msgName)) {
+    await Hive.box<Message>(msgName).deleteFromDisk();
+  } else {
+    await Hive.deleteBoxFromDisk(msgName);
+  }
+
+  if (Hive.isBoxOpen(convName)) {
+    await Hive.box<Conversation>(convName).deleteFromDisk();
+  } else {
+    await Hive.deleteBoxFromDisk(convName);
+  }
 }
  
 
@@ -57,20 +80,20 @@ Future<Box<Conversation>> getConversationsBox() async {
 ////attctmene 
 ///
 ///
-/// return Attachment(
-    //   id: NullSafetyHelper.safeInt(fields[0]),
-    //   fileName: NullSafetyHelper.safeString(fields[1]),
-    //   fileUrl: NullSafetyHelper.safeString(fields[2]),
-    //   fileType: NullSafetyHelper.safeString(fields[3]),
-    //   mimeType: NullSafetyHelper.safeString(fields[4]),
-    //   fileSize: NullSafetyHelper.safeInt(fields[5]),
-    //   fileSizeReadable: NullSafetyHelper.safeString(fields[6]),
-    //   thumbnailUrl: NullSafetyHelper.safeString(fields[7]),
-    //   isImage: NullSafetyHelper.safeBool(fields[8]),
-    //   isDocument: NullSafetyHelper.safeBool(fields[9]),
-    //   isVideo: NullSafetyHelper.safeBool(fields[10]),
-    //   localPath: NullSafetyHelper.safeString(fields[11]),
-    // );////
+// / return Attachment(
+//       id: NullSafetyHelper.safeInt(fields[0]),
+//       fileName: NullSafetyHelper.safeString(fields[1]),
+//       fileUrl: NullSafetyHelper.safeString(fields[2]),
+//       fileType: NullSafetyHelper.safeString(fields[3]),
+//       mimeType: NullSafetyHelper.safeString(fields[4]),
+//       fileSize: NullSafetyHelper.safeInt(fields[5]),
+//       fileSizeReadable: NullSafetyHelper.safeString(fields[6]),
+//       thumbnailUrl: NullSafetyHelper.safeString(fields[7]),
+//       isImage: NullSafetyHelper.safeBool(fields[8]),
+//       isDocument: NullSafetyHelper.safeBool(fields[9]),
+//       isVideo: NullSafetyHelper.safeBool(fields[10]),
+//       localPath: NullSafetyHelper.safeString(fields[11]),
+//     );////
 
 
     ////// MESSAGE 
@@ -120,7 +143,7 @@ Future<Box<Conversation>> getConversationsBox() async {
 
     ///////CONVERSATION 
     ///
-    ///
+    
     ///Conversation(
 //       id: NullSafetyHelper.safeInt(fields[0]),
 //       estateId: NullSafetyHelper.safeInt(fields[1]),

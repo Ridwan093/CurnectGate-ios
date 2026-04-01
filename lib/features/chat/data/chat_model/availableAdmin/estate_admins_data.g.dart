@@ -13,6 +13,8 @@ _$EstateAdminsDataImpl _$$EstateAdminsDataImplFromJson(
           ?.map((e) => EstateAdmin.fromJson(e as Map<String, dynamic>))
           .toList(),
       count: (json['count'] as num?)?.toInt(),
+      role: json['role'] as String?,
+      roleBadge: json['role_badge'] as String?,
     );
 
 Map<String, dynamic> _$$EstateAdminsDataImplToJson(
@@ -20,4 +22,6 @@ Map<String, dynamic> _$$EstateAdminsDataImplToJson(
     <String, dynamic>{
       'admins': instance.admins?.map((e) => e.toJson()).toList(),
       'count': instance.count,
+      'role': instance.role,
+      'role_badge': instance.roleBadge,
     };

@@ -2,7 +2,6 @@ import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/appErrorBody/buildEmptyBody.dart';
 import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
 import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
-import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/chat/data/chat_model/availableAdmin/estate_admin.dart';
 import 'package:curnectgate/features/chat/data/provider/get_provider/admin_provider.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/first_chat_init_data/widget/user_card.dart';
@@ -89,23 +88,23 @@ class EstateAdminData extends ConsumerWidget {
 
   Widget _buildEstateAdminList(List<EstateAdmin>? admins) {
     return Expanded(
-      child: ListView.separated(
+      child: ListView.builder(
         itemCount: admins!.length,
-        separatorBuilder:
-            (context, index) => Container(
-              height: 1,
-              margin: const EdgeInsets.symmetric(vertical: 12),
-              color: AppColors.instance.grey200,
-            ),
+        // separatorBuilder:
+        //     (context, index) => Container(
+        //       height: 1,
+        //       margin: const EdgeInsets.symmetric(vertical: 12),
+        //       color: AppColors.instance.grey200,
+        //     ),
         itemBuilder: (context, index) {
           final admin = admins[index];
           return UserCard(
             userName: admin.fullName ?? "",
-            userRole: admin.role ?? "",
-            estateName: admin.estateName ?? "",
-            url: admin.mediaUrl ?? "",
-            isOnline: true,
-            lastSeen: "",
+            userRole: (admin.role ?? ""),
+            estateName: admin.fullName ?? "",
+            url: admin.avatarUrl ?? "",
+            isOnline: admin.onlineStatus,
+            subtitle: admin.roleBadge ?? "",
             id: admin.id ?? 0,
           );
         },

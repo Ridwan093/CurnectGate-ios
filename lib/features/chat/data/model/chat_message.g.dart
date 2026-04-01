@@ -49,12 +49,13 @@ class MessageAdapter extends TypeAdapter<Message> {
       syncStatus: NullSafetyHelper.safeString(fields[18]),
       hiveKey: NullSafetyHelper.safeInt(fields[19]),
     );
+
   }
 
   @override
   void write(BinaryWriter writer, Message obj) {
     writer
-      ..writeByte(19)
+      ..writeByte(20)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)

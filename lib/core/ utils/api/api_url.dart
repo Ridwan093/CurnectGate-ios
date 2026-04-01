@@ -1,268 +1,183 @@
-const String estateCodeValidation = "/api/v1/auth/onboarding/validate-estate";
-const String memberCodeValidation = "/api/v1/auth/onboarding/validate-member";
-const String onbordinguserInfo =
-    "/api/v1/auth/onboarding/complete-registration";
-const String verifyOTPcodes = "/api/v1/auth/onboarding/verify-email";
-const String requestOTPcodes = "/api/v1/auth/onboarding/resend-verification";
-const String loginUrl = "/api/v1/auth/login";
-const String forgetPass = "/api/v1/auth/forgot-password";
-const String forgetpassOtpverify = "/api/v1/auth/verify-reset-code";
-const String createNewpass = "/api/v1/auth/reset-password";
-const String changetemporaryPass = "/api/v1/auth/change-password";
-const String biometricLogin = "/api/v1/auth/biometric-login";
-const String removedDeviceToken = "/api/v1/auth/device-tokens/1";
-const String registerDeviceToken = "/api/v1/auth/device-tokens/register";
-const String refresToken = "/api/v1/auth/refresh-token";
-const String setUpBiometri = "/api/v1/auth/biometric/setup";
-const String enableBiometric = "/api/v1/auth/biometric/disable";
-const String reverb = "/api/v1/config/reverb";
-const String sliderEnpoint ="/api/v1/app-sliders";
-// AGREEMENT POST'
+const String estateCodeValidation = "auth/onboarding/validate-estate";
+const String memberCodeValidation = "auth/onboarding/validate-member";
+const String onbordinguserInfo = "auth/onboarding/complete-registration";
+const String verifyOTPcodes = "auth/onboarding/verify-email";
+const String requestOTPcodes = "auth/onboarding/resend-verification";
+const String loginUrl = "auth/login";
+const String forgetPass = "auth/forgot-password";
+const String forgetpassOtpverify = "auth/verify-reset-code";
+const String createNewpass = "auth/reset-password";
+const String changetemporaryPass = "auth/change-password";
+const String biometricLogin = "auth/biometric-login";
+const String removedDeviceToken = "auth/device-tokens/1";
+const String registerDeviceToken = "auth/device-tokens/register";
+const String refresToken = "auth/refresh-token";
+const String setUpBiometri = "auth/biometric/setup";
+const String enableBiometric = "auth/biometric/disable";
+const String reverb = "config/reverb";
+const String sliderEnpoint = "app-sliders";
 
-const String onboardingHouseHold =
-    "/api/v1/estates/owner-portal/households/onboarding";
+const String onboardingHouseHold = "estates/owner-portal/households/onboarding";
 
-const String aGREEMENT = "/api/v1/estates/general/agreements";
-const String agreementSign = "/api/v1/estates/general/agreements/sign-property";
-const String termAccept = "/api/v1/estates/general/agreements/accept-terms";
-const String decline = "/api/v1/estates/general/agreements/decline";
-const String compliance ="/api/v1/estates/general/agreements/status";
+const String aGREEMENT = "estates/general/agreements";
+const String agreementSign = "estates/general/agreements/sign-property";
+const String termAccept = "estates/general/agreements/accept-terms";
+const String decline = "estates/general/agreements/decline";
+const String compliance = "estates/general/agreements/status";
 const String markNotificationAsRead =
-    "/api/v1/estates/general/notifications/mark-all-read";
-const String markSingleNotificationAsRead =
-    "/api/v1/estates/notifications/1/read";
-// VIOLATION POST API LINK
+    "estates/general/notifications/mark-all-read";
+const String markSingleNotificationAsRead = "estates/notifications/1/read";
 
-const String creatViolation = "/api/v1/estates/general/violations/create";
-const String updateViolation = "/api/v1/estates/general/violations/";
-const String makeCommentViolation =
-    "/api/v1/estates/general/violations/1/comments";
+const String creatViolation = "estates/general/violations/create";
+const String updateViolation = "estates/general/violations/";
+const String makeCommentViolation = "estates/general/violations/1/comments";
 
-/// WORKODER POST
-
-const String submitWorkOrder = "/api/v1/estates/general/workorders";
-
-/// SETTING/PROFILE POST API
+const String submitWorkOrder = "estates/general/workorders";
 
 const String updateNotificationSetting =
-    "/api/v1/estates/general/profile/settings/notifications";
-const String updatePrivacySetting =
-    "/api/v1/estates/general/profile/settings/privacy";
+    "estates/general/profile/settings/notifications";
+const String updatePrivacySetting = "estates/general/profile/settings/privacy";
 const String upadateSettingPreferences =
-    "/api/v1/estates/general/profile/settings/preferences";
+    "estates/general/profile/settings/preferences";
 
 const String resetAllSetting =
-    "/api/v1/estates/general/profile/settings/reset-defaults";
-const String updateUserProfile = "/api/v1/estates/general/profile/update";
-const String updateuserPicture =
-    "/api/v1/estates/general/profile/upload-picture";
-const String updateUserpassWord =
-    "/api/v1/estates/general/profile/change-password";
-const String accountDetactive = "/api/v1/estates/general/profile/deactivate";
-// ADDHOUSEHOLD//SET PERMMISION/SET CURFEW/POST
-const String addhousedHol =
-    "/api/v1/estates/owner-portal/households/onboarding";
+    "estates/general/profile/settings/reset-defaults";
+const String updateUserProfile = "estates/general/profile/update";
+const String updateuserPicture = "estates/general/profile/upload-picture";
+const String updateUserpassWord = "estates/general/profile/change-password";
+const String accountDetactive = "estates/general/profile/deactivate";
+const String addhousedHol = "estates/owner-portal/households/onboarding";
 
 const String grantAccessPermission =
-    "/api/v1/estates/owner-portal/households/members/permission/9/grant";
+    "estates/owner-portal/households/members/permission/9/grant";
 const String grantbuilkpermission =
-    "/api/v1/estates/owner-portal/households/members/permission/9/bulk";
+    "estates/owner-portal/households/members/permission/9/bulk";
 const String permissionRevoked =
-    "/api/v1/estates/owner-portal/households/members/permission/9/revoke";
-//MEMEBERID POST URL
+    "estates/owner-portal/households/members/permission/9/revoke";
 
-const String generateMemberid =
-    "/api/v1/estates/general/digital-member-id/generate";
+const String generateMemberid = "estates/general/digital-member-id/generate";
 const String regenerateMemberID =
-    "/api/v1/estates/general/digital-member-id/regenerate";
-const String deActiveMemberID =
-    "/api/v1/estates/general/digital-member-id/deactivate";
-const String reActiveMemberID =
-    "/api/v1/estates/general/digital-member-id/reactivate";
+    "estates/general/digital-member-id/regenerate";
+const String deActiveMemberID = "estates/general/digital-member-id/deactivate";
+const String reActiveMemberID = "estates/general/digital-member-id/reactivate";
 
-/// GENERATE OTP FOR VISITOR POST URL
-
-const String generateOtpWithValidator =
-    "/api/v1/estates/general/visitor-otps/generate";
-const String schedulOtp = "/api/v1/estates/general/visitor-otps/generate";
+const String generateOtpWithValidator = "estates/general/visitor-otps/generate";
+const String schedulOtp = "estates/general/visitor-otps/generate";
 const String createinstantPermit =
-    "/api/v1/estates/general/clearance-permits/create-for-otp";
+    "estates/general/clearance-permits/create-for-otp";
 
-/// PAYMENT POST API --------.
+const String payduePayment = "estates/general/payments/pay-custom";
+const String payFullPayment = "estates/general/payments/pay-full";
+const String initialFundWallet = "estates/general/wallet/fund/initialize";
 
-const String payduePayment = "/api/v1/estates/general/payments/pay-custom";
-const String payFullPayment = "/api/v1/estates/general/payments/pay-full";
-const String initialFundWallet =
-    "/api/v1/estates/general/wallet/fund/initialize";
-
-//SECURITY POST API URL
-
-const String addviolationComment =
-    "/api/v1/estates/general/violations/2/comments";
-const String dismissedViolation =
-    "/api/v1/estates/security/violations/1/dismiss";
+const String addviolationComment = "estates/general/violations/2/comments";
+const String dismissedViolation = "estates/security/violations/1/dismiss";
 const String validateOtpByManual =
-    "/api/v1/estates/security/validations/validate-otp-manual";
+    "estates/security/validations/validate-otp-manual";
 const String validateOtpBybarcode =
-    "/api/v1/estates/security/validations/validate-otp-barcode";
-const String validateOtpByQr =
-    "/api/v1/estates/security/validations/validate-otp-qr";
+    "estates/security/validations/validate-otp-barcode";
+const String validateOtpByQr = "estates/security/validations/validate-otp-qr";
 const String checkOutValidatorOtpBymanual =
-    "/api/v1/estates/security/validations/checkout-with-otp";
+    "estates/security/validations/checkout-with-otp";
 const String checkInValidatorwithOtpbymanual =
-    "/api/v1/estates/security/validations/validate-otp-manual";
+    "estates/security/validations/validate-otp-manual";
 const String ckeckOutWithPermit =
-    "/api/v1/estates/security/clearance-permits/validate-checkout";
-const String approveEntry = "/api/v1/estates/security/validations/5/approve";
-const String denyEntry = "/api/v1/estates/security/validations/5/deny";
+    "estates/security/clearance-permits/validate-checkout";
+const String approveEntry = "estates/security/validations/5/approve";
+const String denyEntry = "estates/security/validations/5/deny";
 const String validateDigitaIDbyManul =
-    "/api/v1/estates/security/digital-member-id/validate/manual";
+    "estates/security/digital-member-id/validate/manual";
 const String validateDigitalIdByQrcode =
-    "/api/v1/estates/security/digital-member-id/validate/qr-code";
+    "estates/security/digital-member-id/validate/qr-code";
 
-const String validateVendorCodes =
-    "/api/v1/estates/security/workorders/validate";
+const String validateVendorCodes = "estates/security/workorders/validate";
 
-const String checkInWorkOrder = "/api/v1/estates/security/workorders/check-in";
-const String checkOutWorkOrder =
-    "/api/v1/estates/security/workorders/check-out";
-const String validateWokers =
-    "/api/v1/estates/security/workorders/validate-worker";
-const String denyingAccess =
-    "/api/v1/estates/security/workorders/deny-behavior";
+const String checkInWorkOrder = "estates/security/workorders/check-in";
+const String checkOutWorkOrder = "estates/security/workorders/check-out";
+const String validateWokers = "estates/security/workorders/validate-worker";
+const String denyingAccess = "estates/security/workorders/deny-behavior";
 
-/////. ALL GET APURL
-///  /// SETTING/PROFILE GET API
-const String getSettingPrivacy =
-    "/api/v1/estates/general/profile/settings/privacy";
-const String getAllSettingPreferences =
-    "/api/v1/estates/general/profile/settings";
+const String getSettingPrivacy = "estates/general/profile/settings/privacy";
+const String getAllSettingPreferences = "estates/general/profile/settings";
 const String getSettingPreferences =
-    "/api/v1/estates/general/profile/settings/preferences";
-const String getUserprofile = "/api/v1/estates/general/profile";
-const String getNotification =
-    "/api/v1/estates/general/profile/settings/notifications";
-const String appLogOut = "/api/v1/auth/logout";
+    "estates/general/profile/settings/preferences";
+const String getUserprofile = "estates/general/profile";
+const String getNotification = "estates/general/profile/settings/notifications";
+const String appLogOut = "auth/logout";
 
-const String getNotificationApi = "/api/v1/estates/general/notifications";
+const String getNotificationApi = "estates/general/notifications";
 
-/// VIOLATION GET URL
-const String listOfViolation = "/api/v1/estates/general/violations";
+const String listOfViolation = "estates/general/violations";
 
-const String getSpesicificViolation = "/api/v1/estates/general/violations/1";
-const String getViolationLocation =
-    "/api/v1/estates/general/violations/locations";
-const String getViolationCount = "/api/v1/estates/security/violations/counts";
-const String getViolationCategorys =
-    "/api/v1/estates/general/violations/categories";
-const String getViolationComment =
-    "/api/v1/estates/general/violations/1/comments";
+const String getSpesicificViolation = "estates/general/violations/1";
+const String getViolationLocation = "estates/general/violations/locations";
+const String getViolationCount = "estates/security/violations/counts";
+const String getViolationCategorys = "estates/general/violations/categories";
+const String getViolationComment = "estates/general/violations/1/comments";
 
-const String getViolationHistotyStatus =
-    "/api/v1/estates/general/violations/1/history";
+const String getViolationHistotyStatus = "estates/general/violations/1/history";
 
-/// GET ALL VISITO  ACCESS CODE/ GET PERMIT
-const String getVisitorByfirter = "/api/v1/estates/general/visitor-otps";
-const String getVisitorDetail = "/api/v1/estates/general/visitor-otps/1";
-const String getWorkpermit =
-    "/api/v1/estates/general/clearance-permits/my-permits";
-    const String getActivePermit =
-    "/api/v1/estates/general/clearance-permits/active-otps";
-// GET DIGITALID CODE
+const String getVisitorByfirter = "estates/general/visitor-otps";
+const String getVisitorDetail = "estates/general/visitor-otps/1";
+const String getWorkpermit = "estates/general/clearance-permits/my-permits";
+const String getActivePermit = "estates/general/clearance-permits/active-otps";
 
-const String getDigitalIDCode =
-    "/api/v1/estates/general/digital-member-id/printable";
-const String activeCount = "/api/v1/estates/general/visitor-otps/counts/";
+const String getDigitalIDCode = "estates/general/digital-member-id/printable";
+const String activeCount = "estates/general/visitor-otps/counts/";
 
 const String getDigitalStatus =
-    "/api/v1/estates/general/digital-member-id/my-digital-id";
-// ADDHOUSEHOLD//SET PERMMISION/SET CURFEW/GET
-const String getHouseHold = "/api/v1/estates/owner-portal/households/members";
-const String getPropertya =
-    "/api/v1/estates/owner-portal/households/properties";
+    "estates/general/digital-member-id/my-digital-id";
+const String getHouseHold = "estates/owner-portal/households/members";
+const String getPropertya = "estates/owner-portal/households/properties";
 const String getPropeertyUser =
-    "/api/v1/estates/owner-portal/households/property-users";
+    "estates/owner-portal/households/property-users";
 
-// VOTING UR
-const String getVoteHistory = "/api/v1/estates/general/voting/history";
-final String votingPoll = "/api/v1/estates/general/voting/polls?status=all";
-const String votingSetting = "/api/v1/estates/general/voting/settings";
+const String getVoteHistory = "estates/general/voting/history";
+final String votingPoll = "estates/general/voting/polls?status=all";
+const String votingSetting = "estates/general/voting/settings";
 
-/// NOTIFICATION/REMINDER/EVENT
-const String createReminder = "/api/v1/estates/general/reminders";
-const String requestEventCode = "/api/v1/estates/general/event-codes/request";
+const String createReminder = "estates/general/reminders";
+const String requestEventCode = "estates/general/event-codes/request";
 
-const String notificationCount = "/api/v1/estates/general/notifications/count";
-const String getCalenders = "/api/v1/estates/general/events/calendar";
-const String getEventCodes = "/api/v1/estates/general/event-codes/my-codes";
-const String getEventRsvp = "/api/v1/estates/general/events/my-rsvp";
+const String notificationCount = "estates/general/notifications/count";
+const String getCalenders = "estates/general/events/calendar";
+const String getEventCodes = "estates/general/event-codes/my-codes";
+const String getEventRsvp = "estates/general/events/my-rsvp";
 
-/// REMOVE HOUSEOLD DELETE
+const String removeHouseHold = "estates/owner-portal/households/members/23";
 
-/// REMOVE HOUSEOLD DELETE
-const String removeHouseHold =
-    "/api/v1/estates/owner-portal/households/members/23";
+const String getCheckInVisitor = "estates/security/validations/checked-in";
+const String getCheckOutVisitor = "estates/security/validations/checked-out";
+const String getPendingValidator = "estates/security/validations/pending";
+const String getValidatorHistory = "estates/security/validations/history";
+const String getAllviolation = "estates/general/violations";
+const String deleteViolation = "estates/violations/4";
+const String getDuty = "estates/security/duty/current";
 
-//// SECURITY GET API URL
-const String getCheckInVisitor =
-    "/api/v1/estates/security/validations/checked-in";
-const String getCheckOutVisitor =
-    "/api/v1/estates/security/validations/checked-out";
-const String getPendingValidator =
-    "/api/v1/estates/security/validations/pending";
-const String getValidatorHistory =
-    "/api/v1/estates/security/validations/history";
-const String getAllviolation = "/api/v1/estates/general/violations";
-const String deleteViolation = "/api/v1/estates/violations/4";
-const String getDuty ="/api/v1/estates/security/duty/current";
+const String getCommitt = "estates/general/committees";
+const String getResinde = "estates/general/directory";
 
-/// RESINDE/COMMITTEE
-/// /api/v1/estates/general/committees
-const String getCommitt = "/api/v1/estates/general/committees";
-const String getResinde = "/api/v1/estates/general/directory";
+const String getworkOrder = "estates/general/workorders";
+const String workOrdercategorie = "estates/general/workorders/categories";
 
-// WORKODER GET API
+const String getPaymentDashbords = "estates/general/payments/dashboard";
+const String getDuePayments = "estates/general/payments/outstanding-dues";
+const String getWalletHistorys = "estates/general/wallet/history?type=credit";
+const String getPaymentHistorys = "estates/general/payments/history";
+const String getPaymentMethod = "estates/general/payment-config/methods";
 
-const String getworkOrder = "/api/v1/estates/general/workorders";
-const String workOrdercategorie =
-    "/api/v1/estates/general/workorders/categories";
-//// PAYMENT GET API
+const String emergencyContact = "estates/general/settings/user-management";
 
-const String getPaymentDashbords = "/api/v1/estates/general/payments/dashboard";
-const String getDuePayments =
-    "/api/v1/estates/general/payments/outstanding-dues";
-const String getWalletHistorys =
-    "/api/v1/estates/general/wallet/history?type=credit";
-const String getPaymentHistorys = "/api/v1/estates/general/payments/history";
-const String getPaymentMethod =
-    "/api/v1/estates/general/payment-config/methods";
-
-const String emergencyContact =
-    "/api/v1/estates/general/settings/user-management";
-
-/// CHATING URL
-
-/// GET API
-const String getAvailableAdmin =
-    "/api/v1/estates/general/messaging/contacts/admins";
+const String getAvailableAdmin = "estates/general/messaging/contacts/admins";
 const String getAvailabeCommeti =
-    "/api/v1/estates/general/messaging/contacts/committee";
+    "estates/general/messaging/contacts/committee";
 const String getAvailableScurity =
-    "/api/v1/estates/general/messaging/contacts/security";
+    "estates/general/messaging/contacts/security";
 const String getAvailableConversation =
-    "/api/v1/estates/general/messaging/conversations";
-const String getUnredCounts = "/api/v1/estates/general/messaging/unread-counts";
+    "estates/general/messaging/conversations";
+const String getUnredCounts = "estates/general/messaging/unread-counts";
 
-/// POST API
 const String startConversation =
-    "/api/v1/estates/general/messaging/conversations/start";
-const String markUnreadCount =
-    "/api/v1/estates/general/messaging/mark-all-read";
-// const String getPaymentHistorys = "/api/v1/estates/general/payments/history";
-// const String getPaymentMethod =
-//     "/api/v1/estates/general/payment-config/methods";
-// const String getPaymentHistorys = "/api/v1/estates/general/payments/history";
-// const String getPaymentMethod =
-//     "/api/v1/estates/general/payment-config/methods";
-//// GET MESSAGE/CONVERSATION ENDPIONT 
-const String getConversation = "/api/v1/estates/general/messaging/conversations";
+    "estates/general/messaging/conversations/start";
+const String markUnreadCount = "estates/general/messaging/mark-all-read";
+const String getConversation = "estates/general/messaging/conversations";

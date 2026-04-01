@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:curnectgate/core/%20utils/service/app_lifecycle_service.dart';
 import 'package:curnectgate/core/%20utils/service/notification_service.dart';
 import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
+import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/app_rout.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/chat/data/hive_migration.dart';
@@ -13,28 +14,54 @@ import 'package:curnectgate/features/signOut/errorWidget/sesional_expired.dart';
 import 'package:curnectgate/firebase_options.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  final notificationService = NotificationService();
+  await notificationService
+      .initBackground(); // rename your initBackground to this
+  await notificationService.showLocalNotification(message);
+}
+
 void main() async {
+  // 🔴 CRITICAL: Must be the VERY FIRST call in main() before anything else.
+  // This registers the Dart entry point for background message handling.
+
   WidgetsFlutterBinding.ensureInitialized();
 
+  // 2. Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  // 3. Register background handler ONLY ONCE, as early as possible
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+  // 4. Other initializations
   await FlutterLocalization.instance.ensureInitialized();
 
+  // Full notification service init (foreground + local notifications setup)
   await NotificationService().initialize();
-
   await Hive.initFlutter();
 
+  // Register Hive adapters first (no user required)
+  await initChatHive();
+
+  // If a user is already logged in, open their personal Hive boxes immediately.
   try {
-    await initChatHive();
-    await getConversationsBox();
+    final authData = await SharedPrefsService().getAuthData();
+    final userId = authData?['user']?['id']?.toString();
+    if (userId != null && userId.isNotEmpty) {
+      await openMessagesBox(userId);
+      await getConversationsBox(userId);
+    }
   } catch (e) {
-    log('Migration error: $e');
+    log('Hive box init error: $e');
   }
 
   runApp(
@@ -77,7 +104,15 @@ class _MyAppState extends ConsumerState<MyApp> {
       final user = authState.user;
 
       if (user != null) {
-        ReverbService.initRealtime(ref, user["id"] ?? "");
+        // Safely parse the user ID to ensure it's a valid integer
+        final idString = user["id"]?.toString() ?? "0";
+        final parsedId = int.tryParse(idString) ?? 0;
+
+        if (parsedId != 0) {
+          ReverbService.initRealtime(ref, parsedId);
+        } else {
+          log("⚠️ Cannot init Reverb: User ID is invalid/0");
+        }
       }
     }); // Get the router
 
@@ -111,10 +146,3 @@ class _MyAppState extends ConsumerState<MyApp> {
     );
   }
 }
-
-//// SECURITY LOGIN 
-
-///.  ----panemej568@flosek.com-----
-///.  ----jijeter168@hlkes.com-----Landlord tempt pass => oxKIWp7d
-/// ---wecih87431@hlkes.com--- spouse
-

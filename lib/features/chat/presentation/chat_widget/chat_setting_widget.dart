@@ -21,7 +21,7 @@ class _ChatSettingsBottomSheetState
 
   @override
   Widget build(BuildContext context) {
-    final provider = ref.read(formProvider.notifier);
+
     final isLoading = ref.watch(formProvider).privacyLoading;
     return Stack(
       children: [

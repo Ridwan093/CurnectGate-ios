@@ -9,7 +9,9 @@ import 'package:curnectgate/features/ResidentDirectory/model/resident_model/resi
 import 'package:curnectgate/features/auth/data/auth_model/get_start_model/onboarding_slider_response.dart';
 import 'package:curnectgate/features/chat/data/chat_model/availableAdmin/estate_admins_response.dart';
 import 'package:curnectgate/features/chat/data/chat_model/availableCommitte/committee_members_response.dart';
+import 'package:curnectgate/features/chat/data/chat_model/availableSecurity/securityResponde.dart';
 import 'package:curnectgate/features/chat/data/model/get_model/conversation_settings_response.dart';
+import 'package:curnectgate/features/chat/data/model/get_model/unread_counts_response.dart';
 import 'package:curnectgate/features/chat/data/provider/reverb_provider.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate/candidates_response.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/candidate_result/live_results_response.dart';
@@ -63,6 +65,8 @@ import 'package:curnectgate/features/userProfile/profile/model/get_user_profile_
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'User_localdata_provider.dart';
+
 final accessTokenProvider = FutureProvider.autoDispose<String?>((ref) async {
   final authData = await SharedPrefsService().getAuthData();
   return authData?['access_token'];
@@ -70,6 +74,13 @@ final accessTokenProvider = FutureProvider.autoDispose<String?>((ref) async {
 final estateAdressIDProvider = FutureProvider.autoDispose<String?>((ref) async {
   final authData = await SharedPrefsService().getAuthData();
   return authData?['estate_id'];
+});
+
+// Returns the current logged-in user's ID as a string (e.g. "42").
+// Derived synchronously from authProvider.
+final currentUserIdProvider = Provider<String>((ref) {
+  final user = ref.watch(authProvider).user;
+  return user?['id']?.toString() ?? '';
 });
 
 // Digital ID Code Provider - CORRECTED
@@ -166,6 +177,8 @@ class SharedPrefsService {
   static const String _restricKey = "Rest_Key";
   static const String _reverbConfigKey = 'reverb_config';
   static const String _chatSettings = "chat_settings";
+  static const String _security_Key = "security_key";
+  static const String _chatCount = "Chat_cout";
 
   /// Save ReverbConfig to SharedPreferences
 
@@ -203,6 +216,21 @@ class SharedPrefsService {
     return null;
   }
 
+  static Future<void> saveChatCount(UnreadCountsData privacy) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_chatCount, jsonEncode(privacy.toJson()));
+  }
+
+  //  flutter pub run build_runner build --delete-conflicting-outputs --build-filter="lib/features/userProfile/notification_setting/model**"
+  static Future<UnreadCountsData?> getChatCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_chatCount);
+    if (data != null) {
+      return UnreadCountsData.fromSafeJson(jsonDecode(data));
+    }
+    return null;
+  }
+
   static Future<void> saveComitteeList(CommitteeMembersResponse privacy) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_committeKey, jsonEncode(privacy.toJson()));
@@ -214,6 +242,23 @@ class SharedPrefsService {
     final data = prefs.getString(_committeKey);
     if (data != null) {
       return CommitteeMembersResponse.safeFromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> saveSecurityList(
+    SecurityPersonnelResponse privacy,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_security_Key, jsonEncode(privacy.toJson()));
+  }
+
+  //  flutter pub run build_runner build --delete-conflicting-outputs --build-filter="lib/features/userProfile/notification_setting/model**"
+  static Future<SecurityPersonnelResponse?> getSecurityList() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_security_Key);
+    if (data != null) {
+      return SecurityPersonnelResponse.fromSafeJson(jsonDecode(data));
     }
     return null;
   }
@@ -1392,6 +1437,11 @@ class SharedPrefsService {
     await prefs.remove(_committeKey);
   }
 
+  static Future<void> clearChatCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_chatCount);
+  }
+
   static Future<void> clearAdminList() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_getAdminList);
@@ -1415,6 +1465,11 @@ class SharedPrefsService {
   static Future<void> clearActivePermit() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_activePermit);
+  }
+
+  static Future<void> clearsecurity() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_security_Key);
   }
 
   Future<void> saveAuthData(Map<String, dynamic> data) async {
@@ -1520,6 +1575,8 @@ class SharedPrefsService {
     clearRestricted();
     clearReverbConfig();
     clearChatSeetings();
+    clearsecurity();
+    clearChatCount();
     await prefs.remove(_keyAuthData);
   }
 }

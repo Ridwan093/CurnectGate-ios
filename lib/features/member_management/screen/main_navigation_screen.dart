@@ -3,7 +3,9 @@ import 'package:curnectgate/core/navigation/back_manageent/back_widget/back_navi
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/%20operations/property_agreement/widget/agreement_pop_data.dart';
+import 'package:curnectgate/features/chat/data/provider/get_provider/unread_counts_provider.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/image_tab.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/unreadCountWidget.dart';
 import 'package:curnectgate/features/member_management/screen/tab_screen/CommunityScreen.dart';
 import 'package:curnectgate/features/member_management/tabState/tab_state.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/EventCode/myEventCode_bottomsheet.dart';
@@ -45,7 +47,7 @@ class MainNavigationScreen extends ConsumerWidget {
                 Container(
                   width: 80,
                   color: Colors.white,
-                  child: _buildNavigationRail(currentIndex, tabController),
+                  child: _buildNavigationRail(currentIndex, tabController, ref),
                 ),
 
               // Main content — full on tablet, constrained on phone for beauty
@@ -95,6 +97,7 @@ class MainNavigationScreen extends ConsumerWidget {
                         items: [
                           _buildTabItem(
                             context,
+                            ref,
                             index: 0,
                             currentIndex: currentIndex,
                             normalIcon: AssetPaths.navHome,
@@ -103,6 +106,7 @@ class MainNavigationScreen extends ConsumerWidget {
                           ),
                           _buildTabItem(
                             context,
+                            ref,
                             index: 1,
                             currentIndex: currentIndex,
                             normalIcon: AssetPaths.navCreditCard,
@@ -111,6 +115,7 @@ class MainNavigationScreen extends ConsumerWidget {
                           ),
                           _buildTabItem(
                             context,
+                            ref,
                             index: 2,
                             currentIndex: currentIndex,
                             normalIcon: AssetPaths.navEventCodeDeactive,
@@ -119,6 +124,7 @@ class MainNavigationScreen extends ConsumerWidget {
                           ),
                           _buildTabItem(
                             context,
+                            ref,
                             index: 3,
                             currentIndex: currentIndex,
                             normalIcon: AssetPaths.navMessages,
@@ -128,6 +134,7 @@ class MainNavigationScreen extends ConsumerWidget {
 
                           _buildTabItem(
                             context,
+                            ref,
                             index: 4,
                             currentIndex: currentIndex,
                             normalIcon: AssetPaths.navProfileInactive,
@@ -156,7 +163,11 @@ class MainNavigationScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildNavigationRail(int currentIndex, dynamic tabController) {
+  Widget _buildNavigationRail(
+    int currentIndex,
+    dynamic tabController,
+    WidgetRef ref,
+  ) {
     return NavigationRail(
       selectedIndex: currentIndex,
       onDestinationSelected: (index) => tabController.setTab(index),
@@ -196,6 +207,8 @@ class MainNavigationScreen extends ConsumerWidget {
           AssetPaths.navMessageactive,
           AssetPaths.navMessages,
           "Chats",
+          index: 3,
+          ref: ref,
         ),
 
         _buildRailDestination(
@@ -210,23 +223,123 @@ class MainNavigationScreen extends ConsumerWidget {
   NavigationRailDestination _buildRailDestination(
     String activeIcon,
     String inactiveIcon,
-    String label,
-  ) {
+    String label, {
+    int? index,
+    WidgetRef? ref,
+  }) {
+    final unreadAsync = ref?.watch(unreadCountsProvider);
+
+    Widget buildIconWithBadge(String iconPath, bool isActive) {
+      Widget iconWidget = ImageTab(
+        label: label,
+        normalImage: iconPath,
+        activeImage: iconPath,
+        isActive: isActive,
+        size: 28,
+      );
+      if (index == 3)
+        unreadAsync?.when(
+          data: (data) {
+            final count = data?.totalUnreadMessages ?? 0;
+            if (count > 0) {
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  iconWidget,
+                  Positioned(
+                    top: -6,
+                    right: -6,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: AppColors.instance.teal400,
+                        shape: BoxShape.circle,
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 16,
+                        minHeight: 16,
+                      ),
+                      child: Center(
+                        child: Text(
+                          count > 99 ? '99+' : count.toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return SizedBox.shrink();
+            }
+          },
+          error: (error, stack) {
+            try {
+              // Handle session expiration
+              if (error.toString().contains("Unauthorized")) {
+                return SizedBox.shrink();
+              }
+
+              // Try to show cached data
+              final cachedAdmin = ref?.read(unreadCountsProvider).value;
+              if (cachedAdmin?.totalUnreadMessages != null) {
+                final unreadCount = cachedAdmin?.totalUnreadMessages ?? 0;
+                return Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    iconWidget,
+                    Positioned(
+                      top: -6,
+                      right: -6,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: AppColors.instance.teal400,
+                          shape: BoxShape.circle,
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 16,
+                          minHeight: 16,
+                        ),
+                        child: Center(
+                          child: Text(
+                            unreadCount > 99 ? '99+' : unreadCount.toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }
+
+              // No cached data available
+              return SizedBox.shrink();
+            } catch (e) {
+              return SizedBox.shrink();
+            }
+          },
+          loading: () {
+            return SizedBox.shrink();
+          },
+        );
+
+      return iconWidget;
+    }
+
     return NavigationRailDestination(
-      icon: ImageTab(
-        label: label,
-        normalImage: inactiveIcon,
-        activeImage: inactiveIcon,
-        isActive: false,
-        size: 28,
-      ),
-      selectedIcon: ImageTab(
-        label: label,
-        normalImage: activeIcon,
-        activeImage: activeIcon,
-        isActive: true,
-        size: 28,
-      ),
+      icon: buildIconWithBadge(inactiveIcon, false),
+      selectedIcon: buildIconWithBadge(activeIcon, true),
       label: Text(
         label,
         style: TextStyle(
@@ -238,25 +351,68 @@ class MainNavigationScreen extends ConsumerWidget {
   }
 
   BottomNavigationBarItem _buildTabItem(
-    BuildContext context, {
+    BuildContext context,
+    WidgetRef ref, {
     required int index,
     required int currentIndex,
     required String normalIcon,
     required String activeIcon,
     required String label,
   }) {
+    final unreadAsync = ref.watch(unreadCountsProvider);
+
     return BottomNavigationBarItem(
       icon: Column(
         children: [
           // Transparent space for the indicator
           Container(height: 3, color: Colors.transparent),
           const SizedBox(height: 4),
-          ImageTab(
-            label: label,
-            normalImage: normalIcon,
-            activeImage: activeIcon,
-            isActive: currentIndex == index,
-            size: 24,
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              ImageTab(
+                label: label,
+                normalImage: normalIcon,
+                activeImage: activeIcon,
+                isActive: currentIndex == index,
+                size: 24,
+              ),
+              if (index == 3)
+                unreadAsync.when(
+                  data: (data) {
+                    final count = data?.totalUnreadMessages ?? 0;
+                    if (count > 0) {
+                      return Unreadcountwidget(unreadCount: count);
+                    } else {
+                      return SizedBox.shrink();
+                    }
+                  },
+                  error: (error, stack) {
+                    try {
+                      // Handle session expiration
+                      if (error.toString().contains("Unauthorized")) {
+                        return SizedBox.shrink();
+                      }
+
+                      // Try to show cached data
+                      final cachedAdmin = ref.read(unreadCountsProvider).value;
+                      if (cachedAdmin?.totalUnreadMessages != null) {
+                        final unreadCount =
+                            cachedAdmin?.totalUnreadMessages ?? 0;
+                        return Unreadcountwidget(unreadCount: unreadCount);
+                      }
+
+                      // No cached data available
+                      return SizedBox.shrink();
+                    } catch (e) {
+                      return SizedBox.shrink();
+                    }
+                  },
+                  loading: () {
+                    return SizedBox.shrink();
+                  },
+                ),
+            ],
           ),
         ],
       ),

@@ -10,8 +10,8 @@ _$PaymentDashboardDataImpl _$$PaymentDashboardDataImplFromJson(
         Map<String, dynamic> json) =>
     _$PaymentDashboardDataImpl(
       walletBalance: json['wallet_balance'] as String?,
-      totalOutstanding: (json['total_outstanding'] as num?)?.toInt(),
-      totalOverdue: (json['total_overdue'] as num?)?.toInt(),
+      totalOutstanding: (json['total_outstanding'] as num?)?.toDouble(),
+      totalOverdue: (json['total_overdue'] as num?)?.toDouble(),
       outstandingDuesCount: (json['outstanding_dues_count'] as num?)?.toInt(),
       overdueDuesCount: (json['overdue_dues_count'] as num?)?.toInt(),
       hasSufficientBalance: json['has_sufficient_balance'] as bool?,

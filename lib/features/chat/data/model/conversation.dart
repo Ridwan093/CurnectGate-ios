@@ -194,13 +194,16 @@ class LatestMessage extends HiveObject {
       status: NullSafetyHelper.safeString(json?['status']),
       read: NullSafetyHelper.safeBool(json?['read']),
       isSender: NullSafetyHelper.safeBool(json?['is_sender']),
-      createdAt: NullSafetyHelper.safeString(json?['created_at']),
+      createdAt: json?['created_at']?.toString() ?? DateTime.now().toIso8601String(),
       updatedAt: NullSafetyHelper.safeString(json?['updated_at']),
       timeAgo: NullSafetyHelper.safeString(json?['time_ago']),
-      attachments:
-          (json?['attachments'] as List?)
-              ?.map((e) => Attachment.safeFromJson(e))
-              .toList(),
+      attachments: (json?['attachments'] is List)
+          ? (json?['attachments'] as List)
+              .map((e) => Attachment.safeFromJson(e))
+              .toList()
+          : (json?['attachments'] != null || json?['attachment'] != null)
+              ? [Attachment.safeFromJson(json?['attachments'] ?? json?['attachment'])]
+              : const [],
     );
   }
 }

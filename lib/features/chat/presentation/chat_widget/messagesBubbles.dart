@@ -1,13 +1,18 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:curnectgate/core/style/colors.dart';
+import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/chat/data/model/chat_message.dart';
 import 'package:curnectgate/features/chat/data/provider/get_provider/get_list_message.dart';
+import 'package:curnectgate/features/chat/presentation/screens/image_viewer_screen.dart';
+import 'package:curnectgate/features/chat/presentation/screens/pdf_viewer_screen.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -57,6 +62,7 @@ class _ChatBubbleState extends ConsumerState<ChatBubble> {
     super.initState();
     _init();
   }
+
   Future<void> _init() async {
     cacheBox = await Hive.openBox<String>('file_cache');
     final tempLocal = <String, String>{};
@@ -91,7 +97,6 @@ class _ChatBubbleState extends ConsumerState<ChatBubble> {
     }
   }
 
-
   Future<String> _path(String url) async {
     final dir = await getApplicationDocumentsDirectory();
     final folder = Directory("${dir.path}/chat_files");
@@ -103,36 +108,43 @@ class _ChatBubbleState extends ConsumerState<ChatBubble> {
     return "${folder.path}/${url.split('/').last}";
   }
 
+  String _formatTime(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return "";
+    try {
+      final date = DateTime.parse(dateStr).toLocal();
+      return DateFormat('h:mm a').format(date);
+    } catch (_) {
+      return dateStr.length > 5 ? dateStr.substring(11, 16) : dateStr;
+    }
+  }
+
   Widget _statusIcon() {
     if (widget.message.isSender != true) {
       return const SizedBox();
     }
 
-    /// Seen from backend
     if (widget.message.isRead == true) {
       return const Icon(Icons.done_all, size: 16, color: Colors.blue);
     }
 
-    /// Local sending states
-    switch (widget.message.status) {
+    switch (widget.message.status?.toLowerCase()) {
       case "sending":
         return const Icon(Icons.schedule, size: 16, color: Colors.grey);
-
       case "failed":
         return const Icon(Icons.error, size: 16, color: Colors.red);
-
-      case "sent":
-        return const Icon(Icons.check, size: 16, color: Colors.grey);
-
       case "delivered":
         return const Icon(Icons.done_all, size: 16, color: Colors.grey);
-
+      case "sent":
       default:
-        return const SizedBox();
+        return const Icon(Icons.check, size: 16, color: Colors.grey);
     }
   }
 
   void _showOptions() {
+    if (widget.message.isSender != true || widget.message.isRead == true) {
+      return;
+    }
+
     showModalBottomSheet(
       context: context,
       builder: (_) {
@@ -150,6 +162,7 @@ class _ChatBubbleState extends ConsumerState<ChatBubble> {
                         ).notifier,
                       )
                       .deleteMessage(widget.message, context);
+                  Navigator.pop(context);
                 },
               ),
             ],
@@ -181,12 +194,27 @@ class _ChatBubbleState extends ConsumerState<ChatBubble> {
             /// IMAGE
             if (a.isImage == true) {
               if (show != null) {
-                return Container(
-                  margin: const EdgeInsets.only(top: 6),
-                  constraints: BoxConstraints(maxWidth: maxW),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.file(File(show), fit: BoxFit.cover),
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (_) =>
+                                ImageViewerScreen(imagePath: show!, tag: url),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 6),
+                    constraints: BoxConstraints(maxWidth: maxW),
+                    child: Hero(
+                      tag: url,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.file(File(show), fit: BoxFit.cover),
+                      ),
+                    ),
                   ),
                 );
               }
@@ -203,14 +231,25 @@ class _ChatBubbleState extends ConsumerState<ChatBubble> {
                   ),
                   child:
                       _downloading[url] == true
-                          ? const Center(child: CircularProgressIndicator())
-                          : const Center(
+                          ? Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.instance.yellow500,
+                            ),
+                          )
+                          : Center(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(Icons.download, size: 40),
                                 SizedBox(height: 6),
-                                Text("Tap to download image"),
+                                Text(
+                                  "Tap to download image",
+                                  style: TextStyle(
+                                    fontFamily: FontFamilies.interDisplay,
+                                    fontSize: 16,
+                                    color: AppColors.instance.black500,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -225,7 +264,21 @@ class _ChatBubbleState extends ConsumerState<ChatBubble> {
               return GestureDetector(
                 onTap: () async {
                   if (local != null) {
-                    OpenFilex.open(local);
+                    final fileName = a.fileName?.toLowerCase() ?? "";
+                    if (fileName.endsWith('.pdf')) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (_) => PdfViewerScreen(
+                                pdfPath: local,
+                                title: a.fileName ?? "Document",
+                              ),
+                        ),
+                      );
+                    } else {
+                      OpenFilex.open(local);
+                    }
                   } else {
                     await _download(url);
                   }
@@ -242,7 +295,16 @@ class _ChatBubbleState extends ConsumerState<ChatBubble> {
                     children: [
                       const Icon(Icons.picture_as_pdf, color: Colors.red),
                       const SizedBox(width: 8),
-                      Expanded(child: Text(a.fileName ?? "Document")),
+                      Expanded(
+                        child: Text(
+                          a.fileName ?? "Document",
+                          style: TextStyle(
+                            fontFamily: FontFamilies.interDisplay,
+                            fontSize: 16,
+                            color: AppColors.instance.black600,
+                          ),
+                        ),
+                      ),
                       if (local == null)
                         _downloading[url] == true
                             ? const SizedBox(
@@ -296,7 +358,7 @@ class _ChatBubbleState extends ConsumerState<ChatBubble> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    widget.message.createdAt ?? "",
+                    _formatTime(widget.message.createdAt),
                     style: const TextStyle(fontSize: 10),
                   ),
                   const SizedBox(width: 4),

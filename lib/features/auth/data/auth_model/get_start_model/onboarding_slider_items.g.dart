@@ -11,7 +11,7 @@ _$SliderItemImpl _$$SliderItemImplFromJson(Map<String, dynamic> json) =>
       id: (json['id'] as num?)?.toInt(),
       title: json['title'] as String?,
       description: json['description'] as String?,
-      imageUrl: json['imageUrl'] as String?,
+      imageUrl: json['image_url'] as String?,
       order: (json['order'] as num?)?.toInt(),
     );
 
@@ -20,6 +20,6 @@ Map<String, dynamic> _$$SliderItemImplToJson(_$SliderItemImpl instance) =>
       'id': instance.id,
       'title': instance.title,
       'description': instance.description,
-      'imageUrl': instance.imageUrl,
+      'image_url': instance.imageUrl,
       'order': instance.order,
     };

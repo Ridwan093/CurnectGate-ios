@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/model/nullSafty_model.dart';
 
 import 'privacy.dart';
 

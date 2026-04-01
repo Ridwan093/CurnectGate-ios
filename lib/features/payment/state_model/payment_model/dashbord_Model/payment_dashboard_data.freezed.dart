@@ -21,8 +21,8 @@ PaymentDashboardData _$PaymentDashboardDataFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$PaymentDashboardData {
   String? get walletBalance => throw _privateConstructorUsedError;
-  int? get totalOutstanding => throw _privateConstructorUsedError;
-  int? get totalOverdue => throw _privateConstructorUsedError;
+  double? get totalOutstanding => throw _privateConstructorUsedError;
+  double? get totalOverdue => throw _privateConstructorUsedError;
   int? get outstandingDuesCount => throw _privateConstructorUsedError;
   int? get overdueDuesCount => throw _privateConstructorUsedError;
   bool? get hasSufficientBalance => throw _privateConstructorUsedError;
@@ -51,8 +51,8 @@ abstract class $PaymentDashboardDataCopyWith<$Res> {
   @useResult
   $Res call(
       {String? walletBalance,
-      int? totalOutstanding,
-      int? totalOverdue,
+      double? totalOutstanding,
+      double? totalOverdue,
       int? outstandingDuesCount,
       int? overdueDuesCount,
       bool? hasSufficientBalance,
@@ -99,11 +99,11 @@ class _$PaymentDashboardDataCopyWithImpl<$Res,
       totalOutstanding: freezed == totalOutstanding
           ? _value.totalOutstanding
           : totalOutstanding // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as double?,
       totalOverdue: freezed == totalOverdue
           ? _value.totalOverdue
           : totalOverdue // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as double?,
       outstandingDuesCount: freezed == outstandingDuesCount
           ? _value.outstandingDuesCount
           : outstandingDuesCount // ignore: cast_nullable_to_non_nullable
@@ -160,8 +160,8 @@ abstract class _$$PaymentDashboardDataImplCopyWith<$Res>
   @useResult
   $Res call(
       {String? walletBalance,
-      int? totalOutstanding,
-      int? totalOverdue,
+      double? totalOutstanding,
+      double? totalOverdue,
       int? outstandingDuesCount,
       int? overdueDuesCount,
       bool? hasSufficientBalance,
@@ -206,11 +206,11 @@ class __$$PaymentDashboardDataImplCopyWithImpl<$Res>
       totalOutstanding: freezed == totalOutstanding
           ? _value.totalOutstanding
           : totalOutstanding // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as double?,
       totalOverdue: freezed == totalOverdue
           ? _value.totalOverdue
           : totalOverdue // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as double?,
       outstandingDuesCount: freezed == outstandingDuesCount
           ? _value.outstandingDuesCount
           : outstandingDuesCount // ignore: cast_nullable_to_non_nullable
@@ -268,9 +268,9 @@ class _$PaymentDashboardDataImpl implements _PaymentDashboardData {
   @override
   final String? walletBalance;
   @override
-  final int? totalOutstanding;
+  final double? totalOutstanding;
   @override
-  final int? totalOverdue;
+  final double? totalOverdue;
   @override
   final int? outstandingDuesCount;
   @override
@@ -377,8 +377,8 @@ class _$PaymentDashboardDataImpl implements _PaymentDashboardData {
 abstract class _PaymentDashboardData implements PaymentDashboardData {
   const factory _PaymentDashboardData(
           {final String? walletBalance,
-          final int? totalOutstanding,
-          final int? totalOverdue,
+          final double? totalOutstanding,
+          final double? totalOverdue,
           final int? outstandingDuesCount,
           final int? overdueDuesCount,
           final bool? hasSufficientBalance,
@@ -394,9 +394,9 @@ abstract class _PaymentDashboardData implements PaymentDashboardData {
   @override
   String? get walletBalance;
   @override
-  int? get totalOutstanding;
+  double? get totalOutstanding;
   @override
-  int? get totalOverdue;
+  double? get totalOverdue;
   @override
   int? get outstandingDuesCount;
   @override

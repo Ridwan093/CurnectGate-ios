@@ -26,7 +26,6 @@ class Workoderlist extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final size = MediaQuery.sizeOf(context);
     return ListView.builder(
       physics: const BouncingScrollPhysics(),
       itemCount: data?.workorders.data.length,
@@ -85,7 +84,7 @@ class Workoderlist extends ConsumerWidget {
   WorkOrderStatus _buildStatusProgress(String status) {
     switch (status.toLowerCase()) {
       case "cancelled":
-        return WorkOrderStatus.completed;
+        return WorkOrderStatus.cancelled;
       case "pending":
         return WorkOrderStatus.pending;
 
@@ -399,28 +398,59 @@ class _StatusBanner extends StatelessWidget {
 
   const _StatusBanner({required this.data});
 
+  Color _getStatusColor(WorkOrderStatus status) {
+    switch (status) {
+      case WorkOrderStatus.completed:
+        return AppColors.instance.teal500;
+      case WorkOrderStatus.pending:
+        return AppColors.instance.black300;
+      case WorkOrderStatus.inProgress:
+        return AppColors.instance.blue600;
+      case WorkOrderStatus.started:
+        return AppColors.instance.yellow500;
+      case WorkOrderStatus.cancelled:
+        return AppColors.instance.error700;
+    }
+  }
+
+  Color _getBackgroundColor(WorkOrderStatus status) {
+    switch (status) {
+      case WorkOrderStatus.completed:
+        return AppColors.instance.teal100;
+      case WorkOrderStatus.pending:
+        return AppColors.instance.grey300;
+      case WorkOrderStatus.inProgress:
+        return AppColors.instance.blue100;
+      case WorkOrderStatus.started:
+        return AppColors.instance.yellow100;
+      case WorkOrderStatus.cancelled:
+        return AppColors.instance.error300;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final statusColor = _getStatusColor(data.status);
+    final bgColor = _getBackgroundColor(data.status);
+
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        // borderRadius: BorderRadius.circular(12),
+        color: bgColor,
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
-          Icon(
-            _buildStatusProgress(data.status),
-            color: AppColors.instance.black600,
-          ),
+          Icon(_buildStatusIcon(data.status), color: statusColor, size: 24),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               "${data.etaText ?? ''}",
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
-                fontWeight: FontWeight.w600,
-                color: AppColors.instance.black600,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: statusColor,
               ),
             ),
           ),
@@ -429,18 +459,18 @@ class _StatusBanner extends StatelessWidget {
     );
   }
 
-  IconData _buildStatusProgress(WorkOrderStatus status) {
+  IconData _buildStatusIcon(WorkOrderStatus status) {
     switch (status) {
       case WorkOrderStatus.completed:
         return Icons.check_circle;
       case WorkOrderStatus.pending:
         return Icons.access_time;
-
       case WorkOrderStatus.inProgress:
         return Icons.hourglass_empty;
-
       case WorkOrderStatus.started:
-        return Icons.start;
+        return Icons.play_circle_fill;
+      case WorkOrderStatus.cancelled:
+        return Icons.cancel;
     }
   }
 }
@@ -452,13 +482,59 @@ class _ProgressStepper extends StatelessWidget {
 
   bool _isDone(WorkOrderStatus step) => status.index >= step.index;
 
+  IconData _buildStatusIcon(WorkOrderStatus status) {
+    switch (status) {
+      case WorkOrderStatus.completed:
+        return Icons.check_circle;
+      case WorkOrderStatus.pending:
+        return Icons.access_time;
+      case WorkOrderStatus.inProgress:
+        return Icons.hourglass_empty;
+      case WorkOrderStatus.started:
+        return Icons.play_circle_fill;
+      case WorkOrderStatus.cancelled:
+        return Icons.cancel;
+    }
+  }
+
+  Color _getStepColor() {
+    switch (status) {
+      case WorkOrderStatus.completed:
+        return AppColors.instance.teal500;
+      case WorkOrderStatus.pending:
+        return AppColors.instance.black300;
+      case WorkOrderStatus.inProgress:
+        return AppColors.instance.blue600;
+      case WorkOrderStatus.started:
+        return AppColors.instance.yellow600;
+      case WorkOrderStatus.cancelled:
+        return AppColors.instance.error700;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final steps = WorkOrderStatus.values;
+    final steps =
+        WorkOrderStatus.values.where((step) {
+          // If cancelled, remove completed
+          if (status == WorkOrderStatus.cancelled) {
+            return step != WorkOrderStatus.completed;
+          }
+
+          // If completed, remove cancelled
+          if (status == WorkOrderStatus.completed) {
+            return step != WorkOrderStatus.cancelled;
+          }
+
+          // Otherwise (pending, started, inProgress), hide both end states
+          return step != WorkOrderStatus.completed &&
+              step != WorkOrderStatus.cancelled;
+        }).toList();
     final textScale = MediaQuery.textScaleFactorOf(context);
 
     // Clamp scale so accessibility doesn't break layout
     final safeScale = textScale.clamp(0.9, 1.2);
+    final activeColor = _getStepColor();
 
     return Row(
       children: List.generate(steps.length, (index) {
@@ -474,12 +550,11 @@ class _ProgressStepper extends StatelessWidget {
                 child: Row(
                   children: [
                     Icon(
-                      done ? Icons.check_circle : Icons.radio_button_unchecked,
+                      done
+                          ? _buildStatusIcon(status)
+                          : Icons.radio_button_unchecked,
                       size: 20,
-                      color:
-                          done
-                              ? AppColors.instance.teal300
-                              : AppColors.instance.grey400,
+                      color: done ? activeColor : AppColors.instance.grey400,
                     ),
                     SizedBox(width: 4 * safeScale),
 
@@ -496,9 +571,7 @@ class _ProgressStepper extends StatelessWidget {
                             fontFamily: FontFamilies.interDisplay,
                             fontWeight: FontFamilies.bold,
                             color:
-                                done
-                                    ? AppColors.instance.teal300
-                                    : AppColors.instance.grey400,
+                                done ? activeColor : AppColors.instance.grey400,
                           ),
                         ),
                       ),
@@ -515,7 +588,7 @@ class _ProgressStepper extends StatelessWidget {
                   margin: EdgeInsets.symmetric(horizontal: 4 * safeScale),
                   color:
                       status.index > index
-                          ? AppColors.instance.teal300
+                          ? activeColor
                           : AppColors.instance.grey500,
                 ),
             ],
@@ -535,21 +608,10 @@ class _ProgressStepper extends StatelessWidget {
         return "In Progress";
       case WorkOrderStatus.completed:
         return "Completed";
+      case WorkOrderStatus.cancelled:
+        return "Cancelled";
     }
   }
 }
 
-String _label(WorkOrderStatus s) {
-  switch (s) {
-    case WorkOrderStatus.pending:
-      return "Pending";
-    case WorkOrderStatus.started:
-      return "Started";
-    case WorkOrderStatus.inProgress:
-      return "In Progress";
-    case WorkOrderStatus.completed:
-      return "Completed";
-  }
-}
-
-enum WorkOrderStatus { pending, started, inProgress, completed }
+enum WorkOrderStatus { pending, started, inProgress, completed, cancelled }

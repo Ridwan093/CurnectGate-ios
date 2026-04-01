@@ -9,9 +9,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ChatsettingContent extends ConsumerStatefulWidget {
   final int id;
-  final ConversationSettings? settings;
+  final ConversationSettings settings;
 
-  const ChatsettingContent({super.key, required this.id, this.settings});
+  const ChatsettingContent({
+    super.key,
+    required this.id,
+    required this.settings,
+  });
 
   @override
   ConsumerState<ChatsettingContent> createState() => _ChatsettingContentState();
@@ -31,23 +35,36 @@ class _ChatsettingContentState extends ConsumerState<ChatsettingContent> {
   void _initData() {
     final settings = widget.settings;
 
-    _doNotDisturb = settings?.doNotDisturb ?? false;
+    setState(() {
+      _doNotDisturb = settings.doNotDisturb ?? false;
 
-    /// Parse duration safely
-    final dndUntil = settings?.dndUntil;
+      /// Parse duration safely
+      final dndUntil = settings.dndUntil;
+      if (dndUntil != null && dndUntil.isNotEmpty) {
+        final dndDate = DateTime.tryParse(dndUntil)?.toLocal();
+        final now = DateTime.now();
 
-    if (dndUntil != null && dndUntil.isNotEmpty) {
-      final hours = int.tryParse(dndUntil) ?? 1;
-      _customDuration = Duration(hours: hours);
+        if (dndDate != null && dndDate.isAfter(now)) {
+          final remaining = dndDate.difference(now);
 
-      if (hours == 1) {
-        _selectedDurationIndex = 0;
-      } else if (hours == 24) {
-        _selectedDurationIndex = 1;
-      } else {
-        _selectedDurationIndex = 2;
+          _customDuration = remaining;
+
+          final hours = remaining.inHours;
+
+          if (hours <= 1) {
+            _selectedDurationIndex = 0; // 1 hour
+          } else if (hours <= 24) {
+            _selectedDurationIndex = 1; // 24 hours
+          } else {
+            _selectedDurationIndex = 2; // custom
+          }
+        } else {
+          // expired or invalid
+          _customDuration = const Duration(hours: 1);
+          _selectedDurationIndex = 0;
+        }
       }
-    }
+    });
   }
 
   void _showCustomDurationDialog() {
@@ -236,7 +253,7 @@ class _ChatsettingContentState extends ConsumerState<ChatsettingContent> {
 
         /// ---------- SAVE ----------
         WorkSubmitbutton(
-          label: "Save settings",
+          label: "Save Settings",
           onPressed: () {
             provider.chattingSetting(
               context: context,

@@ -33,19 +33,19 @@ class ResidentList with _$ResidentList {
 
   factory ResidentList.fromSafeJson(Map<String, dynamic> json) {
     return ResidentList(
-      currentPage: NullSafetyHelper.safeInt(json['current_page']) ?? 1,
+      currentPage: NullSafetyHelper.safeInt(json['current_page']),
       data: _residentsFromJson(json['data']),
-      firstPageUrl: NullSafetyHelper.safeString(json['first_page_url']) ?? '',
-      from: NullSafetyHelper.safeInt(json['from']) ?? 1,
-      lastPage: NullSafetyHelper.safeInt(json['last_page']) ?? 1,
-      lastPageUrl: NullSafetyHelper.safeString(json['last_page_url']) ?? '',
+      firstPageUrl: NullSafetyHelper.safeString(json['first_page_url']),
+      from: NullSafetyHelper.safeInt(json['from']),
+      lastPage: NullSafetyHelper.safeInt(json['last_page']),
+      lastPageUrl: NullSafetyHelper.safeString(json['last_page_url']),
       links: _pageLinksFromJson(json['links']),
       nextPageUrl: NullSafetyHelper.safeString(json['next_page_url']),
-      path: NullSafetyHelper.safeString(json['path']) ?? '',
-      perPage: NullSafetyHelper.safeInt(json['per_page']) ?? 20,
+      path: NullSafetyHelper.safeString(json['path']),
+      perPage: NullSafetyHelper.safeInt(json['per_page']),
       prevPageUrl: NullSafetyHelper.safeString(json['prev_page_url']),
-      to: NullSafetyHelper.safeInt(json['to']) ?? 0,
-      total: NullSafetyHelper.safeInt(json['total']) ?? 0,
+      to: NullSafetyHelper.safeInt(json['to']),
+      total: NullSafetyHelper.safeInt(json['total']),
     );
   }
 

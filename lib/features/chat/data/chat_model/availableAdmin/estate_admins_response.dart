@@ -1,5 +1,6 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/model/nullSafty_model.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'estate_admins_data.dart';
 
 part 'estate_admins_response.freezed.dart';

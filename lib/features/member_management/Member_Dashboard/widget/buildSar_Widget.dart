@@ -12,7 +12,7 @@ import 'package:curnectgate/features/member_management/tabState/permission_tab_s
 import 'package:curnectgate/features/operations/OTP_Activation/model/active_Otp_count/Expired_count/expired_count_response.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/expired_used_count_provider.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/count_data.dart';
-import 'package:curnectgate/features/operations/notifications/provider/going_provider.dart';
+import 'package:curnectgate/features/operations/notifications/provider/getevent_provider.dart';
 import 'package:curnectgate/features/operations/violation/model/report_models/violation.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/getReport_provider.dart';
 import 'package:flutter/material.dart';
@@ -35,34 +35,6 @@ class StatisitcData {
 
 class Statistics extends ConsumerWidget {
   Statistics({super.key});
-
-  final List<StatisitcData> statList = [
-    StatisitcData(
-      count: "5",
-      title: "Visitors",
-      subtitle: "Active Today",
-      icon: AssetPaths.visitorivite,
-    ),
-    StatisitcData(
-      count: "3",
-      title: "Work Order",
-      subtitle: "Open/in progress",
-      icon: AssetPaths.dashboardWorkOrder,
-    ),
-    StatisitcData(
-      count: "3",
-      title: "Elections/Polls",
-      subtitle: "Latest Poll/Elections in your community",
-      icon: AssetPaths.newPoll,
-    ),
-
-    StatisitcData(
-      count: "1",
-      title: "Violation",
-      subtitle: "Active report",
-      icon: AssetPaths.vaolationIcon,
-    ),
-  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -135,7 +107,7 @@ class Statistics extends ConsumerWidget {
   }
 
   Widget _buildEventCount(BuildContext context, WidgetRef ref) {
-    final getListEventCount = ref.watch(goingEventRsvpProvider("going"));
+    final getListEventCount = ref.watch(getEventProvider);
     return getListEventCount.when(
       data: (data) {
         if (data?.data != null) {
@@ -144,7 +116,7 @@ class Statistics extends ConsumerWidget {
             trailing: count,
 
             title: "Event",
-            subtitle: "Rsvp/Going events",
+            subtitle: "All availabe events",
             icon: AssetPaths.dashboardEvents,
             onTap: () {
               showUserBottomSheet(
@@ -162,7 +134,7 @@ class Statistics extends ConsumerWidget {
             trailing: 0,
 
             title: "Event",
-            subtitle: "Rsvp/Going events",
+            subtitle: "All availabe events",
             icon: AssetPaths.dashboardEvents,
             onTap: () {
               showUserBottomSheet(
@@ -182,7 +154,7 @@ class Statistics extends ConsumerWidget {
           trailing: 0,
 
           title: "Event",
-          subtitle: "Rsvp/Going events",
+          subtitle: "All availabe events",
           icon: AssetPaths.dashboardEvents,
           onTap: () {
             showUserBottomSheet(
@@ -201,7 +173,7 @@ class Statistics extends ConsumerWidget {
           trailing: 0,
 
           title: "Event",
-          subtitle: "Rsvp/Going events",
+          subtitle: "All availabe events",
           icon: AssetPaths.dashboardEvents,
           onTap: () {
             showUserBottomSheet(

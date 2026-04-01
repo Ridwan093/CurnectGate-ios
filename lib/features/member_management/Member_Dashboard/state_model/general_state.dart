@@ -32,6 +32,7 @@ class FormStates {
   final bool indicatorCheck;
   final bool loginLodaing;
   final bool estateIdCheckLoadin;
+  final bool initMessageLoading;
   final bool memberIdcheckLoading;
   final bool creatPassLoading;
   final bool otpVerifyLoading;
@@ -113,6 +114,7 @@ class FormStates {
   final bool hasSpecialChar;
 
   FormStates({
+    this.initMessageLoading = false,
     this.ocupationValid = false,
     this.emenergencyRoleValid = false,
     this.montlyIconValid = false,
@@ -272,7 +274,7 @@ class FormStates {
     bool? gateAccessLoading,
     bool? communityAccessLoading,
     bool? nightAccessLoading,
-
+  bool? initMessageLoading,
     bool? parkingAccessLoading,
     bool? termsAndCondintionLoading,
     bool? workOderLoading,
@@ -376,6 +378,7 @@ class FormStates {
     int? resendCountdownTime,
   }) {
     return FormStates(
+      initMessageLoading:initMessageLoading?? this.initMessageLoading,
       termsAndCondintionLoading:
           termsAndCondintionLoading ?? this.termsAndCondintionLoading,
       workOderLoading: workOderLoading ?? this.workOderLoading,

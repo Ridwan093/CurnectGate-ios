@@ -68,7 +68,7 @@ class OutstandingDue with _$OutstandingDue {
       updatedAt: NullSafetyHelper.safeString(json?['updated_at']),
       deletedAt: json?['deleted_at'],
       feeCategory: FeeCategory.safeFromJson(NullSafetyHelper.safeMap(json?['fee_category'])),
-      lateFees: NullSafetyHelper.safeList(json?['late_fees']) ?? [],
+      lateFees: NullSafetyHelper.safeList(json?['late_fees']),
       property: Property.safeFromJson(NullSafetyHelper.safeMap(json?['property'])),
     );
   }

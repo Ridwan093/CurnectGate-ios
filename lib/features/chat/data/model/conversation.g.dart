@@ -9,34 +9,26 @@ part of 'conversation.dart';
 class ConversationAdapter extends TypeAdapter<Conversation> {
   @override
   final int typeId = 2;
+
   @override
   Conversation read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    List<Participant>? participants;
-
-    final rawParticipants = fields[4];
-
-    if (rawParticipants is List) {
-      participants =
-          rawParticipants
-              .map((e) => e is Participant ? e : null)
-              .whereType<Participant>()
-              .toList();
-    } else {
-      participants = null;
-    }
-
     return Conversation(
       id: NullSafetyHelper.safeInt(fields[0]),
       estateId: NullSafetyHelper.safeInt(fields[1]),
       type: NullSafetyHelper.safeString(fields[2]),
       title: NullSafetyHelper.safeString(fields[3]),
 
-      participants: participants,
+      participants:
+          fields[4] is List
+              ? (fields[4] as List)
+                  .map((e) => e is Participant ? e : null)
+                  .whereType<Participant>()
+                  .toList()
+              : null,
 
       latestMessage: fields[5] is LatestMessage ? fields[5] : null,
 
@@ -180,7 +172,7 @@ class LatestMessageAdapter extends TypeAdapter<LatestMessage> {
   @override
   void write(BinaryWriter writer, LatestMessage obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)

@@ -15,14 +15,13 @@ class ConversationSettingsResponse with _$ConversationSettingsResponse {
 
   factory ConversationSettingsResponse.fromJson(Map<String, dynamic> json) =>
       _$ConversationSettingsResponseFromJson(json);
-
   factory ConversationSettingsResponse.fromSafeJson(Map<String, dynamic> json) {
-    return ConversationSettingsResponse.fromJson({
-      "message": NullSafetyHelper.safeString(json["message"]),
-      "data":
+    return ConversationSettingsResponse(
+      message: NullSafetyHelper.safeString(json["message"]),
+      data:
           json["data"] != null
               ? ConversationSettingsData.fromSafeJson(json["data"])
               : null,
-    });
+    );
   }
 }

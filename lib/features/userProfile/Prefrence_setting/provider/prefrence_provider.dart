@@ -44,7 +44,7 @@ class UserPrefrenceNotifer
       }
 
       return freshPreferency;
-    } catch (e, stack) {
+    } catch (e) {
       // If error occurs, return local data if available
       log("$e");
       if (localpreferencey != null) {

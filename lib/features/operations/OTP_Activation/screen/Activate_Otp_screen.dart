@@ -55,13 +55,12 @@ class Otpactivation extends ConsumerWidget {
           Row(
             children: [
               Expanded(
-                flex: 2,
                 child: _buildAddMemberButton(
                   size,
                   context,
                   ref,
                   textColor: AppColors.instance.grey200,
-                  buttonText: "Add new OTP +",
+                  buttonText: "New OTP+",
                   onTap: () {
                     showUserBottomSheet(
                       context: context,
@@ -76,12 +75,11 @@ class Otpactivation extends ConsumerWidget {
               ),
               const SizedBox(width: 16),
               Expanded(
-                flex: 1,
                 child: _buildAddMemberButton(
                   size,
                   context,
                   ref,
-                  buttonText: "My Permits",
+                  buttonText: "Clearance Permits",
                   onTap: () {
                     showUserBottomSheet(
                       context: context,

@@ -201,11 +201,12 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
     );
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar:
           provider.workOderLoading
               ? null
               : AppBar(
-                backgroundColor: AppColors.instance.grey200,
+                backgroundColor: Colors.white,
                 leading: IconButton(
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () => Navigator.of(context).pop(),
@@ -249,7 +250,9 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
                       label: 'Vendor name',
                       onChanged: (value) {},
                       onValidationChanged: (value) {
-                        notifier.updateVendorName(_vendorNameController.text.trim());
+                        notifier.updateVendorName(
+                          _vendorNameController.text.trim(),
+                        );
                       },
                     ),
                     const SizedBox(height: 16),
@@ -263,7 +266,9 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
                       label: 'Email',
                       onChanged: (value) {},
                       onValidationChanged: (value) {
-                        notifier.updateVendorEmail(_vendoremailController.text.trim());
+                        notifier.updateVendorEmail(
+                          _vendoremailController.text.trim(),
+                        );
                       },
                     ),
                     const SizedBox(height: 16),
@@ -277,7 +282,9 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
                       label: 'Phone number',
                       onChanged: (value) {},
                       onValidationChanged: (value) {
-                        notifier.updatePhoneNumber(_vendorphoneController.text.trim());
+                        notifier.updatePhoneNumber(
+                          _vendorphoneController.text.trim(),
+                        );
                       },
                     ),
                     const SizedBox(height: 16),

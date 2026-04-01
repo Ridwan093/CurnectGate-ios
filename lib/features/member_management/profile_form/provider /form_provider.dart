@@ -1,9 +1,5 @@
-// features/member_management/provider/form_provider.dart
-// ignore_for_file: unused_result
-
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:curnectgate/core/%20utils/api/api_Service.dart';
@@ -20,7 +16,11 @@ import 'package:curnectgate/features/%20operations/property_agreement/provider/c
 import 'package:curnectgate/features/auth/data/auth_model/OnboardingProgressManager.dart';
 import 'package:curnectgate/features/auth/data/auth_model/onbording_enum.dart';
 import 'package:curnectgate/features/auth/widget/tmporarypassword_dialog.dart';
+import 'package:curnectgate/features/chat/data/hive_migration.dart';
 import 'package:curnectgate/features/chat/data/provider/get_provider/get_chat_settings.dart';
+import 'package:curnectgate/features/chat/data/provider/get_provider/get_conversation_provider.dart';
+import 'package:curnectgate/features/chat/data/provider/get_provider/get_list_message.dart';
+import 'package:curnectgate/features/chat/data/provider/get_provider/unread_counts_provider.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/candidate_provider.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/eletion_provider.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/afterImage_provider.dart';
@@ -42,6 +42,7 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/widget/
 import 'package:curnectgate/features/member_management/profile_form/validator/password_validator.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/active_provider.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/provider/getPermittactive_permitt.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/submit_permit_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/EventCode_provider/getlistofEventCode_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/activity_provider.dart';
@@ -231,13 +232,11 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateCertifications(value);
         break;
       default:
-        // Optionally handle unknown keys
         break;
     }
   }
 
   void updateSpecializations(List<String>? value) {
-    log(value.toString());
     state = state.copyWith(
       specializations: value,
       specializeValid: value?.isNotEmpty,
@@ -245,7 +244,6 @@ class FormNotifier extends StateNotifier<FormStates> {
   }
 
   void updateCertifications(List<String>? value) {
-    log(value.toString());
     state = state.copyWith(
       certifications: value,
       certificatteValid: value?.isNotEmpty,
@@ -257,215 +255,154 @@ class FormNotifier extends StateNotifier<FormStates> {
   }
 
   void updateAgreement(bool? agreed) {
-    // Ensure we never pass null to a non-tristate checkbox
     state = state.copyWith(agreedToTerms: agreed ?? false);
   }
 
   void updatepassValid(bool? valide) {
-    // Ensure we never pass null to a non-tristate checkbox
     state = state.copyWith(passValid: valide ?? false);
   }
 
   void updateloginLodaing(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(loginLodaing: isLoading);
   }
 
   void updateEstateIdCheckLoadin(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(estateIdCheckLoadin: isLoading);
   }
 
   void updateMemberIdcheckLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(memberIdcheckLoading: isLoading);
   }
 
   void updateCreatPassLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(creatPassLoading: isLoading);
   }
 
   void updateOtpVerifyLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(otpVerifyLoading: isLoading);
   }
 
   void updateChangPassLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(changPassLoading: isLoading);
   }
 
   void updatForgetPaSsLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(forgetPaSsLoading: isLoading);
   }
 
   void updateChangTemporyPassLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(changTemporyPassLoading: isLoading);
   }
 
   void updateLogOutLoadin(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(logOutLoading: isLoading);
   }
 
   void updatePrivacyLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(chattingLoading: isLoading);
   }
 
   void updatePrevencyLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(prevencyLoading: isLoading);
   }
 
   void updateNotificationSettingLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(notificationSettingLoading: isLoading);
   }
 
   void updateReportLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(reportLoading: isLoading);
   }
 
   void updateCommentLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(commentLoading: isLoading);
   }
 
   void updateChangProfileInfoLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(changProfileInfoLoading: isLoading);
   }
 
   void updateChangProfilePicLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(changProfilePicLoading: isLoading);
   }
 
   void updateChangProfilePassLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(changProfilePassLoading: isLoading);
   }
 
   void updatedeActivatAccountLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(deActivatAccountLoading: isLoading);
   }
 
   void updatedeSchedulOtpLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(schedulOtpLoading: isLoading);
   }
 
   void updatedeGenerateOtpLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(generateOtpWithValidatorLoading: isLoading);
   }
 
   void updatedeRevorkOtpLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(revokOtpLoading: isLoading);
   }
 
   void updateGenrateMemberIdLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(generateMemberIdLoading: isLoading);
   }
 
+  void updateChatLoading(bool value) {
+    state = state.copyWith(chattingLoading: value);
+  }
+
+  void updateInitMessageLoading(bool value) {
+    state = state.copyWith(initMessageLoading: value);
+  }
+
   void updateAddHouseHoldLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(addHouseHoldLoading: isLoading);
   }
 
   void updateGranFacilityPermissionLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(facilityLoading: isLoading);
   }
 
   void updateGrantCurfewPermissionLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(curfewLoading: isLoading);
   }
 
   void updateGrantGatePermissionLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(gateAccessLoading: isLoading);
   }
 
   void updateGrantCommunityPermissionLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(communityAccessLoading: isLoading);
   }
 
   void updateGrantNightPermissionLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(nightAccessLoading: isLoading);
   }
 
   void updateGrantParkingPermissionLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(parkingAccessLoading: isLoading);
   }
 
   void updateGrantVisitorPermissionLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(visitorAccessLoading: isLoading);
   }
 
   void updateBasicPermissionLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(basicPermissionLoading: isLoading);
   }
 
   void updateRemovedHouseHoldLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(removedHouseHoldLoading: isLoading);
   }
 
   void updateWorkderLoading(bool isLoading) {
-    ///loading state if (optioner)
-    log(isLoading.toString());
     state = state.copyWith(workOderLoading: isLoading);
   }
 
   void updateOtp(String otp, bool isComplete) {
-    log("FormStateOTP:$otp");
     state = state.copyWith(otp: otp, isOtpComplete: isComplete);
   }
 
@@ -584,7 +521,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     state = state.copyWith(toTime: value);
   }
 
-  // In your form provider notifier
   Future<void> pickProfileImage() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -623,10 +559,8 @@ class FormNotifier extends StateNotifier<FormStates> {
   }
 
   void startResendCountdown() {
-    // Disable button and reset timer
     state = state.copyWith(isResendOtpEnabled: false, resendCountdownTime: 30);
 
-    // Start countdown
     _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (state.resendCountdownTime == 0) {
         _resendTimer?.cancel();
@@ -656,13 +590,11 @@ class FormNotifier extends StateNotifier<FormStates> {
     void extract(dynamic value) {
       if (value == null) return;
 
-      // If it's a string → add it
       if (value is String) {
         messages.add(value);
         return;
       }
 
-      // If it's a list → check each item
       if (value is List) {
         for (final item in value) {
           extract(item);
@@ -670,10 +602,8 @@ class FormNotifier extends StateNotifier<FormStates> {
         return;
       }
 
-      // If it's a map → recursively check values
       if (value is Map) {
         value.forEach((key, val) {
-          // Skip known metadata fields
           if ([
             "status",
             "code",
@@ -690,14 +620,13 @@ class FormNotifier extends StateNotifier<FormStates> {
       }
     }
 
-    // Start extraction from response["data"] first
     extract(response["data"]);
+    extract(response["errors"]);
 
     if (messages.isNotEmpty) {
       return messages.join(" ");
     }
 
-    // Fallback to general message
     return response["message"] ?? "Validation error occurred.";
   }
 
@@ -723,7 +652,6 @@ class FormNotifier extends StateNotifier<FormStates> {
         state.pass!.isEmpty) {
       return;
     }
-    // Force validation check
 
     updateCreatPassLoading(true);
 
@@ -745,7 +673,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (response['status'] == true) {
         if (context.mounted) {
-          // log(response['data'].toString());
           updateCreatPassLoading(false);
           if (email.isNotEmpty) {
             await DeviceInfoHelper.saveUserEmail(email);
@@ -762,7 +689,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           context.pushNamed(AppRoutes.oTPCode, extra: response['data']);
         }
       } else {
-        // log(response['data'].toString());
         updateCreatPassLoading(false);
         showCustomSuccessToast(
           context: context,
@@ -786,11 +712,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-
-      log(e.toString());
     } catch (e) {
       updateCreatPassLoading(false);
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -813,10 +737,9 @@ class FormNotifier extends StateNotifier<FormStates> {
   }) async {
     final emails = await BiometricSignatureHelper.getStoredEmail();
     if (email.isEmpty && state.otp.isEmpty && emails!.isEmpty) {
-      log("empty");
       return;
     }
-    log("START------->");
+
     updateOtpVerifyLoading(true);
 
     try {
@@ -828,11 +751,9 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      // Always check first
-
       if (response['status'] == true) {
         updateOtpVerifyLoading(false);
-        log("TRUE------->");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -843,8 +764,6 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
         await OnboardingProgressManager.clearProgress();
 
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
         final userData = response['data'] as Map<String, dynamic>?;
         if (userData != null) {
           final user = userData['user'] as Map<String, dynamic>?;
@@ -856,7 +775,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         context.pushNamed(AppRoutes.signIN, extra: response['data']);
       } else {
-        log("FALSE------->");
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -881,12 +799,10 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
       updateOtpVerifyLoading(false);
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -898,7 +814,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     } finally {
       updateOtpVerifyLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -916,176 +831,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     }
   }
 
-  // Future<void> logIn({
-  //   required BuildContext context,
-  //   required String email,
-  //   required String password,
-  //   required WidgetRef ref,
-  // }) async {
-  //   updateloginLodaing(false);
-  //   final isBiometricEnabled = ref.read(biometricPrefProvider.notifier);
-  //   final prefs = SharedPrefsService();
-  //   if (password.isEmpty && email.isEmpty) {
-  //     log("empty");
-  //     return;
-  //   }
-  //   log("START------->");
-  //   updateloginLodaing(true);
-
-  //   try {
-  //     final response = await ref
-  //         .read(profileRepositoryProvider)
-  //         .logIn(email: email, pass: password, context: context);
-
-  //     if (!context.mounted) return; // Always check first
-
-  //     if (response['status'] == true) {
-  //       updateloginLodaing(false);
-
-  //       if (response["data"]["password_change_required"] == true) {
-  //         showForcePasswordChangeDialog(
-  //           context: context,
-  //           message: response["message"],
-  //           onChangeNow: () {
-  //             final token = response["data"]["access_token"];
-  //             if (token != null) {
-  //               context.pushNamed(
-  //                 AppRoutes.changeTemporarypass,
-  //                 extra: {"token": token},
-  //               );
-  //             }
-  //           },
-  //         );
-  //       } else {
-  //         final isRegistered = await registerToken(context: context, ref: ref);
-
-  //         if (isRegistered) {
-  //           log("TRUE------->");
-  //           await SharedPrefsService().saveAuthData(response['data']);
-
-  //           showCustomSuccessToast(
-  //             context: context,
-  //             message: response["message"],
-  //             color: AppColors.instance.teal300,
-  //             icon: Icons.check_circle,
-  //             iconColors: AppColors.instance.grey200,
-  //             positionNumber: 70,
-  //           );
-  //           final userData = response['data'] as Map<String, dynamic>?;
-
-  //           if (userData != null) {
-  //             log("UserLoging Token: ${userData["access_token"]}");
-  //             prefs.saveUserToken(userData["access_token"]);
-  //             final user = userData['user'] as Map<String, dynamic>?;
-  //             final firstName = user?['firstname'] as String?;
-  //             final lastName = user!["lastname"] as String?;
-  //             final email = user["email"] as String?;
-  //             final medUrl = user["media_url"] as String?;
-  //             ref.read(authState.authProvider.notifier).loadAuthData();
-  //     final reverbResponse = await ref
-  //         .read(getApiServiceProvider). getReverbConfig();
-  //             if (medUrl != null) {
-  //               await SharedPrefsService().saveMedialUrl(medUrl);
-  //               ref.read(profilePicProvider.notifier).refreshProfilePic();
-  //               ref.read(profilePicProvider.notifier).loadProfilePic();
-  //             }
-  //             if (firstName != null) {
-  //               await SharedPrefsService().saveSingleUserName(firstName);
-  //               await SharedPrefsService().saveFullName(
-  //                 "${firstName} ${lastName}",
-  //               );
-  //               ref.read(authState.authProvider.notifier).loadfullName();
-  //             }
-
-  //             if (email != null) {
-  //               await DeviceInfoHelper.saveUserEmail(email);
-  //             }
-  //           }
-
-  //           final user = response['data']["user"];
-  //           final userRole = user['role'];
-  //           final biometricenabled = user["biometric_enabled"];
-
-  //           if (biometricenabled) {
-  //             await DeviceInfoHelper.saveFirstTimeCheck(false);
-  //             isBiometricEnabled.toggleBiometric(true);
-  //           } else {
-  //             await DeviceInfoHelper.saveFirstTimeCheck(true);
-  //             isBiometricEnabled.toggleBiometric(false);
-  //           }
-  //           log(userRole.toString());
-  //           getUserRoleFromString(context, userRole.toString());
-  //           // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-  //           //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
-  //           // context.goNamed(AppRoutes.dashbord);
-  //         } else {
-  //           showCustomSuccessToast(
-  //             context: context,
-  //             message: "Error Somthing wrong",
-  //             color: AppColors.instance.error500,
-  //             icon: Icons.error,
-  //             iconColors: AppColors.instance.grey200,
-  //             positionNumber: 70,
-  //           );
-  //         }
-  //       }
-  //     } else {
-  //       updateloginLodaing(false);
-  //       log("FALSE------->");
-  //       showCustomSuccessToast(
-  //         context: context,
-  //         message: response['message'],
-  //         color: AppColors.instance.error500,
-  //         icon: Icons.error,
-  //         iconColors: AppColors.instance.grey200,
-  //         positionNumber: 70,
-  //       );
-  //     }
-  //   } on DioException catch (e) {
-  //     updateloginLodaing(false);
-  //     if (!context.mounted) return;
-
-  //     if (e.error is SocketException) {
-  //       showCustomSuccessToast(
-  //         context: context,
-  //         message:
-  //             "Network unavailable. Please check your internet connection.",
-  //         color: AppColors.instance.error500,
-  //         icon: Icons.error,
-  //         iconColors: AppColors.instance.grey200,
-  //         positionNumber: 70,
-  //       );
-  //     } else {
-  //       showCustomSuccessToast(
-  //         context: context,
-  //         message: e.message.toString(),
-  //         color: AppColors.instance.error500,
-  //         icon: Icons.error,
-  //         iconColors: AppColors.instance.grey200,
-  //         positionNumber: 70,
-  //       );
-  //     }
-  //     log(e.toString());
-  //   } catch (e) {
-  //     if (!context.mounted) return;
-  //     log("E-ERROR-MESSAGE------->");
-  //     log(e.toString());
-  //     updateloginLodaing(false);
-  //     showCustomSuccessToast(
-  //       context: context,
-  //       message: e.toString(),
-  //       color: AppColors.instance.error500,
-  //       icon: Icons.error,
-  //       iconColors: AppColors.instance.grey200,
-  //       positionNumber: 70,
-  //     );
-  //   } finally {
-  //     updateloginLodaing(false);
-  //     updateOtp('', false);
-  //     log("END------->");
-  //   }
-  // }
-
   Future<void> logIn({
     required BuildContext context,
     required String email,
@@ -1093,15 +838,11 @@ class FormNotifier extends StateNotifier<FormStates> {
     required WidgetRef ref,
   }) async {
     updateloginLodaing(false);
-    // final isBiometricEnabled = ref.read(biometricPrefProvider.notifier);
-    // final prefs = SharedPrefsService();
 
     if (password.isEmpty && email.isEmpty) {
-      log("empty");
       return;
     }
 
-    log("START------->");
     updateloginLodaing(true);
 
     try {
@@ -1117,18 +858,15 @@ class FormNotifier extends StateNotifier<FormStates> {
         if (response["data"]["password_change_required"] == true) {
           showForcePasswordChangeDialog(
             context: context,
-            message: response["message"],
+            message: response['message'] ?? "Password change required",
             onChangeNow: () {
-              final token = response["data"]["access_token"];
-              if (token != null) {
-                context.pushNamed(
-                  AppRoutes.changeTemporarypass,
-                  extra: {"token": token},
-                );
-              }
+              context.pushNamed(
+                AppRoutes.changeTemporarypass,
+                extra: {"token": response['data']['access_token'] ?? ""},
+              );
             },
           );
-          return; // Stop here if password change required
+          return;
         }
 
         await _handlePostLoginSuccess(
@@ -1137,10 +875,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           data: response['data'],
           message: response["message"] ?? "",
         );
-        // Normal login flow
       } else {
         updateloginLodaing(false);
-        log("FALSE------->");
+
         showCustomSuccessToast(
           context: context,
           message: response['message'],
@@ -1174,11 +911,10 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
       updateloginLodaing(false);
-      log("E-ERROR-MESSAGE-------> $e");
+
       showCustomSuccessToast(
         context: context,
         message: "Unexpected error occurred",
@@ -1190,7 +926,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     } finally {
       updateloginLodaing(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -1199,12 +934,9 @@ class FormNotifier extends StateNotifier<FormStates> {
     required WidgetRef ref,
     required String slug,
   }) async {
-    log("🚀 START signInwithFaceID()");
-
     updateloginLodaing(true);
 
     try {
-      // 1️⃣ Authenticate user with biometrics (finger/face)
       final authenticated = await DeviceInfoHelper.authenticateUser(ref);
 
       if (!authenticated) {
@@ -1219,15 +951,10 @@ class FormNotifier extends StateNotifier<FormStates> {
         return;
       }
 
-      // 2️⃣ Gather all needed data for the login request
       final email = await BiometricSignatureHelper.getStoredEmail();
       final signature = await BiometricSignatureHelper.getStoredSignature();
       final deviceToken = await DeviceInfoHelper.getDeviceToken();
       final token = await ref.watch(accessTokenProvider.future) ?? "";
-
-      log('${signature}');
-
-      log("Device EMAIL: $email");
 
       if (email == null || signature == null) {
         showCustomSuccessToast(
@@ -1242,7 +969,6 @@ class FormNotifier extends StateNotifier<FormStates> {
         return;
       }
 
-      // 3️⃣ Call API to log in using stored biometric credentials
       final response = await ref
           .read(profileRepositoryProvider)
           .logIngwithFingerPrintAndFaceID(
@@ -1255,7 +981,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (!context.mounted) return;
 
-      // 4️⃣ Handle response
       if (response["status"] == true) {
         updateloginLodaing(false);
 
@@ -1267,12 +992,11 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
       } else {
         final message = response["message"] ?? "Biometric login failed.";
-        log("❌ Login failed: $message");
+
         updateloginLodaing(false);
         _handleLoginError(context, ref, message);
       }
-    } on DioException catch (e) {
-      log("🌐 DIO ERROR during biometric login: $e");
+    } on DioException  {
       showCustomSuccessToast(
         context: context,
         message: "Network error occurred while logging in.",
@@ -1282,7 +1006,6 @@ class FormNotifier extends StateNotifier<FormStates> {
         positionNumber: 70,
       );
     } catch (e) {
-      log("💥 Unexpected ERROR: $e");
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -1293,7 +1016,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       );
     } finally {
       updateloginLodaing(false);
-      log("🏁 END signInwithFaceID()");
     }
   }
 
@@ -1301,8 +1023,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required BuildContext context,
     required WidgetRef ref,
   }) async {
-    log("🚀 START registerToken()");
-
     try {
       final data = await DeviceInfoHelper.deviceInfo();
 
@@ -1313,17 +1033,14 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (!context.mounted) return false;
 
       if (response["status"] == true) {
-        log("✅ Token registered successfully");
-        return true; // ✅ registered
+        return true;
       } else {
         final message = response["message"] ?? "Token not registered yet.";
-        log("❌ Register Token failed: $message");
 
         _handleLoginError(context, ref, message);
-        return false; // ❌ not registered
+        return false;
       }
-    } on DioException catch (e) {
-      log("🌐 DIO ERROR: $e");
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "Network error occurred.",
@@ -1334,7 +1051,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       );
       return false;
     } catch (e) {
-      log("💥 Unexpected ERROR: $e");
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -1346,7 +1062,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       return false;
     } finally {
       updateloginLodaing(false);
-      log("🏁 END registerToken()");
     }
   }
 
@@ -1364,21 +1079,18 @@ class FormNotifier extends StateNotifier<FormStates> {
     final userRole = user['role']?.toString() ?? "";
     final biometricenabled = user["biometric_enabled"] == true;
 
-    // 🚫 Block admin/service provider
     if (userRole.contains("estate_admin") ||
         userRole.contains("service_provider")) {
       showEstateAdminBlockedDialog(context);
       return;
     }
 
-    // 💾 Save auth data
     await prefs.saveAuthData(data);
 
     if (token != null) {
       prefs.saveUserToken(token);
     }
 
-    // 👤 Save profile basics
     final firstName = user['firstname'];
     final lastName = user['lastname'];
     final email = user['email'];
@@ -1387,6 +1099,7 @@ class FormNotifier extends StateNotifier<FormStates> {
     if (mediaUrl != null) {
       await prefs.saveMedialUrl(mediaUrl);
       ref.read(profilePicProvider.notifier).refreshProfilePic();
+      ref.invalidate(profilePicProvider);
     }
 
     if (firstName != null && lastName != null) {
@@ -1399,10 +1112,8 @@ class FormNotifier extends StateNotifier<FormStates> {
       await DeviceInfoHelper.saveUserEmail(email);
     }
 
-    // 🔔 Register push token (MOVED HERE)
     await registerToken(context: context, ref: ref);
 
-    // 🔐 Handle biometric toggle state
     if (biometricenabled) {
       await DeviceInfoHelper.saveFirstTimeCheck(false);
       isBiometricEnabled.toggleBiometric(true);
@@ -1411,9 +1122,12 @@ class FormNotifier extends StateNotifier<FormStates> {
       isBiometricEnabled.toggleBiometric(false);
     }
     final int id = user['id'] ?? 0;
-    // 🌐 Reverb setup (REALTIME)
-    try {} catch (_) {
-      // Fail silently — realtime is optional
+
+    if (id != 0) {
+      try {
+        await openMessagesBox(id.toString());
+        await getConversationsBox(id.toString());
+      } catch (e) {}
     }
 
     ref.read(authState.authProvider.notifier).loadAuthData();
@@ -1439,10 +1153,9 @@ class FormNotifier extends StateNotifier<FormStates> {
     updatForgetPaSsLoading(false);
 
     if (email.isEmpty) {
-      log("empty");
       return;
     }
-    log("START------->");
+
     updatForgetPaSsLoading(true);
 
     try {
@@ -1450,14 +1163,14 @@ class FormNotifier extends StateNotifier<FormStates> {
           .read(profileRepositoryProvider)
           .forgetPaSs(email: email, context: context);
 
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         if (isrequst) {
           startResendCountdown();
         }
         updatForgetPaSsLoading(false);
-        log("TRUE------->");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -1467,11 +1180,8 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
 
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
         context.pushNamed(AppRoutes.passRestOtpVerify, extra: {"email": email});
       } else {
-        log("FALSE------->");
         showCustomSuccessToast(
           context: context,
           message: response['message'],
@@ -1495,11 +1205,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -1511,7 +1219,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     } finally {
       updatForgetPaSsLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -1524,10 +1231,9 @@ class FormNotifier extends StateNotifier<FormStates> {
     updateOtpVerifyLoading(false);
 
     if (email.isEmpty && state.otp.isEmpty) {
-      log("empty");
       return;
     }
-    log("START------->");
+
     updateOtpVerifyLoading(true);
 
     try {
@@ -1535,11 +1241,11 @@ class FormNotifier extends StateNotifier<FormStates> {
           .read(profileRepositoryProvider)
           .verifyOTPForget(email: email, code: state.otp);
 
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateOtpVerifyLoading(false);
-        log("TRUE------->");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -1549,22 +1255,19 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
 
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
-
         final responseData = response['data'] as Map<String, dynamic>;
 
         context.pushNamed(
           AppRoutes.passReset,
           extra: {
-            ...responseData, // Spread existing data
+            ...responseData,
             'local_email': email,
-            'original_response': response, // Add new field
+            'original_response': response,
           },
         );
       } else {
         updateOtpVerifyLoading(false);
-        log("FALSE------->");
+
         showCustomSuccessToast(
           context: context,
           message: "Invalid or password or  email!",
@@ -1589,12 +1292,10 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
       updateOtpVerifyLoading(false);
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -1606,7 +1307,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     } finally {
       updateOtpVerifyLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -1619,10 +1319,9 @@ class FormNotifier extends StateNotifier<FormStates> {
     updateOtpVerifyLoading(false);
     final emails = await BiometricSignatureHelper.getStoredEmail();
     if (email.isEmpty && emails!.isEmpty) {
-      log("empty");
       return;
     }
-    log("START------->");
+
     updateOtpVerifyLoading(true);
 
     try {
@@ -1630,12 +1329,12 @@ class FormNotifier extends StateNotifier<FormStates> {
           .read(profileRepositoryProvider)
           .requestOTPcode(email: email.isEmpty ? emails : email);
 
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         startResendCountdown();
         updateOtpVerifyLoading(false);
-        log("TRUE------->");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -1644,12 +1343,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
-
-        // context.goNamed(AppRoutes.passReset, extra: response['data']);
       } else {
-        log("FALSE------->");
         showCustomSuccessToast(
           context: context,
           message: "Invalid email!",
@@ -1673,12 +1367,10 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
       updateOtpVerifyLoading(false);
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -1690,7 +1382,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     } finally {
       updateOtpVerifyLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -1703,10 +1394,9 @@ class FormNotifier extends StateNotifier<FormStates> {
     updateCreatPassLoading(false);
 
     if (email.isEmpty && state.otp.isEmpty) {
-      log("empty");
       return;
     }
-    log("START------->");
+
     updateCreatPassLoading(true);
 
     try {
@@ -1720,11 +1410,11 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateCreatPassLoading(false);
-        log("TRUE------->");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -1734,12 +1424,8 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
 
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
-
         context.pushNamed(AppRoutes.signIN);
       } else {
-        log("FALSE------->");
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -1763,12 +1449,10 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       updateCreatPassLoading(false);
       if (!context.mounted) return;
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -1780,7 +1464,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     } finally {
       updateCreatPassLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -1791,7 +1474,6 @@ class FormNotifier extends StateNotifier<FormStates> {
   }) async {
     updateChangTemporyPassLoading(false);
 
-    log("START------->");
     updateChangTemporyPassLoading(true);
 
     try {
@@ -1806,11 +1488,11 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateChangTemporyPassLoading(false);
-        log("TRUE------->");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -1827,12 +1509,9 @@ class FormNotifier extends StateNotifier<FormStates> {
             await SharedPrefsService().saveSingleUserName(firstName);
           }
         }
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
 
         context.pop();
       } else {
-        log("FALSE------->");
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -1856,12 +1535,10 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       updateChangTemporyPassLoading(false);
       if (!context.mounted) return;
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -1873,7 +1550,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     } finally {
       updateChangTemporyPassLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -1887,10 +1563,9 @@ class FormNotifier extends StateNotifier<FormStates> {
     required WidgetRef ref,
   }) async {
     if (firstName.isEmpty && lastName.isEmpty) {
-      log("empty");
       return;
     }
-    log("START------->");
+
     updateChangProfileInfoLoading(true);
     final token = await ref.watch(accessTokenProvider.future);
     try {
@@ -1906,12 +1581,11 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateChangProfileInfoLoading(false);
 
-        log("TRUE------->");
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -1924,9 +1598,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         final fullName = data["full_name"].toString();
         await SharedPrefsService().saveFullName(fullName);
-        log(fullName);
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
+
         ref.read(userProfileProvider.notifier).refreshProfile(context, ref);
         context.pop();
       } else {
@@ -1960,12 +1632,10 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       updateChangProfileInfoLoading(false);
       if (!context.mounted) return;
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -1977,7 +1647,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     } finally {
       updateChangProfileInfoLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -1990,10 +1659,9 @@ class FormNotifier extends StateNotifier<FormStates> {
     required WidgetRef ref,
   }) async {
     if (currentPassword.isEmpty && newPassword.isEmpty && confirmPass.isEmpty) {
-      log("empty");
       return;
     }
-    log("START------->");
+
     updateChangProfilePassLoading(true);
     final token = await ref.watch(accessTokenProvider.future);
     try {
@@ -2007,11 +1675,11 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateChangProfilePassLoading(false);
-        log("TRUE------->");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -2020,9 +1688,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
 
         context.pop();
       } else {
@@ -2052,12 +1717,10 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       updateChangProfilePassLoading(false);
       if (!context.mounted) return;
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -2069,7 +1732,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     } finally {
       updateChangProfilePassLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -2081,10 +1743,9 @@ class FormNotifier extends StateNotifier<FormStates> {
     required WidgetRef ref,
   }) async {
     if (currentPassword.isEmpty && reason.isEmpty) {
-      log("empty");
       return;
     }
-    log("START------->");
+
     updatedeActivatAccountLoading(true);
     final token = await ref.watch(accessTokenProvider.future);
     try {
@@ -2098,11 +1759,11 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updatedeActivatAccountLoading(false);
-        log("TRUE------->");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -2112,8 +1773,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
         ref.read(userProfileProvider.notifier).refreshProfile(context, ref);
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
 
         context.pop();
       } else {
@@ -2144,12 +1803,10 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       updatedeActivatAccountLoading(false);
       if (!context.mounted) return;
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -2161,7 +1818,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     } finally {
       updatedeActivatAccountLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -2171,7 +1827,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateChangProfilePicLoading(true);
 
     try {
@@ -2180,11 +1835,11 @@ class FormNotifier extends StateNotifier<FormStates> {
           .read(profileRepositoryProvider)
           .updateUserProfilespix(file: file, context: context, token: token!);
 
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateChangProfilePicLoading(false);
-        log("TRUE------->");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -2204,15 +1859,10 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         ref.read(userProfileProvider.notifier).refreshProfile(context, ref);
 
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
-
         context.pop();
       } else {
         updateChangProfilePicLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
+
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
           ref.read(authProvider.notifier).sessionExpire(context, ref);
@@ -2242,12 +1892,10 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       updateChangProfilePicLoading(false);
       if (!context.mounted) return;
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -2259,7 +1907,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     } finally {
       updateChangProfilePicLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -2270,7 +1917,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required String slug,
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateNotificationSettingLoading(false);
     final notifiers = ref.read(permissionLoadingProvider(slug).notifier);
 
@@ -2286,33 +1932,20 @@ class FormNotifier extends StateNotifier<FormStates> {
             token: token!,
           );
 
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateNotificationSettingLoading(false);
 
         notifiers.setLoading(false);
-        log("TRUE------->");
-        // showCustomSuccessToast(
-        //   context: context,
-        //   message: response["message"],
-        //   color: AppColors.instance.teal300,
-        //   icon: Icons.check_circle,
-        //   iconColors: AppColors.instance.grey200,
-        //   positionNumber: 70,
-        // );
+
         ref
             .read(userNotificationSettinProvider.notifier)
             .refreshSettings(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         updateNotificationSettingLoading(false);
         notifiers.setLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
+
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
           ref.read(authProvider.notifier).sessionExpire(context, ref);
@@ -2342,13 +1975,11 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
       updateNotificationSettingLoading(false);
       notifiers.setLoading(false);
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -2361,7 +1992,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       updateNotificationSettingLoading(false);
       notifiers.setLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -2372,7 +2002,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required WidgetRef ref,
     required String slug,
   }) async {
-    log("START------->");
     updatePrivacyLoading(true);
     updateNotificationSettingLoading(false);
     final notifiers = ref.read(permissionLoadingProvider(slug).notifier);
@@ -2387,24 +2016,18 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
             token: token!,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updatePrivacyLoading(false);
         notifiers.setLoading(false);
-        log("TRUE------->");
 
         ref.read(userPrivacyprovider.notifier).refreshSettings(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         updatePrivacyLoading(false);
         notifiers.setLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
+
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
           ref.read(authProvider.notifier).sessionExpire(context, ref);
@@ -2427,7 +2050,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (e.error is SocketException) {
         updatePrivacyLoading(false);
         notifiers.setLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -2438,13 +2061,11 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       updatePrivacyLoading(false);
       notifiers.setLoading(false);
       if (!context.mounted) return;
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -2457,7 +2078,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       updatePrivacyLoading(false);
       notifiers.setLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -2467,7 +2087,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required String value,
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updatePrevencyLoading(true);
 
     try {
@@ -2480,31 +2099,17 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
             token: token!,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updatePrevencyLoading(false);
-        log("TRUE------->");
 
-        // showCustomSuccessToast(
-        //   context: context,
-        //   message: response["message"],
-        //   color: AppColors.instance.teal300,
-        //   icon: Icons.check_circle,
-        //   iconColors: AppColors.instance.grey200,
-        //   positionNumber: 70,
-        // );
         ref.read(userPrefrenceprovider.notifier).refreshSettings(context, ref);
         context.pop();
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         updatePrevencyLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
+
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
           ref.read(authProvider.notifier).sessionExpire(context, ref);
@@ -2525,7 +2130,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (!context.mounted) return;
       context.pop();
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -2536,13 +2140,11 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
       updatePrevencyLoading(false);
       context.pop();
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -2554,7 +2156,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     } finally {
       updatePrevencyLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -2563,34 +2164,17 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final token = await ref.watch(accessTokenProvider.future);
       final response = await ref
           .read(profileRepositoryProvider)
           .updateuserNotificationRead(context: context, token: token!);
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
-        log("TRUE------->");
-
-        // showCustomSuccessToast(
-        //   context: context,
-        //   message: response["message"],
-        //   color: AppColors.instance.teal300,
-        //   icon: Icons.check_circle,
-        //   iconColors: AppColors.instance.grey200,
-        //   positionNumber: 70,
-        // );
         ref.read(getNotificationCount.notifier).refreshCount(context, ref);
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
         if (response["message"] ==
             "Unauthenticated. Please login to continue.") {
           ref.read(authProvider.notifier).sessionExpire(context, ref);
@@ -2610,7 +2194,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (!context.mounted) return;
       context.pop();
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -2621,12 +2204,10 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
       context.pop();
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -2637,7 +2218,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       );
     } finally {
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -2646,7 +2226,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateReportLoading(true);
 
     try {
@@ -2668,12 +2247,11 @@ class FormNotifier extends StateNotifier<FormStates> {
             priority: "high",
             pickedFiles: report.pickedFiles ?? {},
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateReportLoading(false);
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -2686,14 +2264,9 @@ class FormNotifier extends StateNotifier<FormStates> {
         reportStatess.resetState();
         ref.read(userReportProvider.notifier).refreshReports(context, ref);
         context.pop();
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         updateReportLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
+
         reportStatess.resetState();
         final message = extractValidationMessage(response);
 
@@ -2714,7 +2287,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       reportStatess.resetState();
       context.pop();
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -2725,15 +2297,13 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       updateReportLoading(false);
       final reportStatess = ref.watch(reportProvider.notifier);
       reportStatess.resetState();
       if (!context.mounted) return;
       context.pop();
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -2747,7 +2317,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       reportStatess.resetState();
       updateReportLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -2756,7 +2325,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required String id,
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateCommentLoading(true);
 
     try {
@@ -2775,36 +2343,19 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateCommentLoading(false);
-        log("TRUE------->");
-
-        // showCustomSuccessToast(
-        //   context: context,
-        //   message: response["message"],
-        //   color: AppColors.instance.teal300,
-        //   icon: Icons.check_circle,
-        //   iconColors: AppColors.instance.grey200,
-        //   positionNumber: 70,
-        // );
 
         ref
             .read(commentProvider.notifier)
             .refreshComment(context, ref, int.parse(id));
         reportStatess.resetState();
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         updateCommentLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
 
         reportStatess.resetState();
-        //  final error = response['errors']?['comment']?.first;
 
         showCustomSuccessToast(
           context: context,
@@ -2823,7 +2374,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       reportStatess.resetState();
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -2834,15 +2384,13 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       updateCommentLoading(false);
       final reportStatess = ref.watch(reportProvider.notifier);
       reportStatess.resetState();
       if (!context.mounted) return;
       context.pop();
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -2856,7 +2404,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       reportStatess.resetState();
       updateCommentLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -2865,7 +2412,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updatedeGenerateOtpLoading(true);
 
     try {
@@ -2890,13 +2436,11 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updatedeGenerateOtpLoading(false);
         closeAllBottomSheets(context);
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -2912,40 +2456,15 @@ class FormNotifier extends StateNotifier<FormStates> {
           String shareContent = "Here's your vistor access $otpCode:";
           context.pushNamed(
             AppRoutes.vendorAccessCode,
-            extra: {
-              'title': title,
-              "code": otpCode,
-              'share': shareContent, // Add new field
-            },
+            extra: {'title': title, "code": otpCode, 'share': shareContent},
           );
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder:
-          //         (context) => GetYourCodeScreen(
-          //           title: "Your visitor access code: ",
-          //           accessCode: otpCode,
-          //           share: "Here's your vistor access $otpCode:",
-          //         ),
-          //   ),
-          // );
-          log("OTP Code: $otpCode");
-        } else {
-          log("OTP not found in response");
-        }
+        } else {}
 
         visitors.resetState();
-        // ref.read(commentProvider.notifier).refreshComment(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         updatedeGenerateOtpLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
 
         visitors.resetState();
-        //  final error = response['errors']?['comment']?.first;
 
         final message = extractValidationMessage(response);
 
@@ -2966,7 +2485,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       reportStatess.resetState();
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -2977,15 +2495,13 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       updatedeGenerateOtpLoading(false);
       final visitor = ref.watch(generateNotifierProvider.notifier);
       visitor.resetState();
       if (!context.mounted) return;
       context.pop();
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -2999,7 +2515,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       visitor.resetState();
       updatedeGenerateOtpLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -3008,7 +2523,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updatedeSchedulOtpLoading(true);
 
     try {
@@ -3030,13 +2544,11 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updatedeSchedulOtpLoading(false);
         context.pop();
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -3052,41 +2564,15 @@ class FormNotifier extends StateNotifier<FormStates> {
           String shareContent = "Here's your vistor access $otpCode:";
           context.pushNamed(
             AppRoutes.vendorAccessCode,
-            extra: {
-              'title': title,
-              "code": otpCode,
-              'share': shareContent, // Add new field
-            },
+            extra: {'title': title, "code": otpCode, 'share': shareContent},
           );
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder:
-          //         (context) => GetYourCodeScreen(
-          //           title: "Your visitor access code: ",
-          //           accessCode: otpCode,
-          //           share: "Here's your vistor access $otpCode:",
-          //         ),
-          //   ),
-          // );
-          log("OTP Code: $otpCode");
-        } else {
-          log("OTP not found in response");
-        }
+        } else {}
 
         visitors.resetState();
-        // ref.read(commentProvider.notifier).refreshComment(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         updatedeSchedulOtpLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
 
         visitors.resetState();
-        //  final error = response['errors']?['comment']?.first;
 
         final message = extractValidationMessage(response);
 
@@ -3107,7 +2593,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       reportStatess.resetState();
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -3118,15 +2603,13 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       updatedeSchedulOtpLoading(false);
       final visitor = ref.watch(generateNotifierProvider.notifier);
       visitor.resetState();
       if (!context.mounted) return;
       context.pop();
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -3140,7 +2623,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       visitor.resetState();
       updatedeSchedulOtpLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -3149,7 +2631,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required int id,
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updatedeRevorkOtpLoading(true);
 
     try {
@@ -3166,13 +2647,12 @@ class FormNotifier extends StateNotifier<FormStates> {
             id: id,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updatedeRevorkOtpLoading(false);
         context.pop();
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -3182,20 +2662,12 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
-        // context.pop();
 
         visitors.resetState();
-        // ref.read(commentProvider.notifier).refreshComment(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         updatedeRevorkOtpLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
 
         visitors.resetState();
-        //  final error = response['errors']?['comment']?.first;
 
         final message = extractValidationMessage(response);
 
@@ -3216,7 +2688,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       reportStatess.resetState();
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -3227,15 +2698,13 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       updatedeRevorkOtpLoading(false);
       final visitor = ref.watch(generateNotifierProvider.notifier);
       visitor.resetState();
       if (!context.mounted) return;
       context.pop();
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -3249,7 +2718,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       visitor.resetState();
       updatedeRevorkOtpLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -3258,8 +2726,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required int id,
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final state = ref.read(workOrderFormProvider.notifier);
 
@@ -3270,14 +2736,13 @@ class FormNotifier extends StateNotifier<FormStates> {
       final response = await ref
           .read(profileRepositoryProvider)
           .revoWorkOder(token: token ?? "", id: id, context: context);
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         state.setLoading(false);
         ref.read(workOrderProvider.notifier).refreshWorkOrders(context, ref);
         context.pop();
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -3287,18 +2752,8 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
-        // context.pop();
-
-        // ref.read(commentProvider.notifier).refreshComment(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         state.setLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-
-        //  final error = response['errors']?['comment']?.first;
 
         final message = extractValidationMessage(response);
 
@@ -3318,7 +2773,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (!context.mounted) return;
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -3329,14 +2783,12 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       final state = ref.read(workOrderFormProvider.notifier);
       state.setLoading(false);
       if (!context.mounted) return;
       context.pop();
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -3349,7 +2801,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       final state = ref.read(workOrderFormProvider.notifier);
       state.setLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -3358,7 +2809,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateGenrateMemberIdLoading(true);
 
     try {
@@ -3367,15 +2817,15 @@ class FormNotifier extends StateNotifier<FormStates> {
       final response = await ref
           .read(profileRepositoryProvider)
           .generateMemberIDForStart(token: token ?? "", context: context);
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateGenrateMemberIdLoading(false);
+        // ignore: unused_result
         ref.refresh(digitalIdStatusProvider);
 
         context.pop();
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -3388,18 +2838,8 @@ class FormNotifier extends StateNotifier<FormStates> {
         context.pop();
         ref.read(digitMemberIDprovider.notifier).refreshDigitalID(context, ref);
         context.pushNamed(AppRoutes.digitalIDMember);
-        // context.pop();
-
-        // ref.read(commentProvider.notifier).refreshComment(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         updateGenrateMemberIdLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-
-        //  final error = response['errors']?['comment']?.first;
 
         final message = extractValidationMessage(response);
 
@@ -3420,7 +2860,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       reportStatess.resetState();
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -3431,15 +2870,13 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       updateGenrateMemberIdLoading(false);
       final visitor = ref.watch(generateNotifierProvider.notifier);
       visitor.resetState();
       if (!context.mounted) return;
       context.pop();
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -3451,7 +2888,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     } finally {
       updateGenrateMemberIdLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -3460,7 +2896,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateGenrateMemberIdLoading(true);
 
     try {
@@ -3473,15 +2908,14 @@ class FormNotifier extends StateNotifier<FormStates> {
             reason: state.digiterReason ?? "",
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         resteRasion();
         updateGenrateMemberIdLoading(false);
 
         context.pop();
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -3493,17 +2927,9 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
 
         context.pop();
-
-        // ref.read(commentProvider.notifier).refreshComment(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         updateGenrateMemberIdLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
 
-        //  final error = response['errors']?['comment']?.first;
         resteRasion();
         final message = extractValidationMessage(response);
 
@@ -3525,7 +2951,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       reportStatess.resetState();
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -3536,7 +2961,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       resteRasion();
       updateGenrateMemberIdLoading(false);
@@ -3544,8 +2968,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       visitor.resetState();
       if (!context.mounted) return;
       context.pop();
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -3558,7 +2981,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       resteRasion();
       updateGenrateMemberIdLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -3567,7 +2989,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateGenrateMemberIdLoading(true);
 
     try {
@@ -3580,15 +3001,14 @@ class FormNotifier extends StateNotifier<FormStates> {
             reason: state.digiterReason ?? "",
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         resteRasion();
         updateGenrateMemberIdLoading(false);
         ref.read(digitMemberIDprovider.notifier).refreshDigitalID(context, ref);
         context.pop();
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -3598,17 +3018,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
-
-        // ref.read(commentProvider.notifier).refreshComment(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         updateGenrateMemberIdLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
 
-        //  final error = response['errors']?['comment']?.first;
         resteRasion();
         final message = extractValidationMessage(response);
 
@@ -3630,7 +3042,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       reportStatess.resetState();
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -3641,7 +3052,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       resteRasion();
       updateGenrateMemberIdLoading(false);
@@ -3649,8 +3059,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       visitor.resetState();
       if (!context.mounted) return;
       context.pop();
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -3663,7 +3072,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       resteRasion();
       updateGenrateMemberIdLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -3672,7 +3080,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateGenrateMemberIdLoading(true);
 
     try {
@@ -3681,14 +3088,13 @@ class FormNotifier extends StateNotifier<FormStates> {
       final response = await ref
           .read(profileRepositoryProvider)
           .reActiveMemberDigiterID(token: token ?? "", context: context);
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         resteRasion();
         updateGenrateMemberIdLoading(false);
         context.pop();
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -3700,18 +3106,9 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
 
         ref.read(digitMemberIDprovider.notifier).refreshDigitalID(context, ref);
-
-        // ref.read(commentProvider.notifier).refreshComment(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         updateGenrateMemberIdLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
 
-        //  final error = response['errors']?['comment']?.first;
         resteRasion();
         final message = extractValidationMessage(response);
 
@@ -3733,7 +3130,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       reportStatess.resetState();
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -3744,7 +3140,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       resteRasion();
       updateGenrateMemberIdLoading(false);
@@ -3752,8 +3147,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       visitor.resetState();
       if (!context.mounted) return;
       context.pop();
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -3766,7 +3160,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       resteRasion();
       updateGenrateMemberIdLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -3781,7 +3174,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateAddHouseHoldLoading(true);
 
     try {
@@ -3799,14 +3191,12 @@ class FormNotifier extends StateNotifier<FormStates> {
             role: role,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         restaddMemberFillds();
         updateAddHouseHoldLoading(false);
-
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -3816,20 +3206,12 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
-        // context.goNamed(AppRoutes.getMemberInfo);
+
         closeAllBottomSheets(context);
 
         ref.read(houseProvider.notifier).refreshHuseHold(context, ref);
-
-        // ref.read(commentProvider.notifier).refreshComment(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         updateAddHouseHoldLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
 
         restaddMemberFillds();
         final message = extractValidationMessage(response);
@@ -3852,7 +3234,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       reportStatess.resetState();
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -3863,7 +3244,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       restaddMemberFillds();
       updateAddHouseHoldLoading(false);
@@ -3871,8 +3251,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       visitor.resetState();
       if (!context.mounted) return;
       context.pop();
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -3885,7 +3264,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       restaddMemberFillds();
       updateAddHouseHoldLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -3896,7 +3274,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateRemovedHouseHoldLoading(true);
 
     try {
@@ -3905,14 +3282,12 @@ class FormNotifier extends StateNotifier<FormStates> {
       final response = await ref
           .read(profileRepositoryProvider)
           .removedHouseHold(token: token ?? "", id: id, context: context);
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         resteRasion();
         updateRemovedHouseHoldLoading(false);
-
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -3925,18 +3300,9 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         ref.read(houseProvider.notifier).refreshHuseHold(context, ref);
         context.pop();
-
-        // ref.read(commentProvider.notifier).refreshComment(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         updateRemovedHouseHoldLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
 
-        //  final error = response['errors']?['comment']?.first;
         resteRasion();
         final message = extractValidationMessage(response);
 
@@ -3958,7 +3324,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       reportStatess.resetState();
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -3969,7 +3334,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       resteRasion();
       updateRemovedHouseHoldLoading(false);
@@ -3977,8 +3341,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       visitor.resetState();
       if (!context.mounted) return;
       context.pop();
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -3991,7 +3354,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       resteRasion();
       updateRemovedHouseHoldLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -4013,7 +3375,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateAddHouseHoldLoading(true);
 
     try {
@@ -4039,13 +3400,11 @@ class FormNotifier extends StateNotifier<FormStates> {
             role: role,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateAddHouseHoldLoading(false);
-
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -4059,18 +3418,11 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         ref.read(houseProvider.notifier).refreshHuseHold(context, ref);
 
-        // ref.read(commentProvider.notifier).refreshComment(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
         restaddMemberFillds();
         ref.read(multiSelectProvider('Certifications').notifier).clearAll();
         ref.read(multiSelectProvider('Specializations').notifier).clearAll();
       } else {
         updateAddHouseHoldLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
 
         restaddMemberFillds();
         ref.read(multiSelectProvider('Certifications').notifier).clearAll();
@@ -4095,7 +3447,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (!context.mounted) return;
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -4106,7 +3457,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       restaddMemberFillds();
       ref.read(multiSelectProvider('Certifications').notifier).clearAll();
@@ -4115,8 +3465,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -4131,7 +3479,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       ref.read(multiSelectProvider('Specializations').notifier).clearAll();
       updateAddHouseHoldLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -4149,7 +3496,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateAddHouseHoldLoading(true);
 
     try {
@@ -4190,13 +3536,11 @@ class FormNotifier extends StateNotifier<FormStates> {
                     ? int.parse(state.montlyIcom ?? "")
                     : 0,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateAddHouseHoldLoading(false);
-
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -4206,23 +3550,16 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
-        // context.goNamed(AppRoutes.getMemberInfo);
+
         closeAllBottomSheets(context);
 
         ref.read(houseProvider.notifier).refreshHuseHold(context, ref);
 
-        // ref.read(commentProvider.notifier).refreshComment(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
         restaddMemberFillds();
         ref.read(multiSelectProvider('Certifications').notifier).clearAll();
         ref.read(multiSelectProvider('Specializations').notifier).clearAll();
       } else {
         updateAddHouseHoldLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
 
         restaddMemberFillds();
         ref.read(multiSelectProvider('Certifications').notifier).clearAll();
@@ -4247,7 +3584,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (!context.mounted) return;
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -4258,7 +3594,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       restaddMemberFillds();
       ref.read(multiSelectProvider('Certifications').notifier).clearAll();
@@ -4267,8 +3602,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -4283,21 +3616,9 @@ class FormNotifier extends StateNotifier<FormStates> {
       ref.read(multiSelectProvider('Specializations').notifier).clearAll();
       updateAddHouseHoldLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
-  // String getS(String d, WidgetRef ref, String function toTitle) {
-  //     final state = ref.watch(notificationProviders);
-  //   final t = state.startTimes[toTitle(d)];
-  //   if (t == null) return "00:00";
-  //   return "${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}";
-  // }
 
-  // String getE(String d) {
-  //   final t = state.endTimes[toTitle(d)];
-  //   if (t == null) return "00:00";
-  //   return "${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}";
-  // }
   String formatTime(TimeOfDay? t) {
     if (t == null) return "00:00";
     final h = t.hour.toString().padLeft(2, '0');
@@ -4310,12 +3631,11 @@ class FormNotifier extends StateNotifier<FormStates> {
     required int id,
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateGranFacilityPermissionLoading(true);
 
     try {
       final token = await ref.watch(accessTokenProvider.future);
-      final state = ref.watch(notificationProviders); // WATCH not READ!
+      final state = ref.watch(notificationProviders);
       final notifier = ref.read(notificationProviders.notifier);
       bool? isFacilityEnabled = state.isCurfewEnabled;
 
@@ -4344,17 +3664,15 @@ class FormNotifier extends StateNotifier<FormStates> {
             sundayStart: getStart('sunday'),
             sundayEnd: getEnd('sunday'),
             id: id,
-            isEnabale: isFacilityEnabled ?? false,
+            isEnabale: isFacilityEnabled,
             context: context,
           );
 
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateGranFacilityPermissionLoading(false);
         notifier.resetForm();
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -4368,15 +3686,9 @@ class FormNotifier extends StateNotifier<FormStates> {
         ref
             .read(getCurfewSettingProvider.notifier)
             .refreshPermission(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         notifier.resetForm();
         updateGranFacilityPermissionLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
 
         final message = extractValidationMessage(response);
 
@@ -4397,7 +3709,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifier.resetForm();
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -4408,7 +3720,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
       notifier.resetForm();
@@ -4416,8 +3727,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -4429,7 +3738,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     } finally {
       updateGranFacilityPermissionLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -4438,12 +3746,11 @@ class FormNotifier extends StateNotifier<FormStates> {
     required int id,
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateGranFacilityPermissionLoading(true);
 
     try {
       final token = await ref.watch(accessTokenProvider.future);
-      final state = ref.watch(notificationProviders); // WATCH not READ!
+      final state = ref.watch(notificationProviders);
       final notifier = ref.read(notificationProviders.notifier);
       bool? isFacilityEnabled = state.isFacilityEnabled;
       final facilities = state.facilityConditions?.facilities;
@@ -4479,13 +3786,12 @@ class FormNotifier extends StateNotifier<FormStates> {
             facilities: facilities ?? [],
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateGranFacilityPermissionLoading(false);
         notifier.resetForm();
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -4497,14 +3803,9 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
 
         ref.read(statisticProvider.notifier).refreshPermission(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         notifier.resetForm();
         updateGranFacilityPermissionLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
 
         notifier.resetForm();
         final message = extractValidationMessage(response);
@@ -4526,7 +3827,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifier.resetForm();
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -4537,7 +3838,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
       notifier.resetForm();
@@ -4545,8 +3845,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -4558,7 +3856,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     } finally {
       updateGranFacilityPermissionLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -4567,12 +3864,11 @@ class FormNotifier extends StateNotifier<FormStates> {
     required int id,
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateGrantGatePermissionLoading(true);
 
     try {
       final token = await ref.watch(accessTokenProvider.future);
-      final state = ref.watch(notificationProviders); // WATCH not READ!
+      final state = ref.watch(notificationProviders);
       final notifier = ref.read(notificationProviders.notifier);
       bool? isGateEnabled = state.isGateEnabled;
       final expired = state.expiredDay;
@@ -4608,14 +3904,12 @@ class FormNotifier extends StateNotifier<FormStates> {
 
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifier.resetForm();
         updateGrantGatePermissionLoading(false);
-
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -4627,18 +3921,12 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
 
         ref.read(statisticProvider.notifier).refreshPermission(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         notifier.resetForm();
         updateGrantGatePermissionLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
 
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -4658,7 +3946,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifier.resetForm();
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -4669,7 +3957,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
       notifier.resetForm();
@@ -4677,8 +3964,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -4692,7 +3977,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       updateGrantGatePermissionLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -4701,12 +3985,11 @@ class FormNotifier extends StateNotifier<FormStates> {
     required int id,
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateGrantVisitorPermissionLoading(true);
 
     try {
       final token = await ref.watch(accessTokenProvider.future);
-      final state = ref.watch(notificationProviders); // WATCH not READ!
+      final state = ref.watch(notificationProviders);
       final notifier = ref.read(notificationProviders.notifier);
       bool? isGateEnabled = state.enableVisitorInvitation;
       bool? requiredApproval = state.requiresApproval;
@@ -4726,14 +4009,11 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifier.resetForm();
         updateGrantVisitorPermissionLoading(false);
-
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -4745,18 +4025,12 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
 
         ref.read(statisticProvider.notifier).refreshPermission(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         notifier.resetForm();
         updateGrantVisitorPermissionLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
 
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -4776,7 +4050,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifier.resetForm();
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -4787,7 +4061,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
       notifier.resetForm();
@@ -4795,8 +4068,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -4810,7 +4081,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       updateGrantVisitorPermissionLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -4819,12 +4089,11 @@ class FormNotifier extends StateNotifier<FormStates> {
     required int id,
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateGrantCommunityPermissionLoading(true);
 
     try {
       final token = await ref.watch(accessTokenProvider.future);
-      final state = ref.watch(notificationProviders); // WATCH not READ!
+      final state = ref.watch(notificationProviders);
       final notifier = ref.read(notificationProviders.notifier);
       bool? iscommunityEnabled = state.isCommunityEnabel;
       bool? moderated = state.moderated;
@@ -4845,14 +4114,12 @@ class FormNotifier extends StateNotifier<FormStates> {
             postLimit: max2 ?? 0,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifier.resetForm();
         updateGrantCommunityPermissionLoading(false);
-
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -4864,15 +4131,9 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
 
         ref.read(statisticProvider.notifier).refreshPermission(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         notifier.resetForm();
         updateGrantCommunityPermissionLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
 
         notifier.resetForm();
         final message = extractValidationMessage(response);
@@ -4894,7 +4155,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifier.resetForm();
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -4905,7 +4166,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
       notifier.resetForm();
@@ -4913,8 +4173,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -4928,7 +4186,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       updateGrantCommunityPermissionLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -4937,12 +4194,11 @@ class FormNotifier extends StateNotifier<FormStates> {
     required int id,
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateGrantNightPermissionLoading(true);
 
     try {
       final token = await ref.watch(accessTokenProvider.future);
-      final state = ref.watch(notificationProviders); // WATCH not READ!
+      final state = ref.watch(notificationProviders);
       final notifier = ref.read(notificationProviders.notifier);
       bool? isNigteEnabled = state.isNightEnable;
       final reason = state.otherReason;
@@ -4956,14 +4212,11 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifier.resetForm();
         updateGrantNightPermissionLoading(false);
-
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -4975,17 +4228,12 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
 
         ref.read(statisticProvider.notifier).refreshPermission(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         notifier.resetForm();
         updateGrantNightPermissionLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
 
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -5005,7 +4253,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifier.resetForm();
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -5016,7 +4264,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
       notifier.resetForm();
@@ -5024,8 +4271,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -5039,7 +4284,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       updateGrantNightPermissionLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -5048,12 +4292,11 @@ class FormNotifier extends StateNotifier<FormStates> {
     required int id,
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateGrantParkingPermissionLoading(true);
 
     try {
       final token = await ref.watch(accessTokenProvider.future);
-      final state = ref.watch(notificationProviders); // WATCH not READ!
+      final state = ref.watch(notificationProviders);
       final notifier = ref.read(notificationProviders.notifier);
       bool? isGateEnabled = state.ispackingEnabled;
 
@@ -5071,14 +4314,11 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifier.resetForm();
         updateGrantParkingPermissionLoading(false);
-
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -5090,17 +4330,12 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
 
         ref.read(statisticProvider.notifier).refreshPermission(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         notifier.resetForm();
         updateGrantParkingPermissionLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
 
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -5120,7 +4355,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifier.resetForm();
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -5131,7 +4366,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
       notifier.resetForm();
@@ -5139,8 +4373,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -5154,7 +4386,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       updateGrantParkingPermissionLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -5165,8 +4396,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required String slug,
     required bool value,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(permissionLoadingProvider(slug).notifier);
       notifiers.setLoading(true);
@@ -5183,40 +4412,24 @@ class FormNotifier extends StateNotifier<FormStates> {
             id: id,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifier.resetForm();
 
         notifiers.setLoading(false);
 
-        log("TRUE------->");
-
-        // showCustomSuccessToast(
-        //   context: context,
-        //   message: response["message"],
-        //   color: AppColors.instance.teal300,
-        //   icon: Icons.check_circle,
-        //   iconColors: AppColors.instance.grey200,
-        //   positionNumber: 70,
-        // );
-
         ref
             .read(permissionStatusProvider.notifier)
             .refreshPermissionstatus(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         notifier.resetForm();
 
         notifiers.setLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
 
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -5238,7 +4451,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifier.resetForm();
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -5249,7 +4462,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
       final notifiers = ref.read(permissionLoadingProvider(slug).notifier);
@@ -5258,8 +4470,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -5275,7 +4485,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       updateBasicPermissionLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -5286,13 +4495,9 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required bool value,
   }) async {
-    log("START------->");
-
     updateBasicPermissionLoading(true);
 
     try {
-      // final notifiers = ref.read(permissionLoadingProvider(slug).notifier);
-
       final token = await ref.watch(accessTokenProvider.future);
 
       final notifier = ref.read(notificationProviders.notifier);
@@ -5306,14 +4511,12 @@ class FormNotifier extends StateNotifier<FormStates> {
             id: id,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifier.resetForm();
         updateBasicPermissionLoading(false);
-
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -5323,18 +4526,12 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         notifier.resetForm();
         updateBasicPermissionLoading(false);
 
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -5356,7 +4553,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifier.resetForm();
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -5367,7 +4564,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
 
@@ -5377,8 +4573,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -5392,7 +4586,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       updateBasicPermissionLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -5401,13 +4594,9 @@ class FormNotifier extends StateNotifier<FormStates> {
     required int id,
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     updateBasicPermissionLoading(true);
 
     try {
-      // final notifiers = ref.read(permissionLoadingProvider(slug).notifier);
-
       final token = await ref.watch(accessTokenProvider.future);
 
       final notifier = ref.read(notificationProviders.notifier);
@@ -5419,14 +4608,12 @@ class FormNotifier extends StateNotifier<FormStates> {
             id: id,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifier.resetForm();
         updateBasicPermissionLoading(false);
-
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -5440,11 +4627,8 @@ class FormNotifier extends StateNotifier<FormStates> {
         notifier.resetForm();
         updateBasicPermissionLoading(false);
 
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -5466,7 +4650,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifier.resetForm();
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -5477,7 +4661,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       final notifier = ref.read(notificationProviders.notifier);
 
@@ -5487,8 +4670,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -5502,11 +4683,8 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       updateBasicPermissionLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
-
-  ///SECURITY METHOD
 
   String accessType(String value) {
     switch (value.toLowerCase()) {
@@ -5533,8 +4711,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required String location,
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -5553,8 +4729,8 @@ class FormNotifier extends StateNotifier<FormStates> {
             location: location,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifiers.updateLoading(false);
@@ -5562,17 +4738,9 @@ class FormNotifier extends StateNotifier<FormStates> {
         final userData = response['data']['user'];
 
         final String jsonString = json.encode(userData);
-        // Log the specific fields you want
-        debugPrint('📋 USER DETAILS LOG:');
-        debugPrint('─────────────────────────────────────────');
-        debugPrint('📸 Media URL: ${userData['media_url'] ?? "N/A"}');
-        debugPrint('👤 Role: ${userData['role'] ?? "N/A"}');
-        debugPrint('👤 First Name: ${userData['firstname'] ?? "N/A"}');
-        debugPrint('👤 Last Name: ${userData['lastname'] ?? "N/A"}');
 
-        debugPrint('─────────────────────────────────────────');
         notifier.resetForm();
-        log("TRUE------->");
+
         showUserBottomSheet(
           context: context,
           headertitle: jsonString,
@@ -5586,13 +4754,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           device_id: "",
         );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifiers.updateLoading(false);
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -5616,7 +4780,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -5627,12 +4791,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -5650,7 +4811,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       notifiers.updateLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -5661,8 +4821,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required String location,
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -5682,28 +4840,20 @@ class FormNotifier extends StateNotifier<FormStates> {
             location: location,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifiers.updateLoading(false);
         notifier.resetForm();
-        log("TRUE------->");
+
         final userData = response['data']['user'];
 
         final String jsonString = json.encode(userData);
-        // Log the specific fields you want
-        debugPrint('📋 USER DETAILS LOG:');
-        debugPrint('─────────────────────────────────────────');
-        debugPrint('📸 Media URL: ${userData['media_url'] ?? "N/A"}');
-        debugPrint('👤 Role: ${userData['role'] ?? "N/A"}');
-        debugPrint('👤 First Name: ${userData['firstname'] ?? "N/A"}');
-        debugPrint('👤 Last Name: ${userData['lastname'] ?? "N/A"}');
 
-        debugPrint('─────────────────────────────────────────');
         notifier.resetForm();
         context.pop();
-        log("TRUE------->");
+
         showUserBottomSheet(
           context: context,
           headertitle: jsonString,
@@ -5717,14 +4867,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           device_id: "",
         );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifiers.updateLoading(false);
         notifier.resetForm();
 
-        //  final error = response['errors']?['comment']?.first;
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -5748,7 +4893,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -5759,12 +4904,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -5782,7 +4924,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       notifiers.updateLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -5795,8 +4936,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required String approveType,
     required String denial_reason,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -5818,27 +4957,19 @@ class FormNotifier extends StateNotifier<FormStates> {
             location: location,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifiers.updateLoading(false);
         notifier.resetForm();
-        log("TRUE------->");
+
         final userData = response['data']['user'];
         closeAllBottomSheets(context);
         final String jsonString = json.encode(userData);
-        // Log the specific fields you want
-        debugPrint('📋 USER DETAILS LOG:');
-        debugPrint('─────────────────────────────────────────');
-        debugPrint('📸 Media URL: ${userData['media_url'] ?? "N/A"}');
-        debugPrint('👤 Role: ${userData['role'] ?? "N/A"}');
-        debugPrint('👤 First Name: ${userData['firstname'] ?? "N/A"}');
-        debugPrint('👤 Last Name: ${userData['lastname'] ?? "N/A"}');
 
-        debugPrint('─────────────────────────────────────────');
         notifier.resetForm();
-        log("TRUE------->");
+
         if (approveType.contains("deny-access")) {
           showUserBottomSheet(
             context: context,
@@ -5857,13 +4988,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           );
         }
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-
         notifiers.updateLoading(false);
         notifier.resetForm();
 
-        //  final error = response['errors']?['comment']?.first;
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -5887,7 +5014,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -5898,12 +5025,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -5921,7 +5045,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       notifiers.updateLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -5931,8 +5054,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required String securityNoted,
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -5949,8 +5070,8 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
             securityNote: securityNoted,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         context.pop();
@@ -5963,9 +5084,8 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         final int id = response['data']["otp"]["id"];
 
-        debugPrint('─────────────────────────────────────────');
         notifier.resetForm();
-        log("TRUE------->");
+
         showUserBottomSheet(
           id: id,
           context: context,
@@ -5974,22 +5094,10 @@ class FormNotifier extends StateNotifier<FormStates> {
           ref: ref,
           bottom: BottomSheetView.acceptCheckOut,
         );
-
-        // showUserBottomSheet(
-        //   id: id,
-        //   context: context,
-        //   headertitle: jsonString,
-        //   headersubtitle: jsonStringdata,
-        //   ref: ref,
-        //   bottom: BottomSheetView.confirmEntry,
-        // );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-
         notifiers.updateLoading(false);
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -6013,7 +5121,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -6024,12 +5132,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -6047,7 +5152,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       notifiers.updateLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -6057,8 +5161,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required String securityNoted,
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -6075,8 +5177,8 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
             securityNote: securityNoted,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifiers.updateLoading(false);
@@ -6097,12 +5199,10 @@ class FormNotifier extends StateNotifier<FormStates> {
             positionNumber: 70,
           );
         } else {
-          // context.pop();
           final int id = response['data']["permit_id"];
 
-          debugPrint('─────────────────────────────────────────');
           notifier.resetForm();
-          log("TRUE------->");
+
           showUserBottomSheet(
             id: id,
             context: context,
@@ -6112,23 +5212,10 @@ class FormNotifier extends StateNotifier<FormStates> {
             bottom: BottomSheetView.checkOutWithpermitConfirm,
           );
         }
-
-        // showUserBottomSheet(
-        //   id: id,
-        //   context: context,
-        //   headertitle: jsonString,
-        //   headersubtitle: jsonStringdata,
-        //   ref: ref,
-        //   bottom: BottomSheetView.confirmEntry,
-        // );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifiers.updateLoading(false);
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -6152,7 +5239,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -6163,12 +5250,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -6186,7 +5270,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       notifiers.updateLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -6197,8 +5280,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -6215,14 +5296,14 @@ class FormNotifier extends StateNotifier<FormStates> {
             securityNote: securityNote,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         context.pop();
         notifiers.updateLoading(false);
         notifier.resetForm();
-        log("TRUE------->");
+
         final userData = response['data']["otp"]["generated_by"];
 
         final String jsonString = json.encode(userData);
@@ -6230,9 +5311,8 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         final int id = response['data']["validation"]["id"];
 
-        debugPrint('─────────────────────────────────────────');
         notifier.resetForm();
-        log("TRUE------->");
+
         showUserBottomSheet(
           id: id,
           context: context,
@@ -6242,13 +5322,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           bottom: BottomSheetView.confirmEntry,
         );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifiers.updateLoading(false);
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -6272,7 +5348,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -6283,12 +5359,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -6306,7 +5379,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       notifiers.updateLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -6316,8 +5388,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required String securityNoted,
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -6334,8 +5404,8 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
             securityNote: securityNoted,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         context.pop();
@@ -6348,9 +5418,8 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         final int id = response['data']["otp"]["id"];
 
-        debugPrint('─────────────────────────────────────────');
         notifier.resetForm();
-        log("TRUE------->");
+
         showUserBottomSheet(
           id: id,
           context: context,
@@ -6359,23 +5428,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           ref: ref,
           bottom: BottomSheetView.acceptCheckOut,
         );
-
-        // showUserBottomSheet(
-        //   id: id,
-        //   context: context,
-        //   headertitle: jsonString,
-        //   headersubtitle: jsonStringdata,
-        //   ref: ref,
-        //   bottom: BottomSheetView.confirmEntry,
-        // );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifiers.updateLoading(false);
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
 
         final message = extractValidationMessage(response);
 
@@ -6400,7 +5455,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -6411,12 +5466,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -6434,7 +5486,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       notifiers.updateLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -6445,8 +5496,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required bool override_time_window,
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -6464,14 +5513,14 @@ class FormNotifier extends StateNotifier<FormStates> {
             override_time_window: override_time_window,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         context.pop();
         notifiers.updateLoading(false);
         notifier.resetForm();
-        log("TRUE------->");
+
         final userData = response['data']["otp"]["generated_by"];
 
         final String jsonString = json.encode(userData);
@@ -6479,9 +5528,8 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         final int id = response['data']["otp"]["id"];
 
-        debugPrint('─────────────────────────────────────────');
         notifier.resetForm();
-        log("TRUE------->");
+
         showUserBottomSheet(
           id: id,
           context: context,
@@ -6491,13 +5539,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           bottom: BottomSheetView.confirmEntry,
         );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifiers.updateLoading(false);
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -6521,7 +5565,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -6532,12 +5576,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -6555,7 +5596,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       notifiers.updateLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -6566,8 +5606,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required bool override_time_window,
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -6585,21 +5623,20 @@ class FormNotifier extends StateNotifier<FormStates> {
             override_time_window: override_time_window,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         context.pop();
         notifiers.updateLoading(false);
         notifier.resetForm();
-        log("TRUE------->");
+
         final userData = response;
 
         final String jsonString = json.encode(userData);
 
-        debugPrint('─────────────────────────────────────────');
         notifier.resetForm();
-        log("TRUE------->");
+
         showUserBottomSheet(
           context: context,
           headertitle: jsonString,
@@ -6608,12 +5645,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           bottom: BottomSheetView.vendorcheckinMessage,
         );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-
         notifiers.updateLoading(false);
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -6637,7 +5671,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -6648,12 +5682,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -6671,7 +5702,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       notifiers.updateLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -6682,8 +5712,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required bool override_time_window,
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -6701,21 +5729,20 @@ class FormNotifier extends StateNotifier<FormStates> {
             override_time_window: override_time_window,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         context.pop();
         notifiers.updateLoading(false);
         notifier.resetForm();
-        log("TRUE------->");
+
         final userData = response;
 
         final String jsonString = json.encode(userData);
 
-        debugPrint('─────────────────────────────────────────');
         notifier.resetForm();
-        log("TRUE------->");
+
         showUserBottomSheet(
           context: context,
           headertitle: jsonString,
@@ -6724,12 +5751,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           bottom: BottomSheetView.vendorCheckoutmessage,
         );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-
         notifiers.updateLoading(false);
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -6753,7 +5777,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -6764,12 +5788,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -6787,7 +5808,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       notifiers.updateLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -6798,8 +5818,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required String reason,
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -6817,21 +5835,20 @@ class FormNotifier extends StateNotifier<FormStates> {
             reason: reason,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         context.pop();
         notifiers.updateLoading(false);
         notifier.resetForm();
-        log("TRUE------->");
+
         final userData = response;
 
         final String jsonString = json.encode(userData);
 
-        debugPrint('─────────────────────────────────────────');
         notifier.resetForm();
-        log("TRUE------->");
+
         showUserBottomSheet(
           context: context,
           headertitle: jsonString,
@@ -6840,12 +5857,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           bottom: BottomSheetView.vendorAccessCodeDeyMessage,
         );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-
         notifiers.updateLoading(false);
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -6869,7 +5883,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -6880,12 +5894,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -6903,7 +5914,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       notifiers.updateLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -6914,8 +5924,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required WidgetRef ref,
     required String otpCode,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -6932,21 +5940,20 @@ class FormNotifier extends StateNotifier<FormStates> {
             requestData: requestData,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifiers.updateLoading(false);
         notifier.resetForm();
         context.pop();
-        log("TRUE------->");
+
         final userData = response;
 
         final String jsonString = json.encode(userData);
 
-        debugPrint('─────────────────────────────────────────');
         notifier.resetForm();
-        log("TRUE------->");
+
         if (vendochekc.contains("1")) {
           showUserBottomSheet(
             context: context,
@@ -6965,13 +5972,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           );
         }
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifiers.updateLoading(false);
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -6995,7 +5998,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -7006,12 +6009,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -7029,7 +6029,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       notifiers.updateLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -7041,8 +6040,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -7060,19 +6057,19 @@ class FormNotifier extends StateNotifier<FormStates> {
             id: id,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifiers.updateLoading(false);
 
         notifier.resetForm();
-        log("TRUE------->");
+
         final userData = response;
         closeAllBottomSheets(context);
         final String jsonString = json.encode(userData);
         notifier.resetForm();
-        log("TRUE------->");
+
         showUserBottomSheet(
           context: context,
           headertitle: jsonString,
@@ -7081,13 +6078,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           bottom: BottomSheetView.accesGranted,
         );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifiers.updateLoading(false);
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -7111,7 +6104,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -7122,12 +6115,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -7145,7 +6135,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       notifiers.updateLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -7157,8 +6146,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -7176,18 +6163,18 @@ class FormNotifier extends StateNotifier<FormStates> {
             id: id,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         context.pop();
         notifiers.updateLoading(false);
         notifier.resetForm();
-        log("TRUE------->");
+
         final userData = response;
         final String jsonString = json.encode(userData);
         notifier.resetForm();
-        log("TRUE------->");
+
         showUserBottomSheet(
           context: context,
           headertitle: jsonString,
@@ -7196,13 +6183,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           bottom: BottomSheetView.checkoutpermitapprovedmessaage,
         );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifiers.updateLoading(false);
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -7226,7 +6209,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -7237,12 +6220,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -7260,11 +6240,9 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       notifiers.updateLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
-  ////api/v1/estates/security/workorders/validate validateVendorUsingOTP
   Future<void> denyEntry({
     required BuildContext context,
     required String denyReason,
@@ -7273,8 +6251,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -7292,8 +6268,8 @@ class FormNotifier extends StateNotifier<FormStates> {
             id: id,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         closeAllBottomSheets(context);
@@ -7302,7 +6278,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         final String jsonString = json.encode(userData);
         notifier.resetForm();
-        log("TRUE------->");
+
         showUserBottomSheet(
           context: context,
           headertitle: jsonString,
@@ -7311,23 +6287,10 @@ class FormNotifier extends StateNotifier<FormStates> {
           bottom: BottomSheetView.denyEntryConfirmation,
         );
         notifier.resetForm();
-        log("TRUE------->");
-        // showUserBottomSheet(
-        //   context: context,
-        //   headertitle:
-        //       "${userData["firstname"] ?? "N/A"} ${userData["lastname"] ?? "N/A"}",
-        //   headersubtitle: "",
-        //   ref: ref,
-        //   bottom: BottomSheetView.accesGranted,
-        // );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifiers.updateLoading(false);
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -7351,7 +6314,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -7362,12 +6325,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -7385,7 +6345,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       notifiers.updateLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -7397,8 +6356,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -7416,8 +6373,8 @@ class FormNotifier extends StateNotifier<FormStates> {
             id: id,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         context.pop();
@@ -7426,7 +6383,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         final String jsonString = json.encode(userData);
         notifier.resetForm();
-        log("TRUE------->");
+
         showUserBottomSheet(
           context: context,
           headertitle: jsonString,
@@ -7435,23 +6392,10 @@ class FormNotifier extends StateNotifier<FormStates> {
           bottom: BottomSheetView.cheoutPermitDenymessage,
         );
         notifier.resetForm();
-        log("TRUE------->");
-        // showUserBottomSheet(
-        //   context: context,
-        //   headertitle:
-        //       "${userData["firstname"] ?? "N/A"} ${userData["lastname"] ?? "N/A"}",
-        //   headersubtitle: "",
-        //   ref: ref,
-        //   bottom: BottomSheetView.accesGranted,
-        // );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifiers.updateLoading(false);
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -7475,7 +6419,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -7486,12 +6430,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -7508,8 +6449,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       notifier.resetForm();
       notifiers.updateLoading(false);
-
-      log("END------->");
     }
   }
 
@@ -7521,8 +6460,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -7540,8 +6477,8 @@ class FormNotifier extends StateNotifier<FormStates> {
             id: id,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         context.pop();
@@ -7550,7 +6487,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         final String jsonString = json.encode(userData);
         notifier.resetForm();
-        log("TRUE------->");
 
         if (action.contains("grant")) {
           showUserBottomSheet(
@@ -7571,23 +6507,10 @@ class FormNotifier extends StateNotifier<FormStates> {
         }
 
         notifier.resetForm();
-        log("TRUE------->");
-        // showUserBottomSheet(
-        //   context: context,
-        //   headertitle:
-        //       "${userData["firstname"] ?? "N/A"} ${userData["lastname"] ?? "N/A"}",
-        //   headersubtitle: "",
-        //   ref: ref,
-        //   bottom: BottomSheetView.accesGranted,
-        // );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifiers.updateLoading(false);
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -7611,7 +6534,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -7622,12 +6545,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -7644,8 +6564,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       notifier.resetForm();
       notifiers.updateLoading(false);
-
-      log("END------->");
     }
   }
 
@@ -7657,8 +6575,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -7675,14 +6591,14 @@ class FormNotifier extends StateNotifier<FormStates> {
             id: id,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         context.pop();
         notifiers.updateLoading(false);
         notifier.resetForm();
-        log("TRUE------->");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -7694,13 +6610,9 @@ class FormNotifier extends StateNotifier<FormStates> {
         ref.read(investigatingProvider.notifier).refreshReports(context, ref);
         ref.read(resovedProvider.notifier).refreshReports(context, ref);
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifiers.updateLoading(false);
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -7724,7 +6636,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -7735,12 +6647,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -7758,7 +6667,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       notifiers.updateLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -7769,8 +6677,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required String dec,
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -7789,27 +6695,19 @@ class FormNotifier extends StateNotifier<FormStates> {
             dec: dec,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifiers.updateLoading(false);
         notifier.resetForm();
-        log("TRUE------->");
+
         final userData = response['data']['user'];
 
         final String jsonString = json.encode(userData);
-        // Log the specific fields you want
-        debugPrint('📋 USER DETAILS LOG:');
-        debugPrint('─────────────────────────────────────────');
-        debugPrint('📸 Media URL: ${userData['media_url'] ?? "N/A"}');
-        debugPrint('👤 Role: ${userData['role'] ?? "N/A"}');
-        debugPrint('👤 First Name: ${userData['firstname'] ?? "N/A"}');
-        debugPrint('👤 Last Name: ${userData['lastname'] ?? "N/A"}');
 
-        debugPrint('─────────────────────────────────────────');
         notifier.resetForm();
-        log("TRUE------->");
+
         showUserBottomSheet(
           context: context,
           headertitle: jsonString,
@@ -7818,14 +6716,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           bottom: BottomSheetView.confirmEntry,
         );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifiers.updateLoading(false);
         notifier.resetForm();
 
-        //  final error = response['errors']?['comment']?.first;
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -7849,7 +6742,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -7860,12 +6753,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -7883,7 +6773,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetForm();
       notifiers.updateLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -7895,8 +6784,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(oTpformProvider.notifier);
       final notifier = ref.read(oTpformProvider.notifier);
@@ -7913,14 +6800,14 @@ class FormNotifier extends StateNotifier<FormStates> {
             id: id,
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifiers.updateLoading(false);
         notifier.resetForm();
         context.pop();
-        log("TRUE------->");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -7932,12 +6819,9 @@ class FormNotifier extends StateNotifier<FormStates> {
         ref.read(investigatingProvider.notifier).refreshReports(context, ref);
         ref.read(dismissProvider.notifier).refreshReports(context, ref);
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-
         notifiers.updateLoading(false);
         notifier.resetForm();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -7961,7 +6845,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -7972,12 +6856,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -7992,8 +6873,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifiers.updateLoading(false);
 
       notifiers.resetForm();
-
-      log("END------->");
     }
   }
 
@@ -8005,8 +6884,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(reminderProvider);
       final notifier = ref.read(reminderProvider.notifier);
@@ -8031,15 +6908,14 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifier.updateLoading(false);
         ref.read(generateNotifierProvider.notifier).resetState();
         notifier.resetAll();
         context.pop();
-        log("TRUE------->");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -8050,14 +6926,10 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
         ref.read(getReminderProvider.notifier).refreshReminder(context, ref);
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifier.updateLoading(false);
         ref.read(generateNotifierProvider.notifier).resetState();
         notifier.resetAll();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -8079,7 +6951,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -8090,12 +6962,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -8110,8 +6979,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.updateLoading(false);
       ref.read(generateNotifierProvider.notifier).resetState();
       notifier.resetAll();
-
-      log("END------->");
     }
   }
 
@@ -8123,8 +6990,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifiers = ref.read(reminderProvider);
       final notifier = ref.read(reminderProvider.notifier);
@@ -8153,8 +7018,7 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         ref.read(getReminderProvider.notifier).refreshReminder(context, ref);
@@ -8162,7 +7026,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         ref.read(generateNotifierProvider.notifier).resetState();
         notifier.resetAll();
         context.pop();
-        log("TRUE------->");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -8172,15 +7036,12 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
         ref.read(generateNotifierProvider.notifier).resetState();
-        log("FALSE------->");
 
         ref.read(generateNotifierProvider.notifier).resetState();
         notifier.updateLoading(false);
         notifier.resetAll();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -8202,7 +7063,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -8213,12 +7074,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -8235,7 +7093,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetAll();
 
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -8247,8 +7104,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifier = ref.read(reminderProvider.notifier);
 
@@ -8266,15 +7121,14 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifier.updateLoading(false);
         ref.read(getReminderProvider.notifier).refreshReminder(context, ref);
         notifier.resetAll();
         context.pop();
-        log("TRUE------->");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -8284,13 +7138,8 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifier.updateLoading(false);
         notifier.resetAll();
-        //  final error = response['errors']?['comment']?.first;
 
         final message = extractValidationMessage(response);
 
@@ -8313,7 +7162,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -8324,12 +7173,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -8344,8 +7190,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.updateLoading(false);
 
       notifier.resetAll();
-
-      log("END------->");
     }
   }
 
@@ -8356,8 +7200,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifier = ref.read(reminderProvider.notifier);
 
@@ -8369,8 +7211,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           .read(profileRepositoryProvider)
           .addToCalender(id: id, token: token ?? "", context: context);
 
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         ref.read(getCalenderProvider.notifier).refreshEvent(context, ref);
@@ -8379,7 +7220,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         refreshRsvp(ref, "going");
         notifier.resetAll();
         context.pop();
-        log("TRUE------->");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -8389,13 +7230,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifier.updateLoading(false);
         notifier.resetAll();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -8417,7 +7254,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -8428,12 +7265,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -8450,7 +7284,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetAll();
 
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -8462,8 +7295,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifier = ref.read(reminderProvider.notifier);
       final isPop = ref.watch(isPopProvider);
@@ -8482,8 +7313,7 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifier.updateLoading(false);
@@ -8498,7 +7328,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           ref.read(isPopProvider.notifier).state = false;
         }
 
-        log("TRUE------->");
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -8508,13 +7337,8 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifier.updateLoading(false);
         notifier.resetAll();
-        //  final error = response['errors']?['comment']?.first;
 
         final message = extractValidationMessage(response);
 
@@ -8537,7 +7361,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -8548,12 +7372,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -8568,8 +7389,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.updateLoading(false);
 
       notifier.resetAll();
-
-      log("END------->");
     }
   }
 
@@ -8589,8 +7408,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifier = ref.read(reminderProvider.notifier);
 
@@ -8618,8 +7435,7 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateWorkderLoading(false);
@@ -8634,7 +7450,6 @@ class FormNotifier extends StateNotifier<FormStates> {
         notifier.resetAll();
         ref.read(workOrderProvider.notifier).refreshWorkOrders(context, ref);
 
-        log("TRUE------->");
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -8644,14 +7459,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-
         updateWorkderLoading(false);
-
-        //  final error = response['errors']?['comment']?.first;
-        // final message =
-        //     response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
         final message = extractValidationMessage(response);
 
@@ -8670,7 +7478,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (!context.mounted) return;
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -8681,12 +7488,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -8697,8 +7501,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       );
     } finally {
       updateWorkderLoading(false);
-
-      log("END------->");
     }
   }
 
@@ -8719,8 +7521,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifier = ref.read(reminderProvider.notifier);
 
@@ -8746,8 +7546,7 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateWorkderLoading(false);
@@ -8762,7 +7561,6 @@ class FormNotifier extends StateNotifier<FormStates> {
         notifier.resetAll();
         ref.read(workOrderProvider.notifier).refreshWorkOrders(context, ref);
 
-        log("TRUE------->");
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -8772,15 +7570,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         updateWorkderLoading(false);
-
-        //  final error = response['errors']?['comment']?.first;
-        // final message =
-        //     response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
         final message = extractValidationMessage(response);
 
@@ -8799,7 +7589,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (!context.mounted) return;
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -8810,12 +7599,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -8826,8 +7612,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       );
     } finally {
       updateWorkderLoading(false);
-
-      log("END------->");
     }
   }
 
@@ -8839,8 +7623,6 @@ class FormNotifier extends StateNotifier<FormStates> {
 
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifier = ref.read(reminderProvider.notifier);
 
@@ -8850,8 +7632,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           .read(profileRepositoryProvider)
           .uploadAfterWork(id: id, file: file, context: context);
 
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateWorkderLoading(false);
@@ -8863,7 +7644,6 @@ class FormNotifier extends StateNotifier<FormStates> {
         notifier.resetAll();
         ref.read(workOrderProvider.notifier).refreshWorkOrders(context, ref);
 
-        log("TRUE------->");
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -8873,15 +7653,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         updateWorkderLoading(false);
-
-        //  final error = response['errors']?['comment']?.first;
-        // final message =
-        //     response["data"]?["0"]?["email"]?[0] ?? response["message"];
 
         final message = extractValidationMessage(response);
 
@@ -8900,7 +7672,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (!context.mounted) return;
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -8911,12 +7682,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -8927,8 +7695,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       );
     } finally {
       updateWorkderLoading(false);
-
-      log("END------->");
     }
   }
 
@@ -8938,8 +7704,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required WidgetRef ref,
     required String slug,
   }) async {
-    log("START------->");
-
     final notifiers = ref.read(permissionLoadingProvider(slug).notifier);
     notifiers.setLoading(true);
 
@@ -8952,7 +7716,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       final isBiometricEnabled = ref.watch(biometricPrefProvider);
       final isBiometricEnableds = ref.read(biometricPrefProvider.notifier);
 
-      // ✅ Step 1: Check if biometrics available
       final canUseBiometric = await DeviceInfoHelper.isBiometricAvailable();
       if (!canUseBiometric) {
         showCustomSuccessToast(
@@ -8966,7 +7729,6 @@ class FormNotifier extends StateNotifier<FormStates> {
         return;
       }
 
-      // ✅ Step 2: Ask user to authenticate with fingerprint/face
       final authenticated = await DeviceInfoHelper.authenticateUser(ref);
       if (!authenticated) {
         showCustomSuccessToast(
@@ -8980,7 +7742,6 @@ class FormNotifier extends StateNotifier<FormStates> {
         return;
       }
 
-      // ✅ Step 3: Proceed to setup or enable after authentication
       if (!isBiometricEnabled) {
         final response = await ref
             .read(profileRepositoryProvider)
@@ -8999,14 +7760,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         if (response['status'] == true) {
           await DeviceInfoHelper.saveFirstTimeCheck(false);
           isBiometricEnableds.toggleBiometric(true);
-          final biometricId = deviceToken ?? "unknown_device_id";
-          final signature = await BiometricSignatureHelper.getOrCreateSignature(
-            uniqueBiometricId: biometricId,
-          );
 
-          log("✅ Signature created after successful setup: $signature");
-
-          // enabletoggle(context: context, value: value, ref: ref, slug: slug);
         } else {
           final message = extractValidationMessage(response);
 
@@ -9020,7 +7774,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           );
         }
       } else {
-        log("the value was true");
         enabletoggle(
           context: context,
           value: isBiometricEnabled,
@@ -9028,8 +7781,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           slug: slug,
         );
       }
-    } on DioException catch (e) {
-      log("DIO ERROR: $e");
+    } on DioException  {
       showCustomSuccessToast(
         context: context,
         message: "Network error occurred",
@@ -9039,7 +7791,6 @@ class FormNotifier extends StateNotifier<FormStates> {
         positionNumber: 70,
       );
     } catch (e) {
-      log("ERROR-------> $e");
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -9050,7 +7801,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       );
     } finally {
       notifiers.setLoading(false);
-      log("END------->");
     }
   }
 
@@ -9060,20 +7810,12 @@ class FormNotifier extends StateNotifier<FormStates> {
     required WidgetRef ref,
     required String slug,
   }) async {
-    log("🚀 START enableToggle() | switch current value = $value");
-
     final notifiers = ref.read(permissionLoadingProvider(slug).notifier);
     final biometricPref = ref.read(biometricPrefProvider.notifier);
     notifiers.setLoading(true);
 
     try {
       final token = await ref.watch(accessTokenProvider.future) ?? "";
-
-      /// -------------------------------
-      /// CASE 1: User currently ENABLED (value = true)
-      /// Means → user wants to DISABLE it now
-      /// -------------------------------
-      log("🧭 Current state: enabled → disabling...");
 
       final response = await ref
           .read(profileRepositoryProvider)
@@ -9086,7 +7828,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (!context.mounted) return;
 
       if (response['status'] == true) {
-        log("✅ Biometric disabled successfully");
         biometricPref.toggleBiometric(false);
 
         showCustomSuccessToast(
@@ -9100,8 +7841,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       } else {
         _handleErrorResponse(context, ref, response["message"]);
       }
-    } on DioException catch (e) {
-      log("🌐 DIO ERROR: $e");
+    } on DioException  {
       showCustomSuccessToast(
         context: context,
         message: "Network error occurred",
@@ -9111,7 +7851,6 @@ class FormNotifier extends StateNotifier<FormStates> {
         positionNumber: 70,
       );
     } catch (e) {
-      log("💥 ERROR: $e");
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -9122,7 +7861,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       );
     } finally {
       notifiers.setLoading(false);
-      log("🏁 END enableToggle()");
     }
   }
 
@@ -9132,8 +7870,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required Map<String, dynamic> requestData,
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifier = ref.read(reminderProvider.notifier);
       final items = ref.watch(itemListProvider);
@@ -9151,15 +7887,14 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         items.clear();
         notifier.updateLoading(false);
 
         context.pop();
-        log("TRUE------->");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -9168,15 +7903,12 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
+        ref.read(getActivePermit.notifier).refreshActive(context, ref);
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifier.updateLoading(false);
         items.clear();
         notifier.resetAll();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -9198,7 +7930,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -9209,12 +7941,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -9232,7 +7961,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetAll();
 
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -9250,8 +7978,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required String special_instructions,
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
     try {
       final notifier = ref.read(reminderProvider.notifier);
 
@@ -9274,14 +8000,13 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         notifier.updateLoading(false);
 
         context.pop();
-        log("TRUE------->");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -9292,13 +8017,9 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
         ref.read(getEventCodeProvider.notifier).refreshEventCode(context, ref);
       } else {
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
-
         notifier.updateLoading(false);
         notifier.resetAll();
-        //  final error = response['errors']?['comment']?.first;
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -9320,7 +8041,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (e.error is SocketException) {
         notifiers.updateLoading(false);
-        log(e.error.toString());
+
         showCustomSuccessToast(
           context: context,
           message:
@@ -9331,12 +8052,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
 
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -9354,7 +8072,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       notifier.resetAll();
 
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -9363,7 +8080,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required int id,
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateGenrateMemberIdLoading(true);
 
     try {
@@ -9377,15 +8093,14 @@ class FormNotifier extends StateNotifier<FormStates> {
             reason: state.digiterReason ?? "",
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         resteRasion();
         updateGenrateMemberIdLoading(false);
         ref.read(getEventCodeProvider.notifier).refreshEventCode(context, ref);
         context.pop();
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -9395,17 +8110,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
-
-        // ref.read(commentProvider.notifier).refreshComment(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         updateGenrateMemberIdLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
 
-        //  final error = response['errors']?['comment']?.first;
         resteRasion();
         final message = extractValidationMessage(response);
 
@@ -9427,7 +8134,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       reportStatess.resetState();
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -9438,7 +8144,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       resteRasion();
       updateGenrateMemberIdLoading(false);
@@ -9446,8 +8151,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       visitor.resetState();
       if (!context.mounted) return;
       context.pop();
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -9460,7 +8164,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       resteRasion();
       updateGenrateMemberIdLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -9470,7 +8173,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required WidgetRef ref,
     required Map<String, dynamic> requestData,
   }) async {
-    log("START------->");
     updateGenrateMemberIdLoading(true);
 
     try {
@@ -9482,16 +8184,14 @@ class FormNotifier extends StateNotifier<FormStates> {
             reason: state.digiterReason ?? "",
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         ref.read(electionProvider.notifier).clearAll();
         resteRasion();
         updateGenrateMemberIdLoading(false);
         ref.read(candidateProvider.notifier).refreshCandidate(context, ref);
-
-        log("TRUE------->");
 
         showCustomSuccessToast(
           context: context,
@@ -9501,17 +8201,10 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
-
-        // ref.read(commentProvider.notifier).refreshComment(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         ref.read(electionProvider.notifier).clearAll();
         updateGenrateMemberIdLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
+
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -9523,7 +8216,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
         ref.read(electionProvider.notifier).clearAll();
-        //  final error = response['errors']?['comment']?.first;
+
         resteRasion();
       }
     } on DioException catch (e) {
@@ -9535,7 +8228,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       reportStatess.resetState();
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -9546,7 +8238,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       resteRasion();
       updateGenrateMemberIdLoading(false);
@@ -9554,8 +8245,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       visitor.resetState();
       if (!context.mounted) return;
       context.pop();
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -9568,7 +8258,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       resteRasion();
       updateGenrateMemberIdLoading(false);
       updateOtp('', false);
-      log("END------->");
+
       ref.read(electionProvider.notifier).clearAll();
     }
   }
@@ -9579,7 +8269,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required double totalAmout,
     required WidgetRef ref,
   }) async {
-    log("START------->");
     updateGenrateMemberIdLoading(true);
 
     try {
@@ -9591,8 +8280,8 @@ class FormNotifier extends StateNotifier<FormStates> {
 
             context: context,
           );
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
+
+      if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateGenrateMemberIdLoading(false);
@@ -9605,41 +8294,14 @@ class FormNotifier extends StateNotifier<FormStates> {
           AppRoutes.paymentSuccess,
           extra: {"fails_succs": false, "ErrorMessage": response["message"]},
         );
-        log("TRUE------->");
-
-        // showCustomSuccessToast(
-        //   context: context,
-        //   message: response["message"],
-        //   color: AppColors.instance.teal300,
-        //   icon: Icons.check_circle,
-        //   iconColors: AppColors.instance.grey200,
-        //   positionNumber: 70,
-        // );
-
-        // ref.read(commentProvider.notifier).refreshComment(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         updateGenrateMemberIdLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
 
-        //  final error = response['errors']?['comment']?.first;
         context.pop();
         context.pushNamed(
           AppRoutes.paymentSuccess,
           extra: {"fails_succs": true, "ErrorMessage": response["message"]},
         );
-        // showCustomSuccessToast(
-        //   context: context,
-        //   message: response["message"],
-        //   color: AppColors.instance.error500,
-        //   icon: Icons.error,
-        //   iconColors: AppColors.instance.grey200,
-        //   positionNumber: 70,
-        // );
       }
     } on DioException catch (e) {
       updateGenrateMemberIdLoading(false);
@@ -9650,7 +8312,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       reportStatess.resetState();
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -9661,7 +8322,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       resteRasion();
       updateGenrateMemberIdLoading(false);
@@ -9669,8 +8329,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       visitor.resetState();
       if (!context.mounted) return;
       context.pop();
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -9683,7 +8342,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       resteRasion();
       updateGenrateMemberIdLoading(false);
       updateOtp('', false);
-      log("END------->");
     }
   }
 
@@ -9694,12 +8352,6 @@ class FormNotifier extends StateNotifier<FormStates> {
     required double totalAmout,
     required WidgetRef ref,
   }) async {
-    log("START------->");
-    log("REQUEST DATA: amount: ${(totalAmout * 100).round()}");
-    log("REQUEST DATA: method: $paymentMethod");
-    log("REQUEST DATA: reference: $refrence");
-    log("Mounted? ${context.mounted}");
-
     try {
       final response = await ref
           .read(profileRepositoryProvider)
@@ -9711,10 +8363,8 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      log("befor isMouted------->");
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
-      log("after isMouted------->");
+      if (!context.mounted) return;
+
       if (response['status'] == true) {
         ref
             .read(paymentDashbordProvider.notifier)
@@ -9730,37 +8380,11 @@ class FormNotifier extends StateNotifier<FormStates> {
           ref: ref,
           bottom: BottomSheetView.paymentSuccess,
         );
-
-        // context.pushNamed(
-        //   AppRoutes.paymentSuccess,
-        //   extra: {"fails_succs": false, "ErrorMessage": response["message"]},
-        // );
-        log("TRUE------->");
-
-        // showCustomSuccessToast(
-        //   context: context,
-        //   message: response["message"],
-        //   color: AppColors.instance.teal300,
-        //   icon: Icons.check_circle,
-        //   iconColors: AppColors.instance.grey200,
-        //   positionNumber: 70,
-        // );
-
-        // ref.read(commentProvider.notifier).refreshComment(context, ref);
-
-        // USING SHAREPREFRENCE FOR LOCAL DATA STORE AND FOR
-        //PREVENT USER FROM LEAVE THE DASHBORD AFTER LOGIN
       } else {
         updateGenrateMemberIdLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
 
-        //  final error = response['errors']?['comment']?.first;
         context.pop();
-        // context.pushNamed(
-        //   AppRoutes.paymentSuccess,
-        //   extra: {"fails_succs": true, "ErrorMessage": response["message"]},
-        // );
+
         final message = extractValidationMessage(response);
 
         showUserBottomSheet(
@@ -9770,20 +8394,11 @@ class FormNotifier extends StateNotifier<FormStates> {
           ref: ref,
           bottom: BottomSheetView.paymentSuccess,
         );
-        // showCustomSuccessToast(
-        //   context: context,
-        //   message: response["message"],
-        //   color: AppColors.instance.error500,
-        //   icon: Icons.error,
-        //   iconColors: AppColors.instance.grey200,
-        //   positionNumber: 70,
-        // );
       }
     } on DioException catch (e) {
       if (!context.mounted) return;
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -9794,12 +8409,10 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
       context.pop();
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -9808,9 +8421,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         iconColors: AppColors.instance.grey200,
         positionNumber: 70,
       );
-    } finally {
-      log("END------->");
-    }
+    } finally {}
   }
 
   Future<void> initialisMessage({
@@ -9820,10 +8431,7 @@ class FormNotifier extends StateNotifier<FormStates> {
     required String type,
     required WidgetRef ref,
   }) async {
-    log("START------->");
-
-    log("Mounted? ${context.mounted}");
-
+    updateInitMessageLoading(true);
     try {
       final response = await ref
           .read(profileRepositoryProvider)
@@ -9834,36 +8442,87 @@ class FormNotifier extends StateNotifier<FormStates> {
             context: context,
           );
 
-      log("befor isMouted------->");
-      log(response.toString());
-      if (!context.mounted) return; // Always check first
-      log("after isMouted------->");
-      if (response['status'] == true) {
-        ref
-            .read(paymentDashbordProvider.notifier)
-            .refreshPaymentDashbord(context, ref);
-        context.pop();
-        // ref
-        //     .read(paymentHistoryProvider.notifier)
-        //     .refreshPaymentHistory(context, ref);
-        // showUserBottomSheet(
-        //   context: context,
-        //   headertitle: response["message"].toString(),
-        //   headersubtitle: "",
-        //   ref: ref,
-        //   bottom: BottomSheetView.paymentSuccess,
-        // );
+      if (!context.mounted) return;
+
+      if (response['success'] == true) {
+        updateInitMessageLoading(false);
+
+        final String message = response["message"] ?? "A/N";
+
+        if (message.toLowerCase().contains("conversation already exists")) {
+          final raw = response['data']["conversation"];
+          final List participants = raw["participants"];
+
+          final receiver = participants.firstWhere(
+            (user) => user["user_id"].toString() == id.toString(),
+          );
+
+          final int convId = int.tryParse(raw["id"].toString()) ?? 0;
+
+          context.pop();
+
+          context.pushNamed(
+            AppRoutes.messageBody,
+            extra: {
+              "id": convId,
+              "username": receiver["full_name"] ?? "",
+              "isOnline": receiver["online_status"] ?? "offline",
+              "url": receiver["avatar_url"] ?? "",
+              "userRole": receiver["role"] ?? "",
+            },
+          );
+        } else {
+          final raw = response['data']["conversation"];
+          final List participants = raw["participants"];
+
+          final receiver = participants.firstWhere(
+            (user) => user["user_id"].toString() == id.toString(),
+          );
+
+          final int convId = int.tryParse(raw["id"].toString()) ?? 0;
+
+          context.pop();
+
+          context.pushNamed(
+            AppRoutes.messageBody,
+            extra: {
+              "id": convId,
+              "username": receiver["full_name"] ?? "",
+              "isOnline": receiver["online_status"] ?? "offline",
+              "url": receiver["avatar_url"] ?? "",
+              "userRole": receiver["role"] ?? "",
+            },
+          );
+        }
+        showCustomSuccessToast(
+          context: context,
+          message:
+              response['message']?.toString() ??
+              "Chat initialized successfully!",
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+        await ref
+            .read(conversationListProvider.notifier)
+            .refreshConversations();
       } else {
-        updateGenrateMemberIdLoading(false);
-        // log(e.toString());
-        // ref.read(authProvider.notifier).seassionExpire(context, ref);
-        log("FALSE------->");
+        updateInitMessageLoading(false);
+        final message = extractValidationMessage(response);
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
       }
     } on DioException catch (e) {
       if (!context.mounted) return;
 
       if (e.error is SocketException) {
-        log(e.error.toString());
         showCustomSuccessToast(
           context: context,
           message:
@@ -9874,12 +8533,10 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
       }
-      log(e.toString());
     } catch (e) {
       if (!context.mounted) return;
       context.pop();
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -9889,64 +8546,46 @@ class FormNotifier extends StateNotifier<FormStates> {
         positionNumber: 70,
       );
     } finally {
-      log("END------->");
+      updateInitMessageLoading(false);
     }
   }
 
   Future<void> markUnreadMessage({required WidgetRef ref}) async {
-    log("START------->");
-
     try {
       final response =
           await ref.read(profileRepositoryProvider).markMessagCount();
 
-      log("befor isMouted------->");
-      log(response.toString());
-
-      log("after isMouted------->");
       if (response['status'] == true) {
       } else {}
     } on DioException catch (e) {
-      if (e.error is SocketException) {
-        log(e.error.toString());
-      }
-      log(e.toString());
+      if (e.error is SocketException) {}
     } catch (e) {
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
-    } finally {
-      log("END------->");
-    }
+    } finally {}
   }
 
   Future<void> markMessageRead({
     required WidgetRef ref,
     required int id,
   }) async {
-    log("START------->");
-
     try {
+      try {
+        ref.read(messagesProvider(id).notifier).markMessagesAsReadLocally();
+        ref
+            .read(conversationListProvider.notifier)
+            .markConversationAsReadLocally(id);
+      } catch (e) {}
+
       final response = await ref
           .read(profileRepositoryProvider)
           .markMessageRead(id: id);
-
-      log("befor isMouted------->");
-      log(response.toString());
-
-      log("after isMouted------->");
-      if (response['status'] == true) {
-      } else {}
-    } on DioException catch (e) {
-      if (e.error is SocketException) {
-        log(e.error.toString());
+      if (response["success"] == true) {
+        ref.read(conversationListProvider.notifier).refreshConversations();
+        await ref.read(unreadCountsProvider.notifier).refreshCounts();
       }
-      log(e.toString());
+    } on DioException catch (e) {
+      if (e.error is SocketException) {}
     } catch (e) {
-      log("E-ERROR-MESSAGE------->");
-      log(e.toString());
-    } finally {
-      log("END------->");
-    }
+    } finally {}
   }
 
   Future<void> chattingSetting({
@@ -9958,9 +8597,6 @@ class FormNotifier extends StateNotifier<FormStates> {
   }) async {
     updateChatingLoading(true);
     try {
-      // 3️⃣ Check connectivity (optional but recommended)
-
-      // 4️⃣ Attempt API send
       final response = await ref
           .read(profileRepositoryProvider)
           .chattingSetting(
@@ -9972,10 +8608,9 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (!context.mounted) return;
 
-      if (response['status'] == true) {
-        // 5️⃣ Mark message as synced
+      if (response['success'] == true) {
         updateChatingLoading(false);
-        log("CHAT MESSAGE SYNCED");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -9984,7 +8619,9 @@ class FormNotifier extends StateNotifier<FormStates> {
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
-        ref.read(getChatSettings(id).notifier).refreshChatSetting(context, ref, id);
+        ref
+            .read(getChatSettings(id).notifier)
+            .refreshChatSetting(context, ref, id);
       } else {
         showCustomSuccessToast(
           context: context,
@@ -9997,9 +8634,8 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateChatingLoading(false);
       }
     } on DioException catch (e) {
-      log("NETWORK ERROR — message kept offline");
       updateChatingLoading(false);
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -10009,7 +8645,6 @@ class FormNotifier extends StateNotifier<FormStates> {
         positionNumber: 70,
       );
     } catch (e) {
-      log("UNEXPECTED ERROR");
       updateChatingLoading(false);
       showCustomSuccessToast(
         context: context,
@@ -10019,9 +8654,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         iconColors: AppColors.instance.grey200,
         positionNumber: 70,
       );
-      log(e.toString());
     } finally {
-      log("CHAT SEND END");
       updateChatingLoading(false);
     }
   }
@@ -10034,9 +8667,6 @@ class FormNotifier extends StateNotifier<FormStates> {
   }) async {
     updateTermsAndPropertyLoading(true);
     try {
-      // 3️⃣ Check connectivity (optional but recommended)
-
-      // 4️⃣ Attempt API send
       final response = await ref
           .read(profileRepositoryProvider)
           .agreementsiging(
@@ -10048,7 +8678,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (!context.mounted) return;
 
       if (response['status'] == true) {
-        // 5️⃣ Mark message as synced
         updateTermsAndPropertyLoading(false);
         context.pop();
         ref.read(complianceprovider.notifier).refreshCompliance(context, ref);
@@ -10074,9 +8703,8 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateTermsAndPropertyLoading(false);
       }
     } on DioException catch (e) {
-      log("NETWORK ERROR — message kept offline");
       updateTermsAndPropertyLoading(false);
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -10086,7 +8714,6 @@ class FormNotifier extends StateNotifier<FormStates> {
         positionNumber: 70,
       );
     } catch (e) {
-      log("UNEXPECTED ERROR");
       updateTermsAndPropertyLoading(false);
       showCustomSuccessToast(
         context: context,
@@ -10096,9 +8723,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         iconColors: AppColors.instance.grey200,
         positionNumber: 70,
       );
-      log(e.toString());
     } finally {
-      log("CHAT SEND END");
       updateTermsAndPropertyLoading(false);
     }
   }
@@ -10111,9 +8736,6 @@ class FormNotifier extends StateNotifier<FormStates> {
   }) async {
     updateTermsAndPropertyLoading(true);
     try {
-      // 3️⃣ Check connectivity (optional but recommended)
-
-      // 4️⃣ Attempt API send
       final response = await ref
           .read(profileRepositoryProvider)
           .agreementAndTermsDecline(
@@ -10125,9 +8747,8 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (!context.mounted) return;
 
       if (response['status'] == true) {
-        // 5️⃣ Mark message as synced
         updateTermsAndPropertyLoading(false);
-        log("CHAT MESSAGE SYNCED");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -10150,9 +8771,8 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateTermsAndPropertyLoading(false);
       }
     } on DioException catch (e) {
-      log("NETWORK ERROR — message kept offline");
       updateTermsAndPropertyLoading(false);
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -10162,7 +8782,6 @@ class FormNotifier extends StateNotifier<FormStates> {
         positionNumber: 70,
       );
     } catch (e) {
-      log("UNEXPECTED ERROR");
       updateTermsAndPropertyLoading(false);
       showCustomSuccessToast(
         context: context,
@@ -10172,9 +8791,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         iconColors: AppColors.instance.grey200,
         positionNumber: 70,
       );
-      log(e.toString());
     } finally {
-      log("CHAT SEND END");
       updateTermsAndPropertyLoading(false);
     }
   }
@@ -10186,9 +8803,6 @@ class FormNotifier extends StateNotifier<FormStates> {
   }) async {
     updateTermsAndPropertyLoading(true);
     try {
-      // 3️⃣ Check connectivity (optional but recommended)
-
-      // 4️⃣ Attempt API send
       final response = await ref
           .read(profileRepositoryProvider)
           .termsAndCondition(context: context);
@@ -10196,10 +8810,9 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (!context.mounted) return;
 
       if (response['status'] == true) {
-        // 5️⃣ Mark message as synced
         updateTermsAndPropertyLoading(false);
         context.pop();
-        log("CHAT MESSAGE SYNCED");
+
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -10222,9 +8835,8 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateTermsAndPropertyLoading(false);
       }
     } on DioException catch (e) {
-      log("NETWORK ERROR — message kept offline");
       updateTermsAndPropertyLoading(false);
-      log(e.toString());
+
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -10234,7 +8846,6 @@ class FormNotifier extends StateNotifier<FormStates> {
         positionNumber: 70,
       );
     } catch (e) {
-      log("UNEXPECTED ERROR");
       updateTermsAndPropertyLoading(false);
       showCustomSuccessToast(
         context: context,
@@ -10244,17 +8855,13 @@ class FormNotifier extends StateNotifier<FormStates> {
         iconColors: AppColors.instance.grey200,
         positionNumber: 70,
       );
-      log(e.toString());
     } finally {
-      log("CHAT SEND END");
       updateTermsAndPropertyLoading(false);
     }
   }
 
-  /// 🧩 Handle login error gracefully
   void _handleLoginError(BuildContext context, WidgetRef ref, String? message) {
     final errorMessage = message ?? "Unknown error";
-    log("❌ Biometric Login Error: $errorMessage");
 
     if (errorMessage.contains("Unauthenticated")) {
       ref.read(authProvider.notifier).sessionExpire(context, ref);
@@ -10270,14 +8877,12 @@ class FormNotifier extends StateNotifier<FormStates> {
     }
   }
 
-  /// Helper function for error responses
   void _handleErrorResponse(
     BuildContext context,
     WidgetRef ref,
     String? message,
   ) {
     final errorMessage = message ?? "Unknown error";
-    log("❌ API Response Error: $errorMessage");
 
     if (errorMessage.contains("Unauthenticated")) {
       ref.read(authProvider.notifier).sessionExpire(context, ref);
@@ -10295,7 +8900,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
   @override
   void dispose() {
-    _resendTimer?.cancel(); // Prevent memory leaks
+    _resendTimer?.cancel();
     super.dispose();
   }
 }

@@ -247,14 +247,15 @@ class _ScanWidgetState extends ConsumerState<ScanWidget> {
     super.initState();
     // _isFlashOn = ref.read(torchStateProvider);
   }
-@override
-void reassemble() {
-  super.reassemble();
-  if (Platform.isAndroid) {
-    qrController?.pauseCamera();
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    if (Platform.isAndroid) {
+      qrController?.pauseCamera();
+    }
+    qrController?.resumeCamera();
   }
-  qrController?.resumeCamera();
-}
 
   @override
   void dispose() {
@@ -318,46 +319,47 @@ void reassemble() {
   //     }
   //   });
   // }
-void _onQRViewCreated(QRViewController controller) {
-  if (!mounted) {
-    controller.dispose();
-    return;
-  }
-
-  qrController?.dispose();
-  qrController = controller;
-
-  controller.scannedDataStream.listen((scanData) {
-    if (_hasScanned) return;
-
-    final barcode = scanData.code;
-    if (barcode == null || barcode.isEmpty) return;
-
-    _hasScanned = true;
-    controller.pauseCamera();
-
-    try {
-      final decodedString = utf8.decode(base64.decode(barcode));
-      final jsonData = json.decode(decodedString);
-
-      showUserBottomSheet(
-        context: context,
-        headertitle: barcode,
-        headersubtitle: jsonData['type'],
-        ref: ref,
-        bottom: BottomSheetView.additionForScan,
-      );
-    } catch (_) {
-      showUserBottomSheet(
-        context: context,
-        headertitle: barcode,
-        headersubtitle: "Direct QR Code",
-        ref: ref,
-        bottom: BottomSheetView.additionForScan,
-      );
+  void _onQRViewCreated(QRViewController controller) {
+    if (!mounted) {
+      controller.dispose();
+      return;
     }
-  });
-}
+
+    qrController?.dispose();
+    qrController = controller;
+
+    controller.scannedDataStream.listen((scanData) {
+      if (_hasScanned) return;
+
+      final barcode = scanData.code;
+      if (barcode == null || barcode.isEmpty) return;
+
+      _hasScanned = true;
+      controller.pauseCamera();
+
+      try {
+        final decodedString = utf8.decode(base64.decode(barcode));
+        final jsonData = json.decode(decodedString);
+
+        ref.read(qrScanProvider.notifier).state = false;
+        showUserBottomSheet(
+          context: context,
+          headertitle: barcode,
+          headersubtitle: jsonData['type'],
+          ref: ref,
+          bottom: BottomSheetView.additionForScan,
+        );
+      } catch (_) {
+        showUserBottomSheet(
+          context: context,
+          headertitle: barcode,
+          headersubtitle: "Direct QR Code",
+          ref: ref,
+          bottom: BottomSheetView.additionForScan,
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -487,5 +489,4 @@ void _onQRViewCreated(QRViewController controller) {
       ],
     );
   }
-
 }

@@ -13,8 +13,8 @@ class PaymentDashboardData with _$PaymentDashboardData {
   @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
   const factory PaymentDashboardData({
     String? walletBalance,
-    int? totalOutstanding,
-    int? totalOverdue,
+    double? totalOutstanding,
+    double? totalOverdue,
     int? outstandingDuesCount,
     int? overdueDuesCount,
     bool? hasSufficientBalance,
@@ -30,8 +30,8 @@ class PaymentDashboardData with _$PaymentDashboardData {
   factory PaymentDashboardData.safeFromJson(Map<String, dynamic>? json) {
     return PaymentDashboardData(
       walletBalance: NullSafetyHelper.safeString(json?['wallet_balance']),
-      totalOutstanding: NullSafetyHelper.safeInt(json?['total_outstanding']),
-      totalOverdue: NullSafetyHelper.safeInt(json?['total_overdue']),
+      totalOutstanding: NullSafetyHelper.safeDouble(json?['total_outstanding']),
+      totalOverdue: NullSafetyHelper.safeDouble(json?['total_overdue']),
       outstandingDuesCount: NullSafetyHelper.safeInt(json?['outstanding_dues_count']),
       overdueDuesCount: NullSafetyHelper.safeInt(json?['overdue_dues_count']),
       hasSufficientBalance: NullSafetyHelper.safeBool(json?['has_sufficient_balance']),
@@ -48,8 +48,8 @@ class PaymentDashboardData with _$PaymentDashboardData {
 
   factory PaymentDashboardData.empty() => const PaymentDashboardData(
         walletBalance: '0.00',
-        totalOutstanding: 0,
-        totalOverdue: 0,
+        totalOutstanding: 0.0,
+        totalOverdue: 0.0,
         outstandingDuesCount: 0,
         overdueDuesCount: 0,
         hasSufficientBalance: false,

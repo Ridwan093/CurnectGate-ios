@@ -8,7 +8,8 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/chat/data/model/conversation.dart';
 import 'package:curnectgate/features/chat/data/provider/%20chat_list_provider.dart';
-import 'package:curnectgate/features/chat/data/provider/reverb_provider.dart';
+import 'package:curnectgate/features/chat/data/provider/get_provider/get_conversation_provider.dart';
+import 'package:curnectgate/features/chat/data/provider/get_provider/unread_counts_provider.dart';
 import 'package:curnectgate/features/chat/data/provider/search_provider.dart';
 import 'package:curnectgate/features/chat/presentation/chat_widget/conversation_tile.dart';
 import 'package:curnectgate/features/chat/services/reverb_service.dart';
@@ -46,16 +47,16 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      ref.read(conversationListProvider.notifier).refreshConversations();
+      await ref.read(unreadCountsProvider.notifier).refreshCounts();
       final authState = ref.watch(authProvider);
 
       final user = authState.user;
       final userId = user?["id"] ?? "";
       log("Ok let seee if you log ot not we see :${userId}");
       await ReverbService.setupGlobalListener(userId, ref);
-      
     });
   }
-
 
   @override
   void dispose() {
@@ -63,34 +64,68 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
     super.dispose();
   }
 
+  Participant? _getOtherParticipant(Conversation conv, dynamic currentUserId) {
+    if (conv.participants == null || conv.participants!.isEmpty) return null;
+    try {
+      return conv.participants!.firstWhere(
+        (p) => p.userId?.toString() != currentUserId?.toString(),
+      );
+    } catch (_) {
+      return conv.participants!.first;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final searchState = ref.watch(searchProvider);
+    final conversations = ref.watch(conversationListProvider);
+    final role = ref.watch(userRoleProvider);
 
-    final asyncConversations = ref.watch(conversationListProvider);
+    final authState = ref.watch(authProvider);
+    final currentUserId = authState.user?["id"];
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       floatingActionButton:
           searchState.isSearching
               ? const SizedBox.shrink()
-              : _buildAction(ref, context),
+              : role.when(
+                data: (data) {
+                  if (data.isNotEmpty) {
+                    if (data.toLowerCase().contains("security_personnel")) {
+                      return SizedBox();
+                    } else {
+                      return _buildAction(ref, context);
+                    }
+                  } else {
+                    return SizedBox();
+                  }
+                },
+                error: (Object error, StackTrace stackTrace) {
+                  return SizedBox();
+                },
+                loading: () {
+                  return SizedBox();
+                },
+              ),
       appBar: searchState.isSearching ? null : _buildAppBar(),
 
       body: RefreshIndicator(
+        color: AppColors.instance.yellow500,
         onRefresh: () async {
           // Pull-to-refresh → force API sync
           await ref
               .read(conversationListProvider.notifier)
               .refreshConversations();
         },
-        child: asyncConversations.when(
-          data: (conversations) {
-            if (conversations == null || conversations.isEmpty) {
+        child: Builder(
+          builder: (context) {
+            if (conversations.isEmpty) {
               return _buildEmptyBody(
                 title: widget.title,
                 description: widget.description,
                 context: context,
+                ref: ref,
               );
             }
 
@@ -112,39 +147,26 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
                     SizedBox(height: 8),
                     Expanded(
                       child: ListView.builder(
+                        padding: const EdgeInsets.only(bottom: 80),
                         itemCount: filtered.length,
                         itemBuilder: (context, index) {
                           final conversation = filtered[index];
                           return ConversationTile(
                             conversation: conversation,
-                            onTap:
-                                () => _navigateToChat(
-                                  context: context,
-                                  isOnline:
-                                      conversation
-                                          .participants
-                                          ?.last
-                                          .onlineStatus ??
-                                      "",
-                                  url:
-                                      conversation
-                                          .participants
-                                          ?.last
-                                          .avatarUrl ??
-                                      "",
-                                  userFullName:
-                                      conversation
-                                          .participants
-                                          ?.last
-                                          .fullName ??
-                                      "",
-                                  userRole:
-                                      conversation.participants?.last.role ??
-                                      "",
-                                  id: conversation.id ?? 0,
-                                  // conversation,
-                                  // ref.read(chatProvider),
-                                ),
+                            onTap: () {
+                              final other = _getOtherParticipant(
+                                conversation,
+                                currentUserId,
+                              );
+                              _navigateToChat(
+                                context: context,
+                                isOnline: other?.onlineStatus ?? "",
+                                url: other?.avatarUrl ?? "",
+                                userFullName: other?.fullName ?? "",
+                                userRole: other?.role ?? "",
+                                id: conversation.id ?? 0,
+                              );
+                            },
                           );
                         },
                       ),
@@ -153,29 +175,11 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
                 ),
 
                 // Search Overlay (keep your existing)
-                if (searchState.isSearching) _buildSearchOverlay(context, ref),
+                if (searchState.isSearching)
+                  _buildSearchOverlay(context, ref, currentUserId),
               ],
             );
           },
-
-          loading: () => Center(child: CircularProgressIndicator()),
-          error:
-              (e, stack) => Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Error loading conversations: $e"),
-                    ElevatedButton(
-                      onPressed:
-                          () =>
-                              ref
-                                  .read(conversationListProvider.notifier)
-                                  .refreshConversations(),
-                      child: Text("Retry"),
-                    ),
-                  ],
-                ),
-              ),
         ),
       ),
     );
@@ -212,7 +216,11 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
     );
   }
 
-  Widget _buildSearchOverlay(BuildContext context, WidgetRef ref) {
+  Widget _buildSearchOverlay(
+    BuildContext context,
+    WidgetRef ref,
+    dynamic currentUserId,
+  ) {
     final searchState = ref.watch(searchProvider);
     final filteredConversations = ref
         .read(coversationSearchProvider.notifier)
@@ -283,12 +291,19 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
                             child: ListTile(
                               leading: CircleAvatar(
                                 backgroundImage: NetworkImage(
-                                  conversation.participants?.first.avatarUrl ??
+                                  _getOtherParticipant(
+                                        conversation,
+                                        currentUserId,
+                                      )?.avatarUrl ??
                                       "",
                                 ),
                               ),
                               title: Text(
-                                conversation.participants?.first.fullName ?? "",
+                                _getOtherParticipant(
+                                      conversation,
+                                      currentUserId,
+                                    )?.fullName ??
+                                    "",
                                 style: const TextStyle(color: Colors.white),
                               ),
                               subtitle:
@@ -307,33 +322,17 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
                                       : null,
                               onTap: () {
                                 ref.read(searchProvider.notifier).clearSearch();
+                                final other = _getOtherParticipant(
+                                  conversation,
+                                  currentUserId,
+                                );
                                 _navigateToChat(
-                                  isOnline:
-                                      conversation
-                                          .participants
-                                          ?.last
-                                          .onlineStatus ??
-                                      "",
+                                  isOnline: other?.onlineStatus ?? "",
                                   context: context,
-                                  url:
-                                      conversation
-                                          .participants
-                                          ?.last
-                                          .avatarUrl ??
-                                      "",
-                                  userFullName:
-                                      conversation
-                                          .participants
-                                          ?.last
-                                          .fullName ??
-                                      "",
-                                  userRole:
-                                      conversation.participants?.last.role ??
-                                      "",
-
+                                  url: other?.avatarUrl ?? "",
+                                  userFullName: other?.fullName ?? "",
+                                  userRole: other?.role ?? "",
                                   id: conversation.id ?? 0,
-                                  // conversation,
-                                  // ref.read(chatProvider),
                                 );
                               },
                             ),
@@ -354,13 +353,13 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
     required String url,
     required String isOnline,
     required int id,
-  }) {
+  }) async {
     context.pushNamed(
       AppRoutes.messageBody,
       extra: {
         "id": id,
         "username": userFullName,
-        "userRole": userRole,
+        "userRole": userRole..replaceAll("_", " "),
         "url": url,
         "isOnline": isOnline,
       },
@@ -409,14 +408,20 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
     required String title,
     required String description,
     required BuildContext context,
+    required WidgetRef ref,
   }) {
+    final authState = ref.watch(authProvider);
+
+    final user = authState.fullname;
+
     return SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(12, 10, 10, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
           Text(
-            title,
+            (user ?? "").replaceFirst(RegExp(r'^\S+'), 'Hi'),
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               fontFamily: FontFamilies.interDisplay,
               fontWeight: FontFamilies.bold,

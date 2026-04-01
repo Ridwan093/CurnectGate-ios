@@ -18,13 +18,13 @@ class Message extends HiveObject {
   final int? senderId;
 
   @HiveField(3)
-  final String? messageText;
+  String? messageText;
 
   @HiveField(4)
   String? status;
 
   @HiveField(5)
-  final bool? isRead;
+  bool? isRead;
 
   @HiveField(6)
   final bool? isSender;
@@ -45,7 +45,7 @@ class Message extends HiveObject {
   String? createdAt;
 
   @HiveField(12)
-  final String? updatedAt;
+  String? updatedAt;
 
   /// ================= LOCAL UI STATE =================
 
@@ -108,12 +108,24 @@ class Message extends HiveObject {
       isSender: NullSafetyHelper.safeBool(json?['is_sender']),
       timeAgo: NullSafetyHelper.safeString(json?['time_ago']),
       attachments:
-          NullSafetyHelper.safeMapList(
-            json?['attachments'],
-          ).map((e) => Attachment.safeFromJson(e)).toList(),
-      senderName: NullSafetyHelper.safeString(json?['sender']?['full_name']),
-      senderAvatar: NullSafetyHelper.safeString(json?['sender']?['avatar_url']),
-      createdAt: NullSafetyHelper.safeString(json?['created_at']),
+          (json?['attachments'] is List)
+              ? (json?['attachments'] as List)
+                  .map((e) => Attachment.safeFromJson(e))
+                  .toList()
+              : (json?['attachments'] != null || json?['attachment'] != null)
+              ? [
+                Attachment.safeFromJson(
+                  json?['attachments'] ?? json?['attachment'],
+                ),
+              ]
+              : const [],
+      senderName: NullSafetyHelper.safeString(
+        json?['sender']?['full_name'] ?? json?['sender_name'],
+      ),
+      senderAvatar: NullSafetyHelper.safeString(
+        json?['sender']?['avatar_url'] ?? json?['sender_avatar'],
+      ),
+      createdAt: json?['created_at']?.toString() ?? "created_at",
       updatedAt: NullSafetyHelper.safeString(json?['updated_at']),
       isSending: false,
       isFailed: false,
@@ -148,6 +160,52 @@ class Message extends HiveObject {
       createdLocalAt: DateTime.now(),
       syncStatus: 'sent',
       hiveKey: 0,
+    );
+  }
+
+  Message copyWith({
+    int? id,
+    int? conversationId,
+    int? senderId,
+    String? messageText,
+    String? status,
+    bool? isRead,
+    bool? isSender,
+    String? timeAgo,
+    List<Attachment>? attachments,
+    String? senderName,
+    String? senderAvatar,
+    String? createdAt,
+    String? updatedAt,
+    bool? isSending,
+    bool? isFailed,
+    String? localId,
+    int? serverId,
+    DateTime? createdLocalAt,
+    String? syncStatus,
+    int? hiveKey,
+  }) {
+    return Message(
+      id: id ?? this.id,
+      conversationId: conversationId ?? this.conversationId,
+      senderId: senderId ?? this.senderId,
+      messageText: messageText ?? this.messageText,
+      status: status ?? this.status,
+      isRead: isRead ?? this.isRead,
+      isSender: isSender ?? this.isSender,
+      timeAgo: timeAgo ?? this.timeAgo,
+      attachments: attachments ?? this.attachments,
+      senderName: senderName ?? this.senderName,
+      senderAvatar: senderAvatar ?? this.senderAvatar,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      isSending: isSending ?? this.isSending,
+      isFailed: isFailed ?? this.isFailed,
+      localId: localId ?? this.localId,
+      serverId: serverId ?? this.serverId,
+      createdLocalAt: createdLocalAt ?? this.createdLocalAt,
+      syncStatus: syncStatus ?? this.syncStatus,
+      hiveKey: hiveKey ?? this.hiveKey,
     );
   }
 }

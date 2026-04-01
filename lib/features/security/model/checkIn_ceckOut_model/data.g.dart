@@ -8,6 +8,7 @@ part of 'data.dart';
 
 
 
+
 _$DataPayloadImpl _$$DataPayloadImplFromJson(Map<String, dynamic> json) =>
     _$DataPayloadImpl(
       visitors: (json['visitors'] as List<dynamic>?)

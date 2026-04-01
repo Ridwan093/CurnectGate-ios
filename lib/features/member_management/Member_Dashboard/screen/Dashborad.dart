@@ -7,6 +7,8 @@ import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/estate_management/elections/provider/poll_provider.dart';
+import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/getWorkOdder_provider.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/workformprovider.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/buildSar_Widget.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/dashBordRowcard.dart';
@@ -17,10 +19,12 @@ import 'package:curnectgate/features/member_management/membership_ID/provider/di
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/operations/OTP_Activation/provider/expired_used_count_provider.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/ActiveData_widget.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/event_limit_data.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
+import 'package:curnectgate/features/payment/provider/dashbord_provider.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/dashbord_Model/payment_dashboard_data.dart';
 import 'package:curnectgate/features/payment/widget/payment_data/dasbordData.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +42,16 @@ class Dashborad extends ConsumerWidget {
     return formatter.format(number);
   }
 
+  Future<void> refreshData(WidgetRef ref, BuildContext context) async {
+    ref.refresh(expiredCountProvider("used"));
+    ref.read(pollProvider.notifier).refreshPoll(context, ref);
+    ref.read(workOrderProvider.notifier).refreshWorkOrders(context, ref);
+
+    ref
+        .read(paymentDashbordProvider.notifier)
+        .refreshPaymentDashbord(context, ref);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
@@ -45,108 +59,114 @@ class Dashborad extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      body: SizedBox(
-        height: size.height,
-        width: size.width,
-        child: Column(
-          children: [
-            _buildAppBar(context, ref),
+      body: RefreshIndicator(
+        color: AppColors.instance.yellow500,
+        onRefresh: () async {
+          return await refreshData(ref, context);
+        },
+        child: SizedBox(
+          height: size.height,
+          width: size.width,
+          child: Column(
+            children: [
+              _buildAppBar(context, ref),
 
-            Expanded(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Headcard(),
-                    SizedBox(height: 15),
-                    _buildRow(context, ref),
-                    SizedBox(height: 15),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Headcard(),
+                      SizedBox(height: 15),
+                      _buildRow(context, ref),
+                      SizedBox(height: 15),
 
-                    // Votingsettingcheck(child: PollDatas(canRoute: true)),
-                    // SizedBox(height: 10),
+                      // Votingsettingcheck(child: PollDatas(canRoute: true)),
+                      // SizedBox(height: 10),
 
-                    // Text(
-                    //   "YOUR DUES",
-                    //   style: TextStyle(
-                    //     fontFamily: FontFamilies.interDisplay,
-                    //     color: AppColors.instance.black300,
-                    //     fontWeight: FontFamilies.bold,
-                    //   ),
-                    // ),
-                    // SizedBox(height: 15),
-                    DashbordData(
-                      builder:
-                          (context, data) => _buildDueCard(
-                            data as PaymentDashboardData,
-                            context,
-                            ref,
-                          ),
-                    ),
+                      // Text(
+                      //   "YOUR DUES",
+                      //   style: TextStyle(
+                      //     fontFamily: FontFamilies.interDisplay,
+                      //     color: AppColors.instance.black300,
+                      //     fontWeight: FontFamilies.bold,
+                      //   ),
+                      // ),
+                      // SizedBox(height: 15),
+                      DashbordData(
+                        builder:
+                            (context, data) => _buildDueCard(
+                              data as PaymentDashboardData,
+                              context,
+                              ref,
+                            ),
+                      ),
 
-                    SizedBox(height: 20),
-                    _buildTopTitile("STATISTICS"),
-                    SizedBox(height: 10),
-                    // _buildvisitorRow(),
-                    Statistics(),
+                      SizedBox(height: 20),
+                      _buildTopTitile("STATISTICS"),
+                      SizedBox(height: 10),
+                      // _buildvisitorRow(),
+                      Statistics(),
 
-                    // _buildContent(size, context, ref),
-                    SizedBox(height: 20),
-                    _buildTopTitile("QUICK LINK"),
+                      // _buildContent(size, context, ref),
+                      SizedBox(height: 20),
+                      _buildTopTitile("QUICK LINK"),
 
-                    SizedBox(height: 10),
+                      SizedBox(height: 10),
 
-                    // role.when(
-                    //   data: (data) {
-                    //     if (data.isNotEmpty) {
-                    //       if (data.toLowerCase().contains("landlord") ||
-                    //           data.toLowerCase().contains("spouse")) {
-                    //         return _otherLinks(
-                    //           title: "ADD FAMILY",
-                    //           onTap: () async {
-                    //             context.pushNamed(AppRoutes.getMemberInfo);
-                    //           },
-                    //         );
-                    //       } else {
-                    //         return SizedBox();
-                    //       }
-                    //     } else {
-                    //       return SizedBox();
-                    //     }
-                    //   },
-                    //   error: (e, s) {
-                    //     return SizedBox();
-                    //   },
-                    //   loading: () {
-                    //     return SizedBox();
-                    //   },
-                    // ),
-                    _buildQuikLink(ref, context),
-                    // Divider(color: AppColors.instance.grey400),
-                    // _otherLinks(
-                    //   title: "ACCOUNT SETTINGS",
-                    //   onTap: () {
-                    //     context.pushNamed(AppRoutes.manageLoging);
-                    //   },
-                    // ),
-                    // Divider(color: AppColors.instance.grey400),
-                    // SizedBox(height: 5),
-                    // _otherLinks(
-                    //   title: "RESIDENT DIRECTORY",
-                    //   onTap: () {
-                    //     context.pushNamed(AppRoutes.residentDirectory);
-                    //   },
-                    // ),
-                    // SizedBox(height: 20),
-                    // _buildTopTitile("NEED SAFETY HELP"),
+                      // role.when(
+                      //   data: (data) {
+                      //     if (data.isNotEmpty) {
+                      //       if (data.toLowerCase().contains("landlord") ||
+                      //           data.toLowerCase().contains("spouse")) {
+                      //         return _otherLinks(
+                      //           title: "ADD FAMILY",
+                      //           onTap: () async {
+                      //             context.pushNamed(AppRoutes.getMemberInfo);
+                      //           },
+                      //         );
+                      //       } else {
+                      //         return SizedBox();
+                      //       }
+                      //     } else {
+                      //       return SizedBox();
+                      //     }
+                      //   },
+                      //   error: (e, s) {
+                      //     return SizedBox();
+                      //   },
+                      //   loading: () {
+                      //     return SizedBox();
+                      //   },
+                      // ),
+                      _buildQuikLink(ref, context),
+                      // Divider(color: AppColors.instance.grey400),
+                      // _otherLinks(
+                      //   title: "ACCOUNT SETTINGS",
+                      //   onTap: () {
+                      //     context.pushNamed(AppRoutes.manageLoging);
+                      //   },
+                      // ),
+                      // Divider(color: AppColors.instance.grey400),
+                      // SizedBox(height: 5),
+                      // _otherLinks(
+                      //   title: "RESIDENT DIRECTORY",
+                      //   onTap: () {
+                      //     context.pushNamed(AppRoutes.residentDirectory);
+                      //   },
+                      // ),
+                      // SizedBox(height: 20),
+                      // _buildTopTitile("NEED SAFETY HELP"),
 
-                    // SizedBox(height: 10),
-                    // _buildSaftyRow(context, ref),
-                  ],
+                      // SizedBox(height: 10),
+                      // _buildSaftyRow(context, ref),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -169,85 +189,6 @@ class Dashborad extends ConsumerWidget {
         //   child: Container(height: 1.0, color: AppColors.instance.black600),
         // ),
       ],
-    );
-  }
-
-  Widget _buildSaftyRow(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authProvider);
-    final user = authState.user;
-    final fullname = authState.fullname;
-    final adminEmail = user?["estate"]["contact_email"] ?? "";
-    final estateName = user?['estate_name'] ?? "";
-
-    return Row(
-      spacing: 10,
-      children: [
-        Expanded(
-          child: _buildSaftyBox(
-            onTap: () {
-              showUserBottomSheet(
-                context: context,
-                headertitle: "",
-                headersubtitle: "",
-                ref: ref,
-                bottom: BottomSheetView.residentEmgencyContacts,
-              );
-            },
-            imagepath: AssetPaths.dashboardemergency,
-            title: 'Emergency',
-          ),
-        ),
-        Expanded(
-          child: _buildSaftyBox(
-            onTap: () {
-              _launchSupportEmail(
-                adminEmail: adminEmail,
-                estateName: estateName,
-                userName: fullname ?? "",
-              );
-            },
-            imagepath: AssetPaths.dashboardCall,
-            title: 'Support',
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSaftyBox({
-    required String imagepath,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.only(top: 10, left: 10),
-        height: 80,
-
-        decoration: BoxDecoration(
-          color: AppColors.instance.grey300,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            spacing: 10,
-
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Image.asset(imagepath, width: 20),
-              Text(
-                title,
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black600,
-                  fontWeight: FontFamilies.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 
@@ -512,8 +453,8 @@ class Dashborad extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) {
-    final isDue = data?.totalOutstanding == 0;
-    final rawAmount = data?.totalOutstanding ?? 0;
+    final isDue = (data?.totalOutstanding ?? 0) > 0;
+    final rawAmount = data?.totalOutstanding ?? 0.00;
     final displayAmount = "₦${formatPrice(rawAmount.toString())}";
 
     // Use MediaQuery for safe, proportional sizing
@@ -521,93 +462,96 @@ class Dashborad extends ConsumerWidget {
     final maxAmountWidth =
         screenWidth * 0.65; // 65% of screen → safe on small devices
 
-    return isDue
-        ? SizedBox()
-        : Container(
-          padding: const EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
-          decoration: BoxDecoration(
-            color: AppColors.instance.teal400,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
+    return Container(
+      padding: const EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
+      decoration: BoxDecoration(
+        color: AppColors.instance.teal400,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    "Amount Due",
+              Text(
+                "Amount Due",
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  color: AppColors.instance.grey200.withOpacity(0.9),
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                ),
+              ),
+              // const SizedBox(height: 6),
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: maxAmountWidth),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    displayAmount,
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
-                      color: AppColors.instance.grey200.withOpacity(0.9),
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                    ),
-                  ),
-                  // const SizedBox(height: 6),
-                  ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: maxAmountWidth),
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        displayAmount,
-                        style: TextStyle(
-                          fontFamily: FontFamilies.interDisplay,
-                          color: AppColors.instance.grey200,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                          height: 1.1,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              Align(
-                alignment:
-                    Alignment
-                        .centerRight, // or Alignment.bottomRight if you prefer
-                child: InkWell(
-                  onTap: () {
-                    showUserBottomSheet(
-                      context: context,
-                      headertitle: "Pay Outstanding Due",
-                      headersubtitle: "",
-                      ref: ref,
-                      dashbordData: data,
-                      bottom: BottomSheetView.payOustanding,
-                    );
-                  },
-                  child: Container(
-                    height: 35,
-                    width: 100,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    decoration: BoxDecoration(
-                      color: AppColors.instance.black600.withOpacity(.4),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Pay Now",
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontFamily: FontFamilies.interDisplay,
-                          color: AppColors.instance.grey200,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                      color: AppColors.instance.grey200,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30,
+                      height: 1.1,
                     ),
                   ),
                 ),
               ),
             ],
           ),
-        );
+
+          Align(
+            alignment:
+                Alignment.centerRight, // or Alignment.bottomRight if you prefer
+            child: InkWell(
+              onTap: () {
+                showUserBottomSheet(
+                  context: context,
+                  headertitle: "Pay Outstanding Due",
+                  headersubtitle: "",
+                  ref: ref,
+                  dashbordData: data,
+                  bottom: BottomSheetView.payOustanding,
+                );
+              },
+              child: Container(
+                height: 35,
+                width: 100,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                decoration: BoxDecoration(
+                  color:
+                      !isDue
+                          ? AppColors.instance.grey400
+                          : AppColors.instance.black600.withOpacity(.4),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Center(
+                  child: Text(
+                    "Pay Now",
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      color:
+                          !isDue
+                              ? AppColors.instance.black300
+                              : AppColors.instance.grey200,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildRow(BuildContext context, WidgetRef ref) {

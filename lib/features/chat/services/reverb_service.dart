@@ -1,30 +1,28 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer' as dev;
-import 'dart:developer';
 
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/features/chat/data/model/conversation.dart';
 import 'package:curnectgate/features/chat/data/provider/get_provider/get_conversation_provider.dart';
 import 'package:curnectgate/features/chat/data/provider/get_provider/get_list_message.dart';
+import 'package:curnectgate/features/chat/data/provider/get_provider/unread_counts_provider.dart';
 import 'package:curnectgate/features/chat/data/provider/reverb_provider.dart';
+import 'package:curnectgate/features/chat/data/provider/typingindicator_provider.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:dart_pusher_channels/dart_pusher_channels.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ReverbService {
   static PusherChannelsClient? _client;
-  static String? _token;
   static bool _initialized = false;
 
-  /// GLOBAL CHANNEL
   static PrivateChannel? _globalChannel;
   static StreamSubscription<ChannelReadEvent>? _globalMessageSub;
 
-  /// CHAT CHANNEL
   static PrivateChannel? _chatChannel;
   static StreamSubscription<ChannelReadEvent>? _chatMessageSub;
   static StreamSubscription<ChannelReadEvent>? _typingSub;
+  static StreamSubscription<ChannelReadEvent>? _chatBindAllSub;
 
   static PusherChannelsClient get client {
     if (_client == null) {
@@ -33,9 +31,6 @@ class ReverbService {
     return _client!;
   }
 
-  // =========================
-  // INIT (ONLY ONCE)
-  // =========================
   static Future<void> init({
     required String token,
     required String appKey,
@@ -43,21 +38,15 @@ class ReverbService {
     required int port,
     required String scheme,
     required String broadcaster,
-    String? cluster, // cluster should be passed when available
+    String? cluster,
   }) async {
-    if (_initialized) {
-      dev.log('⚠️ Reverb already initialized');
-      return;
-    }
+    if (_initialized) return;
 
     _initialized = true;
-    _token = token;
 
     late PusherChannelsOptions options;
 
     if (broadcaster.toLowerCase() == 'pusher' && cluster != null) {
-      dev.log('⚡ Initializing Pusher via cluster $cluster');
-
       options = PusherChannelsOptions.fromCluster(
         scheme: 'wss',
         cluster: cluster,
@@ -67,7 +56,6 @@ class ReverbService {
         metadata: PusherChannelsOptionsMetadata.byDefault(),
       );
     } else {
-      // Use host for Reverb or custom servers
       host = host.replaceAll(RegExp(r'^https?://'), '');
       final wsScheme = scheme.toLowerCase() == 'https' ? 'wss' : 'ws';
 
@@ -84,26 +72,28 @@ class ReverbService {
     _client = PusherChannelsClient.websocket(
       options: options,
       connectionErrorHandler: (exception, trace, refresh) async {
-        dev.log('❌ Connection Error: $exception');
         await Future.delayed(const Duration(seconds: 2));
         refresh();
       },
     );
 
+    final connectCompleter = Completer<void>();
+
     _client!.onConnectionEstablished.listen((_) {
-      dev.log('🟢 Connected to socket');
+      if (!connectCompleter.isCompleted) {
+        connectCompleter.complete();
+      }
     });
 
-    _client!.pusherErrorEventStream.listen((_) {
-      dev.log('🔴 Disconnected from socket');
-    });
+    _client!.pusherErrorEventStream.listen((_) {});
 
     await _client!.connect();
+
+    try {
+      await connectCompleter.future.timeout(const Duration(seconds: 5));
+    } catch (_) {}
   }
 
-  // =========================
-  // INIT REALTIME (CALL ONCE AFTER LOGIN)
-  // =========================
   static Future<void> initRealtime(WidgetRef ref, int userId) async {
     try {
       final token = await SharedPrefsService().getUserToken();
@@ -125,20 +115,19 @@ class ReverbService {
           port: model.port,
           scheme: model.scheme,
           cluster: model.cluster,
-          broadcaster: model.broadcaster, // Send broadcaster type
+          broadcaster: model.broadcaster,
         );
 
         await setupGlobalListener(userId, ref);
       }
-    } catch (e) {
-      dev.log("❌ initRealtime error: $e");
-    }
+    } catch (_) {}
   }
 
-  // =========================
-  // GLOBAL LISTENER (user.{id})
-  // =========================
+
+
   static Future<void> setupGlobalListener(int userId, WidgetRef ref) async {
+
+
     try {
       final config = await SharedPrefsService().getReverbConfig();
       if (config == null) return;
@@ -146,85 +135,66 @@ class ReverbService {
       final token = await SharedPrefsService().getUserToken();
       if (token == null) return;
 
-      // 🔥 Cancel previous listeners
-      _globalMessageSub?.cancel();
       _globalChannel?.unsubscribe();
 
-      // =========================
-      // CREATE CHANNEL
-      // =========================
       _globalChannel = client.privateChannel(
-        'user.$userId.conversations',
+        'private-user.$userId.conversations',
         authorizationDelegate:
             EndpointAuthorizableChannelTokenAuthorizationDelegate.forPrivateChannel(
               authorizationEndpoint: Uri.parse(config.authEndpoint),
-              headers: {'Authorization': 'Bearer $token'},
+              headers: {
+                'Authorization': 'Bearer $token',
+                'Accept': 'application/json',
+              },
             ),
       );
 
-      // =========================
-      // SUBSCRIBE FIRST ✅
-      // =========================
-      _globalChannel!.subscribeIfNotUnsubscribed();
+      _globalChannel!.subscribe();
 
-      _globalChannel!.bindToAll().listen((event) {
-        dev.log(
-          "ChatList channelevent Check: ${event.channelName} => ${event.data}",
-        );
-      });
-      _globalChannel!.whenSubscriptionSucceeded().listen((event) {
-        dev.log("✅ Global subscribed: ${event.channelName}");
-      });
+      _globalChannel!.bindToAll().listen((event) {});
 
-      _globalChannel!.onSubscriptionError().listen((event) {
-        dev.log("❌ Global subscription error: ${event.data}");
-      });
+      _globalChannel!.whenSubscriptionSucceeded().listen((event) {});
 
-      _globalChannel!.onAuthenticationSubscriptionFailed().listen((event) {
-        dev.log("❌ Global auth failed: ${event.data}");
-      });
+      _globalChannel!.onSubscriptionError().listen((event) {});
 
-      // =========================
-      // 🆕 NEW CONVERSATION
-      // =========================
-      _globalChannel!.bind('.conversation.created').listen((event) {
+      _globalChannel!.onAuthenticationSubscriptionFailed().listen((event) {});
+
+      _globalChannel!.bind('conversation.created').listen((event) {
         final payload =
             jsonDecode(event.data as String) as Map<String, dynamic>;
         final conversationJson = payload['conversation'];
-
-        dev.log("🟢 New conversation => $conversationJson");
 
         ref
             .read(conversationListProvider.notifier)
             .updateConversation(Conversation.safeFromJson(conversationJson));
       });
 
-      // =========================
-      // 🔥 NEW MESSAGE (THIS WAS MISSING)
-      // =========================
-      _globalMessageSub = _globalChannel!.bind('.message.sent').listen((event) {
+      _globalMessageSub = _globalChannel!.bind('message.sent').listen((
+        event,
+      ) async {
         final payload =
             jsonDecode(event.data as String) as Map<String, dynamic>;
         final messageJson = payload['message'];
 
-        dev.log("📩 Global message => $messageJson");
-
         final conversationId = messageJson['conversation_id'];
 
-        // ✅ UPDATE CHAT LIST
-        // ref.read(conversationListProvider.notifier).updateLastMessage(
-        //       conversationId: conversationId,
-        //       message: messageJson,
-        //     );
-
-        // ✅ OPTIONAL: update chat screen if already open
         ref
-            .read(messagesProvider(conversationId).notifier)
-            .addIncomingMessage(messageJson);
+            .read(conversationListProvider.notifier)
+            .updateLastMessage(
+              conversationId: conversationId,
+              message: messageJson,
+            );
+
+        await ref.read(unreadCountsProvider.notifier).refreshCounts();
+
+        if (_chatChannel == null ||
+            _chatChannel!.name != 'private-conversation.$conversationId') {
+          ref
+              .read(messagesProvider(conversationId).notifier)
+              .addIncomingMessage(messageJson);
+        }
       });
-    } catch (e) {
-      dev.log("❌ Global listener setup failed: $e");
-    }
+    } catch (_) {}
   }
 
   static Future<void> subscribeChat({
@@ -238,87 +208,91 @@ class ReverbService {
       final token = await SharedPrefsService().getUserToken();
       if (token == null) return;
 
-      // Cancel previous subscriptions
-      _chatMessageSub?.cancel();
-      _typingSub?.cancel();
-      _chatChannel?.unsubscribe();
+      await _chatMessageSub?.cancel();
+      await _typingSub?.cancel();
+      await _chatBindAllSub?.cancel();
+
+      if (_chatChannel != null) {
+        try {
+          _chatChannel?.unsubscribe();
+        } catch (_) {}
+        _chatChannel = null;
+      }
 
       _chatChannel = client.privateChannel(
-        'conversation.$chatId',
+        'private-conversation.$chatId',
         authorizationDelegate:
             EndpointAuthorizableChannelTokenAuthorizationDelegate.forPrivateChannel(
               authorizationEndpoint: Uri.parse(config.authEndpoint),
-              headers: {'Authorization': 'Bearer $token'},
+              headers: {
+                'Authorization': 'Bearer $token',
+                'Accept': 'application/json',
+              },
             ),
       );
 
-      _chatChannel!.subscribeIfNotUnsubscribed();
+      _chatChannel!.subscribe();
 
-      // 🔹 Log subscription success
-      _chatChannel!.whenSubscriptionSucceeded().listen((event) {
-        dev.log(
-          "✅ chat channel subscription succeeded: ${event.channelName}",
-        );
-      });
+      _chatChannel!.whenSubscriptionSucceeded().listen((event) {});
 
-      // 🔹 Log subscription errors
-      _chatChannel!.onSubscriptionError().listen((event) {
-        dev.log("❌ Chat subscription error: ${event.data}");
-      });
+      _chatChannel!.onSubscriptionError().listen((event) {});
 
-      // 🔹 Log authentication failures
-      _chatChannel!.onAuthenticationSubscriptionFailed().listen((event) {
-        dev.log("❌ Chat auth failed: ${event.data}");
-      });
+      _chatChannel!.onAuthenticationSubscriptionFailed().listen((event) {});
 
-      // 🔹 Bind to all events for debugging
-      _chatChannel!.bindToAll().listen((event) {
-        dev.log("🌐 Chat channel event: ${event.channelName} => ${event.data}");
-      });
+      _chatBindAllSub = _chatChannel!.bindToAll().listen((event) {});
 
-      // MESSAGE SENT
-      _chatMessageSub = _chatChannel!.bind('.message.sent').listen((event) {
+      _chatMessageSub = _chatChannel!.bind('message.sent').listen((event) {
         final payload =
             jsonDecode(event.data as String) as Map<String, dynamic>;
-        final messageJson = payload['message'];
 
-        dev.log("📩 New message realtime => $messageJson");
+        final messageJson = payload['message'];
 
         ref
             .read(messagesProvider(chatId).notifier)
             .addIncomingMessage(messageJson);
       });
 
-      // MESSAGE READ
-      _chatChannel!.bind('.message.read').listen((event) {
-        final payload =
-            jsonDecode(event.data as String) as Map<String, dynamic>;
-        dev.log("👁 message read => $payload");
+      _chatChannel!.bind('message.read').listen((event) {
+        jsonDecode(event.data as String) as Map<String, dynamic>;
       });
 
-      // USER TYPING
-      _typingSub = _chatChannel!.bind('.user.typing').listen((event) {
-        final payload =
-            jsonDecode(event.data as String) as Map<String, dynamic>;
-        dev.log("✍️ typing => $payload");
+      _typingSub = _chatChannel!.bind('user.typing').listen((event) {
+        try {
+          final payload =
+              jsonDecode(event.data as String) as Map<String, dynamic>;
+
+          final isTyping = payload['is_typing'] ?? payload['typing'] ?? true;
+
+          final senderStr =
+              payload['user_id']?.toString() ??
+              payload['sender_id']?.toString() ??
+              payload['participant_id']?.toString();
+
+          if (senderStr != null) {
+            final senderId = int.tryParse(senderStr) ?? 0;
+
+            ref
+                .read(typingStatusProvider(chatId).notifier)
+                .updateTyping(senderId, isTyping);
+          }
+        } catch (_) {}
       });
-    } catch (e) {
-      dev.log("❌ Chat subscription setup failed: $e");
-    }
+    } catch (_) {}
   }
 
-  // =========================
-  // UNSUBSCRIBE CHAT (VERY IMPORTANT)
-  // =========================
   static void unsubscribeChat() {
     _chatMessageSub?.cancel();
     _typingSub?.cancel();
-    _chatChannel?.unsubscribe();
+    _chatBindAllSub?.cancel();
+
+    if (_chatChannel != null) {
+      try {
+        _chatChannel!.unsubscribe();
+      } catch (_) {}
+      _chatChannel = null;
+    }
   }
 
-  // =========================
-  // SEND TYPING EVENT
-  // =========================
   static void sendTyping({
     required int chatId,
     required int userId,
@@ -329,21 +303,9 @@ class ReverbService {
         eventName: 'client-typing',
         data: {"user_id": userId, "chat_id": chatId, "typing": isTyping},
       );
-    } catch (e) {
-      log("❌ Typing send failed: $e");
-    }
+    } catch (_) {}
   }
 
-  // =========================
-  // LOCAL CACHE UPDATE
-  // =========================
-  static void _updateHiveFromNotification(Map<String, dynamic> data) {
-    log("💾 Saved message to Hive (implement here)");
-  }
-
-  // =========================
-  // DISCONNECT (LOGOUT)
-  // =========================
   static void disconnect() {
     _globalMessageSub?.cancel();
     _chatMessageSub?.cancel();
@@ -355,7 +317,5 @@ class ReverbService {
     _client?.disconnect();
     _client = null;
     _initialized = false;
-
-    log("🔌 Socket disconnected");
   }
 }

@@ -6,8 +6,6 @@ import 'package:curnectgate/core/widgets/GetYourCode.dart';
 import 'package:curnectgate/features/%20operations/property_agreement/agreement_sign_screen.dart';
 import 'package:curnectgate/features/%20operations/property_agreement/terms_Condition.dart';
 import 'package:curnectgate/features/ResidentDirectory/Screen/ResidentTab.dart';
-import 'package:curnectgate/features/auth/data/auth_model/OnboardingProgressManager.dart';
-import 'package:curnectgate/features/auth/data/auth_model/onbording_enum.dart';
 import 'package:curnectgate/features/auth/presentation/screen/changeTemporaryPassword.dart';
 import 'package:curnectgate/features/auth/presentation/screen/creatnewpassword.dart';
 import 'package:curnectgate/features/auth/presentation/screen/forgot_password.dart';
@@ -29,9 +27,9 @@ import 'package:curnectgate/features/member_management/Onboard_Houselod/screen/a
 import 'package:curnectgate/features/member_management/membership_ID/mainScreen/continue_to_Digital.dart';
 import 'package:curnectgate/features/member_management/membership_ID/mainScreen/memberIDScreen.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/estateconfirmation_screen.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/memberIdchecker.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/onboard_code_confirm.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/screen/memberIdchecker.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/screen/setuprofilledInfo.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/setuprofilledInfo.dart';
 import 'package:curnectgate/features/member_management/screen/main_navigation_screen.dart';
 import 'package:curnectgate/features/member_management/screen/otp_screen.dart';
 import 'package:curnectgate/features/member_management/screen/password_screen.dart';
@@ -620,7 +618,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (BuildContext context, GoRouterState state) async {
       final currentPath = state.matchedLocation;
       debugPrint('Current path: $currentPath');
-      final lastStep = await OnboardingProgressManager.getStep();
+
       if (state.matchedLocation == AppRoutes.splasScreen) {
         return null;
       }
@@ -628,25 +626,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (state.matchedLocation == "/Splac_screen") {
         return null;
       }
-      // If user is mid-onboarding and not yet authenticated
-      if (currentPath == "/" && lastStep != null) {
-        switch (lastStep) {
-          case OnboardingStep.estateCode:
-            return '/code-verify';
-          case OnboardingStep.memberCode:
-            return '/member_IdCheck';
-          case OnboardingStep.infoCheck:
-            return '/Onbord_info';
-          case OnboardingStep.password:
-            return '/member_pass';
-          case OnboardingStep.otp:
-            return '/Otp';
-          case OnboardingStep.completed:
-            await OnboardingProgressManager.clearProgress();
-            break;
-        }
-      }
-      // Define public paths (unchanged from your original)
+
       const publicPaths = [
         '/',
         '/sign_In',

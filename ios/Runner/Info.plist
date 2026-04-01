@@ -42,6 +42,9 @@
     <array>
         <string>sms</string>
         <string>tel</string>
+        <string>https</string>
+        <string>http</string>
+        <string>mailto</string>
     </array>
 
     <!-- Network security exceptions (for HTTP APIs like Cloudinary) -->
@@ -68,10 +71,13 @@
     <string>We save processed images back to your gallery.</string>
     <key>NSCameraUsageDescription</key>
     <string>We need camera access to capture photos and scan QR codes.</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>We need microphone access for video recording.</string>
+
     <key>NSFaceIDUsageDescription</key>
     <string>This app uses Face ID for secure authentication.</string>
+    <key>NSCalendarsUsageDescription</key>
+    <string>This app uses your calendar to manage and display scheduled events.</string>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
 
     <!-- Optional: if you actually use pasteboard or WebView -->
     <!-- <key>NSPasteboardUsageDescription</key>

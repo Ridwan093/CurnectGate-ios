@@ -9,6 +9,7 @@ import 'package:curnectgate/features/operations/violation/widget/build_sroll_eff
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:curnectgate/features/operations/violation/widget/buildCommentCount.dart';
 import 'package:intl/intl.dart';
 
 class ViolationDetailPage extends ConsumerStatefulWidget {
@@ -61,6 +62,7 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _animationController.forward();
+      ref.read(reportProvider.notifier).setId(widget.violation.id);
     });
   }
 
@@ -277,20 +279,7 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
                             width: 20,
                           ),
                           SizedBox(width: 6),
-                          Expanded(
-                            child: Text(
-                              checkCount(
-                                "(${widget.violation.commentsSummary.totalComments}) Comments",
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontFamily: FontFamilies.interDisplay,
-                                fontSize: 14,
-                                color: AppColors.instance.black500,
-                                fontWeight: FontFamilies.bold,
-                              ),
-                            ),
-                          ),
+                          const Buildcommentcount(),
                           Icon(
                             Icons.arrow_forward_ios,
                             size: 12,
@@ -307,20 +296,6 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
         ],
       ),
     );
-  }
-
-  String checkCount(String value) {
-    try {
-      int number = int.parse(value);
-
-      if (number > 99) {
-        return "99+";
-      }
-
-      return value;
-    } catch (e) {
-      return value;
-    }
   }
 
   Widget _buildAdditionalInfo({

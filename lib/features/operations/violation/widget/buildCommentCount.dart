@@ -15,7 +15,9 @@ class Buildcommentcount extends ConsumerWidget {
         try {
           final comments = comment?.data;
           return comments != null
-              ? _buildCount(count: comments.total.toString())
+              ? _buildCount(
+                count: (comments.comments?.length ?? 0).toString(),
+              )
               : _buildCount(count: '0');
         } catch (e) {
           return _buildCount(count: "0");
@@ -25,7 +27,9 @@ class Buildcommentcount extends ConsumerWidget {
         try {
           final comment = ref.read(commentProvider).value;
           return comment != null
-              ? _buildCount(count: (comment.data?.total ?? 0).toString())
+              ? _buildCount(
+                count: (comment.data?.comments?.length ?? 0).toString(),
+              )
               : _buildCount(count: "0");
         } catch (e) {
           return _buildCount(count: "0");
@@ -38,10 +42,9 @@ class Buildcommentcount extends ConsumerWidget {
           // Try to show cached data
           final comment = ref.read(commentProvider).value;
           if (comment != null) {
-            return _buildCount(count: (comment.data?.total ?? 0).toString());
-          }
-          if (comment != null) {
-            return _buildCount(count: (comment.data?.total ?? 0).toString());
+            return _buildCount(
+              count: (comment.data?.comments?.length ?? 0).toString(),
+            );
           }
 
           // No cached data available

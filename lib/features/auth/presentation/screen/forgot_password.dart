@@ -9,6 +9,7 @@ import 'package:curnectgate/features/member_management/profile_form/provider%20/
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class PasswordReset extends BaseVerificationScreen {
   const PasswordReset({super.key})
@@ -71,7 +72,12 @@ class _PasswordResetState extends ConsumerState<PasswordReset> {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      leading: const Icon(Icons.arrow_back_ios_new),
+      leading: InkWell(
+        onTap: () {
+          context.pop();
+        },
+        child: const Icon(Icons.arrow_back_ios_new),
+      ),
       actions: [_buildTextButton()],
     );
   }

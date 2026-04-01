@@ -24,38 +24,10 @@ mixin _$EstateAdmin {
   String? get firstname => throw _privateConstructorUsedError;
   String? get lastname => throw _privateConstructorUsedError;
   String? get fullName => throw _privateConstructorUsedError;
-  String? get email => throw _privateConstructorUsedError;
-  String? get phone => throw _privateConstructorUsedError;
-  String? get mediaUrl => throw _privateConstructorUsedError;
-  String? get estateCode => throw _privateConstructorUsedError;
-  String? get estateName => throw _privateConstructorUsedError;
-  int? get estateId => throw _privateConstructorUsedError;
-  String? get dob => throw _privateConstructorUsedError;
-  int? get age => throw _privateConstructorUsedError;
-  String? get status => throw _privateConstructorUsedError;
-  String? get address => throw _privateConstructorUsedError;
-  String? get gender => throw _privateConstructorUsedError;
-  bool? get digitalIdStatus => throw _privateConstructorUsedError;
-  String? get deedOfAgreementSign => throw _privateConstructorUsedError;
-  String? get emailVerifiedAt => throw _privateConstructorUsedError;
-  bool? get isServiceProvider => throw _privateConstructorUsedError;
-  bool? get passwordChangeRequired => throw _privateConstructorUsedError;
+  String? get avatarUrl => throw _privateConstructorUsedError;
   String? get role => throw _privateConstructorUsedError;
-  String? get preferredNotification => throw _privateConstructorUsedError;
-  bool? get agreeToTerms => throw _privateConstructorUsedError;
-  String? get lastLoginAt => throw _privateConstructorUsedError;
-  String? get profileImageUrl => throw _privateConstructorUsedError;
-  CurfewSettings? get curfewSettings => throw _privateConstructorUsedError;
-  bool? get hasCurfew => throw _privateConstructorUsedError;
-  String? get curfewStatus => throw _privateConstructorUsedError;
-  bool? get canAccessNow => throw _privateConstructorUsedError;
-  String? get householdRole => throw _privateConstructorUsedError;
-  bool? get isHouseholdMember => throw _privateConstructorUsedError;
-  AccessSummary? get accessSummary => throw _privateConstructorUsedError;
-  VerificationStatus? get verificationStatus =>
-      throw _privateConstructorUsedError;
-  String? get createdAt => throw _privateConstructorUsedError;
-  String? get updatedAt => throw _privateConstructorUsedError;
+  String? get roleBadge => throw _privateConstructorUsedError;
+  String? get onlineStatus => throw _privateConstructorUsedError;
 
   /// Serializes this EstateAdmin to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -78,41 +50,10 @@ abstract class $EstateAdminCopyWith<$Res> {
       String? firstname,
       String? lastname,
       String? fullName,
-      String? email,
-      String? phone,
-      String? mediaUrl,
-      String? estateCode,
-      String? estateName,
-      int? estateId,
-      String? dob,
-      int? age,
-      String? status,
-      String? address,
-      String? gender,
-      bool? digitalIdStatus,
-      String? deedOfAgreementSign,
-      String? emailVerifiedAt,
-      bool? isServiceProvider,
-      bool? passwordChangeRequired,
+      String? avatarUrl,
       String? role,
-      String? preferredNotification,
-      bool? agreeToTerms,
-      String? lastLoginAt,
-      String? profileImageUrl,
-      CurfewSettings? curfewSettings,
-      bool? hasCurfew,
-      String? curfewStatus,
-      bool? canAccessNow,
-      String? householdRole,
-      bool? isHouseholdMember,
-      AccessSummary? accessSummary,
-      VerificationStatus? verificationStatus,
-      String? createdAt,
-      String? updatedAt});
-
-  $CurfewSettingsCopyWith<$Res>? get curfewSettings;
-  $AccessSummaryCopyWith<$Res>? get accessSummary;
-  $VerificationStatusCopyWith<$Res>? get verificationStatus;
+      String? roleBadge,
+      String? onlineStatus});
 }
 
 /// @nodoc
@@ -134,37 +75,10 @@ class _$EstateAdminCopyWithImpl<$Res, $Val extends EstateAdmin>
     Object? firstname = freezed,
     Object? lastname = freezed,
     Object? fullName = freezed,
-    Object? email = freezed,
-    Object? phone = freezed,
-    Object? mediaUrl = freezed,
-    Object? estateCode = freezed,
-    Object? estateName = freezed,
-    Object? estateId = freezed,
-    Object? dob = freezed,
-    Object? age = freezed,
-    Object? status = freezed,
-    Object? address = freezed,
-    Object? gender = freezed,
-    Object? digitalIdStatus = freezed,
-    Object? deedOfAgreementSign = freezed,
-    Object? emailVerifiedAt = freezed,
-    Object? isServiceProvider = freezed,
-    Object? passwordChangeRequired = freezed,
+    Object? avatarUrl = freezed,
     Object? role = freezed,
-    Object? preferredNotification = freezed,
-    Object? agreeToTerms = freezed,
-    Object? lastLoginAt = freezed,
-    Object? profileImageUrl = freezed,
-    Object? curfewSettings = freezed,
-    Object? hasCurfew = freezed,
-    Object? curfewStatus = freezed,
-    Object? canAccessNow = freezed,
-    Object? householdRole = freezed,
-    Object? isHouseholdMember = freezed,
-    Object? accessSummary = freezed,
-    Object? verificationStatus = freezed,
-    Object? createdAt = freezed,
-    Object? updatedAt = freezed,
+    Object? roleBadge = freezed,
+    Object? onlineStatus = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -183,174 +97,23 @@ class _$EstateAdminCopyWithImpl<$Res, $Val extends EstateAdmin>
           ? _value.fullName
           : fullName // ignore: cast_nullable_to_non_nullable
               as String?,
-      email: freezed == email
-          ? _value.email
-          : email // ignore: cast_nullable_to_non_nullable
+      avatarUrl: freezed == avatarUrl
+          ? _value.avatarUrl
+          : avatarUrl // ignore: cast_nullable_to_non_nullable
               as String?,
-      phone: freezed == phone
-          ? _value.phone
-          : phone // ignore: cast_nullable_to_non_nullable
-              as String?,
-      mediaUrl: freezed == mediaUrl
-          ? _value.mediaUrl
-          : mediaUrl // ignore: cast_nullable_to_non_nullable
-              as String?,
-      estateCode: freezed == estateCode
-          ? _value.estateCode
-          : estateCode // ignore: cast_nullable_to_non_nullable
-              as String?,
-      estateName: freezed == estateName
-          ? _value.estateName
-          : estateName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      estateId: freezed == estateId
-          ? _value.estateId
-          : estateId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      dob: freezed == dob
-          ? _value.dob
-          : dob // ignore: cast_nullable_to_non_nullable
-              as String?,
-      age: freezed == age
-          ? _value.age
-          : age // ignore: cast_nullable_to_non_nullable
-              as int?,
-      status: freezed == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as String?,
-      address: freezed == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as String?,
-      gender: freezed == gender
-          ? _value.gender
-          : gender // ignore: cast_nullable_to_non_nullable
-              as String?,
-      digitalIdStatus: freezed == digitalIdStatus
-          ? _value.digitalIdStatus
-          : digitalIdStatus // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      deedOfAgreementSign: freezed == deedOfAgreementSign
-          ? _value.deedOfAgreementSign
-          : deedOfAgreementSign // ignore: cast_nullable_to_non_nullable
-              as String?,
-      emailVerifiedAt: freezed == emailVerifiedAt
-          ? _value.emailVerifiedAt
-          : emailVerifiedAt // ignore: cast_nullable_to_non_nullable
-              as String?,
-      isServiceProvider: freezed == isServiceProvider
-          ? _value.isServiceProvider
-          : isServiceProvider // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      passwordChangeRequired: freezed == passwordChangeRequired
-          ? _value.passwordChangeRequired
-          : passwordChangeRequired // ignore: cast_nullable_to_non_nullable
-              as bool?,
       role: freezed == role
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
               as String?,
-      preferredNotification: freezed == preferredNotification
-          ? _value.preferredNotification
-          : preferredNotification // ignore: cast_nullable_to_non_nullable
+      roleBadge: freezed == roleBadge
+          ? _value.roleBadge
+          : roleBadge // ignore: cast_nullable_to_non_nullable
               as String?,
-      agreeToTerms: freezed == agreeToTerms
-          ? _value.agreeToTerms
-          : agreeToTerms // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      lastLoginAt: freezed == lastLoginAt
-          ? _value.lastLoginAt
-          : lastLoginAt // ignore: cast_nullable_to_non_nullable
-              as String?,
-      profileImageUrl: freezed == profileImageUrl
-          ? _value.profileImageUrl
-          : profileImageUrl // ignore: cast_nullable_to_non_nullable
-              as String?,
-      curfewSettings: freezed == curfewSettings
-          ? _value.curfewSettings
-          : curfewSettings // ignore: cast_nullable_to_non_nullable
-              as CurfewSettings?,
-      hasCurfew: freezed == hasCurfew
-          ? _value.hasCurfew
-          : hasCurfew // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      curfewStatus: freezed == curfewStatus
-          ? _value.curfewStatus
-          : curfewStatus // ignore: cast_nullable_to_non_nullable
-              as String?,
-      canAccessNow: freezed == canAccessNow
-          ? _value.canAccessNow
-          : canAccessNow // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      householdRole: freezed == householdRole
-          ? _value.householdRole
-          : householdRole // ignore: cast_nullable_to_non_nullable
-              as String?,
-      isHouseholdMember: freezed == isHouseholdMember
-          ? _value.isHouseholdMember
-          : isHouseholdMember // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      accessSummary: freezed == accessSummary
-          ? _value.accessSummary
-          : accessSummary // ignore: cast_nullable_to_non_nullable
-              as AccessSummary?,
-      verificationStatus: freezed == verificationStatus
-          ? _value.verificationStatus
-          : verificationStatus // ignore: cast_nullable_to_non_nullable
-              as VerificationStatus?,
-      createdAt: freezed == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as String?,
-      updatedAt: freezed == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
+      onlineStatus: freezed == onlineStatus
+          ? _value.onlineStatus
+          : onlineStatus // ignore: cast_nullable_to_non_nullable
               as String?,
     ) as $Val);
-  }
-
-  /// Create a copy of EstateAdmin
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $CurfewSettingsCopyWith<$Res>? get curfewSettings {
-    if (_value.curfewSettings == null) {
-      return null;
-    }
-
-    return $CurfewSettingsCopyWith<$Res>(_value.curfewSettings!, (value) {
-      return _then(_value.copyWith(curfewSettings: value) as $Val);
-    });
-  }
-
-  /// Create a copy of EstateAdmin
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $AccessSummaryCopyWith<$Res>? get accessSummary {
-    if (_value.accessSummary == null) {
-      return null;
-    }
-
-    return $AccessSummaryCopyWith<$Res>(_value.accessSummary!, (value) {
-      return _then(_value.copyWith(accessSummary: value) as $Val);
-    });
-  }
-
-  /// Create a copy of EstateAdmin
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $VerificationStatusCopyWith<$Res>? get verificationStatus {
-    if (_value.verificationStatus == null) {
-      return null;
-    }
-
-    return $VerificationStatusCopyWith<$Res>(_value.verificationStatus!,
-        (value) {
-      return _then(_value.copyWith(verificationStatus: value) as $Val);
-    });
   }
 }
 
@@ -367,44 +130,10 @@ abstract class _$$EstateAdminImplCopyWith<$Res>
       String? firstname,
       String? lastname,
       String? fullName,
-      String? email,
-      String? phone,
-      String? mediaUrl,
-      String? estateCode,
-      String? estateName,
-      int? estateId,
-      String? dob,
-      int? age,
-      String? status,
-      String? address,
-      String? gender,
-      bool? digitalIdStatus,
-      String? deedOfAgreementSign,
-      String? emailVerifiedAt,
-      bool? isServiceProvider,
-      bool? passwordChangeRequired,
+      String? avatarUrl,
       String? role,
-      String? preferredNotification,
-      bool? agreeToTerms,
-      String? lastLoginAt,
-      String? profileImageUrl,
-      CurfewSettings? curfewSettings,
-      bool? hasCurfew,
-      String? curfewStatus,
-      bool? canAccessNow,
-      String? householdRole,
-      bool? isHouseholdMember,
-      AccessSummary? accessSummary,
-      VerificationStatus? verificationStatus,
-      String? createdAt,
-      String? updatedAt});
-
-  @override
-  $CurfewSettingsCopyWith<$Res>? get curfewSettings;
-  @override
-  $AccessSummaryCopyWith<$Res>? get accessSummary;
-  @override
-  $VerificationStatusCopyWith<$Res>? get verificationStatus;
+      String? roleBadge,
+      String? onlineStatus});
 }
 
 /// @nodoc
@@ -424,37 +153,10 @@ class __$$EstateAdminImplCopyWithImpl<$Res>
     Object? firstname = freezed,
     Object? lastname = freezed,
     Object? fullName = freezed,
-    Object? email = freezed,
-    Object? phone = freezed,
-    Object? mediaUrl = freezed,
-    Object? estateCode = freezed,
-    Object? estateName = freezed,
-    Object? estateId = freezed,
-    Object? dob = freezed,
-    Object? age = freezed,
-    Object? status = freezed,
-    Object? address = freezed,
-    Object? gender = freezed,
-    Object? digitalIdStatus = freezed,
-    Object? deedOfAgreementSign = freezed,
-    Object? emailVerifiedAt = freezed,
-    Object? isServiceProvider = freezed,
-    Object? passwordChangeRequired = freezed,
+    Object? avatarUrl = freezed,
     Object? role = freezed,
-    Object? preferredNotification = freezed,
-    Object? agreeToTerms = freezed,
-    Object? lastLoginAt = freezed,
-    Object? profileImageUrl = freezed,
-    Object? curfewSettings = freezed,
-    Object? hasCurfew = freezed,
-    Object? curfewStatus = freezed,
-    Object? canAccessNow = freezed,
-    Object? householdRole = freezed,
-    Object? isHouseholdMember = freezed,
-    Object? accessSummary = freezed,
-    Object? verificationStatus = freezed,
-    Object? createdAt = freezed,
-    Object? updatedAt = freezed,
+    Object? roleBadge = freezed,
+    Object? onlineStatus = freezed,
   }) {
     return _then(_$EstateAdminImpl(
       id: freezed == id
@@ -473,129 +175,21 @@ class __$$EstateAdminImplCopyWithImpl<$Res>
           ? _value.fullName
           : fullName // ignore: cast_nullable_to_non_nullable
               as String?,
-      email: freezed == email
-          ? _value.email
-          : email // ignore: cast_nullable_to_non_nullable
+      avatarUrl: freezed == avatarUrl
+          ? _value.avatarUrl
+          : avatarUrl // ignore: cast_nullable_to_non_nullable
               as String?,
-      phone: freezed == phone
-          ? _value.phone
-          : phone // ignore: cast_nullable_to_non_nullable
-              as String?,
-      mediaUrl: freezed == mediaUrl
-          ? _value.mediaUrl
-          : mediaUrl // ignore: cast_nullable_to_non_nullable
-              as String?,
-      estateCode: freezed == estateCode
-          ? _value.estateCode
-          : estateCode // ignore: cast_nullable_to_non_nullable
-              as String?,
-      estateName: freezed == estateName
-          ? _value.estateName
-          : estateName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      estateId: freezed == estateId
-          ? _value.estateId
-          : estateId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      dob: freezed == dob
-          ? _value.dob
-          : dob // ignore: cast_nullable_to_non_nullable
-              as String?,
-      age: freezed == age
-          ? _value.age
-          : age // ignore: cast_nullable_to_non_nullable
-              as int?,
-      status: freezed == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as String?,
-      address: freezed == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as String?,
-      gender: freezed == gender
-          ? _value.gender
-          : gender // ignore: cast_nullable_to_non_nullable
-              as String?,
-      digitalIdStatus: freezed == digitalIdStatus
-          ? _value.digitalIdStatus
-          : digitalIdStatus // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      deedOfAgreementSign: freezed == deedOfAgreementSign
-          ? _value.deedOfAgreementSign
-          : deedOfAgreementSign // ignore: cast_nullable_to_non_nullable
-              as String?,
-      emailVerifiedAt: freezed == emailVerifiedAt
-          ? _value.emailVerifiedAt
-          : emailVerifiedAt // ignore: cast_nullable_to_non_nullable
-              as String?,
-      isServiceProvider: freezed == isServiceProvider
-          ? _value.isServiceProvider
-          : isServiceProvider // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      passwordChangeRequired: freezed == passwordChangeRequired
-          ? _value.passwordChangeRequired
-          : passwordChangeRequired // ignore: cast_nullable_to_non_nullable
-              as bool?,
       role: freezed == role
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
               as String?,
-      preferredNotification: freezed == preferredNotification
-          ? _value.preferredNotification
-          : preferredNotification // ignore: cast_nullable_to_non_nullable
+      roleBadge: freezed == roleBadge
+          ? _value.roleBadge
+          : roleBadge // ignore: cast_nullable_to_non_nullable
               as String?,
-      agreeToTerms: freezed == agreeToTerms
-          ? _value.agreeToTerms
-          : agreeToTerms // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      lastLoginAt: freezed == lastLoginAt
-          ? _value.lastLoginAt
-          : lastLoginAt // ignore: cast_nullable_to_non_nullable
-              as String?,
-      profileImageUrl: freezed == profileImageUrl
-          ? _value.profileImageUrl
-          : profileImageUrl // ignore: cast_nullable_to_non_nullable
-              as String?,
-      curfewSettings: freezed == curfewSettings
-          ? _value.curfewSettings
-          : curfewSettings // ignore: cast_nullable_to_non_nullable
-              as CurfewSettings?,
-      hasCurfew: freezed == hasCurfew
-          ? _value.hasCurfew
-          : hasCurfew // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      curfewStatus: freezed == curfewStatus
-          ? _value.curfewStatus
-          : curfewStatus // ignore: cast_nullable_to_non_nullable
-              as String?,
-      canAccessNow: freezed == canAccessNow
-          ? _value.canAccessNow
-          : canAccessNow // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      householdRole: freezed == householdRole
-          ? _value.householdRole
-          : householdRole // ignore: cast_nullable_to_non_nullable
-              as String?,
-      isHouseholdMember: freezed == isHouseholdMember
-          ? _value.isHouseholdMember
-          : isHouseholdMember // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      accessSummary: freezed == accessSummary
-          ? _value.accessSummary
-          : accessSummary // ignore: cast_nullable_to_non_nullable
-              as AccessSummary?,
-      verificationStatus: freezed == verificationStatus
-          ? _value.verificationStatus
-          : verificationStatus // ignore: cast_nullable_to_non_nullable
-              as VerificationStatus?,
-      createdAt: freezed == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as String?,
-      updatedAt: freezed == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
+      onlineStatus: freezed == onlineStatus
+          ? _value.onlineStatus
+          : onlineStatus // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -610,37 +204,10 @@ class _$EstateAdminImpl implements _EstateAdmin {
       this.firstname,
       this.lastname,
       this.fullName,
-      this.email,
-      this.phone,
-      this.mediaUrl,
-      this.estateCode,
-      this.estateName,
-      this.estateId,
-      this.dob,
-      this.age,
-      this.status,
-      this.address,
-      this.gender,
-      this.digitalIdStatus,
-      this.deedOfAgreementSign,
-      this.emailVerifiedAt,
-      this.isServiceProvider,
-      this.passwordChangeRequired,
+      this.avatarUrl,
       this.role,
-      this.preferredNotification,
-      this.agreeToTerms,
-      this.lastLoginAt,
-      this.profileImageUrl,
-      this.curfewSettings,
-      this.hasCurfew,
-      this.curfewStatus,
-      this.canAccessNow,
-      this.householdRole,
-      this.isHouseholdMember,
-      this.accessSummary,
-      this.verificationStatus,
-      this.createdAt,
-      this.updatedAt});
+      this.roleBadge,
+      this.onlineStatus});
 
   factory _$EstateAdminImpl.fromJson(Map<String, dynamic> json) =>
       _$$EstateAdminImplFromJson(json);
@@ -654,71 +221,17 @@ class _$EstateAdminImpl implements _EstateAdmin {
   @override
   final String? fullName;
   @override
-  final String? email;
-  @override
-  final String? phone;
-  @override
-  final String? mediaUrl;
-  @override
-  final String? estateCode;
-  @override
-  final String? estateName;
-  @override
-  final int? estateId;
-  @override
-  final String? dob;
-  @override
-  final int? age;
-  @override
-  final String? status;
-  @override
-  final String? address;
-  @override
-  final String? gender;
-  @override
-  final bool? digitalIdStatus;
-  @override
-  final String? deedOfAgreementSign;
-  @override
-  final String? emailVerifiedAt;
-  @override
-  final bool? isServiceProvider;
-  @override
-  final bool? passwordChangeRequired;
+  final String? avatarUrl;
   @override
   final String? role;
   @override
-  final String? preferredNotification;
+  final String? roleBadge;
   @override
-  final bool? agreeToTerms;
-  @override
-  final String? lastLoginAt;
-  @override
-  final String? profileImageUrl;
-  @override
-  final CurfewSettings? curfewSettings;
-  @override
-  final bool? hasCurfew;
-  @override
-  final String? curfewStatus;
-  @override
-  final bool? canAccessNow;
-  @override
-  final String? householdRole;
-  @override
-  final bool? isHouseholdMember;
-  @override
-  final AccessSummary? accessSummary;
-  @override
-  final VerificationStatus? verificationStatus;
-  @override
-  final String? createdAt;
-  @override
-  final String? updatedAt;
+  final String? onlineStatus;
 
   @override
   String toString() {
-    return 'EstateAdmin(id: $id, firstname: $firstname, lastname: $lastname, fullName: $fullName, email: $email, phone: $phone, mediaUrl: $mediaUrl, estateCode: $estateCode, estateName: $estateName, estateId: $estateId, dob: $dob, age: $age, status: $status, address: $address, gender: $gender, digitalIdStatus: $digitalIdStatus, deedOfAgreementSign: $deedOfAgreementSign, emailVerifiedAt: $emailVerifiedAt, isServiceProvider: $isServiceProvider, passwordChangeRequired: $passwordChangeRequired, role: $role, preferredNotification: $preferredNotification, agreeToTerms: $agreeToTerms, lastLoginAt: $lastLoginAt, profileImageUrl: $profileImageUrl, curfewSettings: $curfewSettings, hasCurfew: $hasCurfew, curfewStatus: $curfewStatus, canAccessNow: $canAccessNow, householdRole: $householdRole, isHouseholdMember: $isHouseholdMember, accessSummary: $accessSummary, verificationStatus: $verificationStatus, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'EstateAdmin(id: $id, firstname: $firstname, lastname: $lastname, fullName: $fullName, avatarUrl: $avatarUrl, role: $role, roleBadge: $roleBadge, onlineStatus: $onlineStatus)';
   }
 
   @override
@@ -733,102 +246,19 @@ class _$EstateAdminImpl implements _EstateAdmin {
                 other.lastname == lastname) &&
             (identical(other.fullName, fullName) ||
                 other.fullName == fullName) &&
-            (identical(other.email, email) || other.email == email) &&
-            (identical(other.phone, phone) || other.phone == phone) &&
-            (identical(other.mediaUrl, mediaUrl) ||
-                other.mediaUrl == mediaUrl) &&
-            (identical(other.estateCode, estateCode) ||
-                other.estateCode == estateCode) &&
-            (identical(other.estateName, estateName) ||
-                other.estateName == estateName) &&
-            (identical(other.estateId, estateId) ||
-                other.estateId == estateId) &&
-            (identical(other.dob, dob) || other.dob == dob) &&
-            (identical(other.age, age) || other.age == age) &&
-            (identical(other.status, status) || other.status == status) &&
-            (identical(other.address, address) || other.address == address) &&
-            (identical(other.gender, gender) || other.gender == gender) &&
-            (identical(other.digitalIdStatus, digitalIdStatus) ||
-                other.digitalIdStatus == digitalIdStatus) &&
-            (identical(other.deedOfAgreementSign, deedOfAgreementSign) ||
-                other.deedOfAgreementSign == deedOfAgreementSign) &&
-            (identical(other.emailVerifiedAt, emailVerifiedAt) ||
-                other.emailVerifiedAt == emailVerifiedAt) &&
-            (identical(other.isServiceProvider, isServiceProvider) ||
-                other.isServiceProvider == isServiceProvider) &&
-            (identical(other.passwordChangeRequired, passwordChangeRequired) ||
-                other.passwordChangeRequired == passwordChangeRequired) &&
+            (identical(other.avatarUrl, avatarUrl) ||
+                other.avatarUrl == avatarUrl) &&
             (identical(other.role, role) || other.role == role) &&
-            (identical(other.preferredNotification, preferredNotification) ||
-                other.preferredNotification == preferredNotification) &&
-            (identical(other.agreeToTerms, agreeToTerms) ||
-                other.agreeToTerms == agreeToTerms) &&
-            (identical(other.lastLoginAt, lastLoginAt) ||
-                other.lastLoginAt == lastLoginAt) &&
-            (identical(other.profileImageUrl, profileImageUrl) ||
-                other.profileImageUrl == profileImageUrl) &&
-            (identical(other.curfewSettings, curfewSettings) ||
-                other.curfewSettings == curfewSettings) &&
-            (identical(other.hasCurfew, hasCurfew) ||
-                other.hasCurfew == hasCurfew) &&
-            (identical(other.curfewStatus, curfewStatus) ||
-                other.curfewStatus == curfewStatus) &&
-            (identical(other.canAccessNow, canAccessNow) ||
-                other.canAccessNow == canAccessNow) &&
-            (identical(other.householdRole, householdRole) ||
-                other.householdRole == householdRole) &&
-            (identical(other.isHouseholdMember, isHouseholdMember) ||
-                other.isHouseholdMember == isHouseholdMember) &&
-            (identical(other.accessSummary, accessSummary) ||
-                other.accessSummary == accessSummary) &&
-            (identical(other.verificationStatus, verificationStatus) ||
-                other.verificationStatus == verificationStatus) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
-            (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt));
+            (identical(other.roleBadge, roleBadge) ||
+                other.roleBadge == roleBadge) &&
+            (identical(other.onlineStatus, onlineStatus) ||
+                other.onlineStatus == onlineStatus));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hashAll([
-        runtimeType,
-        id,
-        firstname,
-        lastname,
-        fullName,
-        email,
-        phone,
-        mediaUrl,
-        estateCode,
-        estateName,
-        estateId,
-        dob,
-        age,
-        status,
-        address,
-        gender,
-        digitalIdStatus,
-        deedOfAgreementSign,
-        emailVerifiedAt,
-        isServiceProvider,
-        passwordChangeRequired,
-        role,
-        preferredNotification,
-        agreeToTerms,
-        lastLoginAt,
-        profileImageUrl,
-        curfewSettings,
-        hasCurfew,
-        curfewStatus,
-        canAccessNow,
-        householdRole,
-        isHouseholdMember,
-        accessSummary,
-        verificationStatus,
-        createdAt,
-        updatedAt
-      ]);
+  int get hashCode => Object.hash(runtimeType, id, firstname, lastname,
+      fullName, avatarUrl, role, roleBadge, onlineStatus);
 
   /// Create a copy of EstateAdmin
   /// with the given fields replaced by the non-null parameter values.
@@ -852,37 +282,10 @@ abstract class _EstateAdmin implements EstateAdmin {
       final String? firstname,
       final String? lastname,
       final String? fullName,
-      final String? email,
-      final String? phone,
-      final String? mediaUrl,
-      final String? estateCode,
-      final String? estateName,
-      final int? estateId,
-      final String? dob,
-      final int? age,
-      final String? status,
-      final String? address,
-      final String? gender,
-      final bool? digitalIdStatus,
-      final String? deedOfAgreementSign,
-      final String? emailVerifiedAt,
-      final bool? isServiceProvider,
-      final bool? passwordChangeRequired,
+      final String? avatarUrl,
       final String? role,
-      final String? preferredNotification,
-      final bool? agreeToTerms,
-      final String? lastLoginAt,
-      final String? profileImageUrl,
-      final CurfewSettings? curfewSettings,
-      final bool? hasCurfew,
-      final String? curfewStatus,
-      final bool? canAccessNow,
-      final String? householdRole,
-      final bool? isHouseholdMember,
-      final AccessSummary? accessSummary,
-      final VerificationStatus? verificationStatus,
-      final String? createdAt,
-      final String? updatedAt}) = _$EstateAdminImpl;
+      final String? roleBadge,
+      final String? onlineStatus}) = _$EstateAdminImpl;
 
   factory _EstateAdmin.fromJson(Map<String, dynamic> json) =
       _$EstateAdminImpl.fromJson;
@@ -896,67 +299,13 @@ abstract class _EstateAdmin implements EstateAdmin {
   @override
   String? get fullName;
   @override
-  String? get email;
-  @override
-  String? get phone;
-  @override
-  String? get mediaUrl;
-  @override
-  String? get estateCode;
-  @override
-  String? get estateName;
-  @override
-  int? get estateId;
-  @override
-  String? get dob;
-  @override
-  int? get age;
-  @override
-  String? get status;
-  @override
-  String? get address;
-  @override
-  String? get gender;
-  @override
-  bool? get digitalIdStatus;
-  @override
-  String? get deedOfAgreementSign;
-  @override
-  String? get emailVerifiedAt;
-  @override
-  bool? get isServiceProvider;
-  @override
-  bool? get passwordChangeRequired;
+  String? get avatarUrl;
   @override
   String? get role;
   @override
-  String? get preferredNotification;
+  String? get roleBadge;
   @override
-  bool? get agreeToTerms;
-  @override
-  String? get lastLoginAt;
-  @override
-  String? get profileImageUrl;
-  @override
-  CurfewSettings? get curfewSettings;
-  @override
-  bool? get hasCurfew;
-  @override
-  String? get curfewStatus;
-  @override
-  bool? get canAccessNow;
-  @override
-  String? get householdRole;
-  @override
-  bool? get isHouseholdMember;
-  @override
-  AccessSummary? get accessSummary;
-  @override
-  VerificationStatus? get verificationStatus;
-  @override
-  String? get createdAt;
-  @override
-  String? get updatedAt;
+  String? get onlineStatus;
 
   /// Create a copy of EstateAdmin
   /// with the given fields replaced by the non-null parameter values.

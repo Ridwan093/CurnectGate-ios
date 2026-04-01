@@ -1,6 +1,4 @@
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
-import 'package:curnectgate/core/appErrorBody/emmergencyBody.dart';
-import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -8,12 +6,9 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/widget/
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/build_errorUlfor_event.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/data_event_card.dart';
-import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_event_model.dart';
-import 'package:curnectgate/features/operations/notifications/event/model/Event/calendar_user_rsvp_model.dart';
 import 'package:curnectgate/features/operations/notifications/provider/activity_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/getevent_provider.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // class EventData extends ConsumerWidget {

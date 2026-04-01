@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
+import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/chat/data/model/attachment.dart';
@@ -30,18 +31,35 @@ class CustomiseConversationTile extends ConsumerWidget {
     }
   }
 
-  String iwprk() {
-    return "";
-    // for(var i in conversation.participants??[]){
-    //   if()
-    // }
+  String _formatRole(String role) {
+    return role
+        .replaceAll('_', ' ')
+        .split(' ')
+        .map((e) => e.isNotEmpty ? e[0].toUpperCase() + e.substring(1) : '')
+        .join(' ');
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final lastMessage = conversation.latestMessage;
-    final double avatarSize =
-        MediaQuery.of(context).size.width * 0.12; // Responsive avatar size
+    final double avatarSize = MediaQuery.of(context).size.width * 0.12;
+
+    final authState = ref.watch(authProvider);
+    final currentUserId = authState.user?["id"];
+
+    Participant? otherParticipant;
+
+    final participants = conversation.participants;
+
+    if (participants != null && participants.isNotEmpty) {
+      otherParticipant = participants.firstWhere(
+        (p) => p.userId?.toString() != currentUserId?.toString(),
+        orElse: () => participants.first,
+      );
+    }
+
+    final avatarUrl = otherParticipant?.avatarUrl ?? "";
+
     return InkWell(
       onTap: onTap,
       child: Container(
@@ -61,13 +79,16 @@ class CustomiseConversationTile extends ConsumerWidget {
                     backgroundColor: Colors.grey.shade200,
                     child: ClipOval(
                       child: CachedNetworkImage(
-                        imageUrl: lastMessage?.sender?.avatarUrl ?? "",
+                        imageUrl: avatarUrl,
                         width: avatarSize,
                         height: avatarSize,
                         fit: BoxFit.cover,
                         placeholder: (context, url) => const Loadingstates(),
                         errorWidget:
-                            (context, url, error) => const Icon(Icons.person),
+                            (context, url, error) => Icon(
+                              Icons.person,
+                              color: AppColors.instance.black600,
+                            ),
                       ),
                     ),
                   ),
@@ -79,8 +100,7 @@ class CustomiseConversationTile extends ConsumerWidget {
                       height: 12,
                       decoration: BoxDecoration(
                         color:
-                            (conversation.participants?.first.onlineStatus ??
-                                        "offline")
+                            (otherParticipant?.onlineStatus ?? "offline")
                                     .toLowerCase()
                                     .contains("online")
                                 ? AppColors.instance.teal500
@@ -131,7 +151,7 @@ class CustomiseConversationTile extends ConsumerWidget {
                               ),
                             ),
                             Text(
-                              conversation.type ?? "",
+                              _formatRole(otherParticipant?.role ?? ""),
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontFamily: FontFamilies.interDisplay,
@@ -170,12 +190,12 @@ class CustomiseConversationTile extends ConsumerWidget {
               ),
             ),
 
-            if (conversation.unreadCount! > 0) ...[
+            if ((conversation.unreadCount ?? 0) > 0) ...[
               const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: AppColors.instance.error600,
+                  color: AppColors.instance.teal400,
                   shape: BoxShape.circle,
                 ),
                 child: Text(

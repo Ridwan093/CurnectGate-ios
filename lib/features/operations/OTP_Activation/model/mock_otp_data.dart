@@ -1,5 +1,4 @@
 import 'models.dart.dart';
-import 'otp.dart';
 
 final List<Otp> mockOtpList = [
   Otp(

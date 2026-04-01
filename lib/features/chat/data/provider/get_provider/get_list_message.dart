@@ -3,10 +3,12 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:curnectgate/core/local_store/share_prefrence.dart';
+import 'package:curnectgate/features/chat/data/hive_migration.dart';
 import 'package:curnectgate/features/chat/data/model/attachment.dart';
 import 'package:curnectgate/features/chat/data/model/chat_message.dart';
 import 'package:curnectgate/features/chat/data/model/conversation.dart';
-import 'package:curnectgate/features/chat/data/provider/%20chat_list_provider.dart';
+import 'package:curnectgate/features/chat/data/provider/get_provider/get_conversation_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
@@ -15,53 +17,56 @@ import 'package:hive/hive.dart';
 import 'package:path/path.dart' as path;
 
 // 2. Messages for one conversation
-final messagesProvider = AsyncNotifierProvider.family
-    .autoDispose<MessagesNotifier, List<Message>?, int>(MessagesNotifier.new);
+final messagesProvider = NotifierProvider.family
+    .autoDispose<MessagesNotifier, List<Message>, int>(MessagesNotifier.new);
 
-class MessagesNotifier
-    extends AutoDisposeFamilyAsyncNotifier<List<Message>?, int> {
+class MessagesNotifier extends AutoDisposeFamilyNotifier<List<Message>, int> {
   int get conversationId =>
       arg; // ← This is how you get the family argument (int)
 
   @override
-  Future<List<Message>?> build(int conversationId) async {
-    final localMessages = await _loadFromHive();
+  List<Message> build(int conversationId) {
+    // Load synchronously from Hive using the current user's scoped box
+    final userId = ref.read(currentUserIdProvider);
+    final box = Hive.box<Message>(chatMessagesBoxName(userId));
+    final localMessages =
+        box.values.where((m) => m.conversationId == conversationId).toList();
 
+    // Fetch fresh messages in the background
+    _fetchFreshMessages();
+
+    return localMessages;
+  }
+
+  Future<void> _fetchFreshMessages() async {
     try {
       final freshMessages = await ref
           .read(getApiServiceProvider)
           .getMessages(conversationId);
 
-      if (localMessages?.length != freshMessages.length ||
-          localMessages?.firstOrNull?.id != freshMessages.firstOrNull?.id) {
+      if (state.length != freshMessages.length ||
+          state.firstOrNull?.id != freshMessages.firstOrNull?.id) {
         await _saveToHive(freshMessages);
       }
-
-      return freshMessages;
     } catch (e) {
       log("Messages API failed: $e");
-      return localMessages;
     }
   }
 
   Future<void> refreshMessages() async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
+    try {
       final fresh = await ref
           .read(getApiServiceProvider)
           .getMessages(conversationId);
       await _saveToHive(fresh);
-      return fresh;
-    });
-  }
-
-  Future<List<Message>?> _loadFromHive() async {
-    final box = Hive.box<Message>('chat_messages');
-    return box.values.where((m) => m.conversationId == conversationId).toList();
+    } catch (e) {
+      log("Refresh failed: $e");
+    }
   }
 
   Future<void> _updateConversationCache(Message msg, File? file) async {
-    final convBox = Hive.box<Conversation>('conversations');
+    final userId = ref.read(currentUserIdProvider);
+    final convBox = Hive.box<Conversation>(conversationsBoxName(userId));
 
     final conv = convBox.get(msg.conversationId);
 
@@ -147,7 +152,8 @@ class MessagesNotifier
     File? file,
     required BuildContext context,
   }) async {
-    final box = Hive.box<Message>('chat_messages');
+    final userId = ref.read(currentUserIdProvider);
+    final box = Hive.box<Message>(chatMessagesBoxName(userId));
 
     final localId = DateTime.now().millisecondsSinceEpoch.toString();
     final now = DateTime.now();
@@ -201,7 +207,7 @@ class MessagesNotifier
     await temp.save();
 
     // Optimistic UI update
-    state = AsyncData([...?state.value, temp]);
+    state = [...state, temp];
     await _updateConversationCache(temp, file);
 
     // ---------- TRY SEND ----------
@@ -230,22 +236,28 @@ class MessagesNotifier
           }
         }
 
-        // Update local message with server data
-        local.serverId = realMsg.id;
-        local.syncStatus = 'sent';
-        local.status = 'sent';
-        local.createdAt = realMsg.createdAt;
-        local.attachments = realMsg.attachments;
+        // Update local message with server data using copyWith to update final 'id'
+        final finalMsg = local.copyWith(
+          id: realMsg.id,
+          serverId: realMsg.id,
+          syncStatus: 'sent',
+          status: 'sent',
+          createdAt: realMsg.createdAt,
+          attachments: realMsg.attachments,
+        );
 
-        await local.save();
+        // Replace the Hive entry at the same key
+        if (local.hiveKey != null) {
+          await box.put(local.hiveKey, finalMsg);
+        }
 
         // Update UI
-        final updated = [...?state.value];
+        final updated = [...state];
         final index = updated.indexWhere((m) => m.localId == localId);
-        if (index != -1) updated[index] = local;
-        state = AsyncData(updated);
+        if (index != -1) updated[index] = finalMsg;
+        state = updated;
 
-        await _updateConversationCache(local, file);
+        await _updateConversationCache(finalMsg, file);
       }
     } catch (e) {
       // Fail case
@@ -257,46 +269,56 @@ class MessagesNotifier
 
       await local.save();
 
-      final updated = [...?state.value];
+      final updated = [...state];
       final index = updated.indexWhere((m) => m.localId == localId);
       if (index != -1) updated[index] = local;
-      state = AsyncData(updated);
+      state = updated;
     }
   }
 
   Future<void> deleteMessage(Message message, BuildContext context) async {
-    final box = Hive.box<Message>('chat_messages');
-
     /// Backup message for rollback
     final backupMessage = message;
 
-    // Optimistic UI: optionally show a loading indicator, but don't remove yet
-    final updated = [...?state.value];
-    final index = updated.indexWhere((m) => m.localId == message.localId);
+    // Safely find the message in the UI list using either the server ID or the local ID
+    final updated = [...state];
+    final index = updated.indexWhere(
+      (m) =>
+          (m.id != null && m.id == message.id) ||
+          (m.localId != null && m.localId == message.localId),
+    );
 
     try {
-      // 1️⃣ Call API first
-      if (message.serverId != null) {
+      // 1️Call API first
+      final targetId = message.serverId ?? message.id;
+      if (targetId != null) {
         final success = await ref
             .read(profileRepositoryProvider)
-            .deleteMessage(id: message.serverId!, context: context);
+            .deleteMessage(id: targetId, context: context);
 
-        if (success["status"] == true) {
-          // 2️⃣ Remove locally if API deletion is successful
-          if (message.hiveKey != null && box.containsKey(message.hiveKey)) {
-            await box.delete(message.hiveKey);
+        if (success["status"] == true ||
+            success["status"] == "success" ||
+            success["success"] == true ||
+            success["message"] != null) {
+          // 2 Remove locally safely using HiveObject delete
+          try {
+            await message.delete();
+          } catch (e) {
+            log("Local delete error: $e");
           }
 
           if (index != -1) {
             updated.removeAt(index);
           }
 
-          state = AsyncData(updated);
-        } else {
-          // API returned false → optional: show error to user
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Failed to delete message")),
-          );
+          state = updated;
+
+          // Tell conversation list to refresh to recalculate latest message
+          try {
+            ref.read(conversationListProvider.notifier).refreshConversations();
+          } catch (e) {
+            log("Conversation refresh error: $e");
+          }
         }
       }
     } catch (e) {
@@ -306,37 +328,101 @@ class MessagesNotifier
       // Rollback UI (if you removed it optimistically)
       if (index != -1 && !updated.contains(backupMessage)) {
         updated.insert(index, backupMessage);
-        state = AsyncData(updated);
+        state = updated;
       }
     }
   }
 
-  Future<void> _saveToHive(List<Message> messages) async {
-    final box = Hive.box<Message>('chat_messages');
+  // In get_list_message.dart
+  // In get_list_message.dart
+  void markMessagesAsReadLocally() {
 
-    // Only delete old messages by Hive key, not by message.id
-    final oldMessages =
-        box.values.where((m) => m.conversationId == conversationId).toList();
+    final currentMessages = [...state];
+    bool hasChanges = false;
 
-    for (var m in oldMessages) {
-      if (m.hiveKey != null && box.containsKey(m.hiveKey)) {
-        await box.delete(m.hiveKey);
+    for (var i = 0; i < currentMessages.length; i++) {
+      final m = currentMessages[i];
+      // ONLY act on RECEIVED messages (we never "read" our own sent messages)
+      if (m.isRead != true && m.isSender != true) {
+        m.isRead = true;
+        m.save(); // HiveObject.save() is fine to fire-and-forget here
+        hasChanges = true;
       }
     }
 
-    for (var msg in messages) {
-      // Add to Hive and store hiveKey inside message
-      final key = await box.add(msg);
-      msg.hiveKey = key;
-      await msg.save();
+    if (hasChanges) {
+      state = currentMessages; // Updates the UI
+    }
+  }
+  Future<void> _saveToHive(List<Message> freshMessages) async {
+    final userId = ref.read(currentUserIdProvider);
+    final box = Hive.box<Message>(chatMessagesBoxName(userId));
+
+    // Create maps for faster lookup
+    final idMap = {
+      for (var m in box.values)
+        if (m.id != null) m.id!: m,
+    };
+    final serverIdMap = {
+      for (var m in box.values)
+        if (m.serverId != null) m.serverId!: m,
+    };
+
+    for (var msg in freshMessages) {
+      if (msg.id == null) continue;
+
+      //  Find existing by server ID OR by matching the server version
+      final existing = idMap[msg.id] ?? serverIdMap[msg.id];
+
+      if (existing != null) {
+        // UPDATE existing
+        // If the ID in Hive was a temporary one (timestamp), replace it
+        if (existing.id != msg.id) {
+          log(
+            "Replacing temporary ID ${existing.id} with server ID ${msg.id}",
+          );
+          final updated = existing.copyWith(
+            id: msg.id,
+            serverId: msg.id,
+            messageText: msg.messageText,
+            status: msg.status,
+            isRead: msg.isRead,
+            attachments: msg.attachments,
+            createdAt: msg.createdAt,
+            updatedAt: msg.updatedAt,
+            syncStatus: 'sent',
+          );
+          if (existing.hiveKey != null) {
+            await box.put(existing.hiveKey, updated);
+          }
+        } else {
+          // ID matches, just update fields
+          existing.messageText = msg.messageText;
+          existing.status = msg.status;
+          existing.isRead = msg.isRead;
+          existing.attachments = msg.attachments;
+          existing.createdAt = msg.createdAt;
+          existing.updatedAt = msg.updatedAt;
+          existing.syncStatus = 'sent';
+          await existing.save();
+        }
+      } else {
+        // ➕ ADD new (it's truly new)
+        final key = await box.add(msg);
+        msg.hiveKey = key;
+        await msg.save();
+      }
     }
 
-    // Update UI state
-    state = AsyncData(messages);
+    // Sync state from Hive (clean)
+    state =
+        box.values.where((m) => m.conversationId == conversationId).toList()
+          ..sort((a, b) => (a.createdAt ?? "").compareTo(b.createdAt ?? ""));
   }
 
   Future<void> retryPendingMessages(BuildContext context) async {
-    final box = Hive.box<Message>('chat_messages');
+    final userId = ref.read(currentUserIdProvider);
+    final box = Hive.box<Message>(chatMessagesBoxName(userId));
 
     final pending = box.values.where((m) => m.syncStatus != "sent").toList();
 
@@ -372,15 +458,118 @@ class MessagesNotifier
     }
 
     /// refresh UI
-    state = AsyncData(box.values.toList());
+    state =
+        box.values.where((m) => m.conversationId == conversationId).toList();
   }
+  Future<void> addIncomingMessage(Map<String, dynamic> data) async {
+    try {
+      final newMsg = Message.safeFromJson(data);
+      final userId = ref.read(currentUserIdProvider);
+      final box = Hive.box<Message>(chatMessagesBoxName(userId));
 
-  void addIncomingMessage(Map<String, dynamic> data) {
-    final newMsg = Message.safeFromJson(data);
-    Hive.box<Message>('chat_messages').put(newMsg.id, newMsg);
-    state = AsyncData(
-      [...?state.value, newMsg]
-        ..sort((a, b) => (a.createdAt ?? "").compareTo(b.createdAt ?? "")),
-    );
+      final isMe = newMsg.senderId.toString() == userId.toString();
+
+      // 1. Check if message already exists in STATE
+      int stateIndex = state.indexWhere(
+        (m) => m.id == newMsg.id || m.serverId == newMsg.id,
+      );
+
+      //  2. If not found and it's ME, try matching pending message
+      if (stateIndex == -1 && isMe) {
+        stateIndex = state.indexWhere((m) {
+          final mTime = DateTime.tryParse(m.createdAt ?? '');
+          final nTime = DateTime.tryParse(newMsg.createdAt ?? '');
+
+          return m.isSender == true &&
+              (m.serverId == null || m.serverId == 0) &&
+              m.messageText == newMsg.messageText &&
+              mTime != null &&
+              nTime != null &&
+              mTime.difference(nTime).inSeconds.abs() < 5;
+        });
+      }
+
+      //  3. UPDATE EXISTING MESSAGE (CRITICAL FIX)
+      if (stateIndex != -1) {
+        log(" Updating existing message (NO DUPLICATE)");
+
+        final existing = state[stateIndex];
+
+        // Preserve local attachment paths
+        if ((existing.attachments ?? []).isNotEmpty &&
+            (newMsg.attachments ?? []).isNotEmpty) {
+          for (
+            int i = 0;
+            i < existing.attachments!.length && i < newMsg.attachments!.length;
+            i++
+          ) {
+            newMsg.attachments![i].localPath =
+                existing.attachments![i].localPath;
+          }
+        }
+
+        final updatedMsg = existing.copyWith(
+          id: newMsg.id,
+          serverId: newMsg.id,
+          status: newMsg.status ?? 'sent',
+          createdAt: newMsg.createdAt,
+          attachments: newMsg.attachments,
+          syncStatus: 'sent',
+          isRead: newMsg.isRead
+        );
+
+        //  UPDATE IN HIVE (NOT ADD, NOT DELETE)
+        if (existing.hiveKey != null) {
+          await box.put(existing.hiveKey, updatedMsg);
+        } else {
+          // fallback safety (rare)
+          final key = await box.add(updatedMsg);
+          updatedMsg.hiveKey = key;
+          await updatedMsg.save();
+        }
+
+        // Update UI
+        final updated = [...state];
+        updated[stateIndex] = updatedMsg;
+        state = updated;
+
+        return;
+      }
+
+      //  4. ADD NEW MESSAGE (only if truly new)
+      log(" Adding NEW incoming message");
+
+      final newMessage = Message(
+        id: newMsg.id,
+        conversationId: newMsg.conversationId,
+        senderId: newMsg.senderId,
+        messageText: newMsg.messageText,
+        status: 'sent',
+        isRead: newMsg.isRead,
+        isSender: isMe,
+        timeAgo: newMsg.timeAgo,
+        attachments: newMsg.attachments,
+        senderName: newMsg.senderName,
+        senderAvatar: newMsg.senderAvatar,
+        createdAt: newMsg.createdAt,
+        updatedAt: newMsg.updatedAt,
+        syncStatus: 'sent',
+      );
+
+      //  IMPORTANT: NEVER use put(id) here
+      final key = await box.add(newMessage);
+      newMessage.hiveKey = key;
+      await newMessage.save();
+
+      final updatedState = [...state, newMessage];
+      updatedState.sort(
+        (a, b) => (a.createdAt ?? "").compareTo(b.createdAt ?? ""),
+      );
+
+      state = updatedState;
+    } catch (e, stack) {
+      log(" addIncomingMessage ERROR: $e");
+      log(stack.toString());
+    }
   }
 }

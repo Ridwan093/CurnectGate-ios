@@ -7,26 +7,10 @@ import 'package:curnectgate/features/ResidentDirectory/provider/getCommitte_prov
 import 'package:curnectgate/features/ResidentDirectory/widget/committe_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class Committee extends ConsumerWidget {
   const Committee({super.key});
-  Future<void> _launchDialer(String phoneNumber) async {
-    // Validate the phone number (optional: remove non-digits)
-    String formattedNumber = phoneNumber.replaceAll(RegExp(r'[^\d+]'), '');
-    if (formattedNumber.isEmpty) {
-      // Handle empty number (e.g., show a snackbar)
-      return;
-    }
 
-    final Uri url = Uri(scheme: 'tel', path: formattedNumber);
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      // Handle launch failure (e.g., show error message)
-      throw 'Could not launch dialer for $phoneNumber';
-    }
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -128,47 +112,7 @@ class Committee extends ConsumerWidget {
     );
   }
 
-  Widget _buildSearchEngine(CommitteeSearchNotifier notifier, WidgetRef ref) {
-    return SizedBox(
-      height: 50,
-      child: TextField(
-        onChanged: (query) => notifier.searchResidents(query, ref),
-        decoration: InputDecoration(
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: AppColors.instance.grey300,
-              style: BorderStyle.none,
-            ),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: AppColors.instance.grey300,
-              style: BorderStyle.none,
-            ),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          filled: true,
-          fillColor: AppColors.instance.grey300,
-          hintText: '(e.g., Rita)',
-          labelText: 'Search name',
-          hintStyle: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontSize: 12,
-            fontWeight: FontFamilies.bold,
-            color: AppColors.instance.black300,
-          ),
-          labelStyle: TextStyle(
-            fontFamily: FontFamilies.interDisplay,
-            fontSize: 12,
-            fontWeight: FontFamilies.bold,
-            color: AppColors.instance.black300,
-          ),
-          prefixIcon: const Icon(Icons.search),
-        ),
-      ),
-    );
-  }
+
 
   Widget _buildErrorUI(
     String error,

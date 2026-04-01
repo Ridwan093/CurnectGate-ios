@@ -1,22 +1,21 @@
 {
   "project_info": {
-    "project_number": "1018103511909",
-    "firebase_url": "https://curnect-test-f9bc0-default-rtdb.firebaseio.com",
-    "project_id": "curnect-test-f9bc0",
-    "storage_bucket": "curnect-test-f9bc0.firebasestorage.app"
+    "project_number": "1038277350674",
+    "project_id": "curnectgate-f9770",
+    "storage_bucket": "curnectgate-f9770.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1018103511909:android:939fd4eb040f162087ff8c",
+        "mobilesdk_app_id": "1:1038277350674:android:1901735c1ba2d55ef94fcb",
         "android_client_info": {
-          "package_name": "com.example.curnectgate"
+          "package_name": "com.curnect.gate"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDfgwbmq6ndjrVc51qYvaMJweBQKCCsLtE"
+          "current_key": "AIzaSyCDN09etKnt_2_p1XohbtBPmxE3Jhp48Wk"
         }
       ],
       "services": {
