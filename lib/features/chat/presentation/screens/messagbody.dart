@@ -49,7 +49,7 @@ String _formatRole(String role) {
       .join(' ');
 }
 
-class _MessageScreenState extends ConsumerState<MessageScreens> {
+class _MessageScreenState extends ConsumerState<MessageScreens> with WidgetsBindingObserver {
   final TextEditingController _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
@@ -67,6 +67,7 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     /// 1️⃣ Subscribe to this chat's real-time channel
 
@@ -74,6 +75,12 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
       ReverbService.subscribeChat(chatId: widget.id, ref: ref);
 
       markAsRead();
+    });
+
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        markAsRead();
+      }
     });
 
     // Automatically trigger markAsRead when reaching the bottom
@@ -95,6 +102,13 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
     });
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      markAsRead();
+    }
+  }
+
   /// Jump to bottom without animation
   void _jumpToBottom() {
     if (_scrollController.hasClients) {
@@ -104,6 +118,7 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
   }
 
   void markAsRead() {
+    if (!mounted) return;
     ref.read(formProvider.notifier).markMessageRead(ref: ref, id: widget.id);
   }
 
@@ -180,6 +195,7 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _sendTypingStatus(false);
     _debounceTimer?.cancel();
     _textController.dispose();
@@ -209,10 +225,13 @@ class _MessageScreenState extends ConsumerState<MessageScreens> {
         final myId = authUser?['id'];
 
         if (lastMessage.senderId.toString() != myId.toString()) {
-          // If we are already at the bottom or near it, mark as read
-          if (_scrollController.hasClients &&
+          // If we are already at the bottom or the screen is active, mark as read
+          // We mark as read if user is near bottom (latest messages) OR if they are typing
+          final isNearBottom = _scrollController.hasClients &&
               _scrollController.position.pixels <=
-                  _scrollController.position.minScrollExtent + 100) {
+                  _scrollController.position.minScrollExtent + 200;
+          
+          if (isNearBottom || _focusNode.hasFocus) {
             markAsRead();
           }
         }

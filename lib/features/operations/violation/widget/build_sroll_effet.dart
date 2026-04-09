@@ -1,9 +1,13 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
+import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class ImageScroll extends StatelessWidget {
+class ImageScroll extends ConsumerWidget {
   final BoxConstraints constraints;
   final PageController imageController;
   final List<String> images;
@@ -18,7 +22,7 @@ class ImageScroll extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SizedBox(
       width: constraints.maxWidth, // Takes full available width
       child: Stack(
@@ -31,29 +35,32 @@ class ImageScroll extends StatelessWidget {
               controller: imageController,
               itemCount: images.length,
               itemBuilder: (context, index) {
-                return Image.network(
-                  images[index],
-                  fit: BoxFit.cover,
-                  width: double.infinity, // Full width
-                  alignment: Alignment.center,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Center(
-                      child: CircularProgressIndicator(
-                        value:
-                            loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!
-                                : null,
-                      ),
-                    );
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey[200],
-                      child: const Icon(Icons.broken_image, size: 50),
-                    );
-                  },
+                return Hero(
+                  tag: 'violation_image_${images[index]}',
+                  child: Image.network(
+                    images[index],
+                    fit: BoxFit.cover,
+                    width: double.infinity, // Full width
+                    alignment: Alignment.center,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value:
+                              loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                        ),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey[200],
+                        child: const Icon(Icons.broken_image, size: 50),
+                      );
+                    },
+                  ),
                 );
               },
             ),
@@ -61,7 +68,7 @@ class ImageScroll extends StatelessWidget {
 
           // Back Button (positioned absolutely)
           Positioned(
-            top: MediaQuery.of(context).padding.top - 14,
+            top: MediaQuery.of(context).padding.top + 10,
             left: 10,
             child: GestureDetector(
               onTap: () => Navigator.pop(context),
@@ -69,19 +76,14 @@ class ImageScroll extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 elevation: 2,
                 child: Container(
-                  padding: const EdgeInsets.only(
-                    left: 15,
-                    right: 5,
-                    top: 10,
-                    bottom: 10,
-                  ),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Center(
                     child: Icon(
-                      Icons.arrow_back_ios,
+                      Icons.keyboard_arrow_left,
                       color: AppColors.instance.black600,
                     ),
                   ),
@@ -90,29 +92,63 @@ class ImageScroll extends StatelessWidget {
             ),
           ),
           Positioned(
-            bottom: MediaQuery.of(context).padding.bottom + 10,
-            right: 10,
-
+            bottom: 20,
+            right: 15,
             child: GestureDetector(
-              onTap: () => Navigator.pop(context),
+              onTap: () {
+                final violation = ref.read(reportProvider).report;
+                showUserBottomSheet(
+                  context: context,
+                  headertitle: "Status History",
+                  headersubtitle: "Track the timeline of this report",
+                  ref: ref,
+                  bottom: BottomSheetView.resolutionTime,
+                  id: violation.id,
+                );
+              },
               child: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(
-                    width: 2,
-                    style: BorderStyle.solid,
-                    color: _getStatusColor(status),
-                  ),
-                  borderRadius: BorderRadius.circular(10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
                 ),
-                child: Text(
-                  status.toUpperCase(),
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.9),
+                  border: Border.all(
+                    width: 1.5,
                     color: _getStatusColor(status),
-                    fontWeight: FontFamilies.bold,
                   ),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _getStatusColor(status).withOpacity(0.2),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: _getStatusColor(status),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      status.toUpperCase(),
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        color: _getStatusColor(status),
+                        fontWeight: FontFamilies.bold,
+                        fontSize: 11,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

@@ -152,7 +152,7 @@ const String getPendingValidator = "estates/security/validations/pending";
 const String getValidatorHistory = "estates/security/validations/history";
 const String getAllviolation = "estates/general/violations";
 const String deleteViolation = "estates/violations/4";
-const String getDuty = "estates/security/duty/current";
+const String getDutys = "estates/security/duty/current";
 
 const String getCommitt = "estates/general/committees";
 const String getResinde = "estates/general/directory";

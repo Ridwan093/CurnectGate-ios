@@ -158,7 +158,7 @@ class __$$SliderItemImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class _$SliderItemImpl implements _SliderItem {
   const _$SliderItemImpl(
       {this.id, this.title, this.description, this.imageUrl, this.order});

@@ -135,9 +135,9 @@ class __$$EstateImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class _$EstateImpl implements _Estate {
   const _$EstateImpl(
-      {@JsonKey(name: 'id') required this.id,
-      @JsonKey(name: 'name') required this.name,
-      @JsonKey(name: 'estate_code') required this.estateCode});
+      {@JsonKey(name: 'id') this.id = 0,
+      @JsonKey(name: 'name') this.name = '',
+      @JsonKey(name: 'estate_code') this.estateCode = ''});
 
   factory _$EstateImpl.fromJson(Map<String, dynamic> json) =>
       _$$EstateImplFromJson(json);
@@ -190,10 +190,9 @@ class _$EstateImpl implements _Estate {
 
 abstract class _Estate implements Estate {
   const factory _Estate(
-          {@JsonKey(name: 'id') required final int id,
-          @JsonKey(name: 'name') required final String name,
-          @JsonKey(name: 'estate_code') required final String estateCode}) =
-      _$EstateImpl;
+      {@JsonKey(name: 'id') final int id,
+      @JsonKey(name: 'name') final String name,
+      @JsonKey(name: 'estate_code') final String estateCode}) = _$EstateImpl;
 
   factory _Estate.fromJson(Map<String, dynamic> json) = _$EstateImpl.fromJson;
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:curnectgate/core/%20utils/api/api_Service.dart';
@@ -996,7 +997,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateloginLodaing(false);
         _handleLoginError(context, ref, message);
       }
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "Network error occurred while logging in.",
@@ -2561,7 +2562,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         final otpCode = response["data"]?["otp"]?["otp_code"];
         if (otpCode != null) {
           String title = "Your visitor access code: ";
-          String shareContent = "Here's your vistor access $otpCode:";
+          String shareContent = "Here's your vistor access codes:";
           context.pushNamed(
             AppRoutes.vendorAccessCode,
             extra: {'title': title, "code": otpCode, 'share': shareContent},
@@ -2916,7 +2917,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateGenrateMemberIdLoading(false);
 
         context.pop();
-
+ref.read(digitMemberIDprovider.notifier).refreshDigitalID(context, ref);
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -2926,7 +2927,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           positionNumber: 70,
         );
 
-        context.pop();
       } else {
         updateGenrateMemberIdLoading(false);
 
@@ -7760,7 +7760,6 @@ class FormNotifier extends StateNotifier<FormStates> {
         if (response['status'] == true) {
           await DeviceInfoHelper.saveFirstTimeCheck(false);
           isBiometricEnableds.toggleBiometric(true);
-
         } else {
           final message = extractValidationMessage(response);
 
@@ -7781,7 +7780,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           slug: slug,
         );
       }
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "Network error occurred",
@@ -7841,7 +7840,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       } else {
         _handleErrorResponse(context, ref, response["message"]);
       }
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "Network error occurred",
@@ -8510,6 +8509,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       } else {
         updateInitMessageLoading(false);
         final message = extractValidationMessage(response);
+       
         showCustomSuccessToast(
           context: context,
           message: message,

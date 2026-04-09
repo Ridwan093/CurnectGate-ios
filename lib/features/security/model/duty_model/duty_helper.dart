@@ -31,10 +31,10 @@ class DutyUiMapper {
       );
     }
 
-    /// ⭐ SHIFT FROM BACKEND
-    if (myDuty.shift != null) {
-      final start = _formatTime(myDuty.shift['start_time']);
-      final end = _formatTime(myDuty.shift['end_time']);
+    /// ⭐ SHIFT FROM BACKEND (using securityShift)
+    if (myDuty.securityShift != null) {
+      final start = _formatTime(myDuty.securityShift['start_time']);
+      final end = _formatTime(myDuty.securityShift['end_time']);
 
       return DutyTextUiState(
         label: "Currently on duty: ",
@@ -73,7 +73,18 @@ class DutyUiMapper {
   static String _formatTime(String? time) {
     if (time == null || time.isEmpty) return "--";
 
-    final parsed = DateFormat("HH:mm").parse(time);
-    return DateFormat("hh:mm a").format(parsed);
+    try {
+      // Handle cases like "06:00:00" or "06:00"
+      final parts = time.split(':');
+      if (parts.length >= 2) {
+        final hour = int.parse(parts[0]);
+        final minute = int.parse(parts[1]);
+        final dt = DateTime(2024, 1, 1, hour, minute);
+        return DateFormat("hh:mm a").format(dt);
+      }
+      return time;
+    } catch (e) {
+      return time;
+    }
   }
 }

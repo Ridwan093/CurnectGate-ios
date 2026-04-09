@@ -108,7 +108,10 @@ class Logcard extends ConsumerWidget {
               SizedBox(height: 10),
 
               _buildDetailRow(title: "Name", value: userName),
-              _buildDetailRow(title: "Type", value: entryType),
+              _buildDetailRow(
+                title: "Type",
+                value: entryType.replaceAll("_", " "),
+              ),
               _buildDetailRow(
                 title: "Time of Entry",
                 value: formatDateTime(entryTime),

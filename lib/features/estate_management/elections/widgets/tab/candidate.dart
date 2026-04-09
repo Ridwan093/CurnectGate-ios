@@ -100,9 +100,8 @@ class EletionCandidate extends ConsumerWidget {
                   avatarUrl: c.mediaUrl ?? "",
                   magnifso: "",
                   isvoted: false,
-                  cID: c.id?? 0,
-                  posID: pos.positionId.toString()
-                  ,
+                  cID: c.id ?? 0,
+                  posID: pos.positionId.toString(),
                 ),
             transitionBuilder: (_, anim, __, child) {
               return FadeTransition(opacity: anim, child: child);
@@ -119,21 +118,30 @@ class EletionCandidate extends ConsumerWidget {
         child: Row(
           children: [
             CircleAvatar(
-              child: Text(
-                c.name!
-                    .split(' ')
-                    .map((s) => s.isNotEmpty ? s[0] : '')
-                    .take(2)
-                    .join(),
+              radius: 25,
+              backgroundColor: AppColors.instance.teal200,
+              backgroundImage:
+                  (c.mediaUrl ?? "").isNotEmpty
+                      ? NetworkImage((c.mediaUrl ?? ""))
+                      : null,
 
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.teal300,
+              child:
+                  (c.mediaUrl ?? "").isNotEmpty
+                      ? null
+                      : Text(
+                        (c.name ?? "")
+                            .split(' ')
+                            .map((s) => s.isNotEmpty ? s[0] : '')
+                            .take(2)
+                            .join(),
 
-                  fontWeight: FontFamilies.bold,
-                ),
-              ),
-              backgroundColor: Colors.grey.shade100,
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          color: AppColors.instance.black600,
+                          fontSize: 30,
+                          fontWeight: FontFamilies.bold,
+                        ),
+                      ),
             ),
             const SizedBox(width: 12),
             Expanded(

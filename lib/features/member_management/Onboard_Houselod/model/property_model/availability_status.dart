@@ -12,7 +12,7 @@ class AvailabilityStatus with _$AvailabilityStatus {
     fieldRename: FieldRename.snake,
   )
   const factory AvailabilityStatus({
-    @JsonKey(name: 'is_available') required bool isAvailable,
+    @JsonKey(name: 'is_available') @Default(false) bool isAvailable,
     @JsonKey(name: 'reason') String? reason,
     @JsonKey(name: 'available_from') String? availableFrom,
   }) = _AvailabilityStatus;

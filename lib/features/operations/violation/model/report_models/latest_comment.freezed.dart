@@ -22,7 +22,7 @@ LatestComment _$LatestCommentFromJson(Map<String, dynamic> json) {
 mixin _$LatestComment {
   String get comment => throw _privateConstructorUsedError;
   String get user => throw _privateConstructorUsedError;
-  DateTime get createdAt => throw _privateConstructorUsedError;
+  DateTime? get createdAt => throw _privateConstructorUsedError;
 
   /// Serializes this LatestComment to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -40,7 +40,7 @@ abstract class $LatestCommentCopyWith<$Res> {
           LatestComment value, $Res Function(LatestComment) then) =
       _$LatestCommentCopyWithImpl<$Res, LatestComment>;
   @useResult
-  $Res call({String comment, String user, DateTime createdAt});
+  $Res call({String comment, String user, DateTime? createdAt});
 }
 
 /// @nodoc
@@ -60,7 +60,7 @@ class _$LatestCommentCopyWithImpl<$Res, $Val extends LatestComment>
   $Res call({
     Object? comment = null,
     Object? user = null,
-    Object? createdAt = null,
+    Object? createdAt = freezed,
   }) {
     return _then(_value.copyWith(
       comment: null == comment
@@ -71,10 +71,10 @@ class _$LatestCommentCopyWithImpl<$Res, $Val extends LatestComment>
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
               as String,
-      createdAt: null == createdAt
+      createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as DateTime?,
     ) as $Val);
   }
 }
@@ -87,7 +87,7 @@ abstract class _$$LatestCommentImplCopyWith<$Res>
       __$$LatestCommentImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String comment, String user, DateTime createdAt});
+  $Res call({String comment, String user, DateTime? createdAt});
 }
 
 /// @nodoc
@@ -105,7 +105,7 @@ class __$$LatestCommentImplCopyWithImpl<$Res>
   $Res call({
     Object? comment = null,
     Object? user = null,
-    Object? createdAt = null,
+    Object? createdAt = freezed,
   }) {
     return _then(_$LatestCommentImpl(
       comment: null == comment
@@ -116,10 +116,10 @@ class __$$LatestCommentImplCopyWithImpl<$Res>
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
               as String,
-      createdAt: null == createdAt
+      createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as DateTime?,
     ));
   }
 }
@@ -129,7 +129,7 @@ class __$$LatestCommentImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$LatestCommentImpl implements _LatestComment {
   const _$LatestCommentImpl(
-      {this.comment = '', this.user = '', required this.createdAt});
+      {this.comment = '', this.user = '', this.createdAt});
 
   factory _$LatestCommentImpl.fromJson(Map<String, dynamic> json) =>
       _$$LatestCommentImplFromJson(json);
@@ -141,7 +141,7 @@ class _$LatestCommentImpl implements _LatestComment {
   @JsonKey()
   final String user;
   @override
-  final DateTime createdAt;
+  final DateTime? createdAt;
 
   @override
   String toString() {
@@ -183,7 +183,7 @@ abstract class _LatestComment implements LatestComment {
   const factory _LatestComment(
       {final String comment,
       final String user,
-      required final DateTime createdAt}) = _$LatestCommentImpl;
+      final DateTime? createdAt}) = _$LatestCommentImpl;
 
   factory _LatestComment.fromJson(Map<String, dynamic> json) =
       _$LatestCommentImpl.fromJson;
@@ -193,7 +193,7 @@ abstract class _LatestComment implements LatestComment {
   @override
   String get user;
   @override
-  DateTime get createdAt;
+  DateTime? get createdAt;
 
   /// Create a copy of LatestComment
   /// with the given fields replaced by the non-null parameter values.

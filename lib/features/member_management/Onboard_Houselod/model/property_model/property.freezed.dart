@@ -73,7 +73,7 @@ mixin _$Property {
   @JsonKey(name: 'has_active_rental')
   bool get hasActiveRental => throw _privateConstructorUsedError;
   @JsonKey(name: 'estate')
-  Estate get estate => throw _privateConstructorUsedError;
+  Estate? get estate => throw _privateConstructorUsedError;
   @JsonKey(name: 'current_tenant')
   dynamic get currentTenant => throw _privateConstructorUsedError;
   @JsonKey(name: 'active_rentals')
@@ -85,7 +85,7 @@ mixin _$Property {
   @JsonKey(name: 'rental_yield')
   double get rentalYield => throw _privateConstructorUsedError;
   @JsonKey(name: 'availability_status')
-  AvailabilityStatus get availabilityStatus =>
+  AvailabilityStatus? get availabilityStatus =>
       throw _privateConstructorUsedError;
 
   /// Serializes this Property to a JSON map.
@@ -130,17 +130,17 @@ abstract class $PropertyCopyWith<$Res> {
       @JsonKey(name: 'in_maintenance') bool inMaintenance,
       @JsonKey(name: 'is_reserved') bool isReserved,
       @JsonKey(name: 'has_active_rental') bool hasActiveRental,
-      @JsonKey(name: 'estate') Estate estate,
+      @JsonKey(name: 'estate') Estate? estate,
       @JsonKey(name: 'current_tenant') dynamic currentTenant,
       @JsonKey(name: 'active_rentals') List<Rental> activeRentals,
       @JsonKey(name: 'created_at') String createdAt,
       @JsonKey(name: 'updated_at') String updatedAt,
       @JsonKey(name: 'rental_yield') double rentalYield,
       @JsonKey(name: 'availability_status')
-      AvailabilityStatus availabilityStatus});
+      AvailabilityStatus? availabilityStatus});
 
-  $EstateCopyWith<$Res> get estate;
-  $AvailabilityStatusCopyWith<$Res> get availabilityStatus;
+  $EstateCopyWith<$Res>? get estate;
+  $AvailabilityStatusCopyWith<$Res>? get availabilityStatus;
 }
 
 /// @nodoc
@@ -184,13 +184,13 @@ class _$PropertyCopyWithImpl<$Res, $Val extends Property>
     Object? inMaintenance = null,
     Object? isReserved = null,
     Object? hasActiveRental = null,
-    Object? estate = null,
+    Object? estate = freezed,
     Object? currentTenant = freezed,
     Object? activeRentals = null,
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? rentalYield = null,
-    Object? availabilityStatus = null,
+    Object? availabilityStatus = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -297,10 +297,10 @@ class _$PropertyCopyWithImpl<$Res, $Val extends Property>
           ? _value.hasActiveRental
           : hasActiveRental // ignore: cast_nullable_to_non_nullable
               as bool,
-      estate: null == estate
+      estate: freezed == estate
           ? _value.estate
           : estate // ignore: cast_nullable_to_non_nullable
-              as Estate,
+              as Estate?,
       currentTenant: freezed == currentTenant
           ? _value.currentTenant
           : currentTenant // ignore: cast_nullable_to_non_nullable
@@ -321,10 +321,10 @@ class _$PropertyCopyWithImpl<$Res, $Val extends Property>
           ? _value.rentalYield
           : rentalYield // ignore: cast_nullable_to_non_nullable
               as double,
-      availabilityStatus: null == availabilityStatus
+      availabilityStatus: freezed == availabilityStatus
           ? _value.availabilityStatus
           : availabilityStatus // ignore: cast_nullable_to_non_nullable
-              as AvailabilityStatus,
+              as AvailabilityStatus?,
     ) as $Val);
   }
 
@@ -332,8 +332,12 @@ class _$PropertyCopyWithImpl<$Res, $Val extends Property>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $EstateCopyWith<$Res> get estate {
-    return $EstateCopyWith<$Res>(_value.estate, (value) {
+  $EstateCopyWith<$Res>? get estate {
+    if (_value.estate == null) {
+      return null;
+    }
+
+    return $EstateCopyWith<$Res>(_value.estate!, (value) {
       return _then(_value.copyWith(estate: value) as $Val);
     });
   }
@@ -342,8 +346,12 @@ class _$PropertyCopyWithImpl<$Res, $Val extends Property>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $AvailabilityStatusCopyWith<$Res> get availabilityStatus {
-    return $AvailabilityStatusCopyWith<$Res>(_value.availabilityStatus,
+  $AvailabilityStatusCopyWith<$Res>? get availabilityStatus {
+    if (_value.availabilityStatus == null) {
+      return null;
+    }
+
+    return $AvailabilityStatusCopyWith<$Res>(_value.availabilityStatus!,
         (value) {
       return _then(_value.copyWith(availabilityStatus: value) as $Val);
     });
@@ -385,19 +393,19 @@ abstract class _$$PropertyImplCopyWith<$Res>
       @JsonKey(name: 'in_maintenance') bool inMaintenance,
       @JsonKey(name: 'is_reserved') bool isReserved,
       @JsonKey(name: 'has_active_rental') bool hasActiveRental,
-      @JsonKey(name: 'estate') Estate estate,
+      @JsonKey(name: 'estate') Estate? estate,
       @JsonKey(name: 'current_tenant') dynamic currentTenant,
       @JsonKey(name: 'active_rentals') List<Rental> activeRentals,
       @JsonKey(name: 'created_at') String createdAt,
       @JsonKey(name: 'updated_at') String updatedAt,
       @JsonKey(name: 'rental_yield') double rentalYield,
       @JsonKey(name: 'availability_status')
-      AvailabilityStatus availabilityStatus});
+      AvailabilityStatus? availabilityStatus});
 
   @override
-  $EstateCopyWith<$Res> get estate;
+  $EstateCopyWith<$Res>? get estate;
   @override
-  $AvailabilityStatusCopyWith<$Res> get availabilityStatus;
+  $AvailabilityStatusCopyWith<$Res>? get availabilityStatus;
 }
 
 /// @nodoc
@@ -439,13 +447,13 @@ class __$$PropertyImplCopyWithImpl<$Res>
     Object? inMaintenance = null,
     Object? isReserved = null,
     Object? hasActiveRental = null,
-    Object? estate = null,
+    Object? estate = freezed,
     Object? currentTenant = freezed,
     Object? activeRentals = null,
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? rentalYield = null,
-    Object? availabilityStatus = null,
+    Object? availabilityStatus = freezed,
   }) {
     return _then(_$PropertyImpl(
       id: null == id
@@ -552,10 +560,10 @@ class __$$PropertyImplCopyWithImpl<$Res>
           ? _value.hasActiveRental
           : hasActiveRental // ignore: cast_nullable_to_non_nullable
               as bool,
-      estate: null == estate
+      estate: freezed == estate
           ? _value.estate
           : estate // ignore: cast_nullable_to_non_nullable
-              as Estate,
+              as Estate?,
       currentTenant: freezed == currentTenant
           ? _value.currentTenant
           : currentTenant // ignore: cast_nullable_to_non_nullable
@@ -576,10 +584,10 @@ class __$$PropertyImplCopyWithImpl<$Res>
           ? _value.rentalYield
           : rentalYield // ignore: cast_nullable_to_non_nullable
               as double,
-      availabilityStatus: null == availabilityStatus
+      availabilityStatus: freezed == availabilityStatus
           ? _value.availabilityStatus
           : availabilityStatus // ignore: cast_nullable_to_non_nullable
-              as AvailabilityStatus,
+              as AvailabilityStatus?,
     ));
   }
 }
@@ -589,40 +597,40 @@ class __$$PropertyImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class _$PropertyImpl implements _Property {
   const _$PropertyImpl(
-      {@JsonKey(name: 'id') required this.id,
-      @JsonKey(name: 'property_code') required this.propertyCode,
-      @JsonKey(name: 'property_name') required this.propertyName,
-      @JsonKey(name: 'property_type') required this.propertyType,
+      {@JsonKey(name: 'id') this.id = 0,
+      @JsonKey(name: 'property_code') this.propertyCode = '',
+      @JsonKey(name: 'property_name') this.propertyName = '',
+      @JsonKey(name: 'property_type') this.propertyType = '',
       @JsonKey(name: 'address') this.address,
-      @JsonKey(name: 'bedrooms') required this.bedrooms,
-      @JsonKey(name: 'bathrooms') required this.bathrooms,
-      @JsonKey(name: 'size') required this.size,
+      @JsonKey(name: 'bedrooms') this.bedrooms = 0,
+      @JsonKey(name: 'bathrooms') this.bathrooms = 0,
+      @JsonKey(name: 'size') this.size = '0',
       @JsonKey(name: 'formatted_size') this.formattedSize,
-      @JsonKey(name: 'description') required this.description,
-      @JsonKey(name: 'rental_amount') required this.rentalAmount,
+      @JsonKey(name: 'description') this.description,
+      @JsonKey(name: 'rental_amount') this.rentalAmount = '0',
       @JsonKey(name: 'formatted_rental_amount') this.formattedRentalAmount,
-      @JsonKey(name: 'rental_frequency') required this.rentalFrequency,
-      @JsonKey(name: 'monthly_rent') required this.monthlyRent,
-      @JsonKey(name: 'annual_rent') required this.annualRent,
-      @JsonKey(name: 'amenities') required final List<String> amenities,
-      @JsonKey(name: 'images') required final List<dynamic> images,
-      @JsonKey(name: 'status') required this.status,
-      @JsonKey(name: 'status_badge') required this.statusBadge,
-      @JsonKey(name: 'is_furnished') required this.isFurnished,
-      @JsonKey(name: 'max_occupants') required this.maxOccupants,
-      @JsonKey(name: 'is_available') required this.isAvailable,
-      @JsonKey(name: 'is_occupied') required this.isOccupied,
-      @JsonKey(name: 'in_maintenance') required this.inMaintenance,
-      @JsonKey(name: 'is_reserved') required this.isReserved,
-      @JsonKey(name: 'has_active_rental') required this.hasActiveRental,
-      @JsonKey(name: 'estate') required this.estate,
+      @JsonKey(name: 'rental_frequency') this.rentalFrequency = 'monthly',
+      @JsonKey(name: 'monthly_rent') this.monthlyRent = 0,
+      @JsonKey(name: 'annual_rent') this.annualRent = 0,
+      @JsonKey(name: 'amenities') final List<String> amenities = const [],
+      @JsonKey(name: 'images') final List<dynamic> images = const [],
+      @JsonKey(name: 'status') this.status = '',
+      @JsonKey(name: 'status_badge') this.statusBadge = '',
+      @JsonKey(name: 'is_furnished') this.isFurnished = false,
+      @JsonKey(name: 'max_occupants') this.maxOccupants = 0,
+      @JsonKey(name: 'is_available') this.isAvailable = false,
+      @JsonKey(name: 'is_occupied') this.isOccupied = false,
+      @JsonKey(name: 'in_maintenance') this.inMaintenance = false,
+      @JsonKey(name: 'is_reserved') this.isReserved = false,
+      @JsonKey(name: 'has_active_rental') this.hasActiveRental = false,
+      @JsonKey(name: 'estate') this.estate,
       @JsonKey(name: 'current_tenant') this.currentTenant,
       @JsonKey(name: 'active_rentals')
-      required final List<Rental> activeRentals,
-      @JsonKey(name: 'created_at') required this.createdAt,
-      @JsonKey(name: 'updated_at') required this.updatedAt,
-      @JsonKey(name: 'rental_yield') required this.rentalYield,
-      @JsonKey(name: 'availability_status') required this.availabilityStatus})
+      final List<Rental> activeRentals = const [],
+      @JsonKey(name: 'created_at') this.createdAt = '',
+      @JsonKey(name: 'updated_at') this.updatedAt = '',
+      @JsonKey(name: 'rental_yield') this.rentalYield = 0,
+      @JsonKey(name: 'availability_status') this.availabilityStatus})
       : _amenities = amenities,
         _images = images,
         _activeRentals = activeRentals;
@@ -722,7 +730,7 @@ class _$PropertyImpl implements _Property {
   final bool hasActiveRental;
   @override
   @JsonKey(name: 'estate')
-  final Estate estate;
+  final Estate? estate;
   @override
   @JsonKey(name: 'current_tenant')
   final dynamic currentTenant;
@@ -746,7 +754,7 @@ class _$PropertyImpl implements _Property {
   final double rentalYield;
   @override
   @JsonKey(name: 'availability_status')
-  final AvailabilityStatus availabilityStatus;
+  final AvailabilityStatus? availabilityStatus;
 
   @override
   String toString() {
@@ -877,42 +885,41 @@ class _$PropertyImpl implements _Property {
 
 abstract class _Property implements Property {
   const factory _Property(
-      {@JsonKey(name: 'id') required final int id,
-      @JsonKey(name: 'property_code') required final String propertyCode,
-      @JsonKey(name: 'property_name') required final String propertyName,
-      @JsonKey(name: 'property_type') required final String propertyType,
+      {@JsonKey(name: 'id') final int id,
+      @JsonKey(name: 'property_code') final String propertyCode,
+      @JsonKey(name: 'property_name') final String propertyName,
+      @JsonKey(name: 'property_type') final String propertyType,
       @JsonKey(name: 'address') final String? address,
-      @JsonKey(name: 'bedrooms') required final int bedrooms,
-      @JsonKey(name: 'bathrooms') required final int bathrooms,
-      @JsonKey(name: 'size') required final String size,
+      @JsonKey(name: 'bedrooms') final int bedrooms,
+      @JsonKey(name: 'bathrooms') final int bathrooms,
+      @JsonKey(name: 'size') final String size,
       @JsonKey(name: 'formatted_size') final String? formattedSize,
-      @JsonKey(name: 'description') required final String? description,
-      @JsonKey(name: 'rental_amount') required final String rentalAmount,
+      @JsonKey(name: 'description') final String? description,
+      @JsonKey(name: 'rental_amount') final String rentalAmount,
       @JsonKey(name: 'formatted_rental_amount')
       final String? formattedRentalAmount,
-      @JsonKey(name: 'rental_frequency') required final String rentalFrequency,
-      @JsonKey(name: 'monthly_rent') required final double monthlyRent,
-      @JsonKey(name: 'annual_rent') required final double annualRent,
-      @JsonKey(name: 'amenities') required final List<String> amenities,
-      @JsonKey(name: 'images') required final List<dynamic> images,
-      @JsonKey(name: 'status') required final String status,
-      @JsonKey(name: 'status_badge') required final String statusBadge,
-      @JsonKey(name: 'is_furnished') required final bool isFurnished,
-      @JsonKey(name: 'max_occupants') required final int maxOccupants,
-      @JsonKey(name: 'is_available') required final bool isAvailable,
-      @JsonKey(name: 'is_occupied') required final bool isOccupied,
-      @JsonKey(name: 'in_maintenance') required final bool inMaintenance,
-      @JsonKey(name: 'is_reserved') required final bool isReserved,
-      @JsonKey(name: 'has_active_rental') required final bool hasActiveRental,
-      @JsonKey(name: 'estate') required final Estate estate,
+      @JsonKey(name: 'rental_frequency') final String rentalFrequency,
+      @JsonKey(name: 'monthly_rent') final double monthlyRent,
+      @JsonKey(name: 'annual_rent') final double annualRent,
+      @JsonKey(name: 'amenities') final List<String> amenities,
+      @JsonKey(name: 'images') final List<dynamic> images,
+      @JsonKey(name: 'status') final String status,
+      @JsonKey(name: 'status_badge') final String statusBadge,
+      @JsonKey(name: 'is_furnished') final bool isFurnished,
+      @JsonKey(name: 'max_occupants') final int maxOccupants,
+      @JsonKey(name: 'is_available') final bool isAvailable,
+      @JsonKey(name: 'is_occupied') final bool isOccupied,
+      @JsonKey(name: 'in_maintenance') final bool inMaintenance,
+      @JsonKey(name: 'is_reserved') final bool isReserved,
+      @JsonKey(name: 'has_active_rental') final bool hasActiveRental,
+      @JsonKey(name: 'estate') final Estate? estate,
       @JsonKey(name: 'current_tenant') final dynamic currentTenant,
-      @JsonKey(name: 'active_rentals')
-      required final List<Rental> activeRentals,
-      @JsonKey(name: 'created_at') required final String createdAt,
-      @JsonKey(name: 'updated_at') required final String updatedAt,
-      @JsonKey(name: 'rental_yield') required final double rentalYield,
+      @JsonKey(name: 'active_rentals') final List<Rental> activeRentals,
+      @JsonKey(name: 'created_at') final String createdAt,
+      @JsonKey(name: 'updated_at') final String updatedAt,
+      @JsonKey(name: 'rental_yield') final double rentalYield,
       @JsonKey(name: 'availability_status')
-      required final AvailabilityStatus availabilityStatus}) = _$PropertyImpl;
+      final AvailabilityStatus? availabilityStatus}) = _$PropertyImpl;
 
   factory _Property.fromJson(Map<String, dynamic> json) =
       _$PropertyImpl.fromJson;
@@ -997,7 +1004,7 @@ abstract class _Property implements Property {
   bool get hasActiveRental;
   @override
   @JsonKey(name: 'estate')
-  Estate get estate;
+  Estate? get estate;
   @override
   @JsonKey(name: 'current_tenant')
   dynamic get currentTenant;
@@ -1015,7 +1022,7 @@ abstract class _Property implements Property {
   double get rentalYield;
   @override
   @JsonKey(name: 'availability_status')
-  AvailabilityStatus get availabilityStatus;
+  AvailabilityStatus? get availabilityStatus;
 
   /// Create a copy of Property
   /// with the given fields replaced by the non-null parameter values.

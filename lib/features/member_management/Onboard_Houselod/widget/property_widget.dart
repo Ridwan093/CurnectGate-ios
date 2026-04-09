@@ -43,10 +43,10 @@ class PropertyWidget extends ConsumerWidget {
       loading: () {
         try {
           final cachedproperty = ref.read(propertyIdProvider).value;
-          return cachedproperty != null
+          return cachedproperty?.data != null && (cachedproperty?.data?.properties?? []).isNotEmpty
               ? PropertyDropdown(
                 currentValue: currentValue,
-                data: cachedproperty.data,
+                data: cachedproperty!.data!,
               )
               : _buildLoadingState();
         } catch (e) {
@@ -73,12 +73,12 @@ class PropertyWidget extends ConsumerWidget {
 
           // Try to show cached data
           final cachedproperty = ref.read(propertyIdProvider).value;
-          if (cachedproperty != null) {
+          if (cachedproperty?.data != null && (cachedproperty?.data?.properties?? []).isNotEmpty) {
             return Column(
               children: [
                 PropertyDropdown(
                   currentValue: currentValue,
-                  data: cachedproperty.data,
+                  data: cachedproperty!.data!,
                 ),
                 _buildNetworkWarningBanner(
                   error.toString(),

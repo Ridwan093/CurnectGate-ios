@@ -15,10 +15,11 @@ class CommentBody extends ConsumerWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: data.comments?.length ?? 0,
-      separatorBuilder: (context, index) => const Divider(height: 24),
+      separatorBuilder: (context, index) => const SizedBox(height: 20),
       itemBuilder: (context, index) {
         final comment = data.comments![index];
         final createdAt = comment.createdAt;
+        final isInternal = comment.isInternal == 1;
 
         final parsedDate =
             createdAt == null ? null : DateTime.tryParse(createdAt);
@@ -29,85 +30,127 @@ class CommentBody extends ConsumerWidget {
 
         final timeAge = TimeagoModel(parsedDate);
 
-        String userName = comment.user?.name ?? "";
+        String userName = comment.user?.name ?? "User";
         String avatarUrl =
             'https://ui-avatars.com/api/?name=${Uri.encodeComponent(userName)}&background=8EC0C9&color=ffffff&size=128';
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // --- User Avatar + Name + Time ---
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    backgroundColor: AppColors.instance.teal500,
-                    radius: 20,
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Avatar with premium border
+                Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: isInternal ? AppColors.instance.yellow500 : AppColors.instance.teal500.withOpacity(0.3),
+                      width: 2,
+                    ),
+                  ),
+                  child: CircleAvatar(
+                    backgroundColor: AppColors.instance.grey200,
+                    radius: 18,
                     backgroundImage: NetworkImage(
                       comment.mediaUrl ?? avatarUrl,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            comment.user?.name ?? "",
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontWeight: FontFamilies.bold,
-                              color: AppColors.instance.black600,
-                              fontFamily: FontFamilies.interDisplay,
-                              fontSize: 14,
+                ),
+                const SizedBox(width: 12),
+                
+                // Name and Time
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              userName,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.instance.black600,
+                                fontFamily: FontFamilies.interDisplay,
+                                fontSize: 13,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 5),
-                        Container(
-                          height: 5,
-
-                          width: 5,
-                          decoration: BoxDecoration(
+                          if (isInternal) ...[
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: AppColors.instance.yellow500.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                "INTERNAL",
+                                style: TextStyle(
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.instance.yellow500,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ),
+                          ],
+                          const SizedBox(width: 6),
+                          Icon(
+                            Icons.circle,
+                            size: 4,
                             color: AppColors.instance.black300,
-                            shape: BoxShape.circle,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            timeAge.timeAgo,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: AppColors.instance.black300,
+                              fontFamily: FontFamilies.interDisplay,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      
+                      // Comment Bubble-style container
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: isInternal 
+                              ? AppColors.instance.yellow500.withOpacity(0.05) 
+                              : AppColors.instance.grey200.withOpacity(0.5),
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(16),
+                            bottomLeft: Radius.circular(16),
+                            bottomRight: Radius.circular(16),
                           ),
                         ),
-                        const SizedBox(width: 5),
-                        Text(
-                          timeAge.timeAgo,
+                        child: Text(
+                          comment.comment ?? "",
                           style: TextStyle(
-                            fontSize: 12,
-                            color: AppColors.instance.black300,
+                            fontSize: 13,
                             fontFamily: FontFamilies.interDisplay,
+                            color: AppColors.instance.black500,
+                            height: 1.4,
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  Icon(Icons.more_vert),
-                ],
-              ),
-
-              // --- Comment Text ---
-              Padding(
-                padding: const EdgeInsets.only(left: 52),
-                child: Text(
-                  comment.comment ?? "",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontFamily: FontFamilies.interDisplay,
-                    color: AppColors.instance.black600,
+                      ),
+                    ],
                   ),
                 ),
-              ),
-
-              // --- Replies (if any) ---
-            ],
-          ),
+                
+                IconButton(
+                  icon: Icon(Icons.more_horiz, color: AppColors.instance.black300, size: 20),
+                  onPressed: () {},
+                ),
+              ],
+            ),
+          ],
         );
       },
     );

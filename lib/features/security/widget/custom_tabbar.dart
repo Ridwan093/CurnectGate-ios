@@ -107,7 +107,9 @@ class _TabStyle extends AnimatedWidget {
     final Color color = _resolveWithLabelColor(context).resolve(states);
 
     return DefaultTextStyle(
-      style: textStyle.copyWith(color: color),
+      style: textStyle.copyWith(color: color, overflow: TextOverflow.ellipsis),
+      maxLines: 1,
+      softWrap: false,
       child: IconTheme.merge(
         data: IconThemeData(size: 24.0, color: color),
         child: child,
@@ -523,6 +525,8 @@ class _IndicatorPainter extends CustomPainter {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            maxLines: 1,
+            ellipsis: '...',
             textDirection: textDirection,
             textAlign: TextAlign.center,
           );

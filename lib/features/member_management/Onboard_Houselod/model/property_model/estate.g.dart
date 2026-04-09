@@ -7,9 +7,9 @@ part of 'estate.dart';
 // **************************************************************************
 
 _$EstateImpl _$$EstateImplFromJson(Map<String, dynamic> json) => _$EstateImpl(
-      id: (json['id'] as num).toInt(),
-      name: json['name'] as String,
-      estateCode: json['estate_code'] as String,
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      name: json['name'] as String? ?? '',
+      estateCode: json['estate_code'] as String? ?? '',
     );
 
 Map<String, dynamic> _$$EstateImplToJson(_$EstateImpl instance) =>

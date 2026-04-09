@@ -52,14 +52,17 @@ class _ChatMessageInputState extends ConsumerState<ChatMessageInput> {
   void _sendMessage() async {
     if (_isTyping && !_isLoading) {
       widget.onSendPressed();
-     
+
       String formattedType = widget.type.toLowerCase();
       if (formattedType == 'security_personnel') {
         formattedType = 'security';
       } else if (formattedType == 'estate_admin') {
         formattedType = 'admin';
-      } else if (formattedType == 'estate_committe') {
+      } else if (formattedType == 'committee_member') {
         formattedType = 'committe';
+      } else if (formattedType == 'committee_member') {
+      } else if (formattedType == 'board_member') {
+        formattedType = 'board';
       }
       await ref
           .read(formProvider.notifier)
@@ -70,8 +73,6 @@ class _ChatMessageInputState extends ConsumerState<ChatMessageInput> {
             type: formattedType,
             ref: ref,
           );
-
-     
     }
   }
 
@@ -103,7 +104,7 @@ class _ChatMessageInputState extends ConsumerState<ChatMessageInput> {
                 color: AppColors.instance.black600,
               ),
               decoration: InputDecoration(
-                hintText: "Type your message...",
+                hintText: "Type your message...${widget.type}",
                 hintStyle: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   fontSize: 15,

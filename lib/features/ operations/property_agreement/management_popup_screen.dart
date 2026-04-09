@@ -1,7 +1,7 @@
 import 'package:curnectgate/features/%20operations/property_agreement/widget/agreement_required.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
 class AgreementCheck extends ConsumerWidget {
   final Widget child;
   final bool mustSign;
@@ -14,7 +14,11 @@ class AgreementCheck extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (!mustSign) {
+      final authState = ref.watch(authProvider);
+
+    final user = authState.user;
+    final userRole = user?["role"] ?? "";
+    if (!mustSign && userRole.contains("landlord")||userRole.contains("tenant")) {
       return const AgreementRequiredScreen();
     }
 

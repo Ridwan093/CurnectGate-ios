@@ -121,8 +121,8 @@ class __$$RentalImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class _$RentalImpl implements _Rental {
   const _$RentalImpl(
-      {@JsonKey(name: 'id') required this.id,
-      @JsonKey(name: 'start_date') required this.startDate});
+      {@JsonKey(name: 'id') this.id = 0,
+      @JsonKey(name: 'start_date') this.startDate = ''});
 
   factory _$RentalImpl.fromJson(Map<String, dynamic> json) =>
       _$$RentalImplFromJson(json);
@@ -171,9 +171,8 @@ class _$RentalImpl implements _Rental {
 
 abstract class _Rental implements Rental {
   const factory _Rental(
-          {@JsonKey(name: 'id') required final int id,
-          @JsonKey(name: 'start_date') required final String startDate}) =
-      _$RentalImpl;
+      {@JsonKey(name: 'id') final int id,
+      @JsonKey(name: 'start_date') final String startDate}) = _$RentalImpl;
 
   factory _Rental.fromJson(Map<String, dynamic> json) = _$RentalImpl.fromJson;
 

@@ -253,7 +253,9 @@ class ReverbService {
       });
 
       _chatChannel!.bind('message.read').listen((event) {
-        jsonDecode(event.data as String) as Map<String, dynamic>;
+        ref
+            .read(messagesProvider(chatId).notifier)
+            .markSentMessagesAsReadLocally();
       });
 
       _typingSub = _chatChannel!.bind('user.typing').listen((event) {

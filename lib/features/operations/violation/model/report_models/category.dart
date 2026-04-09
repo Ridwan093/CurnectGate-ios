@@ -8,9 +8,9 @@ part 'category.g.dart';
 class Category with _$Category {
   @JsonSerializable(explicitToJson: true)
   const factory Category({
-    required int id,
-    required String name,
-    required String type,
+    @Default(0) int id,
+    @Default('') String name,
+    @Default('') String type,
   }) = _Category;
 
   factory Category.fromJson(Map<String, dynamic> json) => _$CategoryFromJson(json);

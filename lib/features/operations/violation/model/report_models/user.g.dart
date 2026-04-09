@@ -7,11 +7,15 @@ part of 'user.dart';
 // **************************************************************************
 
 _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
-      id: NullSafetyHelper.safeInt(json['id']),
-      name: NullSafetyHelper.safeString(json['name']),
+      id: json['id'] == null ? 0 : NullSafetyHelper.safeInt(json['id']),
+      name:
+          json['name'] == null ? '' : NullSafetyHelper.safeString(json['name']),
       memberCode: NullSafetyHelper.safeString(json['member_code']),
-      role: NullSafetyHelper.safeString(json['role']),
-      isSelf: NullSafetyHelper.safeBool(json['is_self']),
+      role:
+          json['role'] == null ? '' : NullSafetyHelper.safeString(json['role']),
+      isSelf: json['is_self'] == null
+          ? false
+          : NullSafetyHelper.safeBool(json['is_self']),
       isCurrentUser: NullSafetyHelper.safeBool(json['is_current_user']),
     );
 

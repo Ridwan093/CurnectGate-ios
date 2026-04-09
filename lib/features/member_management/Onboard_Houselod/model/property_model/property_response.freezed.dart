@@ -27,7 +27,7 @@ mixin _$PropertyResponse {
   @JsonKey(name: 'code')
   int get code => throw _privateConstructorUsedError;
   @JsonKey(name: 'data')
-  PropertyData get data => throw _privateConstructorUsedError;
+  PropertyData? get data => throw _privateConstructorUsedError;
 
   /// Serializes this PropertyResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -49,9 +49,9 @@ abstract class $PropertyResponseCopyWith<$Res> {
       {@JsonKey(name: 'status') bool status,
       @JsonKey(name: 'message') String message,
       @JsonKey(name: 'code') int code,
-      @JsonKey(name: 'data') PropertyData data});
+      @JsonKey(name: 'data') PropertyData? data});
 
-  $PropertyDataCopyWith<$Res> get data;
+  $PropertyDataCopyWith<$Res>? get data;
 }
 
 /// @nodoc
@@ -72,7 +72,7 @@ class _$PropertyResponseCopyWithImpl<$Res, $Val extends PropertyResponse>
     Object? status = null,
     Object? message = null,
     Object? code = null,
-    Object? data = null,
+    Object? data = freezed,
   }) {
     return _then(_value.copyWith(
       status: null == status
@@ -87,10 +87,10 @@ class _$PropertyResponseCopyWithImpl<$Res, $Val extends PropertyResponse>
           ? _value.code
           : code // ignore: cast_nullable_to_non_nullable
               as int,
-      data: null == data
+      data: freezed == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
-              as PropertyData,
+              as PropertyData?,
     ) as $Val);
   }
 
@@ -98,8 +98,12 @@ class _$PropertyResponseCopyWithImpl<$Res, $Val extends PropertyResponse>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $PropertyDataCopyWith<$Res> get data {
-    return $PropertyDataCopyWith<$Res>(_value.data, (value) {
+  $PropertyDataCopyWith<$Res>? get data {
+    if (_value.data == null) {
+      return null;
+    }
+
+    return $PropertyDataCopyWith<$Res>(_value.data!, (value) {
       return _then(_value.copyWith(data: value) as $Val);
     });
   }
@@ -117,10 +121,10 @@ abstract class _$$PropertyResponseImplCopyWith<$Res>
       {@JsonKey(name: 'status') bool status,
       @JsonKey(name: 'message') String message,
       @JsonKey(name: 'code') int code,
-      @JsonKey(name: 'data') PropertyData data});
+      @JsonKey(name: 'data') PropertyData? data});
 
   @override
-  $PropertyDataCopyWith<$Res> get data;
+  $PropertyDataCopyWith<$Res>? get data;
 }
 
 /// @nodoc
@@ -139,7 +143,7 @@ class __$$PropertyResponseImplCopyWithImpl<$Res>
     Object? status = null,
     Object? message = null,
     Object? code = null,
-    Object? data = null,
+    Object? data = freezed,
   }) {
     return _then(_$PropertyResponseImpl(
       status: null == status
@@ -154,10 +158,10 @@ class __$$PropertyResponseImplCopyWithImpl<$Res>
           ? _value.code
           : code // ignore: cast_nullable_to_non_nullable
               as int,
-      data: null == data
+      data: freezed == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
-              as PropertyData,
+              as PropertyData?,
     ));
   }
 }
@@ -167,10 +171,10 @@ class __$$PropertyResponseImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class _$PropertyResponseImpl implements _PropertyResponse {
   const _$PropertyResponseImpl(
-      {@JsonKey(name: 'status') required this.status,
-      @JsonKey(name: 'message') required this.message,
-      @JsonKey(name: 'code') required this.code,
-      @JsonKey(name: 'data') required this.data});
+      {@JsonKey(name: 'status') this.status = false,
+      @JsonKey(name: 'message') this.message = '',
+      @JsonKey(name: 'code') this.code = 0,
+      @JsonKey(name: 'data') this.data});
 
   factory _$PropertyResponseImpl.fromJson(Map<String, dynamic> json) =>
       _$$PropertyResponseImplFromJson(json);
@@ -186,7 +190,7 @@ class _$PropertyResponseImpl implements _PropertyResponse {
   final int code;
   @override
   @JsonKey(name: 'data')
-  final PropertyData data;
+  final PropertyData? data;
 
   @override
   String toString() {
@@ -227,10 +231,10 @@ class _$PropertyResponseImpl implements _PropertyResponse {
 
 abstract class _PropertyResponse implements PropertyResponse {
   const factory _PropertyResponse(
-          {@JsonKey(name: 'status') required final bool status,
-          @JsonKey(name: 'message') required final String message,
-          @JsonKey(name: 'code') required final int code,
-          @JsonKey(name: 'data') required final PropertyData data}) =
+          {@JsonKey(name: 'status') final bool status,
+          @JsonKey(name: 'message') final String message,
+          @JsonKey(name: 'code') final int code,
+          @JsonKey(name: 'data') final PropertyData? data}) =
       _$PropertyResponseImpl;
 
   factory _PropertyResponse.fromJson(Map<String, dynamic> json) =
@@ -247,7 +251,7 @@ abstract class _PropertyResponse implements PropertyResponse {
   int get code;
   @override
   @JsonKey(name: 'data')
-  PropertyData get data;
+  PropertyData? get data;
 
   /// Create a copy of PropertyResponse
   /// with the given fields replaced by the non-null parameter values.

@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCDN09etKnt_2_p1XohbtBPmxE3Jhp48Wk',
-    appId: '1:1038277350674:android:1901735c1ba2d55ef94fcb',
+    appId: '1:1038277350674:android:2577c162060f98eaf94fcb',
     messagingSenderId: '1038277350674',
     projectId: 'curnectgate-f9770',
     storageBucket: 'curnectgate-f9770.firebasestorage.app',
@@ -59,11 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCvWrzPP-YzjJninbgasSUsqRh9HgManzY',
-    appId: '1:1038277350674:ios:def8d65c4c523de7f94fcb',
+    appId: '1:1038277350674:ios:57935587a6c96d1ff94fcb',
     messagingSenderId: '1038277350674',
     projectId: 'curnectgate-f9770',
     storageBucket: 'curnectgate-f9770.firebasestorage.app',
-    iosBundleId: 'com.curnect.gate',
+    iosBundleId: 'com.curnectgate.app',
   );
 
 }

@@ -13,10 +13,10 @@ class PropertyResponse with _$PropertyResponse {
     fieldRename: FieldRename.snake,
   )
   const factory PropertyResponse({
-    @JsonKey(name: 'status') required bool status,
-    @JsonKey(name: 'message') required String message,
-    @JsonKey(name: 'code') required int code,
-    @JsonKey(name: 'data') required PropertyData data,
+    @JsonKey(name: 'status') @Default(false) bool status,
+    @JsonKey(name: 'message') @Default('') String message,
+    @JsonKey(name: 'code') @Default(0) int code,
+    @JsonKey(name: 'data') PropertyData? data,
   }) = _PropertyResponse;
 
   factory PropertyResponse.fromJson(Map<String, dynamic> json) =>
@@ -27,6 +27,6 @@ class PropertyResponse with _$PropertyResponse {
         status: NullSafetyHelper.safeBool(json?['status']),
         message: NullSafetyHelper.safeString(json?['message']),
         code: NullSafetyHelper.safeInt(json?['code']),
-        data: PropertyData.safeFromJson(json?['data']),
+        data: json?['data'] != null ? PropertyData.safeFromJson(json?['data']) : null,
       );
 }

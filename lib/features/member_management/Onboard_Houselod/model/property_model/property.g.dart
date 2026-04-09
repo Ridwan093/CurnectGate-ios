@@ -8,43 +8,50 @@ part of 'property.dart';
 
 _$PropertyImpl _$$PropertyImplFromJson(Map<String, dynamic> json) =>
     _$PropertyImpl(
-      id: (json['id'] as num).toInt(),
-      propertyCode: json['property_code'] as String,
-      propertyName: json['property_name'] as String,
-      propertyType: json['property_type'] as String,
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      propertyCode: json['property_code'] as String? ?? '',
+      propertyName: json['property_name'] as String? ?? '',
+      propertyType: json['property_type'] as String? ?? '',
       address: json['address'] as String?,
-      bedrooms: (json['bedrooms'] as num).toInt(),
-      bathrooms: (json['bathrooms'] as num).toInt(),
-      size: json['size'] as String,
+      bedrooms: (json['bedrooms'] as num?)?.toInt() ?? 0,
+      bathrooms: (json['bathrooms'] as num?)?.toInt() ?? 0,
+      size: json['size'] as String? ?? '0',
       formattedSize: json['formatted_size'] as String?,
       description: json['description'] as String?,
-      rentalAmount: json['rental_amount'] as String,
+      rentalAmount: json['rental_amount'] as String? ?? '0',
       formattedRentalAmount: json['formatted_rental_amount'] as String?,
-      rentalFrequency: json['rental_frequency'] as String,
-      monthlyRent: (json['monthly_rent'] as num).toDouble(),
-      annualRent: (json['annual_rent'] as num).toDouble(),
-      amenities:
-          (json['amenities'] as List<dynamic>).map((e) => e as String).toList(),
-      images: json['images'] as List<dynamic>,
-      status: json['status'] as String,
-      statusBadge: json['status_badge'] as String,
-      isFurnished: json['is_furnished'] as bool,
-      maxOccupants: (json['max_occupants'] as num).toInt(),
-      isAvailable: json['is_available'] as bool,
-      isOccupied: json['is_occupied'] as bool,
-      inMaintenance: json['in_maintenance'] as bool,
-      isReserved: json['is_reserved'] as bool,
-      hasActiveRental: json['has_active_rental'] as bool,
-      estate: Estate.fromJson(json['estate'] as Map<String, dynamic>),
+      rentalFrequency: json['rental_frequency'] as String? ?? 'monthly',
+      monthlyRent: (json['monthly_rent'] as num?)?.toDouble() ?? 0,
+      annualRent: (json['annual_rent'] as num?)?.toDouble() ?? 0,
+      amenities: (json['amenities'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      images: json['images'] as List<dynamic>? ?? const [],
+      status: json['status'] as String? ?? '',
+      statusBadge: json['status_badge'] as String? ?? '',
+      isFurnished: json['is_furnished'] as bool? ?? false,
+      maxOccupants: (json['max_occupants'] as num?)?.toInt() ?? 0,
+      isAvailable: json['is_available'] as bool? ?? false,
+      isOccupied: json['is_occupied'] as bool? ?? false,
+      inMaintenance: json['in_maintenance'] as bool? ?? false,
+      isReserved: json['is_reserved'] as bool? ?? false,
+      hasActiveRental: json['has_active_rental'] as bool? ?? false,
+      estate: json['estate'] == null
+          ? null
+          : Estate.fromJson(json['estate'] as Map<String, dynamic>),
       currentTenant: json['current_tenant'],
-      activeRentals: (json['active_rentals'] as List<dynamic>)
-          .map((e) => Rental.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      createdAt: json['created_at'] as String,
-      updatedAt: json['updated_at'] as String,
-      rentalYield: (json['rental_yield'] as num).toDouble(),
-      availabilityStatus: AvailabilityStatus.fromJson(
-          json['availability_status'] as Map<String, dynamic>),
+      activeRentals: (json['active_rentals'] as List<dynamic>?)
+              ?.map((e) => Rental.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      createdAt: json['created_at'] as String? ?? '',
+      updatedAt: json['updated_at'] as String? ?? '',
+      rentalYield: (json['rental_yield'] as num?)?.toDouble() ?? 0,
+      availabilityStatus: json['availability_status'] == null
+          ? null
+          : AvailabilityStatus.fromJson(
+              json['availability_status'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$PropertyImplToJson(_$PropertyImpl instance) =>
@@ -75,11 +82,11 @@ Map<String, dynamic> _$$PropertyImplToJson(_$PropertyImpl instance) =>
       'in_maintenance': instance.inMaintenance,
       'is_reserved': instance.isReserved,
       'has_active_rental': instance.hasActiveRental,
-      'estate': instance.estate.toJson(),
+      'estate': instance.estate?.toJson(),
       'current_tenant': instance.currentTenant,
       'active_rentals': instance.activeRentals.map((e) => e.toJson()).toList(),
       'created_at': instance.createdAt,
       'updated_at': instance.updatedAt,
       'rental_yield': instance.rentalYield,
-      'availability_status': instance.availabilityStatus.toJson(),
+      'availability_status': instance.availabilityStatus?.toJson(),
     };

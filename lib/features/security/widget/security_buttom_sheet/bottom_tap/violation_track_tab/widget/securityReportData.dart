@@ -47,8 +47,8 @@ class SecurityReportBody extends ConsumerWidget {
         child: reportAsync.when(
           data: (report) {
             try {
-              final violations = report?.data.violations;
-              if (violations != null && violations.isNotEmpty) {
+              final violations = report?.data?.violations ?? [];
+              if (violations.isNotEmpty) {
                 return _buildReportList(violations, ref);
               } else {
                 return _buildEmptyBody();
@@ -60,8 +60,8 @@ class SecurityReportBody extends ConsumerWidget {
           loading: () {
             try {
               final cachedReport = ref.read(investigatingProvider).value;
-              final cachedViolations = cachedReport?.data.violations;
-              return cachedViolations != null && cachedViolations.isNotEmpty
+              final cachedViolations = cachedReport?.data?.violations ?? [];
+              return cachedViolations.isNotEmpty
                   ? _buildReportList(cachedViolations, ref)
                   : _buildLoadingState();
             } catch (e) {
@@ -77,8 +77,8 @@ class SecurityReportBody extends ConsumerWidget {
 
               // Try to show cached data if available
               final cachedReport = ref.read(investigatingProvider).value;
-              final cachedViolations = cachedReport?.data.violations;
-              if (cachedViolations != null && cachedViolations.isNotEmpty) {
+              final cachedViolations = cachedReport?.data?.violations ?? [];
+              if (cachedViolations.isNotEmpty) {
                 return Column(
                   children: [
                     _buildReportList(cachedViolations, ref),
@@ -126,7 +126,7 @@ class SecurityReportBody extends ConsumerWidget {
                     opacity: animation,
                     child: ViolationDetailPage(
                       violation: data,
-                      images: data.evidence.mediaUrls,
+                      images: data.evidence?.mediaUrls ?? [],
                     ),
                   );
                 },
@@ -134,9 +134,10 @@ class SecurityReportBody extends ConsumerWidget {
             );
           },
           child: ParkingViolationCard(
-            imageUrl: data.evidence.mediaUrls.first.toString(),
-            violationType: data.locationDetails.additionalLocation,
-            reportedBy: data.isAnonymous ? "Anonymous" : data.reporter.name,
+            imageUrl: data.evidence?.mediaUrls.first.toString(),
+            violationType: data.locationDetails?.additionalLocation ?? "",
+            reportedBy:
+                data.isAnonymous ? "Anonymous" : data.reporter?.name ?? "",
 
             resolutionType: "Awareness",
             date: formatDate(data.createdAt),
@@ -181,7 +182,7 @@ class SecurityReportBody extends ConsumerWidget {
           Image.asset(AssetPaths.dashboardWorkOrder, height: 100, width: 100),
           const SizedBox(height: 10),
           Text(
-            "Your report List appear here",
+            "Your reports appear here",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               color: AppColors.instance.black300,

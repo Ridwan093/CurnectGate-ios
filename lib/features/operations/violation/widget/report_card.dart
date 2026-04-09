@@ -38,7 +38,7 @@ class ReportCard extends ConsumerWidget {
                 opacity: animation,
                 child: ViolationDetailPage(
                   violation: violation,
-                  images: violation.evidence.mediaUrls,
+                  images: violation.evidence?.mediaUrls ?? [],
                 ),
               );
             },
@@ -65,7 +65,7 @@ class ReportCard extends ConsumerWidget {
                 children: [
                   _buildHeaderRow(
                     truncateWithEllipsis(
-                      violation.locationDetails.additionalLocation,
+                      violation.locationDetails?.additionalLocation ?? "",
                       maxLength: 20,
                     ),
 
@@ -73,14 +73,14 @@ class ReportCard extends ConsumerWidget {
                     context,
                     ref,
                     violation.id,
-                    violation.locationDetails.additionalLocation,
+                    violation.locationDetails?.additionalLocation??"",
                   ),
                   _buildReportdiscription(
                     truncateWithEllipsis(violation.description, maxLength: 20),
                   ),
                   _buildAnonymouswidget(
                     violation.isAnonymous,
-                    violation.reporter.name,
+                    violation.reporter?.name??"",
                   ),
                   SizedBox(height: 15),
 
@@ -88,7 +88,7 @@ class ReportCard extends ConsumerWidget {
                     height: 100,
                     child: PageView(
                       children:
-                          violation.evidence.mediaUrls.map((e) {
+                          violation.evidence!.mediaUrls.map((e) {
                             return _buildCarReportImage(size, e);
                           }).toList(),
                     ),
@@ -112,16 +112,18 @@ class ReportCard extends ConsumerWidget {
   }
 
   Widget _buildCarReportImage(Size size, String mediaUrl) {
-    return Container(
-      height: 100,
-
-      width: size.width,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: NetworkImage(mediaUrl),
-          fit: BoxFit.cover,
+    return Hero(
+      tag: 'violation_image_$mediaUrl',
+      child: Container(
+        height: 100,
+        width: size.width,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage(mediaUrl),
+            fit: BoxFit.cover,
+          ),
+          borderRadius: BorderRadius.circular(12),
         ),
-        borderRadius: BorderRadius.circular(12),
       ),
     );
   }

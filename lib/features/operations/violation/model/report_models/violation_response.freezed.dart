@@ -23,7 +23,7 @@ mixin _$ViolationResponse {
   bool get status => throw _privateConstructorUsedError;
   String get message => throw _privateConstructorUsedError;
   int get code => throw _privateConstructorUsedError;
-  ViolationData get data => throw _privateConstructorUsedError;
+  ViolationData? get data => throw _privateConstructorUsedError;
 
   /// Serializes this ViolationResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -41,9 +41,9 @@ abstract class $ViolationResponseCopyWith<$Res> {
           ViolationResponse value, $Res Function(ViolationResponse) then) =
       _$ViolationResponseCopyWithImpl<$Res, ViolationResponse>;
   @useResult
-  $Res call({bool status, String message, int code, ViolationData data});
+  $Res call({bool status, String message, int code, ViolationData? data});
 
-  $ViolationDataCopyWith<$Res> get data;
+  $ViolationDataCopyWith<$Res>? get data;
 }
 
 /// @nodoc
@@ -64,7 +64,7 @@ class _$ViolationResponseCopyWithImpl<$Res, $Val extends ViolationResponse>
     Object? status = null,
     Object? message = null,
     Object? code = null,
-    Object? data = null,
+    Object? data = freezed,
   }) {
     return _then(_value.copyWith(
       status: null == status
@@ -79,10 +79,10 @@ class _$ViolationResponseCopyWithImpl<$Res, $Val extends ViolationResponse>
           ? _value.code
           : code // ignore: cast_nullable_to_non_nullable
               as int,
-      data: null == data
+      data: freezed == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
-              as ViolationData,
+              as ViolationData?,
     ) as $Val);
   }
 
@@ -90,8 +90,12 @@ class _$ViolationResponseCopyWithImpl<$Res, $Val extends ViolationResponse>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $ViolationDataCopyWith<$Res> get data {
-    return $ViolationDataCopyWith<$Res>(_value.data, (value) {
+  $ViolationDataCopyWith<$Res>? get data {
+    if (_value.data == null) {
+      return null;
+    }
+
+    return $ViolationDataCopyWith<$Res>(_value.data!, (value) {
       return _then(_value.copyWith(data: value) as $Val);
     });
   }
@@ -105,10 +109,10 @@ abstract class _$$ViolationResponseImplCopyWith<$Res>
       __$$ViolationResponseImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({bool status, String message, int code, ViolationData data});
+  $Res call({bool status, String message, int code, ViolationData? data});
 
   @override
-  $ViolationDataCopyWith<$Res> get data;
+  $ViolationDataCopyWith<$Res>? get data;
 }
 
 /// @nodoc
@@ -127,7 +131,7 @@ class __$$ViolationResponseImplCopyWithImpl<$Res>
     Object? status = null,
     Object? message = null,
     Object? code = null,
-    Object? data = null,
+    Object? data = freezed,
   }) {
     return _then(_$ViolationResponseImpl(
       status: null == status
@@ -142,10 +146,10 @@ class __$$ViolationResponseImplCopyWithImpl<$Res>
           ? _value.code
           : code // ignore: cast_nullable_to_non_nullable
               as int,
-      data: null == data
+      data: freezed == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
-              as ViolationData,
+              as ViolationData?,
     ));
   }
 }
@@ -155,22 +159,22 @@ class __$$ViolationResponseImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$ViolationResponseImpl implements _ViolationResponse {
   const _$ViolationResponseImpl(
-      {required this.status,
-      required this.message,
-      required this.code,
-      required this.data});
+      {this.status = false, this.message = '', this.code = 0, this.data});
 
   factory _$ViolationResponseImpl.fromJson(Map<String, dynamic> json) =>
       _$$ViolationResponseImplFromJson(json);
 
   @override
+  @JsonKey()
   final bool status;
   @override
+  @JsonKey()
   final String message;
   @override
+  @JsonKey()
   final int code;
   @override
-  final ViolationData data;
+  final ViolationData? data;
 
   @override
   String toString() {
@@ -211,10 +215,10 @@ class _$ViolationResponseImpl implements _ViolationResponse {
 
 abstract class _ViolationResponse implements ViolationResponse {
   const factory _ViolationResponse(
-      {required final bool status,
-      required final String message,
-      required final int code,
-      required final ViolationData data}) = _$ViolationResponseImpl;
+      {final bool status,
+      final String message,
+      final int code,
+      final ViolationData? data}) = _$ViolationResponseImpl;
 
   factory _ViolationResponse.fromJson(Map<String, dynamic> json) =
       _$ViolationResponseImpl.fromJson;
@@ -226,7 +230,7 @@ abstract class _ViolationResponse implements ViolationResponse {
   @override
   int get code;
   @override
-  ViolationData get data;
+  ViolationData? get data;
 
   /// Create a copy of ViolationResponse
   /// with the given fields replaced by the non-null parameter values.

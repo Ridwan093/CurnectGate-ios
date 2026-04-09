@@ -29,6 +29,6 @@ Map<String, dynamic> _$$EstateImplToJson(_$EstateImpl instance) =>
       'logo_url': instance.logoUrl,
       'color': instance.color,
       'backgroundImage': instance.backgroundImage,
-      'created_at': instance.createdAt.toIso8601String(),
-      'updated_at': instance.updatedAt.toIso8601String(),
+      'created_at': instance.createdAt?.toIso8601String(),
+      'updated_at': instance.updatedAt?.toIso8601String(),
     };

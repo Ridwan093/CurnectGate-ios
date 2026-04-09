@@ -30,3 +30,10 @@ final expiredCountProvider = FutureProvider.autoDispose.family<
     rethrow;
   }
 });
+
+final combinedVisitorCountProvider = FutureProvider.autoDispose<int>((ref) async {
+  final used = await ref.watch(expiredCountProvider("used").future);
+  final expired = await ref.watch(expiredCountProvider("expired").future);
+
+  return (used?.data?.count ?? 0) + (expired?.data?.count ?? 0);
+});

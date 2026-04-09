@@ -87,34 +87,37 @@ class VoteNow extends ConsumerWidget {
     return InkWell(
       onTap: onPressed,
       child: Container(
-        // margin: const EdgeInsets.fromLTRB(10, 16, 10, 10),
-        height: 50,
-        width: MediaQuery.sizeOf(context).width,
+        height: 56,
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
         decoration: BoxDecoration(
-          color:
-              onPressed != null
-                  ? AppColors.instance.black600
-                  : AppColors.instance.grey400,
-
-          borderRadius: BorderRadius.circular(10),
+          color: onPressed != null
+              ? AppColors.instance.black600
+              : AppColors.instance.grey300,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: onPressed != null ? [
+            BoxShadow(
+              color: AppColors.instance.black600.withOpacity(0.25),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            )
+          ] : null,
         ),
-
         child: Center(
-          child:
-              isLoading
-                  ? Loadingstates()
-                  : Text(
-                    "Submit Vote",
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      fontSize: 15,
-                      fontWeight: FontFamilies.medium,
-                      color:
-                          onPressed != null
-                              ? AppColors.instance.black100
-                              : AppColors.instance.black300,
-                    ),
+          child: isLoading
+              ? Loadingstates()
+              : Text(
+                  "Submit Vote",
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.5,
+                    color: onPressed != null
+                        ? Colors.white
+                        : AppColors.instance.black400.withOpacity(0.5),
                   ),
+                ),
         ),
       ),
     );

@@ -10,7 +10,7 @@ final dioProvider = Provider(
   (ref) =>
       Dio()
         ..options = BaseOptions(
-          baseUrl: "https://staging.curnectgate.com/api/v1/",
+          baseUrl: "http://44.200.180.26/api/v1/",
           headers: {'Content-Type': 'application/json'},
           extra: {'requiresAuth': true},
         )
@@ -32,7 +32,6 @@ final dioProvider = Provider(
                 log("Session expired (401 detected)");
 
                 ref.read(sessionExpiredProvider.notifier).expire();
-              
               }
               return handler.next(error);
             },
@@ -46,8 +45,6 @@ final dioProvider = Provider(
               final token = await prefs.getUserToken();
 
               if (options.extra['requiresAuth'] == true) {
-                log("Bearer Token Pass on the hearder:${token.toString()}");
-
                 options.headers['Authorization'] = 'Bearer $token';
 
                 if (cookie != null) {
@@ -68,10 +65,5 @@ final dioProvider = Provider(
             },
           ),
         )
-        ..interceptors.add(
-          LogInterceptor(
-         
-            error: true,
-          ),
-        ),
+        ..interceptors.add(LogInterceptor(error: true)),
 );

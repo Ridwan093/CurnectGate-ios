@@ -9,10 +9,12 @@ part of 'property_response.dart';
 _$PropertyResponseImpl _$$PropertyResponseImplFromJson(
         Map<String, dynamic> json) =>
     _$PropertyResponseImpl(
-      status: json['status'] as bool,
-      message: json['message'] as String,
-      code: (json['code'] as num).toInt(),
-      data: PropertyData.fromJson(json['data'] as Map<String, dynamic>),
+      status: json['status'] as bool? ?? false,
+      message: json['message'] as String? ?? '',
+      code: (json['code'] as num?)?.toInt() ?? 0,
+      data: json['data'] == null
+          ? null
+          : PropertyData.fromJson(json['data'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$PropertyResponseImplToJson(
@@ -21,5 +23,5 @@ Map<String, dynamic> _$$PropertyResponseImplToJson(
       'status': instance.status,
       'message': instance.message,
       'code': instance.code,
-      'data': instance.data.toJson(),
+      'data': instance.data?.toJson(),
     };

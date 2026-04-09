@@ -13,9 +13,9 @@ part 'location_details.g.dart';
 class LocationDetails with _$LocationDetails {
   @JsonSerializable(explicitToJson: true)
   const factory LocationDetails({
-    @JsonKey(name: 'estate_address') required EstateAddress estateAddress,
-    @JsonKey(name: 'additional_location') required String additionalLocation,
-    @JsonKey(name: 'formatted_address') required String formattedAddress,
+    @JsonKey(name: 'estate_address') EstateAddress? estateAddress,
+    @JsonKey(name: 'additional_location') @Default('') String additionalLocation,
+    @JsonKey(name: 'formatted_address') @Default('') String formattedAddress,
   }) = _LocationDetails;
 
   factory LocationDetails.fromJson(Map<String, dynamic> json) =>
@@ -24,7 +24,7 @@ class LocationDetails with _$LocationDetails {
   factory LocationDetails.safeFromJson(Map<String, dynamic>? json) {
     return LocationDetails(
       estateAddress:
-          EstateAddress.safeFromJson(json?['estate_address']),
+          json?['estate_address'] != null ? EstateAddress.safeFromJson(json?['estate_address']) : null,
       additionalLocation:
           NullSafetyHelper.safeString(json?['additional_location']),
       formattedAddress:

@@ -6,7 +6,7 @@ part 'onboarding_slider_items.g.dart';
 
 @freezed
 class SliderItem with _$SliderItem {
-  @JsonSerializable(explicitToJson: true)
+  @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
   const factory SliderItem({
     int? id,
     String? title,

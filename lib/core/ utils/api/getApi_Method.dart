@@ -570,18 +570,17 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(votingSetting);
+      log(response.toString());
       return VotingSettingsResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       throw _handleError(e);
     }
   }
 
-  Future<PollsResponse> getPoll({
-    required String bearerToken,
-    required String id,
-  }) async {
+  Future<PollsResponse> getPoll() async {
     try {
       final response = await _dio.get(votingPoll);
+      log(response.toString());
       return PollsResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       throw _handleError(e);
@@ -637,6 +636,7 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(emergencyContact);
+      log(response.toString());
       return EstateSettingsResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       throw _handleError(e);
@@ -736,9 +736,10 @@ class GetApiService {
   Future<DutyResponse> getDuty() async {
     try {
       final response = await _dio.get(
-        sliderEnpoint,
+        getDutys,
         options: Options(extra: {'requiresAuth': true}),
       );
+      log(response.toString());
       return DutyResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       throw _handleError(e);

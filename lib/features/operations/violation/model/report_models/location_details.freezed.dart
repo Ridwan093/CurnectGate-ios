@@ -21,7 +21,7 @@ LocationDetails _$LocationDetailsFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$LocationDetails {
   @JsonKey(name: 'estate_address')
-  EstateAddress get estateAddress => throw _privateConstructorUsedError;
+  EstateAddress? get estateAddress => throw _privateConstructorUsedError;
   @JsonKey(name: 'additional_location')
   String get additionalLocation => throw _privateConstructorUsedError;
   @JsonKey(name: 'formatted_address')
@@ -44,11 +44,11 @@ abstract class $LocationDetailsCopyWith<$Res> {
       _$LocationDetailsCopyWithImpl<$Res, LocationDetails>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'estate_address') EstateAddress estateAddress,
+      {@JsonKey(name: 'estate_address') EstateAddress? estateAddress,
       @JsonKey(name: 'additional_location') String additionalLocation,
       @JsonKey(name: 'formatted_address') String formattedAddress});
 
-  $EstateAddressCopyWith<$Res> get estateAddress;
+  $EstateAddressCopyWith<$Res>? get estateAddress;
 }
 
 /// @nodoc
@@ -66,15 +66,15 @@ class _$LocationDetailsCopyWithImpl<$Res, $Val extends LocationDetails>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? estateAddress = null,
+    Object? estateAddress = freezed,
     Object? additionalLocation = null,
     Object? formattedAddress = null,
   }) {
     return _then(_value.copyWith(
-      estateAddress: null == estateAddress
+      estateAddress: freezed == estateAddress
           ? _value.estateAddress
           : estateAddress // ignore: cast_nullable_to_non_nullable
-              as EstateAddress,
+              as EstateAddress?,
       additionalLocation: null == additionalLocation
           ? _value.additionalLocation
           : additionalLocation // ignore: cast_nullable_to_non_nullable
@@ -90,8 +90,12 @@ class _$LocationDetailsCopyWithImpl<$Res, $Val extends LocationDetails>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $EstateAddressCopyWith<$Res> get estateAddress {
-    return $EstateAddressCopyWith<$Res>(_value.estateAddress, (value) {
+  $EstateAddressCopyWith<$Res>? get estateAddress {
+    if (_value.estateAddress == null) {
+      return null;
+    }
+
+    return $EstateAddressCopyWith<$Res>(_value.estateAddress!, (value) {
       return _then(_value.copyWith(estateAddress: value) as $Val);
     });
   }
@@ -106,12 +110,12 @@ abstract class _$$LocationDetailsImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'estate_address') EstateAddress estateAddress,
+      {@JsonKey(name: 'estate_address') EstateAddress? estateAddress,
       @JsonKey(name: 'additional_location') String additionalLocation,
       @JsonKey(name: 'formatted_address') String formattedAddress});
 
   @override
-  $EstateAddressCopyWith<$Res> get estateAddress;
+  $EstateAddressCopyWith<$Res>? get estateAddress;
 }
 
 /// @nodoc
@@ -127,15 +131,15 @@ class __$$LocationDetailsImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? estateAddress = null,
+    Object? estateAddress = freezed,
     Object? additionalLocation = null,
     Object? formattedAddress = null,
   }) {
     return _then(_$LocationDetailsImpl(
-      estateAddress: null == estateAddress
+      estateAddress: freezed == estateAddress
           ? _value.estateAddress
           : estateAddress // ignore: cast_nullable_to_non_nullable
-              as EstateAddress,
+              as EstateAddress?,
       additionalLocation: null == additionalLocation
           ? _value.additionalLocation
           : additionalLocation // ignore: cast_nullable_to_non_nullable
@@ -153,16 +157,16 @@ class __$$LocationDetailsImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$LocationDetailsImpl implements _LocationDetails {
   const _$LocationDetailsImpl(
-      {@JsonKey(name: 'estate_address') required this.estateAddress,
-      @JsonKey(name: 'additional_location') required this.additionalLocation,
-      @JsonKey(name: 'formatted_address') required this.formattedAddress});
+      {@JsonKey(name: 'estate_address') this.estateAddress,
+      @JsonKey(name: 'additional_location') this.additionalLocation = '',
+      @JsonKey(name: 'formatted_address') this.formattedAddress = ''});
 
   factory _$LocationDetailsImpl.fromJson(Map<String, dynamic> json) =>
       _$$LocationDetailsImplFromJson(json);
 
   @override
   @JsonKey(name: 'estate_address')
-  final EstateAddress estateAddress;
+  final EstateAddress? estateAddress;
   @override
   @JsonKey(name: 'additional_location')
   final String additionalLocation;
@@ -212,19 +216,17 @@ class _$LocationDetailsImpl implements _LocationDetails {
 
 abstract class _LocationDetails implements LocationDetails {
   const factory _LocationDetails(
-      {@JsonKey(name: 'estate_address')
-      required final EstateAddress estateAddress,
-      @JsonKey(name: 'additional_location')
-      required final String additionalLocation,
-      @JsonKey(name: 'formatted_address')
-      required final String formattedAddress}) = _$LocationDetailsImpl;
+          {@JsonKey(name: 'estate_address') final EstateAddress? estateAddress,
+          @JsonKey(name: 'additional_location') final String additionalLocation,
+          @JsonKey(name: 'formatted_address') final String formattedAddress}) =
+      _$LocationDetailsImpl;
 
   factory _LocationDetails.fromJson(Map<String, dynamic> json) =
       _$LocationDetailsImpl.fromJson;
 
   @override
   @JsonKey(name: 'estate_address')
-  EstateAddress get estateAddress;
+  EstateAddress? get estateAddress;
   @override
   @JsonKey(name: 'additional_location')
   String get additionalLocation;

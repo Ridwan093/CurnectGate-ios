@@ -5,11 +5,11 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/widget/
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/violation/model/report_models/violation.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
+import 'package:curnectgate/features/operations/violation/widget/buildCommentCount.dart';
 import 'package:curnectgate/features/operations/violation/widget/build_sroll_effet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:curnectgate/features/operations/violation/widget/buildCommentCount.dart';
 import 'package:intl/intl.dart';
 
 class ViolationDetailPage extends ConsumerStatefulWidget {
@@ -133,9 +133,10 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
                             Expanded(
                               child: Text(
                                 widget
-                                    .violation
-                                    .locationDetails
-                                    .additionalLocation,
+                                        .violation
+                                        .locationDetails
+                                        ?.additionalLocation ??
+                                    "",
                                 style: TextStyle(
                                   fontFamily: FontFamilies.interDisplay,
                                   color: AppColors.instance.black600,
@@ -169,7 +170,7 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
                                 ),
                                 child: _buildAnonymouswidget(
                                   widget.violation.isAnonymous,
-                                  widget.violation.reporter.name,
+                                  widget.violation.reporter?.name ?? "",
                                 ),
                               ),
                             ),
@@ -229,14 +230,14 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
                           title: "Property Owner:",
                           icon: Icons.verified_user,
                           color: AppColors.instance.teal400,
-                          leading: widget.violation.propertyOwner.name,
+                          leading: widget.violation.propertyOwner?.name ?? "",
                         ),
                         const SizedBox(height: 12),
                         _buildAdditionalInfo(
                           title: "Report category:",
                           icon: Icons.category,
                           color: AppColors.instance.teal400,
-                          leading: widget.violation.category.name,
+                          leading: widget.violation.category?.name ?? "",
                         ),
                         const SizedBox(height: 12),
                       ],
@@ -248,44 +249,65 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
           ),
           // Comments Section Preview
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             sliver: SliverToBoxAdapter(
               child: FadeTransition(
                 opacity: _fadeAnimation,
                 child: SlideTransition(
                   position: _slideAnimation,
-                  child: GestureDetector(
-                    onTap: () {
-                      ref
-                          .read(reportProvider.notifier)
-                          .setId(widget.violation.id);
-                      showUserBottomSheet(
-                        id: widget.violation.id,
-                        context: context,
-                        headertitle: "",
-                        headersubtitle: "",
-                        ref: ref,
-                        bottom: BottomSheetView.commentvew,
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Image(
-                            image: AssetImage(AssetPaths.navMessages),
-                            color: AppColors.instance.black500,
-                            height: 20,
-                            width: 20,
+                  child: Material(
+                    color: AppColors.instance.grey300.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(12),
+                    child: InkWell(
+                      onTap: () {
+                        ref
+                            .read(reportProvider.notifier)
+                            .setId(widget.violation.id);
+                        showUserBottomSheet(
+                          id: widget.violation.id,
+                          context: context,
+                          headertitle: "Comments",
+                          headersubtitle: "View or contribute to this report",
+                          ref: ref,
+                          bottom: BottomSheetView.commentvew,
+                        );
+                      },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 14.0,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: AppColors.instance.grey300,
+                            width: 1,
                           ),
-                          SizedBox(width: 6),
-                          const Buildcommentcount(),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 12,
-                            color: AppColors.instance.teal300,
-                          ),
-                        ],
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: AppColors.instance.teal100,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.chat_bubble_outline,
+                                color: AppColors.instance.teal500,
+                                size: 20,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            const Buildcommentcount(),
+                            Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 14,
+                              color: AppColors.instance.black400,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

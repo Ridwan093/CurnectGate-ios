@@ -186,7 +186,7 @@ class ResolutionTimeline extends ConsumerWidget {
   Widget buildStatusTimeline(List<HistoryItem> history) {
     //Sort history by date (newest first)
     final sortedHistory = [...history]
-      ..sort((a, b) => b.changedAt.compareTo(a.changedAt));
+      ..sort((a, b) => b.changedAt!.compareTo(a.changedAt!));
 
     // Get current status (first item in sorted list)
     final currentStatus = sortedHistory.first.status;
@@ -206,7 +206,7 @@ class ResolutionTimeline extends ConsumerWidget {
         // // Show "Under investigation" if status is investigating or beyond
         if (['investigating'].contains(currentStatus))
           _buildTimelineStep(
-            time: formatToTime(getInvestigationTime(history)),
+            time: formatToTime(getInvestigationTime(history)!),
             title: "Report has been assigned to authorities involved",
             subtitle: '',
             isCompleted: currentStatus != 'pending',
@@ -226,15 +226,15 @@ class ResolutionTimeline extends ConsumerWidget {
         // Show current resolution status (if resolved/dismissed)
         if (['dismissed', 'resolved'].contains(currentStatus))
           _buildTimelineStep(
-            time: formatToTime(sortedHistory.first.changedAt),
+            time: formatToTime(sortedHistory.first.changedAt!),
             title:
                 currentStatus == 'resolved'
                     ? 'Marked as Done'
                     : 'Case dismissed',
-            subtitle: sortedHistory.first.notes,
+            subtitle: sortedHistory.first.notes ?? "",
             isLast: true,
             isCompleted: true,
-            status: currentStatus,
+            status: currentStatus ?? "",
           )
         else
           // Show waiting step if still pending/investigating
@@ -245,14 +245,14 @@ class ResolutionTimeline extends ConsumerWidget {
             isLast: true,
             isCompleted: false,
             isWaiting: true,
-            status: _getNextStatus(currentStatus),
+            status: _getNextStatus(currentStatus ?? ""),
           ),
       ],
     );
   }
 
   // Helper functions
-  DateTime getInvestigationTime(List<HistoryItem> history) {
+  DateTime? getInvestigationTime(List<HistoryItem> history) {
     // Find first investigating status or use a default time
     return history
         .firstWhere(
@@ -268,7 +268,7 @@ class ResolutionTimeline extends ConsumerWidget {
       (item) => ['dismissed', 'resolved'].contains(item.status),
       orElse: () => history.last,
     );
-    return assigned.changedAt.subtract(Duration(hours: 1)); // Example offset
+    return assigned.changedAt!.subtract(Duration(hours: 1)); // Example offset
   }
 
   Widget _buildTimelineStep({

@@ -36,8 +36,8 @@ class ResolvedData extends ConsumerWidget {
         child: reportAsync.when(
           data: (report) {
             try {
-              final violations = report?.data.violations;
-              if (violations != null && violations.isNotEmpty) {
+              final violations = report?.data?.violations??[];
+              if ( violations.isNotEmpty) {
                 return _buildReportList(violations, ref);
               } else {
                 return _buildEmptyBody();
@@ -49,7 +49,7 @@ class ResolvedData extends ConsumerWidget {
           loading: () {
             try {
               final cachedReport = ref.read(resovedProvider).value;
-              final cachedViolations = cachedReport?.data.violations;
+              final cachedViolations = cachedReport?.data?.violations;
               return cachedViolations != null && cachedViolations.isNotEmpty
                   ? _buildReportList(cachedViolations, ref)
                   : _buildLoadingState();
@@ -66,7 +66,7 @@ class ResolvedData extends ConsumerWidget {
 
               // Try to show cached data if available
               final cachedReport = ref.read(resovedProvider).value;
-              final cachedViolations = cachedReport?.data.violations;
+              final cachedViolations = cachedReport?.data?.violations;
               if (cachedViolations != null && cachedViolations.isNotEmpty) {
                 return Column(
                   children: [
@@ -114,7 +114,7 @@ class ResolvedData extends ConsumerWidget {
                     opacity: animation,
                     child: ViolationDetailPage(
                       violation: data,
-                      images: data.evidence.mediaUrls,
+                      images: data.evidence?.mediaUrls??[],
                     ),
                   );
                 },
@@ -123,9 +123,9 @@ class ResolvedData extends ConsumerWidget {
           },
           child: ParkingViolationCard(
             isInvestigation: true,
-            imageUrl: data.evidence.mediaUrls.first.toString(),
-            violationType: data.locationDetails.additionalLocation,
-            reportedBy: data.isAnonymous ? "Anonymous" : data.reporter.name,
+            imageUrl: data.evidence?.mediaUrls.first.toString(),
+            violationType: data.locationDetails?.additionalLocation??"",
+            reportedBy: data.isAnonymous ? "Anonymous" : data.reporter?.name??"",
 
             resolutionType: "Awareness",
             date: formatDate(data.updatedAt),
@@ -159,7 +159,7 @@ class ResolvedData extends ConsumerWidget {
           Image.asset(AssetPaths.dashboardWorkOrder, height: 100, width: 100),
           const SizedBox(height: 10),
           Text(
-            "Your report List appear here",
+            "Your reports appear here",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               color: AppColors.instance.black300,

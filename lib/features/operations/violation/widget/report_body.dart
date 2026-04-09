@@ -1,5 +1,8 @@
 import 'dart:developer';
 
+import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
+import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
+import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -28,8 +31,8 @@ class ReportBody extends ConsumerWidget {
         child: reportAsync.when(
           data: (report) {
             try {
-              final violations = report?.data.violations;
-              return violations != null && violations.isNotEmpty
+              final violations = report?.data?.violations ?? [];
+              return violations.isNotEmpty
                   ? _buildReportList(violations)
                   : _buildEmptyBody();
               // if (violations != null && violations.isNotEmpty) {
@@ -38,53 +41,51 @@ class ReportBody extends ConsumerWidget {
               //   return _buildEmptyBody();
               // }
             } catch (e) {
-              return _buildErrorUI('Failed to load reports', ref, context);
+              return Builderroul(
+                error: e.toString(),
+                onTap:
+                    () => ref
+                        .read(userReportProvider.notifier)
+                        .refreshReports(context, ref),
+                firstMessae: "Faile to load violation?",
+              );
             }
           },
           loading: () {
-            try {
-              final cachedReport = ref.read(userReportProvider).value;
-              final cachedViolations = cachedReport?.data.violations;
-              return cachedViolations != null && cachedViolations.isNotEmpty
-                  ? _buildReportList(cachedViolations)
-                  : _buildLoadingState();
-            } catch (e) {
-              return _buildLoadingState();
-            }
+            return Loadingstates();
           },
           error: (error, stack) {
             try {
               // Handle session expiration first
               if (error.toString().contains("Unauthorized")) {
-                return _buildSessionExpiredUI(context, ref);
+                return Expiresessionbody();
               }
 
               // Try to show cached data if available
               final cachedReport = ref.read(userReportProvider).value;
-              final cachedViolations = cachedReport?.data.violations;
-              if (cachedViolations != null && cachedViolations.isNotEmpty) {
-                return Column(
-                  children: [
-                    _buildReportList(cachedViolations),
-                    _buildNetworkWarningBanner(error.toString()),
-                  ],
-                );
+              final cachedViolations = cachedReport?.data?.violations ?? [];
+              if (cachedViolations.isNotEmpty) {
+                return _buildReportList(cachedViolations);
               }
 
               // No cached data available
-              return _buildErrorUI(
-                error.toString().contains("The connection errored")
-                    ? "Connection failed. Please check your network"
-                    : "Failed to load reports",
-                ref,
-                context,
+              return Builderroul(
+                error: error.toString(),
+                onTap:
+                    () => ref
+                        .read(userReportProvider.notifier)
+                        .refreshReports(context, ref),
+                firstMessae: "Faile to load violation?",
               );
             } catch (e) {
               log(e.toString());
-              return _buildErrorUI(
-                "An unexpected error occurred",
-                ref,
-                context,
+              return Builderroul(
+                error: e.toString(),
+                onTap:
+                    () => ref
+                        .read(userReportProvider.notifier)
+                        .refreshReports(context, ref),
+                firstMessae: "Faile to load violation?",
               );
             }
           },
@@ -108,10 +109,10 @@ class ReportBody extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(AssetPaths.dashboardWorkOrder, height: 100, width: 100),
+            Image.asset(AssetPaths.dashboardReports, height: 100, width: 100),
             const SizedBox(height: 10),
             Text(
-              "Your report List appear here",
+              "Your violation appear here",
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
                 color: AppColors.instance.black300,

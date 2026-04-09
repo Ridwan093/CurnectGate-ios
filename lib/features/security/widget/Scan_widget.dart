@@ -263,62 +263,6 @@ class _ScanWidgetState extends ConsumerState<ScanWidget> {
     super.dispose();
   }
 
-  // void _onQRViewCreated(QRViewController controller) {
-  //   setState(() {
-  //     qrController = controller;
-  //   });
-
-  //   controller.scannedDataStream.listen((scanData) {
-  //     final barcode = scanData.code;
-  //     if (_hasScanned) return;
-  //     _hasScanned = true;
-
-  //     if (barcode == null || barcode.isEmpty) {
-  //       _hasScanned = false;
-  //       return;
-  //     }
-
-  //     controller.pauseCamera();
-  //     try {
-  //       final decodedString = utf8.decode(base64.decode(barcode));
-  //       log('🔓 DECODED STRING: $decodedString');
-
-  //       // Parse and log JSON
-  //       final jsonData = json.decode(decodedString);
-  //       log('📦 JSON STRUCTURE: ${jsonData.toString()}');
-  //       log('🆔 Digital ID: ${jsonData['digital_id_code']}');
-  //       log('🏠 Estate ID: ${jsonData['estate_id']}');
-  //       log('👤 User ID: ${jsonData['user_id']}');
-  //       log('⏰ Generated At: ${jsonData['generated_at']}');
-
-  //       ref.read(qrScanProvider.notifier).state = false;
-
-  //       log(barcode);
-  //       showUserBottomSheet(
-  //         context: context,
-  //         headertitle: barcode,
-  //         headersubtitle: jsonData['type'],
-  //         ref: ref,
-  //         bottom: BottomSheetView.additionForScan,
-  //       );
-
-  //       // Pause camera after successful scan to prevent multiple scans
-  //       controller.pauseCamera();
-  //     } catch (e) {
-  //       log('Error processing QR code: $e');
-  //       // Handle non-base64 QR codes or other formats
-  //       ref.read(qrScanProvider.notifier).state = false;
-  //       showUserBottomSheet(
-  //         context: context,
-  //         headertitle: barcode,
-  //         headersubtitle: "Direct QR Code",
-  //         ref: ref,
-  //         bottom: BottomSheetView.additionForScan,
-  //       );
-  //       controller.pauseCamera();
-  //     }
-  //   });
-  // }
   void _onQRViewCreated(QRViewController controller) {
     if (!mounted) {
       controller.dispose();

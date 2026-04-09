@@ -24,47 +24,88 @@ class ElectionHistoryCard extends StatelessWidget {
 
   Widget _candidateTile(CandidateItem c) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.instance.black400.withOpacity(0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+        border: Border.all(color: AppColors.instance.grey300.withOpacity(0.5)),
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            backgroundColor: Colors.grey.shade100,
-            backgroundImage:
-                c.mediaUrl != null ? NetworkImage(c.mediaUrl!) : null,
-            child:
-                c.mediaUrl == null
-                    ? Text(
-                      c.name!
-                          .split(' ')
-                          .map((s) => s.isNotEmpty ? s[0] : '')
-                          .take(2)
-                          .join(),
-                    )
-                    : null,
-          ),
-
-          const SizedBox(width: 12),
-
-          Expanded(
-            child: Text(
-              c.name ?? "",
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                color: AppColors.instance.black600,
-                fontWeight: FontFamilies.bold,
+          Container(
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: AppColors.instance.teal300.withOpacity(0.5),
+                width: 2,
               ),
             ),
+            child: CircleAvatar(
+              radius: 20,
+              backgroundColor: AppColors.instance.teal100,
+              backgroundImage:
+                  c.mediaUrl != null && c.mediaUrl!.isNotEmpty ? NetworkImage(c.mediaUrl!) : null,
+              child:
+                  c.mediaUrl == null || c.mediaUrl!.isEmpty
+                      ? Text(
+                          c.name != null && c.name!.isNotEmpty ? c.name![0] : '?',
+                          style: TextStyle(
+                            color: AppColors.instance.teal500,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: FontFamilies.interDisplay,
+                            fontSize: 16,
+                          ),
+                        )
+                      : null,
+            ),
           ),
-
-          Icon(
-            Icons.arrow_forward_ios,
-            size: 12,
-            color: AppColors.instance.teal300,
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  c.name ?? "Unknown Candidate",
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    color: AppColors.instance.black600,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "Voted",
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    color: AppColors.instance.teal400,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.instance.teal100,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.check_circle_rounded,
+              size: 20,
+              color: AppColors.instance.teal400,
+            ),
           ),
         ],
       ),

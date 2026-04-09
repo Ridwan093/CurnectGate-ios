@@ -8,9 +8,9 @@ part of 'category.dart';
 
 _$CategoryImpl _$$CategoryImplFromJson(Map<String, dynamic> json) =>
     _$CategoryImpl(
-      id: (json['id'] as num).toInt(),
-      name: json['name'] as String,
-      type: json['type'] as String,
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      name: json['name'] as String? ?? '',
+      type: json['type'] as String? ?? '',
     );
 
 Map<String, dynamic> _$$CategoryImplToJson(_$CategoryImpl instance) =>

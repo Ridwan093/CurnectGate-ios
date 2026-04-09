@@ -23,15 +23,8 @@ class PollNotifier extends AutoDisposeAsyncNotifier<PollsResponse?> {
 
     try {
       // Then try to fetch fresh data
-      final token = await ref.watch(accessTokenProvider.future);
 
-      if (token == null || token.isEmpty) {
-        throw Exception("Unauthenticated");
-      }
-
-      final freshPoll = await ref
-          .read(getApiServiceProvider)
-          .getPoll(bearerToken: token, id: "");
+      final freshPoll = await ref.read(getApiServiceProvider).getPoll();
 
       // Only update local storage if data is different
       if (locaPoll?.toJson() != freshPoll.toJson()) {
@@ -63,10 +56,7 @@ class PollNotifier extends AutoDisposeAsyncNotifier<PollsResponse?> {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       try {
-        final token = await ref.watch(accessTokenProvider.future);
-        final freshPoll = await ref
-            .read(getApiServiceProvider)
-            .getPoll(bearerToken: token!, id: "");
+        final freshPoll = await ref.read(getApiServiceProvider).getPoll();
         await SharedPrefsService.savePoll(freshPoll);
         return freshPoll;
       } catch (e) {

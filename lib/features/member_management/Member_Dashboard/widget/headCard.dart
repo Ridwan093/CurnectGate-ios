@@ -189,9 +189,13 @@ class Headcard extends ConsumerWidget {
                       final activePolls =
                           polls
                               .where(
-                                (p) => (p.status ?? "").toLowerCase().contains(
-                                  'active',
-                                ),
+                                (p) =>
+                                    (p.status ?? "").toLowerCase().contains(
+                                      'active',
+                                    ) ||
+                                    (p.status ?? "").toLowerCase().contains(
+                                      'live',
+                                    ),
                               )
                               .toList();
 
@@ -206,9 +210,13 @@ class Headcard extends ConsumerWidget {
                                   .where(
                                     (p) =>
                                         p.status?.toLowerCase().contains(
-                                          'active',
-                                        ) ==
-                                        true,
+                                              'active',
+                                            ) ==
+                                            true ||
+                                        p.status?.toLowerCase().contains(
+                                              'live',
+                                            ) ==
+                                            true,
                                   )
                                   .toList();
 

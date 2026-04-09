@@ -19,14 +19,11 @@ class Estate with _$Estate {
     @Default('') String backgroundImage,
 
     // ignore: invalid_annotation_target
-    @JsonKey(name: 'created_at', fromJson: NullSafetyHelper.safeDateTime) required DateTime createdAt,
-    @JsonKey(name: 'updated_at', fromJson: NullSafetyHelper.safeDateTime) required DateTime updatedAt,
+    @JsonKey(name: 'created_at', fromJson: NullSafetyHelper.safeDateTime) DateTime? createdAt,
+    @JsonKey(name: 'updated_at', fromJson: NullSafetyHelper.safeDateTime) DateTime? updatedAt,
   }) = _Estate;
 
-  factory Estate.empty() => Estate(
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
+  factory Estate.empty() => Estate();
 
   factory Estate.fromJson(Map<String, dynamic> json) => _$EstateFromJson(json);
 

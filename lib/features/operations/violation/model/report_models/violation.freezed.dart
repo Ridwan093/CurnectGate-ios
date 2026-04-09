@@ -25,19 +25,19 @@ mixin _$Violation {
   String get referenceCode => throw _privateConstructorUsedError;
   @JsonKey(name: 'violation_code')
   String get violationCode => throw _privateConstructorUsedError;
-  Category get category => throw _privateConstructorUsedError;
-  Estate get estate => throw _privateConstructorUsedError;
-  User get reporter => throw _privateConstructorUsedError;
+  Category? get category => throw _privateConstructorUsedError;
+  Estate? get estate => throw _privateConstructorUsedError;
+  User? get reporter => throw _privateConstructorUsedError;
   @JsonKey(name: 'reported_user')
   User? get reportedUser => throw _privateConstructorUsedError;
   @JsonKey(name: 'assigned_to')
   User? get assignedTo => throw _privateConstructorUsedError;
   @JsonKey(name: 'property_owner')
-  User get propertyOwner => throw _privateConstructorUsedError;
+  User? get propertyOwner => throw _privateConstructorUsedError;
   @JsonKey(name: 'location_details')
-  LocationDetails get locationDetails => throw _privateConstructorUsedError;
+  LocationDetails? get locationDetails => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
-  Evidence get evidence => throw _privateConstructorUsedError;
+  Evidence? get evidence => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
   @JsonKey(name: 'status_badge')
   String get statusBadge => throw _privateConstructorUsedError;
@@ -51,7 +51,7 @@ mixin _$Violation {
   @JsonKey(name: 'is_closed')
   bool get isClosed => throw _privateConstructorUsedError;
   @JsonKey(name: 'comments_summary')
-  CommentSummary get commentsSummary => throw _privateConstructorUsedError;
+  CommentSummary? get commentsSummary => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   String get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'updated_at')
@@ -76,15 +76,15 @@ abstract class $ViolationCopyWith<$Res> {
       {int id,
       @JsonKey(name: 'reference_code') String referenceCode,
       @JsonKey(name: 'violation_code') String violationCode,
-      Category category,
-      Estate estate,
-      User reporter,
+      Category? category,
+      Estate? estate,
+      User? reporter,
       @JsonKey(name: 'reported_user') User? reportedUser,
       @JsonKey(name: 'assigned_to') User? assignedTo,
-      @JsonKey(name: 'property_owner') User propertyOwner,
-      @JsonKey(name: 'location_details') LocationDetails locationDetails,
+      @JsonKey(name: 'property_owner') User? propertyOwner,
+      @JsonKey(name: 'location_details') LocationDetails? locationDetails,
       String description,
-      Evidence evidence,
+      Evidence? evidence,
       String status,
       @JsonKey(name: 'status_badge') String statusBadge,
       String priority,
@@ -92,19 +92,19 @@ abstract class $ViolationCopyWith<$Res> {
       @JsonKey(name: 'is_anonymous') bool isAnonymous,
       @JsonKey(name: 'is_open') bool isOpen,
       @JsonKey(name: 'is_closed') bool isClosed,
-      @JsonKey(name: 'comments_summary') CommentSummary commentsSummary,
+      @JsonKey(name: 'comments_summary') CommentSummary? commentsSummary,
       @JsonKey(name: 'created_at') String createdAt,
       @JsonKey(name: 'updated_at') String updatedAt});
 
-  $CategoryCopyWith<$Res> get category;
-  $EstateCopyWith<$Res> get estate;
-  $UserCopyWith<$Res> get reporter;
+  $CategoryCopyWith<$Res>? get category;
+  $EstateCopyWith<$Res>? get estate;
+  $UserCopyWith<$Res>? get reporter;
   $UserCopyWith<$Res>? get reportedUser;
   $UserCopyWith<$Res>? get assignedTo;
-  $UserCopyWith<$Res> get propertyOwner;
-  $LocationDetailsCopyWith<$Res> get locationDetails;
-  $EvidenceCopyWith<$Res> get evidence;
-  $CommentSummaryCopyWith<$Res> get commentsSummary;
+  $UserCopyWith<$Res>? get propertyOwner;
+  $LocationDetailsCopyWith<$Res>? get locationDetails;
+  $EvidenceCopyWith<$Res>? get evidence;
+  $CommentSummaryCopyWith<$Res>? get commentsSummary;
 }
 
 /// @nodoc
@@ -125,15 +125,15 @@ class _$ViolationCopyWithImpl<$Res, $Val extends Violation>
     Object? id = null,
     Object? referenceCode = null,
     Object? violationCode = null,
-    Object? category = null,
-    Object? estate = null,
-    Object? reporter = null,
+    Object? category = freezed,
+    Object? estate = freezed,
+    Object? reporter = freezed,
     Object? reportedUser = freezed,
     Object? assignedTo = freezed,
-    Object? propertyOwner = null,
-    Object? locationDetails = null,
+    Object? propertyOwner = freezed,
+    Object? locationDetails = freezed,
     Object? description = null,
-    Object? evidence = null,
+    Object? evidence = freezed,
     Object? status = null,
     Object? statusBadge = null,
     Object? priority = null,
@@ -141,7 +141,7 @@ class _$ViolationCopyWithImpl<$Res, $Val extends Violation>
     Object? isAnonymous = null,
     Object? isOpen = null,
     Object? isClosed = null,
-    Object? commentsSummary = null,
+    Object? commentsSummary = freezed,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -158,18 +158,18 @@ class _$ViolationCopyWithImpl<$Res, $Val extends Violation>
           ? _value.violationCode
           : violationCode // ignore: cast_nullable_to_non_nullable
               as String,
-      category: null == category
+      category: freezed == category
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
-              as Category,
-      estate: null == estate
+              as Category?,
+      estate: freezed == estate
           ? _value.estate
           : estate // ignore: cast_nullable_to_non_nullable
-              as Estate,
-      reporter: null == reporter
+              as Estate?,
+      reporter: freezed == reporter
           ? _value.reporter
           : reporter // ignore: cast_nullable_to_non_nullable
-              as User,
+              as User?,
       reportedUser: freezed == reportedUser
           ? _value.reportedUser
           : reportedUser // ignore: cast_nullable_to_non_nullable
@@ -178,22 +178,22 @@ class _$ViolationCopyWithImpl<$Res, $Val extends Violation>
           ? _value.assignedTo
           : assignedTo // ignore: cast_nullable_to_non_nullable
               as User?,
-      propertyOwner: null == propertyOwner
+      propertyOwner: freezed == propertyOwner
           ? _value.propertyOwner
           : propertyOwner // ignore: cast_nullable_to_non_nullable
-              as User,
-      locationDetails: null == locationDetails
+              as User?,
+      locationDetails: freezed == locationDetails
           ? _value.locationDetails
           : locationDetails // ignore: cast_nullable_to_non_nullable
-              as LocationDetails,
+              as LocationDetails?,
       description: null == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String,
-      evidence: null == evidence
+      evidence: freezed == evidence
           ? _value.evidence
           : evidence // ignore: cast_nullable_to_non_nullable
-              as Evidence,
+              as Evidence?,
       status: null == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -222,10 +222,10 @@ class _$ViolationCopyWithImpl<$Res, $Val extends Violation>
           ? _value.isClosed
           : isClosed // ignore: cast_nullable_to_non_nullable
               as bool,
-      commentsSummary: null == commentsSummary
+      commentsSummary: freezed == commentsSummary
           ? _value.commentsSummary
           : commentsSummary // ignore: cast_nullable_to_non_nullable
-              as CommentSummary,
+              as CommentSummary?,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -241,8 +241,12 @@ class _$ViolationCopyWithImpl<$Res, $Val extends Violation>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $CategoryCopyWith<$Res> get category {
-    return $CategoryCopyWith<$Res>(_value.category, (value) {
+  $CategoryCopyWith<$Res>? get category {
+    if (_value.category == null) {
+      return null;
+    }
+
+    return $CategoryCopyWith<$Res>(_value.category!, (value) {
       return _then(_value.copyWith(category: value) as $Val);
     });
   }
@@ -251,8 +255,12 @@ class _$ViolationCopyWithImpl<$Res, $Val extends Violation>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $EstateCopyWith<$Res> get estate {
-    return $EstateCopyWith<$Res>(_value.estate, (value) {
+  $EstateCopyWith<$Res>? get estate {
+    if (_value.estate == null) {
+      return null;
+    }
+
+    return $EstateCopyWith<$Res>(_value.estate!, (value) {
       return _then(_value.copyWith(estate: value) as $Val);
     });
   }
@@ -261,8 +269,12 @@ class _$ViolationCopyWithImpl<$Res, $Val extends Violation>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $UserCopyWith<$Res> get reporter {
-    return $UserCopyWith<$Res>(_value.reporter, (value) {
+  $UserCopyWith<$Res>? get reporter {
+    if (_value.reporter == null) {
+      return null;
+    }
+
+    return $UserCopyWith<$Res>(_value.reporter!, (value) {
       return _then(_value.copyWith(reporter: value) as $Val);
     });
   }
@@ -299,8 +311,12 @@ class _$ViolationCopyWithImpl<$Res, $Val extends Violation>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $UserCopyWith<$Res> get propertyOwner {
-    return $UserCopyWith<$Res>(_value.propertyOwner, (value) {
+  $UserCopyWith<$Res>? get propertyOwner {
+    if (_value.propertyOwner == null) {
+      return null;
+    }
+
+    return $UserCopyWith<$Res>(_value.propertyOwner!, (value) {
       return _then(_value.copyWith(propertyOwner: value) as $Val);
     });
   }
@@ -309,8 +325,12 @@ class _$ViolationCopyWithImpl<$Res, $Val extends Violation>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $LocationDetailsCopyWith<$Res> get locationDetails {
-    return $LocationDetailsCopyWith<$Res>(_value.locationDetails, (value) {
+  $LocationDetailsCopyWith<$Res>? get locationDetails {
+    if (_value.locationDetails == null) {
+      return null;
+    }
+
+    return $LocationDetailsCopyWith<$Res>(_value.locationDetails!, (value) {
       return _then(_value.copyWith(locationDetails: value) as $Val);
     });
   }
@@ -319,8 +339,12 @@ class _$ViolationCopyWithImpl<$Res, $Val extends Violation>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $EvidenceCopyWith<$Res> get evidence {
-    return $EvidenceCopyWith<$Res>(_value.evidence, (value) {
+  $EvidenceCopyWith<$Res>? get evidence {
+    if (_value.evidence == null) {
+      return null;
+    }
+
+    return $EvidenceCopyWith<$Res>(_value.evidence!, (value) {
       return _then(_value.copyWith(evidence: value) as $Val);
     });
   }
@@ -329,8 +353,12 @@ class _$ViolationCopyWithImpl<$Res, $Val extends Violation>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $CommentSummaryCopyWith<$Res> get commentsSummary {
-    return $CommentSummaryCopyWith<$Res>(_value.commentsSummary, (value) {
+  $CommentSummaryCopyWith<$Res>? get commentsSummary {
+    if (_value.commentsSummary == null) {
+      return null;
+    }
+
+    return $CommentSummaryCopyWith<$Res>(_value.commentsSummary!, (value) {
       return _then(_value.copyWith(commentsSummary: value) as $Val);
     });
   }
@@ -348,15 +376,15 @@ abstract class _$$ViolationImplCopyWith<$Res>
       {int id,
       @JsonKey(name: 'reference_code') String referenceCode,
       @JsonKey(name: 'violation_code') String violationCode,
-      Category category,
-      Estate estate,
-      User reporter,
+      Category? category,
+      Estate? estate,
+      User? reporter,
       @JsonKey(name: 'reported_user') User? reportedUser,
       @JsonKey(name: 'assigned_to') User? assignedTo,
-      @JsonKey(name: 'property_owner') User propertyOwner,
-      @JsonKey(name: 'location_details') LocationDetails locationDetails,
+      @JsonKey(name: 'property_owner') User? propertyOwner,
+      @JsonKey(name: 'location_details') LocationDetails? locationDetails,
       String description,
-      Evidence evidence,
+      Evidence? evidence,
       String status,
       @JsonKey(name: 'status_badge') String statusBadge,
       String priority,
@@ -364,28 +392,28 @@ abstract class _$$ViolationImplCopyWith<$Res>
       @JsonKey(name: 'is_anonymous') bool isAnonymous,
       @JsonKey(name: 'is_open') bool isOpen,
       @JsonKey(name: 'is_closed') bool isClosed,
-      @JsonKey(name: 'comments_summary') CommentSummary commentsSummary,
+      @JsonKey(name: 'comments_summary') CommentSummary? commentsSummary,
       @JsonKey(name: 'created_at') String createdAt,
       @JsonKey(name: 'updated_at') String updatedAt});
 
   @override
-  $CategoryCopyWith<$Res> get category;
+  $CategoryCopyWith<$Res>? get category;
   @override
-  $EstateCopyWith<$Res> get estate;
+  $EstateCopyWith<$Res>? get estate;
   @override
-  $UserCopyWith<$Res> get reporter;
+  $UserCopyWith<$Res>? get reporter;
   @override
   $UserCopyWith<$Res>? get reportedUser;
   @override
   $UserCopyWith<$Res>? get assignedTo;
   @override
-  $UserCopyWith<$Res> get propertyOwner;
+  $UserCopyWith<$Res>? get propertyOwner;
   @override
-  $LocationDetailsCopyWith<$Res> get locationDetails;
+  $LocationDetailsCopyWith<$Res>? get locationDetails;
   @override
-  $EvidenceCopyWith<$Res> get evidence;
+  $EvidenceCopyWith<$Res>? get evidence;
   @override
-  $CommentSummaryCopyWith<$Res> get commentsSummary;
+  $CommentSummaryCopyWith<$Res>? get commentsSummary;
 }
 
 /// @nodoc
@@ -404,15 +432,15 @@ class __$$ViolationImplCopyWithImpl<$Res>
     Object? id = null,
     Object? referenceCode = null,
     Object? violationCode = null,
-    Object? category = null,
-    Object? estate = null,
-    Object? reporter = null,
+    Object? category = freezed,
+    Object? estate = freezed,
+    Object? reporter = freezed,
     Object? reportedUser = freezed,
     Object? assignedTo = freezed,
-    Object? propertyOwner = null,
-    Object? locationDetails = null,
+    Object? propertyOwner = freezed,
+    Object? locationDetails = freezed,
     Object? description = null,
-    Object? evidence = null,
+    Object? evidence = freezed,
     Object? status = null,
     Object? statusBadge = null,
     Object? priority = null,
@@ -420,7 +448,7 @@ class __$$ViolationImplCopyWithImpl<$Res>
     Object? isAnonymous = null,
     Object? isOpen = null,
     Object? isClosed = null,
-    Object? commentsSummary = null,
+    Object? commentsSummary = freezed,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -437,18 +465,18 @@ class __$$ViolationImplCopyWithImpl<$Res>
           ? _value.violationCode
           : violationCode // ignore: cast_nullable_to_non_nullable
               as String,
-      category: null == category
+      category: freezed == category
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
-              as Category,
-      estate: null == estate
+              as Category?,
+      estate: freezed == estate
           ? _value.estate
           : estate // ignore: cast_nullable_to_non_nullable
-              as Estate,
-      reporter: null == reporter
+              as Estate?,
+      reporter: freezed == reporter
           ? _value.reporter
           : reporter // ignore: cast_nullable_to_non_nullable
-              as User,
+              as User?,
       reportedUser: freezed == reportedUser
           ? _value.reportedUser
           : reportedUser // ignore: cast_nullable_to_non_nullable
@@ -457,22 +485,22 @@ class __$$ViolationImplCopyWithImpl<$Res>
           ? _value.assignedTo
           : assignedTo // ignore: cast_nullable_to_non_nullable
               as User?,
-      propertyOwner: null == propertyOwner
+      propertyOwner: freezed == propertyOwner
           ? _value.propertyOwner
           : propertyOwner // ignore: cast_nullable_to_non_nullable
-              as User,
-      locationDetails: null == locationDetails
+              as User?,
+      locationDetails: freezed == locationDetails
           ? _value.locationDetails
           : locationDetails // ignore: cast_nullable_to_non_nullable
-              as LocationDetails,
+              as LocationDetails?,
       description: null == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String,
-      evidence: null == evidence
+      evidence: freezed == evidence
           ? _value.evidence
           : evidence // ignore: cast_nullable_to_non_nullable
-              as Evidence,
+              as Evidence?,
       status: null == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -501,10 +529,10 @@ class __$$ViolationImplCopyWithImpl<$Res>
           ? _value.isClosed
           : isClosed // ignore: cast_nullable_to_non_nullable
               as bool,
-      commentsSummary: null == commentsSummary
+      commentsSummary: freezed == commentsSummary
           ? _value.commentsSummary
           : commentsSummary // ignore: cast_nullable_to_non_nullable
-              as CommentSummary,
+              as CommentSummary?,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -519,36 +547,37 @@ class __$$ViolationImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class _$ViolationImpl implements _Violation {
   const _$ViolationImpl(
-      {required this.id,
-      @JsonKey(name: 'reference_code') required this.referenceCode,
-      @JsonKey(name: 'violation_code') required this.violationCode,
-      required this.category,
-      required this.estate,
-      required this.reporter,
+      {this.id = 0,
+      @JsonKey(name: 'reference_code') this.referenceCode = '',
+      @JsonKey(name: 'violation_code') this.violationCode = '',
+      this.category,
+      this.estate,
+      this.reporter,
       @JsonKey(name: 'reported_user') this.reportedUser,
       @JsonKey(name: 'assigned_to') this.assignedTo,
-      @JsonKey(name: 'property_owner') required this.propertyOwner,
-      @JsonKey(name: 'location_details') required this.locationDetails,
-      required this.description,
-      required this.evidence,
-      required this.status,
-      @JsonKey(name: 'status_badge') required this.statusBadge,
-      required this.priority,
-      @JsonKey(name: 'priority_badge') required this.priorityBadge,
-      @JsonKey(name: 'is_anonymous') required this.isAnonymous,
-      @JsonKey(name: 'is_open') required this.isOpen,
-      @JsonKey(name: 'is_closed') required this.isClosed,
-      @JsonKey(name: 'comments_summary') required this.commentsSummary,
-      @JsonKey(name: 'created_at') required this.createdAt,
-      @JsonKey(name: 'updated_at') required this.updatedAt});
+      @JsonKey(name: 'property_owner') this.propertyOwner,
+      @JsonKey(name: 'location_details') this.locationDetails,
+      this.description = '',
+      this.evidence,
+      this.status = '',
+      @JsonKey(name: 'status_badge') this.statusBadge = '',
+      this.priority = '',
+      @JsonKey(name: 'priority_badge') this.priorityBadge = '',
+      @JsonKey(name: 'is_anonymous') this.isAnonymous = false,
+      @JsonKey(name: 'is_open') this.isOpen = false,
+      @JsonKey(name: 'is_closed') this.isClosed = false,
+      @JsonKey(name: 'comments_summary') this.commentsSummary,
+      @JsonKey(name: 'created_at') this.createdAt = '',
+      @JsonKey(name: 'updated_at') this.updatedAt = ''});
 
   factory _$ViolationImpl.fromJson(Map<String, dynamic> json) =>
       _$$ViolationImplFromJson(json);
 
   @override
+  @JsonKey()
   final int id;
   @override
   @JsonKey(name: 'reference_code')
@@ -557,11 +586,11 @@ class _$ViolationImpl implements _Violation {
   @JsonKey(name: 'violation_code')
   final String violationCode;
   @override
-  final Category category;
+  final Category? category;
   @override
-  final Estate estate;
+  final Estate? estate;
   @override
-  final User reporter;
+  final User? reporter;
   @override
   @JsonKey(name: 'reported_user')
   final User? reportedUser;
@@ -570,20 +599,23 @@ class _$ViolationImpl implements _Violation {
   final User? assignedTo;
   @override
   @JsonKey(name: 'property_owner')
-  final User propertyOwner;
+  final User? propertyOwner;
   @override
   @JsonKey(name: 'location_details')
-  final LocationDetails locationDetails;
+  final LocationDetails? locationDetails;
   @override
+  @JsonKey()
   final String description;
   @override
-  final Evidence evidence;
+  final Evidence? evidence;
   @override
+  @JsonKey()
   final String status;
   @override
   @JsonKey(name: 'status_badge')
   final String statusBadge;
   @override
+  @JsonKey()
   final String priority;
   @override
   @JsonKey(name: 'priority_badge')
@@ -599,7 +631,7 @@ class _$ViolationImpl implements _Violation {
   final bool isClosed;
   @override
   @JsonKey(name: 'comments_summary')
-  final CommentSummary commentsSummary;
+  final CommentSummary? commentsSummary;
   @override
   @JsonKey(name: 'created_at')
   final String createdAt;
@@ -705,31 +737,28 @@ class _$ViolationImpl implements _Violation {
 
 abstract class _Violation implements Violation {
   const factory _Violation(
-          {required final int id,
-          @JsonKey(name: 'reference_code') required final String referenceCode,
-          @JsonKey(name: 'violation_code') required final String violationCode,
-          required final Category category,
-          required final Estate estate,
-          required final User reporter,
-          @JsonKey(name: 'reported_user') final User? reportedUser,
-          @JsonKey(name: 'assigned_to') final User? assignedTo,
-          @JsonKey(name: 'property_owner') required final User propertyOwner,
-          @JsonKey(name: 'location_details')
-          required final LocationDetails locationDetails,
-          required final String description,
-          required final Evidence evidence,
-          required final String status,
-          @JsonKey(name: 'status_badge') required final String statusBadge,
-          required final String priority,
-          @JsonKey(name: 'priority_badge') required final String priorityBadge,
-          @JsonKey(name: 'is_anonymous') required final bool isAnonymous,
-          @JsonKey(name: 'is_open') required final bool isOpen,
-          @JsonKey(name: 'is_closed') required final bool isClosed,
-          @JsonKey(name: 'comments_summary')
-          required final CommentSummary commentsSummary,
-          @JsonKey(name: 'created_at') required final String createdAt,
-          @JsonKey(name: 'updated_at') required final String updatedAt}) =
-      _$ViolationImpl;
+      {final int id,
+      @JsonKey(name: 'reference_code') final String referenceCode,
+      @JsonKey(name: 'violation_code') final String violationCode,
+      final Category? category,
+      final Estate? estate,
+      final User? reporter,
+      @JsonKey(name: 'reported_user') final User? reportedUser,
+      @JsonKey(name: 'assigned_to') final User? assignedTo,
+      @JsonKey(name: 'property_owner') final User? propertyOwner,
+      @JsonKey(name: 'location_details') final LocationDetails? locationDetails,
+      final String description,
+      final Evidence? evidence,
+      final String status,
+      @JsonKey(name: 'status_badge') final String statusBadge,
+      final String priority,
+      @JsonKey(name: 'priority_badge') final String priorityBadge,
+      @JsonKey(name: 'is_anonymous') final bool isAnonymous,
+      @JsonKey(name: 'is_open') final bool isOpen,
+      @JsonKey(name: 'is_closed') final bool isClosed,
+      @JsonKey(name: 'comments_summary') final CommentSummary? commentsSummary,
+      @JsonKey(name: 'created_at') final String createdAt,
+      @JsonKey(name: 'updated_at') final String updatedAt}) = _$ViolationImpl;
 
   factory _Violation.fromJson(Map<String, dynamic> json) =
       _$ViolationImpl.fromJson;
@@ -743,11 +772,11 @@ abstract class _Violation implements Violation {
   @JsonKey(name: 'violation_code')
   String get violationCode;
   @override
-  Category get category;
+  Category? get category;
   @override
-  Estate get estate;
+  Estate? get estate;
   @override
-  User get reporter;
+  User? get reporter;
   @override
   @JsonKey(name: 'reported_user')
   User? get reportedUser;
@@ -756,14 +785,14 @@ abstract class _Violation implements Violation {
   User? get assignedTo;
   @override
   @JsonKey(name: 'property_owner')
-  User get propertyOwner;
+  User? get propertyOwner;
   @override
   @JsonKey(name: 'location_details')
-  LocationDetails get locationDetails;
+  LocationDetails? get locationDetails;
   @override
   String get description;
   @override
-  Evidence get evidence;
+  Evidence? get evidence;
   @override
   String get status;
   @override
@@ -785,7 +814,7 @@ abstract class _Violation implements Violation {
   bool get isClosed;
   @override
   @JsonKey(name: 'comments_summary')
-  CommentSummary get commentsSummary;
+  CommentSummary? get commentsSummary;
   @override
   @JsonKey(name: 'created_at')
   String get createdAt;

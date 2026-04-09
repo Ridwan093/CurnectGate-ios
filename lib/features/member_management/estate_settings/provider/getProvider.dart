@@ -44,7 +44,7 @@ class EstateSettingNotifier
       return freshEstateSettings;
     } catch (e) {
       // If error occurs, return local data if available
-      // log("${e}");
+      log("${e.toString()}");
       log(
         "My Data was here => ${localEstateSettings?.data?.estate?.name ?? ""}",
       );

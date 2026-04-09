@@ -5,6 +5,7 @@ import 'package:curnectgate/features/%20operations/property_agreement/widget/ter
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/%20operations/property_agreement/provider/agreement_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:signature/signature.dart';
@@ -80,84 +81,95 @@ class _TermsAndConditionScreenState
                     ),
                     const SizedBox(height: 16),
 
-                    // 📜 Agreement Body
+                
                     TermsAndConditionData(),
                     const SizedBox(height: 30),
 
-                    // 🧭 Custom Tab Switcher
+                    
                     const SizedBox(height: 20),
 
-                    // 🔘 Buttons
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                ref
-                                    .read(formProvider.notifier)
-                                    .termsAndConditon(
+                  
+                    Consumer(
+                      builder: (context, ref, child) {
+                        final agreementAsync = ref.watch(agreementProvider);
+                        final isAccepted = agreementAsync.valueOrNull?.data?.agreements?.termsAndConditions?.accepted == true;
+
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: isAccepted ? null : () {
+                                    ref
+                                        .read(formProvider.notifier)
+                                        .termsAndConditon(
+                                          context: context,
+                                          ref: ref,
+                                        );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.instance.black600,
+                                    foregroundColor: AppColors.instance.grey200,
+                                    disabledBackgroundColor: AppColors.instance.grey400,
+                                    disabledForegroundColor: AppColors.instance.grey300,
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 14,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    isAccepted ? "Accepted" : "Accept",
+                                    style: TextStyle(
+                                      fontFamily: FontFamilies.interDisplay,
+                                      fontWeight: FontFamilies.medium,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: isAccepted ? null : () {
+                                    showUserBottomSheet(
                                       context: context,
+                                      headertitle: "",
+                                      headersubtitle: "",
                                       ref: ref,
+                                      bottom: BottomSheetView.termsAndCondition,
                                     );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.instance.black600,
-                                foregroundColor: AppColors.instance.grey200,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 14,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.instance.grey200,
+                                    foregroundColor: AppColors.instance.black600,
+                                    disabledBackgroundColor: AppColors.instance.grey200,
+                                    disabledForegroundColor: AppColors.instance.grey400,
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 14,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "Decline",
+                                    style: TextStyle(
+                                      fontFamily: FontFamilies.interDisplay,
+                                      fontWeight: FontFamilies.medium,
+                                      fontSize: 16,
+                                    ),
+                                  ),
                                 ),
                               ),
-                              child: Text(
-                                "Accept",
-                                style: TextStyle(
-                                  fontFamily: FontFamilies.interDisplay,
-                                  fontWeight: FontFamilies.medium,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
+                            ],
                           ),
-                          const SizedBox(height: 12),
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                showUserBottomSheet(
-                                  context: context,
-                                  headertitle: "",
-                                  headersubtitle: "",
-                                  ref: ref,
-                                  bottom: BottomSheetView.termsAndCondition,
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.instance.grey200,
-                                foregroundColor: AppColors.instance.black600,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 14,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              child: Text(
-                                "Decline",
-                                style: TextStyle(
-                                  fontFamily: FontFamilies.interDisplay,
-                                  fontWeight: FontFamilies.medium,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        );
+                      }
                     ),
                   ],
                 ),

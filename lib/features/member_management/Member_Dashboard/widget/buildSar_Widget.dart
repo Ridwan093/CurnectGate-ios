@@ -9,11 +9,10 @@ import 'package:curnectgate/features/estate_management/submit_works_order/model/
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/getWorkOdder_provider.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/model/active_Otp_count/Expired_count/expired_count_response.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/expired_used_count_provider.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/count_data.dart';
 import 'package:curnectgate/features/operations/notifications/provider/getevent_provider.dart';
-import 'package:curnectgate/features/operations/violation/model/report_models/violation.dart';
+import 'package:curnectgate/features/operations/violation/model/report_models/violation_response.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/getReport_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -190,10 +189,15 @@ class Statistics extends ConsumerWidget {
     );
   }
 
-  int _investigationCount(List<Violation>? list) {
-    final safe = list ?? [];
+  int _calculateViolationCount(ViolationResponse? report) {
+    if (report?.data?.summary != null) {
+      final summary = report!.data?.summary;
+      return summary!.pending + summary.investigating;
+    }
 
-    return safe
+    // Fallback to manual count if summary is missing (e.g. older cached data)
+    final violations = report?.data?.violations ?? [];
+    return violations
         .where(
           (v) =>
               (v.status).toLowerCase() == 'investigating' ||
@@ -205,16 +209,14 @@ class Statistics extends ConsumerWidget {
   Widget _buildViolationCount(BuildContext context, WidgetRef ref) {
     final async = ref.watch(userReportProvider);
 
-    int resolve(List<Violation>? list) => _investigationCount(list);
-
     return async.when(
       data: (report) {
-        final count = resolve(report?.data.violations);
+        final count = _calculateViolationCount(report);
 
         return _buildStatContent(
           trailing: count,
           title: "Violation",
-          subtitle: "Pending/Investigatin Report",
+          subtitle: "Pending/Investigating Report",
           icon: AssetPaths.vaolationIcon,
           onTap: () => context.pushNamed(AppRoutes.violation),
         );
@@ -222,12 +224,12 @@ class Statistics extends ConsumerWidget {
 
       loading: () {
         final cached = ref.read(userReportProvider).value;
-        final count = resolve(cached?.data.violations);
+        final count = _calculateViolationCount(cached);
 
         return _buildStatContent(
           trailing: count,
           title: "Violation",
-          subtitle: "Pending/Investigatin Report",
+          subtitle: "Pending/Investigating Report",
           icon: AssetPaths.vaolationIcon,
           onTap: () => context.pushNamed(AppRoutes.violation),
         );
@@ -235,12 +237,12 @@ class Statistics extends ConsumerWidget {
 
       error: (error, stack) {
         final cached = ref.read(userReportProvider).value;
-        final count = resolve(cached?.data.violations);
+        final count = _calculateViolationCount(cached);
 
         return _buildStatContent(
           trailing: count,
           title: "Violation",
-          subtitle: "Pending/Investigatin Report",
+          subtitle: "Pending/Investigating Report",
           icon: AssetPaths.vaolationIcon,
           onTap: () => context.pushNamed(AppRoutes.violation),
         );
@@ -249,28 +251,26 @@ class Statistics extends ConsumerWidget {
   }
 
   Widget _buildActiveOtPCount(BuildContext context) {
-    return CountDataForAll<ExpiredCountResponse>(
-      provider: expiredCountProvider("used"),
+    return CountDataForAll<int>(
+      provider: combinedVisitorCountProvider,
       emptyBody: _buildStatContent(
         trailing: 0,
-
         title: "Visitors",
-        subtitle: "Used/Expire Code",
+        subtitle: "Used/Expired Otp",
         icon: AssetPaths.visitorivite,
         onTap: () {
           context.pushNamed(AppRoutes.activeOtpHistory);
-        }, // ← add navigation later
+        },
       ),
       builder:
           (data) => _buildStatContent(
-            trailing: data.data?.count ?? 0,
-
+            trailing: data,
             title: "Visitors",
-            subtitle: "Used/Expire Code",
+            subtitle: "Used/Expired Otp",
             icon: AssetPaths.visitorivite,
             onTap: () {
               context.pushNamed(AppRoutes.activeOtpHistory);
-            }, // ← add navigation later
+            },
           ),
     );
   }
@@ -284,7 +284,9 @@ class Statistics extends ConsumerWidget {
           final activePolls =
               polls
                   .where(
-                    (p) => (p.status ?? "").toLowerCase().contains('active'),
+                    (p) =>
+                        (p.status ?? "").toLowerCase().contains('active') ||
+                        (p.status ?? "").toLowerCase().contains('live'),
                   )
                   .toList();
 
@@ -302,7 +304,9 @@ class Statistics extends ConsumerWidget {
                   polls
                       .where(
                         (p) =>
-                            p.status?.toLowerCase().contains('active') == true,
+                            p.status?.toLowerCase().contains('active') ==
+                                true ||
+                            p.status?.toLowerCase().contains('live') == true,
                       )
                       .toList();
 
@@ -397,6 +401,8 @@ class Statistics extends ConsumerWidget {
           child:
               title.toLowerCase().contains("event")
                   ? Icon(Icons.event, color: AppColors.instance.teal400)
+                  : title.toLowerCase().contains("election")
+                  ? Icon(Icons.how_to_vote, color: AppColors.instance.teal400)
                   : Image.asset(icon, width: 28, height: 28),
         ),
         title: Text(

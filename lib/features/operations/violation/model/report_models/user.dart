@@ -10,11 +10,11 @@ part 'user.g.dart';
 class User with _$User {
   @JsonSerializable(explicitToJson: true)
   const factory User({
-    @JsonKey(fromJson: NullSafetyHelper.safeInt) required int id,
-    @JsonKey(fromJson: NullSafetyHelper.safeString) required String name,
+    @JsonKey(fromJson: NullSafetyHelper.safeInt) @Default(0) int id,
+    @JsonKey(fromJson: NullSafetyHelper.safeString) @Default('') String name,
     @JsonKey(name: 'member_code', fromJson: NullSafetyHelper.safeString) String? memberCode,
-    @JsonKey(fromJson: NullSafetyHelper.safeString) required String role,
-    @JsonKey(name: 'is_self', fromJson: NullSafetyHelper.safeBool) required bool isSelf,
+    @JsonKey(fromJson: NullSafetyHelper.safeString) @Default('') String role,
+    @JsonKey(name: 'is_self', fromJson: NullSafetyHelper.safeBool) @Default(false) bool isSelf,
     @JsonKey(name: 'is_current_user', fromJson: NullSafetyHelper.safeBool) bool? isCurrentUser,
   }) = _User;
 

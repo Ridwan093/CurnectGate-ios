@@ -21,6 +21,9 @@ ViolationData _$ViolationDataFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ViolationData {
   List<Violation> get violations => throw _privateConstructorUsedError;
+  ViolationPagination? get pagination => throw _privateConstructorUsedError;
+  ViolationSummary? get summary => throw _privateConstructorUsedError;
+  ViolationFilters? get filters => throw _privateConstructorUsedError;
 
   /// Serializes this ViolationData to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -38,7 +41,15 @@ abstract class $ViolationDataCopyWith<$Res> {
           ViolationData value, $Res Function(ViolationData) then) =
       _$ViolationDataCopyWithImpl<$Res, ViolationData>;
   @useResult
-  $Res call({List<Violation> violations});
+  $Res call(
+      {List<Violation> violations,
+      ViolationPagination? pagination,
+      ViolationSummary? summary,
+      ViolationFilters? filters});
+
+  $ViolationPaginationCopyWith<$Res>? get pagination;
+  $ViolationSummaryCopyWith<$Res>? get summary;
+  $ViolationFiltersCopyWith<$Res>? get filters;
 }
 
 /// @nodoc
@@ -57,13 +68,70 @@ class _$ViolationDataCopyWithImpl<$Res, $Val extends ViolationData>
   @override
   $Res call({
     Object? violations = null,
+    Object? pagination = freezed,
+    Object? summary = freezed,
+    Object? filters = freezed,
   }) {
     return _then(_value.copyWith(
       violations: null == violations
           ? _value.violations
           : violations // ignore: cast_nullable_to_non_nullable
               as List<Violation>,
+      pagination: freezed == pagination
+          ? _value.pagination
+          : pagination // ignore: cast_nullable_to_non_nullable
+              as ViolationPagination?,
+      summary: freezed == summary
+          ? _value.summary
+          : summary // ignore: cast_nullable_to_non_nullable
+              as ViolationSummary?,
+      filters: freezed == filters
+          ? _value.filters
+          : filters // ignore: cast_nullable_to_non_nullable
+              as ViolationFilters?,
     ) as $Val);
+  }
+
+  /// Create a copy of ViolationData
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $ViolationPaginationCopyWith<$Res>? get pagination {
+    if (_value.pagination == null) {
+      return null;
+    }
+
+    return $ViolationPaginationCopyWith<$Res>(_value.pagination!, (value) {
+      return _then(_value.copyWith(pagination: value) as $Val);
+    });
+  }
+
+  /// Create a copy of ViolationData
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $ViolationSummaryCopyWith<$Res>? get summary {
+    if (_value.summary == null) {
+      return null;
+    }
+
+    return $ViolationSummaryCopyWith<$Res>(_value.summary!, (value) {
+      return _then(_value.copyWith(summary: value) as $Val);
+    });
+  }
+
+  /// Create a copy of ViolationData
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $ViolationFiltersCopyWith<$Res>? get filters {
+    if (_value.filters == null) {
+      return null;
+    }
+
+    return $ViolationFiltersCopyWith<$Res>(_value.filters!, (value) {
+      return _then(_value.copyWith(filters: value) as $Val);
+    });
   }
 }
 
@@ -75,7 +143,18 @@ abstract class _$$ViolationDataImplCopyWith<$Res>
       __$$ViolationDataImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<Violation> violations});
+  $Res call(
+      {List<Violation> violations,
+      ViolationPagination? pagination,
+      ViolationSummary? summary,
+      ViolationFilters? filters});
+
+  @override
+  $ViolationPaginationCopyWith<$Res>? get pagination;
+  @override
+  $ViolationSummaryCopyWith<$Res>? get summary;
+  @override
+  $ViolationFiltersCopyWith<$Res>? get filters;
 }
 
 /// @nodoc
@@ -92,21 +171,40 @@ class __$$ViolationDataImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? violations = null,
+    Object? pagination = freezed,
+    Object? summary = freezed,
+    Object? filters = freezed,
   }) {
     return _then(_$ViolationDataImpl(
       violations: null == violations
           ? _value._violations
           : violations // ignore: cast_nullable_to_non_nullable
               as List<Violation>,
+      pagination: freezed == pagination
+          ? _value.pagination
+          : pagination // ignore: cast_nullable_to_non_nullable
+              as ViolationPagination?,
+      summary: freezed == summary
+          ? _value.summary
+          : summary // ignore: cast_nullable_to_non_nullable
+              as ViolationSummary?,
+      filters: freezed == filters
+          ? _value.filters
+          : filters // ignore: cast_nullable_to_non_nullable
+              as ViolationFilters?,
     ));
   }
 }
 
 /// @nodoc
 
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class _$ViolationDataImpl implements _ViolationData {
-  const _$ViolationDataImpl({required final List<Violation> violations})
+  const _$ViolationDataImpl(
+      {final List<Violation> violations = const [],
+      this.pagination,
+      this.summary,
+      this.filters})
       : _violations = violations;
 
   factory _$ViolationDataImpl.fromJson(Map<String, dynamic> json) =>
@@ -114,6 +212,7 @@ class _$ViolationDataImpl implements _ViolationData {
 
   final List<Violation> _violations;
   @override
+  @JsonKey()
   List<Violation> get violations {
     if (_violations is EqualUnmodifiableListView) return _violations;
     // ignore: implicit_dynamic_type
@@ -121,8 +220,15 @@ class _$ViolationDataImpl implements _ViolationData {
   }
 
   @override
+  final ViolationPagination? pagination;
+  @override
+  final ViolationSummary? summary;
+  @override
+  final ViolationFilters? filters;
+
+  @override
   String toString() {
-    return 'ViolationData(violations: $violations)';
+    return 'ViolationData(violations: $violations, pagination: $pagination, summary: $summary, filters: $filters)';
   }
 
   @override
@@ -131,13 +237,21 @@ class _$ViolationDataImpl implements _ViolationData {
         (other.runtimeType == runtimeType &&
             other is _$ViolationDataImpl &&
             const DeepCollectionEquality()
-                .equals(other._violations, _violations));
+                .equals(other._violations, _violations) &&
+            (identical(other.pagination, pagination) ||
+                other.pagination == pagination) &&
+            (identical(other.summary, summary) || other.summary == summary) &&
+            (identical(other.filters, filters) || other.filters == filters));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(_violations));
+      runtimeType,
+      const DeepCollectionEquality().hash(_violations),
+      pagination,
+      summary,
+      filters);
 
   /// Create a copy of ViolationData
   /// with the given fields replaced by the non-null parameter values.
@@ -156,14 +270,23 @@ class _$ViolationDataImpl implements _ViolationData {
 }
 
 abstract class _ViolationData implements ViolationData {
-  const factory _ViolationData({required final List<Violation> violations}) =
-      _$ViolationDataImpl;
+  const factory _ViolationData(
+      {final List<Violation> violations,
+      final ViolationPagination? pagination,
+      final ViolationSummary? summary,
+      final ViolationFilters? filters}) = _$ViolationDataImpl;
 
   factory _ViolationData.fromJson(Map<String, dynamic> json) =
       _$ViolationDataImpl.fromJson;
 
   @override
   List<Violation> get violations;
+  @override
+  ViolationPagination? get pagination;
+  @override
+  ViolationSummary? get summary;
+  @override
+  ViolationFilters? get filters;
 
   /// Create a copy of ViolationData
   /// with the given fields replaced by the non-null parameter values.

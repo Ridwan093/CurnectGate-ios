@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
@@ -10,7 +9,7 @@ final dioProvider = Provider<Dio>((ref) {
   return Dio()
     ..options = BaseOptions(
       extra: {'requiresAuth': true},
-      baseUrl: "https://staging.curnectgate.com/api/v1/",
+      baseUrl: "http://44.200.180.26/api/v1/",
       headers: {'Content-Type': 'application/json'},
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
@@ -21,8 +20,7 @@ final dioProvider = Provider<Dio>((ref) {
           return handler.next(options);
         },
         onError: (error, handler) async {
-          if (error.response?.statusCode == 401) {
-          }
+          if (error.response?.statusCode == 401) {}
           return handler.next(error);
         },
       ),
@@ -47,8 +45,6 @@ final dioProvider = Provider<Dio>((ref) {
                     ref.read(sessionExpiredProvider).toString(),
               );
             }
-
-
           }
           return handler.next(error);
         },
@@ -62,7 +58,6 @@ final dioProvider = Provider<Dio>((ref) {
           final cookie = await prefs.getSessionCookie();
           final token = await prefs.getUserToken();
           if (options.extra['requiresAuth'] == true) {
-            log("Bearer Token Pass on the hearder:${token.toString()}");
             options.headers['Authorization'] = 'Bearer $token';
             if (cookie != null) {
               options.headers['Cookie'] = cookie;
@@ -82,10 +77,5 @@ final dioProvider = Provider<Dio>((ref) {
         },
       ),
     )
-    ..interceptors.add(
-      LogInterceptor(
-       
-        error: true,
-      ),
-    );
+    ..interceptors.add(LogInterceptor(error: true));
 });

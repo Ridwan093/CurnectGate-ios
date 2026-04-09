@@ -465,7 +465,10 @@ class WorkpermitCard extends ConsumerWidget {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        (generated.status ?? "N/A").toUpperCase(),
+                        (generated.status ?? "N/A").toUpperCase().replaceAll(
+                          "_",
+                          " ",
+                        ),
                         style: TextStyle(
                           color: AppColors.instance.grey200,
                           fontWeight: FontWeight.bold,
@@ -478,7 +481,10 @@ class WorkpermitCard extends ConsumerWidget {
                 ),
                 const Spacer(),
                 if (generated.hasPermit == false &&
-                    generated.status!.contains("active"))
+                        (generated.status ?? "").toLowerCase().contains(
+                          "active",
+                        ) ||
+                    (generated.status ?? "").toLowerCase().contains("check_in"))
                   TextButton.icon(
                     onPressed: () {
                       notifier.updateLoading(false);

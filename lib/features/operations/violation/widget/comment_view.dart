@@ -67,47 +67,74 @@ class _CommentViewState extends State<CommentView>
   }
 
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.85,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min, // Minimize height
+        mainAxisSize: MainAxisSize.min,
         children: [
+          // Drag handle
           Center(
             child: Container(
-              margin: EdgeInsets.symmetric(vertical: 8),
-              width: 40,
-              height: 5,
+              margin: const EdgeInsets.symmetric(vertical: 12),
+              width: 36,
+              height: 4,
               decoration: BoxDecoration(
                 color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(2),
               ),
             ),
           ),
+
+          // Header
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
             child: Row(
               children: [
-                Image(
-                  image: AssetImage(AssetPaths.navMessages),
-                  color: AppColors.instance.black500,
-                  height: 30,
-                  width: 30,
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: AppColors.instance.teal500.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Image(
+                    image: AssetImage(AssetPaths.navMessages),
+                    color: AppColors.instance.teal500,
+                    height: 24,
+                    width: 24,
+                  ),
                 ),
-                SizedBox(width: 10),
-                Buildcommentcount(),
+                const SizedBox(width: 12),
+                const Buildcommentcount(),
               ],
             ),
           ),
-          Divider(),
-          SizedBox(height: 20),
-          Buildcommentlist(id: widget.id),
-          SizedBox(height: 8),
+
+          const Divider(height: 1),
+
+          // Comment List
+          Flexible(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+                child: Buildcommentlist(id: widget.id),
+              ),
+            ),
+          ),
+
+          // Input field area
           Commentinput(
             id: widget.id,
             animationController2: _animationController2,
             fadeAnimation2: _fadeAnimation2,
             slideAnimation2: _slideAnimation2,
           ),
+          const SizedBox(height: 8),
         ],
       ),
     );

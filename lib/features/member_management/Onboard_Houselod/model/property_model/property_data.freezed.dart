@@ -108,7 +108,7 @@ class __$$PropertyDataImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class _$PropertyDataImpl implements _PropertyData {
   const _$PropertyDataImpl(
-      {@JsonKey(name: 'properties') required final List<Property> properties})
+      {@JsonKey(name: 'properties') final List<Property> properties = const []})
       : _properties = properties;
 
   factory _$PropertyDataImpl.fromJson(Map<String, dynamic> json) =>
@@ -160,8 +160,8 @@ class _$PropertyDataImpl implements _PropertyData {
 
 abstract class _PropertyData implements PropertyData {
   const factory _PropertyData(
-      {@JsonKey(name: 'properties')
-      required final List<Property> properties}) = _$PropertyDataImpl;
+          {@JsonKey(name: 'properties') final List<Property> properties}) =
+      _$PropertyDataImpl;
 
   factory _PropertyData.fromJson(Map<String, dynamic> json) =
       _$PropertyDataImpl.fromJson;

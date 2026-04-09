@@ -44,6 +44,7 @@
         <string>tel</string>
         <string>https</string>
         <string>http</string>
+        <string>itms-apps</string>
         <string>mailto</string>
     </array>
 

@@ -91,7 +91,9 @@ class _DismissingReportState extends ConsumerState<DismissingReport> {
                       hintText: "(eg. Violation resolved.)",
                       label: "Note",
                       fieldKey: "Note",
-                      onChanged: (value) {},
+                      onChanged: (value) {
+                        setState(() {});
+                      },
                       onValidationChanged: (validation) {
                         // ref
                         //     .read(oTpformProvider.notifier)

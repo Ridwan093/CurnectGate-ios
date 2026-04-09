@@ -9,7 +9,7 @@ part of 'availability_status.dart';
 _$AvailabilityStatusImpl _$$AvailabilityStatusImplFromJson(
         Map<String, dynamic> json) =>
     _$AvailabilityStatusImpl(
-      isAvailable: json['is_available'] as bool,
+      isAvailable: json['is_available'] as bool? ?? false,
       reason: json['reason'] as String?,
       availableFrom: json['available_from'] as String?,
     );

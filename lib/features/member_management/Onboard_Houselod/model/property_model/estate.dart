@@ -12,9 +12,9 @@ class Estate with _$Estate {
     fieldRename: FieldRename.snake,
   )
   const factory Estate({
-    @JsonKey(name: 'id') required int id,
-    @JsonKey(name: 'name') required String name,
-    @JsonKey(name: 'estate_code') required String estateCode,
+    @JsonKey(name: 'id') @Default(0) int id,
+    @JsonKey(name: 'name') @Default('') String name,
+    @JsonKey(name: 'estate_code') @Default('') String estateCode,
   }) = _Estate;
 
   factory Estate.fromJson(Map<String, dynamic> json) =>

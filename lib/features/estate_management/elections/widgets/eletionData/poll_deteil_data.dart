@@ -112,93 +112,95 @@ class PollDeteilData extends ConsumerWidget {
 
   Widget _positionCard(
     PositionItemDetails pos,
-
     WidgetRef ref,
     BuildContext context,
   ) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.instance.black400.withOpacity(0.04),
+            blurRadius: 15,
+            offset: const Offset(0, 6),
+          ),
+        ],
+        border: Border.all(color: AppColors.instance.grey300.withOpacity(0.5)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 10,
-                height: 10,
+                margin: const EdgeInsets.only(top: 4),
+                width: 8,
+                height: 8,
                 decoration: BoxDecoration(
                   color: AppColors.instance.teal400,
                   shape: BoxShape.circle,
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   pos.title ?? "",
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
+                    fontFamily: FontFamilies.interDisplay,
                     fontSize: 18,
+                    color: AppColors.instance.black600,
+                    height: 1.2,
                   ),
                 ),
               ),
-              if (pos.userHasVoted! == false)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    'Not voted',
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      color: AppColors.instance.black600,
-
-                      fontWeight: FontFamilies.bold,
-                    ),
-                  ),
-                )
-              else
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.green.shade50,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    'Voted',
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      color: AppColors.instance.black600,
-
-                      fontWeight: FontFamilies.bold,
-                    ),
+              const SizedBox(width: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: pos.userHasVoted! 
+                      ? AppColors.instance.teal100.withOpacity(0.5)
+                      : AppColors.instance.grey200,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: pos.userHasVoted! 
+                        ? AppColors.instance.teal400.withOpacity(0.5)
+                        : Colors.transparent,
+                  )
+                ),
+                child: Text(
+                  pos.userHasVoted! ? 'Voted' : 'Not voted',
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    color: pos.userHasVoted! 
+                        ? AppColors.instance.teal500 
+                        : AppColors.instance.black400,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
+              ),
             ],
           ),
-          const SizedBox(height: 6),
-          Text(
-            pos.description ?? "",
-            style: const TextStyle(
-              color: Colors.black54,
-              fontFamily: FontFamilies.interDisplay,
+          if (pos.description != null && pos.description!.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Text(
+              pos.description!,
+              style: TextStyle(
+                color: AppColors.instance.black400,
+                fontSize: 14,
+                fontFamily: FontFamilies.interDisplay,
+              ),
             ),
-          ),
-          const SizedBox(height: 12),
-
+          ],
+          const SizedBox(height: 18),
           // Candidates list
           ...pos.candidates!
               .map((c) => _candidateTile(c, pos, ref, context))
@@ -354,44 +356,57 @@ class PollDeteilData extends ConsumerWidget {
       behavior: HitTestBehavior.opaque,
       onTap:
           hasVoted
-              ? null // Optional: disable selection if already voted
+              ? null
               : () {
                 ref
                     .read(electionProvider.notifier)
                     .selectCandidate(positionId, candidateId);
               },
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         margin: const EdgeInsets.symmetric(vertical: 6),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color:
-              isSelected ? AppColors.instance.teal300.withOpacity(0.1) : null,
-          borderRadius: BorderRadius.circular(10),
+          color: isSelected 
+              ? AppColors.instance.teal100.withOpacity(0.4) 
+              : AppColors.instance.grey200.withOpacity(0.3),
+          borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color:
-                isSelected
-                    ? AppColors.instance.teal300
-                    : (hasVoted ? Colors.grey.shade300 : Colors.grey.shade200),
+            color: isSelected
+                ? AppColors.instance.teal400
+                : AppColors.instance.grey300.withOpacity(0.5),
             width: isSelected ? 2 : 1,
           ),
         ),
         child: Row(
           children: [
-            CircleAvatar(
-              backgroundColor: Colors.grey.shade100,
-              child: Text(
-                c.name!
-                    .split(' ')
-                    .map((s) => s.isNotEmpty ? s[0] : '')
-                    .take(2)
-                    .join(),
-                style: TextStyle(
-                  color: AppColors.instance.teal300,
-                  fontWeight: FontWeight.bold,
+            Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isSelected ? AppColors.instance.teal400 : Colors.transparent,
+                  width: 2,
+                ),
+              ),
+              child: CircleAvatar(
+                backgroundColor: AppColors.instance.grey200,
+                radius: 20,
+                child: Text(
+                  c.name!
+                      .split(' ')
+                      .map((s) => s.isNotEmpty ? s[0] : '')
+                      .take(2)
+                      .join(),
+                  style: TextStyle(
+                    color: AppColors.instance.teal500,
+                    fontWeight: FontWeight.w800,
+                    fontFamily: FontFamilies.interDisplay,
+                  ),
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -399,20 +414,30 @@ class PollDeteilData extends ConsumerWidget {
                   Text(
                     c.name ?? "",
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontFamily: FontFamilies.interDisplay,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 15,
                       color: AppColors.instance.black600,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     c.partyAffiliation ?? "Independent",
-                    style: TextStyle(color: AppColors.instance.black300),
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontSize: 13,
+                      color: AppColors.instance.black400,
+                    ),
                   ),
                 ],
               ),
             ),
             IconButton(
-              icon: const Icon(Icons.info_outline),
+              icon: Icon(
+                Icons.info_outline_rounded,
+                color: AppColors.instance.black400,
+                size: 22,
+              ),
               onPressed: () {
                 showDialog(
                   context: context,
@@ -440,15 +465,30 @@ class PollDeteilData extends ConsumerWidget {
               },
             ),
             // Radio button indicator
-            if (!hasVoted)
+            if (!hasVoted) ...[
+              const SizedBox(width: 4),
               Icon(
                 isSelected
-                    ? Icons.radio_button_checked
-                    : Icons.radio_button_off,
-                color: isSelected ? AppColors.instance.teal300 : Colors.grey,
-              )
-            else
-              const Icon(Icons.how_to_vote, color: Colors.black),
+                    ? Icons.check_circle_rounded
+                    : Icons.radio_button_unchecked_rounded,
+                color: isSelected ? AppColors.instance.teal400 : AppColors.instance.grey400,
+                size: 26,
+              ),
+            ] else ...[
+              const SizedBox(width: 4),
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: isSelected ? AppColors.instance.teal100 : AppColors.instance.grey200,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.how_to_vote_rounded, 
+                  color: isSelected ? AppColors.instance.teal500 : AppColors.instance.black300,
+                  size: 16,
+                ),
+              ),
+            ],
           ],
         ),
       ),

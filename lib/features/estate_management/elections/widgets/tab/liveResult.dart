@@ -150,25 +150,42 @@ class _LiveResultTabState extends ConsumerState<LiveResultTab> {
         /// ✅ Total Votes Card
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.instance.grey300),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.instance.black400.withOpacity(0.04),
+                blurRadius: 15,
+                offset: const Offset(0, 6),
+              ),
+            ],
+            border: Border.all(
+              color: AppColors.instance.grey300.withOpacity(0.5),
+            ),
           ),
           child: Column(
             children: [
-              const Text(
+              Text(
                 "Total Votes",
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: FontFamilies.interDisplay,
+                  color: AppColors.instance.black400,
+                  letterSpacing: 0.5,
+                ),
               ),
+              const SizedBox(height: 8),
               Text(
                 "$totalVotes",
                 style: TextStyle(
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 48,
+                  fontWeight: FontWeight.w800,
                   fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black600,
+                  color: AppColors.instance.teal500,
+                  height: 1.1,
                 ),
               ),
             ],
@@ -192,51 +209,111 @@ class _LiveResultTabState extends ConsumerState<LiveResultTab> {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: leader ? AppColors.instance.blue100 : Colors.white,
+        color:
+            leader ? AppColors.instance.teal100.withOpacity(0.3) : Colors.white,
         borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          if (leader)
+            BoxShadow(
+              color: AppColors.instance.teal300.withOpacity(0.15),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            )
+          else
+            BoxShadow(
+              color: AppColors.instance.black400.withOpacity(0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+        ],
         border: Border.all(
-          width: 2,
+          width: leader ? 2 : 1,
           color:
-              leader ? getVoteColor(c.rank ?? 0) : AppColors.instance.grey300,
+              leader
+                  ? AppColors.instance.teal300
+                  : AppColors.instance.grey300.withOpacity(0.5),
         ),
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 22,
-            backgroundImage:
-                // ignore: unnecessary_null_comparison
-                c.mediaUrl != null ? NetworkImage(c.mediaUrl ?? "") : null,
-            child: c.mediaUrl == null ? Text(c.name![0]) : null,
+          Container(
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: leader ? AppColors.instance.teal400 : Colors.transparent,
+                width: 2,
+              ),
+            ),
+            child: CircleAvatar(
+              radius: 24,
+              backgroundColor: AppColors.instance.grey200,
+              backgroundImage:
+                  c.mediaUrl != null && c.mediaUrl!.isNotEmpty
+                      ? NetworkImage(c.mediaUrl!)
+                      : null,
+              child:
+                  c.mediaUrl == null || c.mediaUrl!.isEmpty
+                      ? Text(
+                        c.name != null && c.name!.isNotEmpty ? c.name![0] : "?",
+                        style: TextStyle(
+                          color:
+                              leader
+                                  ? AppColors.instance.teal500
+                                  : AppColors.instance.black500,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      )
+                      : null,
+            ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   c.name ?? "",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontFamily: FontFamilies.interDisplay,
+                    fontSize: 16,
+                    color: AppColors.instance.black600,
                   ),
                 ),
+                const SizedBox(height: 4),
                 Text(
                   c.partyAffiliation ?? "Independent",
-                  style: const TextStyle(fontSize: 12, color: Colors.black54),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: AppColors.instance.black400,
+                    fontFamily: FontFamilies.interDisplay,
+                  ),
                 ),
-                const SizedBox(height: 10),
-                LinearProgressIndicator(
+                const SizedBox(height: 12),
+                ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  value: c.percentage,
-                  minHeight: 8,
-                  backgroundColor: Colors.grey.shade300,
-                  color: getVoteColor(c.rank ?? 0),
+                  child: LinearProgressIndicator(
+                    value:
+                        c.percentage != null && c.percentage! > 0
+                            ? c.percentage! / 100
+                            : 0,
+                    minHeight: 8,
+                    backgroundColor: AppColors.instance.grey300.withOpacity(
+                      0.6,
+                    ),
+                    color: getVoteColor(c.rank ?? 0),
+                  ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 Text(
                   "${c.voteCount} Votes",
-                  style: const TextStyle(fontSize: 12, color: Colors.black54),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.instance.black500,
+                  ),
                 ),
               ],
             ),
@@ -249,17 +326,31 @@ class _LiveResultTabState extends ConsumerState<LiveResultTab> {
                 "${c.percentage?.toStringAsFixed(1)}%",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
                   color: getVoteColor(c.rank ?? 0),
                 ),
               ),
-              leader
-                  ? const Text(
+              if (leader)
+                Container(
+                  margin: const EdgeInsets.only(top: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.instance.teal400,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Text(
                     "Leading",
-                    style: TextStyle(fontSize: 10, color: Colors.black54),
-                  )
-                  : SizedBox(),
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
             ],
           ),
         ],

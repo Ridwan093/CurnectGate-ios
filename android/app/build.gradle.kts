@@ -15,12 +15,12 @@ plugins {
 }
 
 android {
-    namespace = "com.curnect.gate"
+    namespace = "com.curnectgate.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "29.0.13599879" 
 
     defaultConfig {
-        applicationId = "com.curnect.gate"
+        applicationId = "com.curnectgate.app"
         minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

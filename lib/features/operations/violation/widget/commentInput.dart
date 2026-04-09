@@ -26,100 +26,158 @@ class Commentinput extends ConsumerWidget {
     final isLoading = ref.watch(formProvider).commentLoading;
     final formproviders = ref.read(formProvider.notifier);
 
-    return Padding(
-      padding: const EdgeInsets.all(12),
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -4),
+          ),
+        ],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 👇 Slide + Fade animated switch (only if comment is not empty)
-          AnimatedBuilder(
-            animation: animationController2,
-            builder: (context, child) {
-              return Visibility(
-                visible: isValid,
-                child: FadeTransition(
-                  opacity: fadeAnimation2,
-                  child: SlideTransition(
-                    position: slideAnimation2,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Mark as internal comment",
-                          style: TextStyle(
-                            fontFamily: FontFamilies.interDisplay,
-                            color: AppColors.instance.black600,
-                            fontWeight: FontFamilies.light,
+          // Internal comment switch
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: isValid
+                ? Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: FadeTransition(
+                      opacity: fadeAnimation2,
+                      child: SlideTransition(
+                        position: slideAnimation2,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: AppColors.instance.yellow500.withOpacity(0.05),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: AppColors.instance.yellow500.withOpacity(0.2),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(Icons.lock_outline, size: 16, color: AppColors.instance.yellow500),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    "Internal comment",
+                                    style: TextStyle(
+                                      fontFamily: FontFamilies.interDisplay,
+                                      color: AppColors.instance.yellow500,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Transform.scale(
+                                scale: 0.7,
+                                child: CustomSwitch(
+                                  value: ref.watch(reportProvider).report.isCommentInternal ?? false,
+                                  onChanged: (val) {
+                                    ref.read(reportProvider.notifier).setCommentInternal(val);
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        CustomSwitch(
-                          value:
-                              ref
-                                  .watch(reportProvider)
-                                  .report
-                                  .isCommentInternal ??
-                              false,
-                          onChanged: (val) {
-                            ref
-                                .read(reportProvider.notifier)
-                                .setCommentInternal(val);
-                          },
-                        ),
-                      ],
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          ),
+
+          // Input Area
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.instance.grey200.withOpacity(0.5),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: AppColors.instance.black100),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _commentController,
+                    maxLines: 4,
+                    minLines: 1,
+                    onChanged: (value) {
+                      ref.read(reportProvider.notifier).setcomment(value);
+                      if (value.trim().isNotEmpty) {
+                        animationController2.forward();
+                      } else {
+                        animationController2.reverse();
+                      }
+                    },
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontSize: 14,
+                      color: AppColors.instance.black600,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'Write a comment...',
+                      hintStyle: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        fontSize: 14,
+                        color: AppColors.instance.black300,
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 10),
                     ),
                   ),
                 ),
-              );
-            },
-          ),
-
-          const SizedBox(height: 8),
-
-          // 👇 Comment Input
-          TextField(
-            controller: _commentController,
-            decoration: InputDecoration(
-              hintText: 'Write a comment...',
-              border: InputBorder.none,
-              suffixIconConstraints: BoxConstraints(
-                maxWidth: 100,
-                maxHeight: 100,
-              ),
-              suffixIcon:
-                  isLoading
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4, left: 8),
+                  child: isLoading
                       ? SizedBox(
-                        height: 30,
-                        width: 30,
-                        child: CircularProgressIndicator(
-                          color: AppColors.instance.yellow500,
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.instance.teal500,
+                          ),
+                        )
+                      : GestureDetector(
+                          onTap: isValid
+                              ? () async {
+                                  formproviders.makeACommentonReport(
+                                    id: id.toString(),
+                                    context: context,
+                                    ref: ref,
+                                  );
+                                  _commentController.clear();
+                                  ref.read(reportProvider.notifier).setcomment("");
+                                  animationController2.reverse();
+                                }
+                              : null,
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: isValid ? AppColors.instance.teal500 : AppColors.instance.black200,
+                            ),
+                            child: const Icon(
+                              Icons.send_rounded,
+                              size: 18,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
-                      )
-                      : isValid
-                      ? IconButton(
-                        icon: const Icon(Icons.send),
-                        onPressed: () async {
-                          formproviders.makeACommentonReport(
-                            id: id.toString(),
-                            context: context,
-                            ref: ref,
-                          );
-                          _commentController.clear();
-                        },
-                      )
-                      : null,
+                ),
+              ],
             ),
-            onChanged: (value) {
-              ref.read(reportProvider.notifier).setcomment(value);
-
-              // Trigger animation when text appears
-              if (value.trim().isNotEmpty) {
-                animationController2.forward();
-              } else {
-                animationController2.reverse();
-              }
-            },
-            maxLines: 3,
-            minLines: 1,
           ),
         ],
       ),

@@ -8,6 +8,8 @@ import 'package:curnectgate/core/navigation/app_rout.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/chat/data/hive_migration.dart';
 import 'package:curnectgate/features/chat/services/reverb_service.dart';
+import 'package:upgrader/upgrader.dart';
+import 'package:curnectgate/core/%20utils/update/update_config.dart';
 // Your models (from earlier steps)
 
 import 'package:curnectgate/features/signOut/errorWidget/sesional_expired.dart';
@@ -31,7 +33,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 void main() async {
-  // 🔴 CRITICAL: Must be the VERY FIRST call in main() before anything else.
+  //  CRITICAL: Must be the VERY FIRST call in main() before anything else.
   // This registers the Dart entry point for background message handling.
 
   WidgetsFlutterBinding.ensureInitialized();
@@ -111,37 +113,43 @@ class _MyAppState extends ConsumerState<MyApp> {
         if (parsedId != 0) {
           ReverbService.initRealtime(ref, parsedId);
         } else {
-          log("⚠️ Cannot init Reverb: User ID is invalid/0");
+          log(" Cannot init Reverb: User ID is invalid/0");
         }
       }
     }); // Get the router
 
     return SessionExpiryListener(
-      child: MaterialApp.router(
-        localizationsDelegates: [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: [
-          Locale('en'), // English
-          // Add more locales if you support them
-        ],
-
-        theme: ThemeData(
-          textSelectionTheme: TextSelectionThemeData(
-            selectionColor: AppColors.instance.teal400,
-            selectionHandleColor: AppColors.instance.teal400,
-            cursorColor: Colors.black,
+      child: UpgradeAlert(
+        upgrader: UpdateConfig.upgrader,
+        dialogStyle: UpgradeDialogStyle.material,
+        showIgnore: false,
+        showLater: true,
+        barrierDismissible: true,
+        child: MaterialApp.router(
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: [
+            Locale('en'), // English
+            // Add more locales if you support them
+          ],
+          theme: ThemeData(
+            textSelectionTheme: TextSelectionThemeData(
+              selectionColor: AppColors.instance.teal400,
+              selectionHandleColor: AppColors.instance.teal400,
+              cursorColor: Colors.black,
+            ),
           ),
+          routerConfig: router,
+          useInheritedMediaQuery: true,
+          locale: DevicePreview.locale(context),
+          builder: DevicePreview.appBuilder,
+          // GoRouter integration
+          debugShowCheckedModeBanner: false,
+          title: 'CurnectGate',
         ),
-        routerConfig: router,
-        useInheritedMediaQuery: true,
-        locale: DevicePreview.locale(context),
-        builder: DevicePreview.appBuilder,
-        // GoRouter integration
-        debugShowCheckedModeBanner: false,
-        title: 'CurnectGate',
       ),
     );
   }

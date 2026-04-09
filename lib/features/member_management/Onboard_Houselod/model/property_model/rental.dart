@@ -12,8 +12,8 @@ class Rental with _$Rental {
     fieldRename: FieldRename.snake,
   )
   const factory Rental({
-    @JsonKey(name: 'id') required int id,
-    @JsonKey(name: 'start_date') required String startDate,
+    @JsonKey(name: 'id') @Default(0) int id,
+    @JsonKey(name: 'start_date') @Default('') String startDate,
     // Add other rental properties as needed
   }) = _Rental;
 

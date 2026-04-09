@@ -38,7 +38,7 @@ class DismissedData extends ConsumerWidget {
         child: reportAsync.when(
           data: (report) {
             try {
-              final violations = report?.data.violations;
+              final violations = report?.data?.violations;
               if (violations != null && violations.isNotEmpty) {
                 return _buildReportList(violations, ref);
               } else {
@@ -51,7 +51,7 @@ class DismissedData extends ConsumerWidget {
           loading: () {
             try {
               final cachedReport = ref.read(dismissProvider).value;
-              final cachedViolations = cachedReport?.data.violations;
+              final cachedViolations = cachedReport?.data?.violations;
               return cachedViolations != null && cachedViolations.isNotEmpty
                   ? _buildReportList(cachedViolations, ref)
                   : _buildLoadingState();
@@ -68,7 +68,7 @@ class DismissedData extends ConsumerWidget {
 
               // Try to show cached data if available
               final cachedReport = ref.read(dismissProvider).value;
-              final cachedViolations = cachedReport?.data.violations;
+              final cachedViolations = cachedReport?.data?.violations;
               if (cachedViolations != null && cachedViolations.isNotEmpty) {
                 return Column(
                   children: [
@@ -117,7 +117,7 @@ class DismissedData extends ConsumerWidget {
                     opacity: animation,
                     child: ViolationDetailPage(
                       violation: data,
-                      images: data.evidence.mediaUrls,
+                      images: data.evidence?.mediaUrls??[],
                     ),
                   );
                 },
@@ -126,9 +126,9 @@ class DismissedData extends ConsumerWidget {
           },
           child: ParkingViolationCard(
             isDismissing: true,
-            imageUrl: data.evidence.mediaUrls.first.toString(),
-            violationType: data.locationDetails.additionalLocation,
-            reportedBy: data.isAnonymous ? "Anonymous" : data.reporter.name,
+            imageUrl: data.evidence?.mediaUrls.first.toString(),
+            violationType: data.locationDetails?.additionalLocation ??"",
+            reportedBy: data.isAnonymous ? "Anonymous" : data.reporter?.name??"",
 
             resolutionType: "Awareness",
             date: formatDate(data.updatedAt),

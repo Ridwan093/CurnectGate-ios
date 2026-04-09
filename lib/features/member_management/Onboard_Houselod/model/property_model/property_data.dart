@@ -12,7 +12,7 @@ class PropertyData with _$PropertyData {
     fieldRename: FieldRename.snake,
   )
   const factory PropertyData({
-    @JsonKey(name: 'properties') required List<Property> properties,
+    @JsonKey(name: 'properties') @Default([]) List<Property> properties,
   }) = _PropertyData;
 
   factory PropertyData.fromJson(Map<String, dynamic> json) =>

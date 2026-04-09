@@ -138,7 +138,7 @@ class __$$AvailabilityStatusImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class _$AvailabilityStatusImpl implements _AvailabilityStatus {
   const _$AvailabilityStatusImpl(
-      {@JsonKey(name: 'is_available') required this.isAvailable,
+      {@JsonKey(name: 'is_available') this.isAvailable = false,
       @JsonKey(name: 'reason') this.reason,
       @JsonKey(name: 'available_from') this.availableFrom});
 
@@ -196,7 +196,7 @@ class _$AvailabilityStatusImpl implements _AvailabilityStatus {
 
 abstract class _AvailabilityStatus implements AvailabilityStatus {
   const factory _AvailabilityStatus(
-          {@JsonKey(name: 'is_available') required final bool isAvailable,
+          {@JsonKey(name: 'is_available') final bool isAvailable,
           @JsonKey(name: 'reason') final String? reason,
           @JsonKey(name: 'available_from') final String? availableFrom}) =
       _$AvailabilityStatusImpl;

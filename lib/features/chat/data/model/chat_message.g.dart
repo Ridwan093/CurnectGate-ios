@@ -49,7 +49,6 @@ class MessageAdapter extends TypeAdapter<Message> {
       syncStatus: NullSafetyHelper.safeString(fields[18]),
       hiveKey: NullSafetyHelper.safeInt(fields[19]),
     );
-
   }
 
   @override

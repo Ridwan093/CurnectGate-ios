@@ -527,7 +527,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.curnect.gate.RunnerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.curnectgate.app.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/curnectgate.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/curnectgate";
@@ -545,7 +545,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.curnect.gate.RunnerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.curnectgate.app.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/curnectgate.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/curnectgate";
@@ -563,7 +563,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.curnect.gate.RunnerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.curnectgate.app.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/curnectgate.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/curnectgate";

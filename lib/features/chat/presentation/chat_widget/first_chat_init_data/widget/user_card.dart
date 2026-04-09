@@ -44,7 +44,7 @@ class UserCard extends ConsumerWidget {
           ref: ref,
           bottom: BottomSheetView.initChat,
           id: id,
-          access_type: userRole,
+          access_type: commitRole ?? userRole,
         );
       },
       borderRadius: BorderRadius.circular(16),
@@ -201,7 +201,7 @@ class UserCard extends ConsumerWidget {
       case 'security_personnel':
         return _RoleStyle(Icons.security, AppColors.instance.error700);
       case 'board_member':
-        return _RoleStyle(Icons.security, AppColors.instance.teal300);
+        return _RoleStyle(Icons.card_membership, AppColors.instance.teal300);
       default:
         return _RoleStyle(Icons.person, Colors.grey);
     }

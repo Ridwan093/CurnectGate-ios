@@ -62,184 +62,201 @@ class _AuthOnboardingScreenState extends ConsumerState<AuthOnboardingScreen> {
 
     return BackButtonHandler(
       child: Scaffold(
+        backgroundColor: Colors.black,
         body: sliderState.when(
           loading: () => const Loadingstates(),
-          error: (e, _) => const SizedBox(),
+          error: (e, _) => _buildMainUI([]),
           data: (response) {
             final sliders = response?.data?.sliders ?? [];
 
             if (sliders.isEmpty) {
-              return const SizedBox();
+              return _buildMainUI([]);
             }
 
-            _startAutoSlide(sliders.length);
-
-            return Stack(
-              children: [
-                /// ⭐ SLIDER
-                PageView.builder(
-                  controller: _pageController,
-                  itemCount: sliders.length,
-                  physics: const BouncingScrollPhysics(),
-                  onPageChanged: (index) {
-                    setState(() => _currentPage = index);
-                  },
-                  itemBuilder: (context, index) {
-                    final item = sliders[index];
-
-                    return AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 500),
-                      child: CachedNetworkImage(
-                        key: ValueKey(item.imageUrl),
-                        imageUrl:
-                            item.imageUrl ??
-                            "",
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
-                        placeholder: (_, __) => Container(color: Colors.black),
-                        errorWidget:
-                            (_, __, ___) => Container(color: Colors.black),
-                      ),
-                    );
-                  },
-                ),
-
-                /// ⭐ Gradient (UNCHANGED)
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    height: screenHeight * 0.45,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                        colors: [
-                          Colors.black.withOpacity(0.9),
-                          Colors.black.withOpacity(0.7),
-                          Colors.black.withOpacity(0.3),
-                          Colors.transparent,
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
-                /// ⭐ CONTENT (UNCHANGED STRUCTURE)
-                SafeArea(
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: isSmallScreen ? 20 : 40,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(24),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 32,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.09),
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.2),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Image.asset(
-                                AssetPaths.appLogo,
-                                width: isSmallScreen ? 160 : 200,
-                              ),
-                        
-                              const SizedBox(height: 15),
-                        
-                              /// ⭐ dynamic title from API
-                              Text(
-                                sliders[_currentPage].description ??
-                                    "Estate management made simple",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: isSmallScreen ? 15 : 15,
-                                  fontWeight: FontFamilies.medium,
-                                  fontFamily: FontFamilies.interDisplay,
-                                ),
-                              ),
-                        
-                              const SizedBox(height: 40),
-                        
-                              /// ⭐ indicator
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: List.generate(
-                                  sliders.length,
-                                  (index) => AnimatedContainer(
-                                    duration: const Duration(
-                                      milliseconds: 300,
-                                    ),
-                                    margin: const EdgeInsets.symmetric(
-                                      horizontal: 6,
-                                    ),
-                                    width: _currentPage == index ? 18 : 10,
-                                    height: 10,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color:
-                                          _currentPage == index
-                                              ? AppColors.instance.yellow500
-                                              : Colors.white.withOpacity(0.6),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                        
-                              const SizedBox(height: 30),
-                        
-                              SizedBox(
-                                width: double.infinity,
-                                child: _containerButton(
-                                  onPressed: () {
-                                    context.pushNamed(
-                                      AppRoutes.estateCodeVerificationScreen,
-                                    );
-                                  },
-                                  buttontitle: 'Create a new account',
-                                  iscreate: false,
-                                ),
-                              ),
-                        
-                              const SizedBox(height: 16),
-                        
-                              SizedBox(
-                                width: double.infinity,
-                                child: _containerButton(
-                                  onPressed: () {
-                                    context.pushNamed(AppRoutes.signIN);
-                                  },
-                                  buttontitle: "Sign in to continue",
-                                  iscreate: true,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            );
+            return _buildMainUI(sliders);
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildMainUI(List<dynamic> sliders) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final bool isSmallScreen = screenHeight < 700;
+
+    return Stack(
+      children: [
+        /// ⭐ SLIDER or Placeholder
+        if (sliders.isNotEmpty)
+          PageView.builder(
+            controller: _pageController,
+            itemCount: sliders.length,
+            physics: const BouncingScrollPhysics(),
+            onPageChanged: (index) {
+              setState(() => _currentPage = index);
+            },
+            itemBuilder: (context, index) {
+              final item = sliders[index];
+
+              return AnimatedSwitcher(
+                duration: const Duration(milliseconds: 500),
+                child: CachedNetworkImage(
+                  key: ValueKey(item.imageUrl),
+                  imageUrl: item.imageUrl ?? "",
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                  placeholder: (_, __) => Container(color: Colors.black),
+                  errorWidget: (_, __, ___) => Container(color: Colors.black),
+                ),
+              );
+            },
+          )
+        else
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.black,
+            child: Image.asset(
+              AssetPaths
+                  .appLogo, // You might want a background image here instead
+              fit: BoxFit.contain,
+              color: Colors.white.withOpacity(0.05),
+            ),
+          ),
+
+        /// ⭐ Gradient
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            height: screenHeight * 0.45,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [
+                  Colors.black.withOpacity(0.9),
+                  Colors.black.withOpacity(0.7),
+                  Colors.black.withOpacity(0.3),
+                  Colors.transparent,
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        /// ⭐ CONTENT
+        SafeArea(
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: isSmallScreen ? 20 : 40,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 32,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.09),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.2),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Image.asset(
+                      //   AssetPaths.appLogo,
+                      //   width: isSmallScreen ? 160 : 200,
+                      // ),
+
+                      const SizedBox(height: 15),
+
+                      /// ⭐ dynamic title or fallback
+                      Text(
+                        sliders.isNotEmpty && _currentPage < sliders.length
+                            ? (sliders[_currentPage].description ??
+                                "Estate management made simple")
+                            : "Estate management made simple",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: isSmallScreen ? 15 : 15,
+                          fontWeight: FontFamilies.medium,
+                          fontFamily: FontFamilies.interDisplay,
+                        ),
+                      ),
+
+                      const SizedBox(height: 40),
+
+                      /// ⭐ indicator (only if multiple sliders)
+                      if (sliders.length > 1)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(
+                            sliders.length,
+                            (index) => AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              margin: const EdgeInsets.symmetric(horizontal: 6),
+                              width: _currentPage == index ? 18 : 10,
+                              height: 10,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color:
+                                    _currentPage == index
+                                        ? AppColors.instance.yellow500
+                                        : Colors.white.withOpacity(0.6),
+                              ),
+                            ),
+                          ),
+                        )
+                      else
+                        const SizedBox(height: 10),
+
+                      const SizedBox(height: 30),
+
+                      SizedBox(
+                        width: double.infinity,
+                        child: _containerButton(
+                          onPressed: () {
+                            context.pushNamed(
+                              AppRoutes.estateCodeVerificationScreen,
+                            );
+                          },
+                          buttontitle: 'Create a new account',
+                          iscreate: false,
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      SizedBox(
+                        width: double.infinity,
+                        child: _containerButton(
+                          onPressed: () {
+                            context.pushNamed(AppRoutes.signIN);
+                          },
+                          buttontitle: "Sign in to continue",
+                          iscreate: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

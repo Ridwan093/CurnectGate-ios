@@ -4,11 +4,16 @@ import 'package:curnectgate/core/local_store/getUserprofile_file_provider.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/estate_management/elections/widgets/eletionData/poll_data.dart';
+import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/poll/poll_item_summary.dart';
+import 'package:curnectgate/features/estate_management/elections/models/slected_eletion_type_model.dart';
+import 'package:curnectgate/features/estate_management/elections/provider/eletion_provider.dart';
+import 'package:curnectgate/features/estate_management/elections/provider/poll_provider.dart';
+import 'package:curnectgate/features/estate_management/elections/widgets/errore_message.dart';
 import 'package:curnectgate/features/estate_management/elections/widgets/votingSettingCheck.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
+import 'package:curnectgate/features/security/provider/duty_provider.dart';
 import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:curnectgate/features/security/provider/permmission_handler.dart';
 import 'package:curnectgate/features/security/provider/scanProvider.dart';
@@ -58,7 +63,6 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
     final isScanning = ref.watch(qrScanProvider);
 
     final size = MediaQuery.sizeOf(context);
-    final isSmallScreen = size.height < 700 || size.width < 380;
 
     return PopScope(
       canPop: false,
@@ -83,6 +87,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
 
   Widget _buildBody(Size size, WidgetRef ref) {
     final isSmallScreen = size.height < 700 || size.width < 380;
+    final errorMessage = ref.watch(electionProvider).isError;
 
     return SizedBox(
       height: size.height,
@@ -97,24 +102,46 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
             ),
           ),
           Expanded(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              padding: EdgeInsets.only(
-                left: 10,
-                right: 10,
-                bottom: 16,
-                top: isSmallScreen ? 10 : 25,
-              ),
-              child: Column(
-                children: [
-                  PremiumSecurityHeader(),
-                  const SizedBox(height: 15),
-                  _buildCheckOutbutto(),
-                  const SizedBox(height: 15),
-                  Votingsettingcheck(child: PollDatas(canRoute: true)),
-                  const SizedBox(height: 15),
-                  _buildQuickActions(ref),
-                ],
+            child: RefreshIndicator(
+              color: AppColors.instance.yellow500,
+              onRefresh: () async {
+                await Future.wait([
+                  ref.read(dutyProvider.notifier).refreshDuty(context, ref),
+                  ref.read(pollProvider.notifier).refreshPoll(context, ref),
+                ]);
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(
+                  parent: BouncingScrollPhysics(),
+                ),
+                padding: EdgeInsets.only(
+                  left: 10,
+                  right: 10,
+                  bottom: 16,
+                  top: isSmallScreen ? 10 : 25,
+                ),
+                child: Column(
+                  children: [
+                    PremiumSecurityHeader(),
+                    const SizedBox(height: 15),
+                    _buildCheckOutbutto(),
+                    const SizedBox(height: 15),
+
+                    if ((errorMessage).isNotEmpty) ...[
+                      AnimatedErrorCard(
+                        message: errorMessage,
+                        onClose: () {
+                          ref.read(electionProvider.notifier).setError(null);
+                        },
+                      ),
+                    ] else ...[
+                      _buildPollCard(context, ref),
+                    ],
+
+                    const SizedBox(height: 15),
+                    _buildQuickActions(ref),
+                  ],
+                ),
               ),
             ),
           ),
@@ -235,6 +262,148 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPollCard(BuildContext context, WidgetRef ref) {
+    final pollAsync = ref.watch(pollProvider);
+
+    return Votingsettingcheck(
+      child: pollAsync.when(
+        data: (data) {
+          final polls = data?.data?.polls ?? [];
+          final activePolls =
+              polls
+                  .where(
+                    (p) =>
+                        (p.status ?? "").toLowerCase().contains('active') ||
+                        (p.status ?? "").toLowerCase().contains('live'),
+                  )
+                  .toList();
+          if (activePolls.isEmpty) {
+            return const Text("Empty");
+          }
+          return _buildStaticPollCard(context, ref, activePolls);
+        },
+        loading: () => SizedBox.shrink(),
+        error: (error, stack) {
+          try {
+            // Handle session expiration first
+            if (error.toString().contains("Unauthorized")) {
+              return SizedBox.shrink();
+            }
+
+            // Try to show cached data if available
+            final cachedReport = ref.read(pollProvider).value;
+            final activePolls = cachedReport?.data?.polls;
+            if (activePolls != null && activePolls.isNotEmpty) {
+              return _buildStaticPollCard(context, ref, activePolls);
+            }
+
+            // No cached data available
+            return SizedBox.shrink();
+          } catch (e) {
+            return SizedBox.shrink();
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildStaticPollCard(
+    BuildContext context,
+    WidgetRef ref,
+    List<PollItemSummary> activePolls,
+  ) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.18),
+            blurRadius: 16,
+            spreadRadius: 4,
+            offset: const Offset(0, 6),
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            if (activePolls.isNotEmpty) {
+              showSelectElectionBottomSheet(
+                context: context,
+                ref: ref,
+                activePolls: activePolls,
+              );
+            }
+          },
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: CircleAvatar(
+                radius: 22,
+                backgroundColor: AppColors.instance.teal100,
+                child: Icon(
+                  Icons.how_to_vote,
+                  color: AppColors.instance.teal400,
+                ),
+              ),
+              title: Text(
+                "Elections/Polls",
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.instance.black600,
+                  fontSize: 15,
+                ),
+              ),
+              subtitle: Text(
+                "Latest Poll/Elections in your community",
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.instance.black300,
+                  fontSize: 13,
+                ),
+              ),
+              trailing: SizedBox(
+                width: 60,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      activePolls.length.toString(),
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.instance.black600,
+                        fontSize: 18,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 16,
+                      color: Colors.grey,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );

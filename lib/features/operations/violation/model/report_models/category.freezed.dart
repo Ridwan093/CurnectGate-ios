@@ -127,17 +127,19 @@ class __$$CategoryImplCopyWithImpl<$Res>
 
 @JsonSerializable(explicitToJson: true)
 class _$CategoryImpl implements _Category {
-  const _$CategoryImpl(
-      {required this.id, required this.name, required this.type});
+  const _$CategoryImpl({this.id = 0, this.name = '', this.type = ''});
 
   factory _$CategoryImpl.fromJson(Map<String, dynamic> json) =>
       _$$CategoryImplFromJson(json);
 
   @override
+  @JsonKey()
   final int id;
   @override
+  @JsonKey()
   final String name;
   @override
+  @JsonKey()
   final String type;
 
   @override
@@ -177,9 +179,7 @@ class _$CategoryImpl implements _Category {
 
 abstract class _Category implements Category {
   const factory _Category(
-      {required final int id,
-      required final String name,
-      required final String type}) = _$CategoryImpl;
+      {final int id, final String name, final String type}) = _$CategoryImpl;
 
   factory _Category.fromJson(Map<String, dynamic> json) =
       _$CategoryImpl.fromJson;

@@ -117,14 +117,16 @@ class __$$CoordinatesImplCopyWithImpl<$Res>
 
 @JsonSerializable(explicitToJson: true)
 class _$CoordinatesImpl implements _Coordinates {
-  const _$CoordinatesImpl({required this.latitude, required this.longitude});
+  const _$CoordinatesImpl({this.latitude = 0.0, this.longitude = 0.0});
 
   factory _$CoordinatesImpl.fromJson(Map<String, dynamic> json) =>
       _$$CoordinatesImplFromJson(json);
 
   @override
+  @JsonKey()
   final double latitude;
   @override
+  @JsonKey()
   final double longitude;
 
   @override
@@ -164,9 +166,8 @@ class _$CoordinatesImpl implements _Coordinates {
 }
 
 abstract class _Coordinates implements Coordinates {
-  const factory _Coordinates(
-      {required final double latitude,
-      required final double longitude}) = _$CoordinatesImpl;
+  const factory _Coordinates({final double latitude, final double longitude}) =
+      _$CoordinatesImpl;
 
   factory _Coordinates.fromJson(Map<String, dynamic> json) =
       _$CoordinatesImpl.fromJson;

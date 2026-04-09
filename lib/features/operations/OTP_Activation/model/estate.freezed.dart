@@ -36,9 +36,9 @@ mixin _$Estate {
   String get backgroundImage =>
       throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   @JsonKey(name: 'created_at', fromJson: NullSafetyHelper.safeDateTime)
-  DateTime get createdAt => throw _privateConstructorUsedError;
+  DateTime? get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'updated_at', fromJson: NullSafetyHelper.safeDateTime)
-  DateTime get updatedAt => throw _privateConstructorUsedError;
+  DateTime? get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this Estate to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -64,9 +64,9 @@ abstract class $EstateCopyWith<$Res> {
       @JsonKey(name: 'color') String color,
       String backgroundImage,
       @JsonKey(name: 'created_at', fromJson: NullSafetyHelper.safeDateTime)
-      DateTime createdAt,
+      DateTime? createdAt,
       @JsonKey(name: 'updated_at', fromJson: NullSafetyHelper.safeDateTime)
-      DateTime updatedAt});
+      DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -92,8 +92,8 @@ class _$EstateCopyWithImpl<$Res, $Val extends Estate>
     Object? logoUrl = null,
     Object? color = null,
     Object? backgroundImage = null,
-    Object? createdAt = null,
-    Object? updatedAt = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -128,14 +128,14 @@ class _$EstateCopyWithImpl<$Res, $Val extends Estate>
           ? _value.backgroundImage
           : backgroundImage // ignore: cast_nullable_to_non_nullable
               as String,
-      createdAt: null == createdAt
+      createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      updatedAt: null == updatedAt
+              as DateTime?,
+      updatedAt: freezed == updatedAt
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as DateTime?,
     ) as $Val);
   }
 }
@@ -157,9 +157,9 @@ abstract class _$$EstateImplCopyWith<$Res> implements $EstateCopyWith<$Res> {
       @JsonKey(name: 'color') String color,
       String backgroundImage,
       @JsonKey(name: 'created_at', fromJson: NullSafetyHelper.safeDateTime)
-      DateTime createdAt,
+      DateTime? createdAt,
       @JsonKey(name: 'updated_at', fromJson: NullSafetyHelper.safeDateTime)
-      DateTime updatedAt});
+      DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -183,8 +183,8 @@ class __$$EstateImplCopyWithImpl<$Res>
     Object? logoUrl = null,
     Object? color = null,
     Object? backgroundImage = null,
-    Object? createdAt = null,
-    Object? updatedAt = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
   }) {
     return _then(_$EstateImpl(
       id: null == id
@@ -219,14 +219,14 @@ class __$$EstateImplCopyWithImpl<$Res>
           ? _value.backgroundImage
           : backgroundImage // ignore: cast_nullable_to_non_nullable
               as String,
-      createdAt: null == createdAt
+      createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      updatedAt: null == updatedAt
+              as DateTime?,
+      updatedAt: freezed == updatedAt
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as DateTime?,
     ));
   }
 }
@@ -244,9 +244,9 @@ class _$EstateImpl implements _Estate {
       @JsonKey(name: 'color') this.color = '',
       this.backgroundImage = '',
       @JsonKey(name: 'created_at', fromJson: NullSafetyHelper.safeDateTime)
-      required this.createdAt,
+      this.createdAt,
       @JsonKey(name: 'updated_at', fromJson: NullSafetyHelper.safeDateTime)
-      required this.updatedAt});
+      this.updatedAt});
 
   factory _$EstateImpl.fromJson(Map<String, dynamic> json) =>
       _$$EstateImplFromJson(json);
@@ -278,10 +278,10 @@ class _$EstateImpl implements _Estate {
 // ignore: invalid_annotation_target
   @override
   @JsonKey(name: 'created_at', fromJson: NullSafetyHelper.safeDateTime)
-  final DateTime createdAt;
+  final DateTime? createdAt;
   @override
   @JsonKey(name: 'updated_at', fromJson: NullSafetyHelper.safeDateTime)
-  final DateTime updatedAt;
+  final DateTime? updatedAt;
 
   @override
   String toString() {
@@ -341,9 +341,9 @@ abstract class _Estate implements Estate {
       @JsonKey(name: 'color') final String color,
       final String backgroundImage,
       @JsonKey(name: 'created_at', fromJson: NullSafetyHelper.safeDateTime)
-      required final DateTime createdAt,
+      final DateTime? createdAt,
       @JsonKey(name: 'updated_at', fromJson: NullSafetyHelper.safeDateTime)
-      required final DateTime updatedAt}) = _$EstateImpl;
+      final DateTime? updatedAt}) = _$EstateImpl;
 
   factory _Estate.fromJson(Map<String, dynamic> json) = _$EstateImpl.fromJson;
 
@@ -371,10 +371,10 @@ abstract class _Estate implements Estate {
   String get backgroundImage; // ignore: invalid_annotation_target
   @override
   @JsonKey(name: 'created_at', fromJson: NullSafetyHelper.safeDateTime)
-  DateTime get createdAt;
+  DateTime? get createdAt;
   @override
   @JsonKey(name: 'updated_at', fromJson: NullSafetyHelper.safeDateTime)
-  DateTime get updatedAt;
+  DateTime? get updatedAt;
 
   /// Create a copy of Estate
   /// with the given fields replaced by the non-null parameter values.

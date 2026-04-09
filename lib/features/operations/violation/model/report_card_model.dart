@@ -1,25 +1,25 @@
 class Reports {
-  final String category;
-  final String description;
-  final String imagePaths; // Key is index, value is path
-  final String files; // Key is index, value is file
-  final bool isAnonymous;
-  final String path;
-  final String name;
-  final int size;
-  final String type;
+  final String? category;
+  final String? description;
+  final String? imagePaths;
+  final String? files;
+  final bool? isAnonymous;
+  final String? path;
+  final String? name;
+  final int? size;
+  final String? type;
 
 
   const Reports({
-    required this.category,
-    required this.description,
-    required this.files,
-    required this.imagePaths,
-    required this.name,
-    required this.isAnonymous,
-    required this.path,
-    required this.size,
-    required this.type,
+    this.category,
+    this.description,
+    this.files,
+    this.imagePaths,
+    this.name,
+    this.isAnonymous,
+    this.path,
+    this.size,
+    this.type,
   });
 
   Reports copyWith({

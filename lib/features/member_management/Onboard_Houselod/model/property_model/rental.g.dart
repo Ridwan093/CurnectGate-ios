@@ -7,8 +7,8 @@ part of 'rental.dart';
 // **************************************************************************
 
 _$RentalImpl _$$RentalImplFromJson(Map<String, dynamic> json) => _$RentalImpl(
-      id: (json['id'] as num).toInt(),
-      startDate: json['start_date'] as String,
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      startDate: json['start_date'] as String? ?? '',
     );
 
 Map<String, dynamic> _$$RentalImplToJson(_$RentalImpl instance) =>

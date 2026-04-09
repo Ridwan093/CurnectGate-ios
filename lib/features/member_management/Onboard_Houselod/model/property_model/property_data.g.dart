@@ -8,9 +8,10 @@ part of 'property_data.dart';
 
 _$PropertyDataImpl _$$PropertyDataImplFromJson(Map<String, dynamic> json) =>
     _$PropertyDataImpl(
-      properties: (json['properties'] as List<dynamic>)
-          .map((e) => Property.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      properties: (json['properties'] as List<dynamic>?)
+              ?.map((e) => Property.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$$PropertyDataImplToJson(_$PropertyDataImpl instance) =>

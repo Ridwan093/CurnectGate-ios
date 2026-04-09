@@ -1,3 +1,5 @@
+// ignore_for_file: unused_result
+
 import 'dart:developer';
 
 import 'package:curnectgate/core/constants/asset_paths.dart';
@@ -7,6 +9,7 @@ import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/estate_management/elections/provider/Voting_setting_provider.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/poll_provider.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/getWorkOdder_provider.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/workformprovider.dart';
@@ -23,7 +26,9 @@ import 'package:curnectgate/features/operations/OTP_Activation/provider/expired_
 import 'package:curnectgate/features/operations/OTP_Activation/widget/ActiveData_widget.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/event_limit_data.dart';
+import 'package:curnectgate/features/operations/notifications/provider/getevent_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
+import 'package:curnectgate/features/operations/violation/report_provider/getReport_provider.dart';
 import 'package:curnectgate/features/payment/provider/dashbord_provider.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/dashbord_Model/payment_dashboard_data.dart';
 import 'package:curnectgate/features/payment/widget/payment_data/dasbordData.dart';
@@ -42,16 +47,6 @@ class Dashborad extends ConsumerWidget {
     return formatter.format(number);
   }
 
-  Future<void> refreshData(WidgetRef ref, BuildContext context) async {
-    ref.refresh(expiredCountProvider("used"));
-    ref.read(pollProvider.notifier).refreshPoll(context, ref);
-    ref.read(workOrderProvider.notifier).refreshWorkOrders(context, ref);
-
-    ref
-        .read(paymentDashbordProvider.notifier)
-        .refreshPaymentDashbord(context, ref);
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
@@ -59,41 +54,49 @@ class Dashborad extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      body: RefreshIndicator(
-        color: AppColors.instance.yellow500,
-        onRefresh: () async {
-          return await refreshData(ref, context);
-        },
-        child: SizedBox(
-          height: size.height,
-          width: size.width,
-          child: Column(
-            children: [
-              _buildAppBar(context, ref),
-
-              Expanded(
+      body: SizedBox(
+        height: size.height,
+        width: size.width,
+        child: Column(
+          children: [
+            _buildAppBar(context, ref),
+            Expanded(
+              child: RefreshIndicator(
+                color: AppColors.instance.yellow500,
+                onRefresh: () async {
+                  await Future.wait([
+                    ref.refresh(expiredCountProvider("used").future),
+                    ref.refresh(expiredCountProvider("expired").future),
+                    ref.read(pollProvider.notifier).refreshPoll(context, ref),
+                    ref
+                        .read(votingSettingsProvider.notifier)
+                        .refreshVotingSetting(context, ref),
+                    ref
+                        .read(workOrderProvider.notifier)
+                        .refreshWorkOrders(context, ref),
+                    ref
+                        .read(userReportProvider.notifier)
+                        .refreshReports(context, ref),
+                    ref
+                        .read(getEventProvider.notifier)
+                        .refreshEvent(context, ref, ""),
+                    //Newlife3310
+                    ref
+                        .read(paymentDashbordProvider.notifier)
+                        .refreshPaymentDashbord(context, ref),
+                  ]);
+                },
                 child: SingleChildScrollView(
-                  padding: EdgeInsets.all(12),
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Headcard(),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       _buildRow(context, ref),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
 
-                      // Votingsettingcheck(child: PollDatas(canRoute: true)),
-                      // SizedBox(height: 10),
-
-                      // Text(
-                      //   "YOUR DUES",
-                      //   style: TextStyle(
-                      //     fontFamily: FontFamilies.interDisplay,
-                      //     color: AppColors.instance.black300,
-                      //     fontWeight: FontFamilies.bold,
-                      //   ),
-                      // ),
-                      // SizedBox(height: 15),
                       DashbordData(
                         builder:
                             (context, data) => _buildDueCard(
@@ -103,70 +106,23 @@ class Dashborad extends ConsumerWidget {
                             ),
                       ),
 
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       _buildTopTitile("STATISTICS"),
-                      SizedBox(height: 10),
-                      // _buildvisitorRow(),
+                      const SizedBox(height: 10),
                       Statistics(),
 
-                      // _buildContent(size, context, ref),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       _buildTopTitile("QUICK LINK"),
 
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
 
-                      // role.when(
-                      //   data: (data) {
-                      //     if (data.isNotEmpty) {
-                      //       if (data.toLowerCase().contains("landlord") ||
-                      //           data.toLowerCase().contains("spouse")) {
-                      //         return _otherLinks(
-                      //           title: "ADD FAMILY",
-                      //           onTap: () async {
-                      //             context.pushNamed(AppRoutes.getMemberInfo);
-                      //           },
-                      //         );
-                      //       } else {
-                      //         return SizedBox();
-                      //       }
-                      //     } else {
-                      //       return SizedBox();
-                      //     }
-                      //   },
-                      //   error: (e, s) {
-                      //     return SizedBox();
-                      //   },
-                      //   loading: () {
-                      //     return SizedBox();
-                      //   },
-                      // ),
                       _buildQuikLink(ref, context),
-                      // Divider(color: AppColors.instance.grey400),
-                      // _otherLinks(
-                      //   title: "ACCOUNT SETTINGS",
-                      //   onTap: () {
-                      //     context.pushNamed(AppRoutes.manageLoging);
-                      //   },
-                      // ),
-                      // Divider(color: AppColors.instance.grey400),
-                      // SizedBox(height: 5),
-                      // _otherLinks(
-                      //   title: "RESIDENT DIRECTORY",
-                      //   onTap: () {
-                      //     context.pushNamed(AppRoutes.residentDirectory);
-                      //   },
-                      // ),
-                      // SizedBox(height: 20),
-                      // _buildTopTitile("NEED SAFETY HELP"),
-
-                      // SizedBox(height: 10),
-                      // _buildSaftyRow(context, ref),
                     ],
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -223,7 +179,7 @@ class Dashborad extends ConsumerWidget {
     final authState = ref.watch(authProvider);
     final user = authState.user;
     final fullname = authState.fullname;
-    final adminEmail = user?["estate"]["contact_email"] ?? "";
+    final adminEmail = user?["estate"]?["contact_email"] ?? "";
     final estateName = user?['estate_name'] ?? "";
     final role = ref.watch(userRoleProvider);
 
@@ -673,23 +629,48 @@ class Dashborad extends ConsumerWidget {
     required String estateName,
     required String userName,
   }) async {
+    final String subject = 'Support Request - $estateName';
+    final String body =
+        'Hello Admin,\n\nI need assistance.\n\nUser: $userName\nEstate: $estateName\n\nThank you.';
+
+    String? encodeQueryParameters(Map<String, String> params) {
+      return params.entries
+          .map(
+            (MapEntry<String, String> e) =>
+                '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}',
+          )
+          .join('&');
+    }
+
     final Uri emailUri = Uri(
       scheme: 'mailto',
       path: adminEmail,
-      query: Uri.encodeQueryComponent(
-        'subject=Support Request - $estateName'
-        '&body=Hello Admin,\n\n'
-        'I need assistance.\n\n'
-        'User: $userName\n'
-        'Estate: $estateName\n\n'
-        'Thank you.',
-      ),
+      query: encodeQueryParameters(<String, String>{
+        'subject': subject,
+        'body': body,
+      }),
     );
 
-    if (await canLaunchUrl(emailUri)) {
-      await launchUrl(emailUri);
-    } else {
-      throw 'Could not launch email app';
+    final Uri gmailUri = Uri(
+      scheme: 'googlegmail',
+      path: '/co',
+      query: encodeQueryParameters(<String, String>{
+        'to': adminEmail,
+        'subject': subject,
+        'body': body,
+      }),
+    );
+
+    try {
+      if (await canLaunchUrl(gmailUri)) {
+        await launchUrl(gmailUri, mode: LaunchMode.externalApplication);
+      } else if (await canLaunchUrl(emailUri)) {
+        await launchUrl(emailUri, mode: LaunchMode.externalApplication);
+      } else {
+        await launchUrl(emailUri, mode: LaunchMode.externalApplication);
+      }
+    } catch (e) {
+      debugPrint('Could not launch email app: $e');
     }
   }
 }

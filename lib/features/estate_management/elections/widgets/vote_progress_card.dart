@@ -88,75 +88,146 @@ class _VoteProgressCardState extends ConsumerState<VoteProgressCard> {
         }
       },
       child: Container(
-        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: AppColors.instance.teal100,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.blueGrey.shade100),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.instance.black400.withOpacity(0.04),
+              blurRadius: 15,
+              offset: const Offset(0, 6),
+            ),
+          ],
+          border: Border.all(color: AppColors.instance.grey300.withOpacity(0.5)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Text(
-                    data.title ?? "",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      fontFamily: FontFamilies.interDisplay,
-                      color: AppColors.instance.black600,
-                    ),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: AppColors.instance.teal100.withOpacity(0.5),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.how_to_vote_outlined,
+                    color: AppColors.instance.teal400,
+                    size: 20,
                   ),
                 ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        data.title ?? "",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                          fontFamily: FontFamilies.interDisplay,
+                          color: AppColors.instance.black600,
+                          height: 1.2,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        data.description ?? "",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          fontSize: 13,
+                          color: AppColors.instance.black400,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
                 _statusBadge(data.status ?? ""),
               ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              data.description ?? "",
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                color: AppColors.instance.black600,
+            const SizedBox(height: 18),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.instance.grey200.withOpacity(0.6),
+                borderRadius: BorderRadius.circular(12),
               ),
-            ),
-            const SizedBox(height: 12),
-            IntrinsicWidth(
-              // Only as wide as content
               child: Row(
-                mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.access_time, size: 18),
-                  const SizedBox(width: 8),
-                  Flexible(
-                    child: Text(timeLeft, overflow: TextOverflow.ellipsis),
-                  ),
-                  const SizedBox(width: 12),
-                  const Icon(Icons.people, size: 18),
-                  const SizedBox(width: 8),
-                  Flexible(
+                  Icon(Icons.timer_outlined, size: 16, color: Colors.orange),
+                  const SizedBox(width: 6),
+                  Expanded(
                     child: Text(
-                      '${data.statistics?.totalVoted ?? 0} / ${data.statistics?.totalVoters ?? 0} voted',
+                      timeLeft,
                       overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.orange.shade700,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 1,
+                    height: 16,
+                    color: AppColors.instance.grey400.withOpacity(0.3),
+                    margin: const EdgeInsets.symmetric(horizontal: 10),
+                  ),
+                  Icon(Icons.people_outline, size: 16, color: AppColors.instance.black400),
+                  const SizedBox(width: 6),
+                  Text(
+                    '${data.statistics?.totalVoted ?? 0} / ${data.statistics?.totalVoters ?? 0}',
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.instance.black500,
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 12),
-            // Progress bar
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: LinearProgressIndicator(
-                value: (data.statistics?.turnoutPercentage ?? 0) / 100,
-                minHeight: 12,
-                color: AppColors.instance.yellow500,
-              ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Turnout',
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontSize: 12,
+                    color: AppColors.instance.black400,
+                  ),
+                ),
+                Text(
+                  '${(data.statistics?.turnoutPercentage ?? 0).round()}%',
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.instance.teal500,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 8),
-            Text(
-              '${(data.statistics?.turnoutPercentage ?? 0).round()}% turnout',
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: LinearProgressIndicator(
+                value: (data.statistics?.turnoutPercentage ?? 0) / 100,
+                minHeight: 8,
+                backgroundColor: AppColors.instance.grey300.withOpacity(0.6),
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.instance.teal400),
+              ),
             ),
           ],
         ),

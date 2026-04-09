@@ -1,6 +1,5 @@
 import 'package:curnectgate/features/estate_management/elections/models/election_enum.dart'
     show ElectionTab;
-
 import 'package:curnectgate/features/estate_management/elections/models/eletion_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -29,6 +28,10 @@ class ElectionNotifier extends StateNotifier<ElectionState> {
 
   void clearAll() {
     state = state.copyWith(selections: {});
+  }
+
+  void setError(String? value) {
+    state = state.copyWith(isError: value);
   }
 
   void addId(String id) {

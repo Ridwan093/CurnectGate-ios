@@ -32,9 +32,23 @@ class ResidentCard extends StatelessWidget {
 
   Future<void> _launchEmail(String email) async {
     final Uri emailUri = Uri(scheme: 'mailto', path: email);
+    final Uri gmailUri = Uri(
+      scheme: 'googlegmail',
+      path: '/co',
+      query: 'to=$email',
+    );
 
-    if (await canLaunchUrl(emailUri)) {
-      await launchUrl(emailUri);
+    try {
+      if (await canLaunchUrl(gmailUri)) {
+        await launchUrl(gmailUri, mode: LaunchMode.externalApplication);
+      } else if (await canLaunchUrl(emailUri)) {
+        await launchUrl(emailUri, mode: LaunchMode.externalApplication);
+      } else {
+        // Fallback for Android 11+ where canLaunchUrl can return false but intent still works
+        await launchUrl(emailUri, mode: LaunchMode.externalApplication);
+      }
+    } catch (e) {
+      debugPrint('Could not launch email: $e');
     }
   }
 

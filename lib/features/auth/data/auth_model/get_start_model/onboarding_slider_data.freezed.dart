@@ -104,7 +104,7 @@ class __$$SliderDataImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class _$SliderDataImpl implements _SliderData {
   const _$SliderDataImpl({final List<SliderItem> sliders = const []})
       : _sliders = sliders;

@@ -96,11 +96,10 @@ class EstateCommitteeData extends ConsumerWidget {
           return UserCard(
             userName: admin.fullName ?? "",
             userRole:
-                (admin.committeeRole?.toLowerCase() ?? "").contains(
-                      "board_member",
-                    )
+                (admin.position ?? "").isNotEmpty
                     ? (admin.position ?? "N/A")
                     : (admin.committeeRole ?? "N/A"),
+
             estateName: admin.committeeName ?? "",
             url: admin.avatarUrl ?? "",
             isOnline: admin.onlineStatus,

@@ -182,13 +182,13 @@ class __$$UserImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$UserImpl implements _User {
   const _$UserImpl(
-      {@JsonKey(fromJson: NullSafetyHelper.safeInt) required this.id,
-      @JsonKey(fromJson: NullSafetyHelper.safeString) required this.name,
+      {@JsonKey(fromJson: NullSafetyHelper.safeInt) this.id = 0,
+      @JsonKey(fromJson: NullSafetyHelper.safeString) this.name = '',
       @JsonKey(name: 'member_code', fromJson: NullSafetyHelper.safeString)
       this.memberCode,
-      @JsonKey(fromJson: NullSafetyHelper.safeString) required this.role,
+      @JsonKey(fromJson: NullSafetyHelper.safeString) this.role = '',
       @JsonKey(name: 'is_self', fromJson: NullSafetyHelper.safeBool)
-      required this.isSelf,
+      this.isSelf = false,
       @JsonKey(name: 'is_current_user', fromJson: NullSafetyHelper.safeBool)
       this.isCurrentUser});
 
@@ -257,15 +257,13 @@ class _$UserImpl implements _User {
 
 abstract class _User implements User {
   const factory _User(
-      {@JsonKey(fromJson: NullSafetyHelper.safeInt) required final int id,
-      @JsonKey(fromJson: NullSafetyHelper.safeString)
-      required final String name,
+      {@JsonKey(fromJson: NullSafetyHelper.safeInt) final int id,
+      @JsonKey(fromJson: NullSafetyHelper.safeString) final String name,
       @JsonKey(name: 'member_code', fromJson: NullSafetyHelper.safeString)
       final String? memberCode,
-      @JsonKey(fromJson: NullSafetyHelper.safeString)
-      required final String role,
+      @JsonKey(fromJson: NullSafetyHelper.safeString) final String role,
       @JsonKey(name: 'is_self', fromJson: NullSafetyHelper.safeBool)
-      required final bool isSelf,
+      final bool isSelf,
       @JsonKey(name: 'is_current_user', fromJson: NullSafetyHelper.safeBool)
       final bool? isCurrentUser}) = _$UserImpl;
 

@@ -12,7 +12,7 @@ class LatestComment with _$LatestComment {
   const factory LatestComment({
     @Default('') String comment,
     @Default('') String user,
-    required DateTime createdAt,
+    DateTime? createdAt,
   }) = _LatestComment;
 
   factory LatestComment.fromJson(Map<String, dynamic> json) =>
@@ -21,6 +21,6 @@ class LatestComment with _$LatestComment {
   factory LatestComment.safeFromJson(Map<String, dynamic>? json) => LatestComment(
         comment: NullSafetyHelper.safeString(json?['comment']),
         user: NullSafetyHelper.safeString(json?['user']),
-        createdAt: NullSafetyHelper.safeDateTime(json?['created_at']) ,
+        createdAt: NullSafetyHelper.safeDateTime(json?['created_at']),
       );
 }

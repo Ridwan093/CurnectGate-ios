@@ -57,6 +57,7 @@ dependencies:
   dart_pusher_channels: ^1.2.3
   screenshot: ^3.0.0
   pdf: ^3.11.3
+  upgrader: ^12.5.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

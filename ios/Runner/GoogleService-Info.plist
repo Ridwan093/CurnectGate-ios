@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.curnect.gate</string>
+	<string>com.curnectgate.app</string>
 	<key>PROJECT_ID</key>
 	<string>curnectgate-f9770</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1038277350674:ios:def8d65c4c523de7f94fcb</string>
+	<string>1:1038277350674:ios:57935587a6c96d1ff94fcb</string>
 </dict>
 </plist>

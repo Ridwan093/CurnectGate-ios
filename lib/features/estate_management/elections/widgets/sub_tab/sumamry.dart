@@ -186,33 +186,34 @@ class SummaryResultTab extends StatelessWidget {
     required Color valueColor,
   }) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
       decoration: BoxDecoration(
         color: color,
-        border: Border.all(
-          color: AppColors.instance.black400,
-          style: BorderStyle.solid,
-        ),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: valueColor.withOpacity(0.3)),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
             style: TextStyle(
-              fontSize: 12,
-              color: Colors.black54,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: AppColors.instance.black400,
               fontFamily: FontFamilies.interDisplay,
+              letterSpacing: 0.5,
             ),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 8),
           Text(
             "$value",
             style: TextStyle(
-              fontWeight: FontFamilies.bold,
-              fontSize: 35,
+              fontWeight: FontWeight.w800,
+              fontSize: 32,
               color: valueColor,
               fontFamily: FontFamilies.interDisplay,
+              height: 1.1,
             ),
           ),
         ],
@@ -229,74 +230,104 @@ class SummaryResultTab extends StatelessWidget {
     required String posTitle,
     required double percent,
   }) {
-    return Card(
-      margin: EdgeInsets.only(bottom: 10),
-      color: Color(0xFFF6F5ED),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        child: Row(
-          children: [
-            CircleAvatar(
-              backgroundColor: AppColors.instance.teal300,
-              radius: 22,
-              backgroundImage: (('').isNotEmpty) ? NetworkImage("") : null,
-              child: name.isNotEmpty ? Text(name.substring(0, 1)) : null,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    posTitle,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontFamilies.bold,
-                      color: Colors.black54,
-                      fontFamily: FontFamilies.interDisplay,
-                    ),
-                  ), // role on top (style A)
-                  const SizedBox(height: 2),
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    party,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.black54,
-                      fontFamily: FontFamilies.interDisplay,
-                    ),
-                  ),
-                ],
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.instance.yellow600.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.instance.yellow600.withOpacity(0.3)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: AppColors.instance.yellow600,
+                width: 2,
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 20,
+              backgroundImage: (imageUrl.isNotEmpty) ? NetworkImage(imageUrl) : null,
+              child: name.isNotEmpty && imageUrl.isEmpty 
+                  ? Text(
+                      name.substring(0, 1),
+                      style: TextStyle(
+                        color: AppColors.instance.yellow600,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ) 
+                  : null,
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "${percent.toStringAsFixed(1)}%",
+                  posTitle,
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.instance.black400,
                     fontFamily: FontFamilies.interDisplay,
-                    fontWeight: FontFamilies.bold,
-                    color: AppColors.instance.black600,
+                    letterSpacing: 0.5,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "$votes votes",
-                  style: const TextStyle(fontSize: 12, color: Colors.black54),
+                  name,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: FontFamilies.interDisplay,
+                    color: AppColors.instance.black600,
+                  ),
                 ),
+                if (party.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    party,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.instance.black300,
+                      fontFamily: FontFamilies.interDisplay,
+                    ),
+                  ),
+                ]
               ],
             ),
-          ],
-        ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                "${percent.toStringAsFixed(1)}%",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontFamily: FontFamilies.interDisplay,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.instance.yellow600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                "$votes votes",
+                style: TextStyle(
+                  fontSize: 12, 
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.instance.black500,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -308,19 +339,23 @@ class SummaryResultTab extends StatelessWidget {
     required int leaderVotes,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(14),
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.instance.grey400),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.instance.black400.withOpacity(0.04),
+            blurRadius: 15,
+            offset: const Offset(0, 6),
+          ),
+        ],
+        border: Border.all(color: AppColors.instance.grey300.withOpacity(0.5)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // role title
-
-          // small row: dot + top candidate + score
           Row(
             children: [
               Container(
@@ -328,80 +363,99 @@ class SummaryResultTab extends StatelessWidget {
                 height: 8,
                 decoration: BoxDecoration(
                   color: AppColors.instance.teal400,
-
                   shape: BoxShape.circle,
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   p.positionTitle ?? "Unknown Position",
-                  style: const TextStyle(
-                    fontWeight: FontFamilies.bold,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
                     fontFamily: FontFamilies.interDisplay,
-                    fontSize: 20,
+                    color: AppColors.instance.black600,
+                    fontSize: 17,
                   ),
                 ),
               ),
               Text(
                 "$leaderVotes",
                 style: TextStyle(
-                  fontWeight: FontFamilies.bold,
-                  fontSize: 24,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 26,
+                  color: AppColors.instance.teal500,
                   fontFamily: FontFamilies.interDisplay,
                 ),
               ),
             ],
           ),
-
-          const SizedBox(height: 12),
-
-          // Row with avatar, name + leading text, progress and chevron
-          Row(
-            children: [
-              CircleAvatar(
-                backgroundColor: AppColors.instance.teal300,
-                radius: 22,
-
-                child: Text((leader?.candidateName ?? 'U').substring(0, 1)),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      leader?.candidateName ?? 'TBD',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontFamily: FontFamilies.interDisplay,
-                      ),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.instance.grey200.withOpacity(0.5),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: Colors.white,
+                  radius: 20,
+                  child: Text(
+                    (leader?.candidateName ?? 'U').substring(0, 1),
+                    style: TextStyle(
+                      color: AppColors.instance.teal500,
+                      fontWeight: FontWeight.bold,
                     ),
-                    // const SizedBox(height: 4),
-                    Text(
-                      "Leading by ${leaderPct.toStringAsFixed(0)}%",
-                      style: TextStyle(
-                        color: AppColors.instance.teal400,
-                        fontFamily: FontFamilies.interDisplay,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
-                      child: LinearProgressIndicator(
-                        value: (leaderPct / 100).clamp(0.0, 1.0),
-                        minHeight: 8,
-                        backgroundColor: Colors.grey.shade300,
-                        color: getVoteColor(leaderPct),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              const Icon(Icons.chevron_right),
-            ],
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        leader?.candidateName ?? 'TBD',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.instance.black600,
+                          fontFamily: FontFamilies.interDisplay,
+                          fontSize: 15,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(Icons.trending_up, size: 14, color: AppColors.instance.teal400),
+                          const SizedBox(width: 4),
+                          Text(
+                            "Leading by ${leaderPct.toStringAsFixed(0)}%",
+                            style: TextStyle(
+                              color: AppColors.instance.teal500,
+                              fontFamily: FontFamilies.interDisplay,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: LinearProgressIndicator(
+                          value: (leaderPct / 100).clamp(0.0, 1.0),
+                          minHeight: 6,
+                          backgroundColor: AppColors.instance.grey300.withOpacity(0.6),
+                          color: getVoteColor(leaderPct),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Icon(Icons.chevron_right_rounded, color: AppColors.instance.black300),
+              ],
+            ),
           ),
         ],
       ),

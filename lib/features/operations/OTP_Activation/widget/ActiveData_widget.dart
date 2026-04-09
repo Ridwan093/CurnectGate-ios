@@ -35,12 +35,12 @@ class _ActiveOtpBody extends ConsumerWidget {
 
     return activeOtpAsync.when(
       data: (activeOtp) {
-        if (activeOtp!.data!.otps.isNotEmpty) {
+        if ((activeOtp?.data?.otps ?? []).isNotEmpty) {
           return Consumer(
             // ← Isolate rebuilds here
             builder: (context, ref, child) {
               // Only rebuild this part when getActiveOtpProvider changes
-              return Buildactivelist(otp: activeOtp.data);
+              return Buildactivelist(otp: activeOtp?.data);
             },
           );
         } else {
@@ -52,7 +52,7 @@ class _ActiveOtpBody extends ConsumerWidget {
 
         if (cachedOtp != null &&
             cachedOtp.status &&
-            cachedOtp.data!.otps.isNotEmpty) {
+            (cachedOtp.data?.otps ?? []).isNotEmpty) {
           return Buildactivelist(otp: cachedOtp.data);
         }
 
@@ -67,7 +67,7 @@ class _ActiveOtpBody extends ConsumerWidget {
 
           final cachedOtp = ref.read(getActiveOtpProvider).value;
 
-          if (cachedOtp != null && cachedOtp.data!.otps.isNotEmpty) {
+          if (cachedOtp != null && (cachedOtp.data?.otps ?? []).isNotEmpty) {
             return SingleChildScrollView(
               child: Column(children: [Buildactivelist(otp: cachedOtp.data)]),
             );
@@ -80,7 +80,7 @@ class _ActiveOtpBody extends ConsumerWidget {
                 () => ref
                     .read(getActiveOtpProvider.notifier)
                     .refreshActive(context, ref),
-            firstMessae: "Failed to load Active OTPs?",
+            firstMessae: "Failed to load active OTPs?",
           );
         } catch (e) {
           return Builderroul(
@@ -89,7 +89,7 @@ class _ActiveOtpBody extends ConsumerWidget {
                 () => ref
                     .read(getActiveOtpProvider.notifier)
                     .refreshActive(context, ref),
-            firstMessae: "Failed to load Active OTPs?",
+            firstMessae: "Failed to load active OTPs?",
           );
         }
       },
@@ -109,7 +109,7 @@ class _ActiveOtpBody extends ConsumerWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              "Active Otp detiles appear here",
+              "Active Otp appear here",
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
                 color: AppColors.instance.black300,

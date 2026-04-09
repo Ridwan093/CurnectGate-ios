@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
-import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
 import 'package:curnectgate/features/security/model/duty_model/duty_response.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:dio/dio.dart';
@@ -24,11 +23,6 @@ class GetDutyNotifier extends AutoDisposeAsyncNotifier<DutyResponse?> {
 
     try {
       // Then try to fetch fresh data
-      final token = await ref.watch(accessTokenProvider.future);
-      final filter = ref.read(reportProvider).report.reportfilter;
-      if (token == null || token.isEmpty || filter!.isEmpty) {
-        throw Exception("Unauthenticated");
-      }
 
       final freshDuty = await ref.read(getApiServiceProvider).getDuty();
 
@@ -43,10 +37,8 @@ class GetDutyNotifier extends AutoDisposeAsyncNotifier<DutyResponse?> {
       log("${e}");
       if (localDuty != null) {
         log("${e}");
-        ref.read(reportProvider.notifier).updateErrorShow(false);
+
         return localDuty;
-      } else {
-        ref.read(reportProvider.notifier).updateErrorShow(true);
       }
       rethrow;
     }

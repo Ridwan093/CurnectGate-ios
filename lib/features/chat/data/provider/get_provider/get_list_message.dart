@@ -336,7 +336,6 @@ class MessagesNotifier extends AutoDisposeFamilyNotifier<List<Message>, int> {
   // In get_list_message.dart
   // In get_list_message.dart
   void markMessagesAsReadLocally() {
-
     final currentMessages = [...state];
     bool hasChanges = false;
 
@@ -352,6 +351,25 @@ class MessagesNotifier extends AutoDisposeFamilyNotifier<List<Message>, int> {
 
     if (hasChanges) {
       state = currentMessages; // Updates the UI
+    }
+  }
+
+  void markSentMessagesAsReadLocally() {
+    final currentMessages = [...state];
+    bool hasChanges = false;
+
+    for (var i = 0; i < currentMessages.length; i++) {
+      final m = currentMessages[i];
+      // Mark our SENT messages as read when the other person reads them
+      if (m.isRead != true && m.isSender == true) {
+        m.isRead = true;
+        m.save();
+        hasChanges = true;
+      }
+    }
+
+    if (hasChanges) {
+      state = currentMessages;
     }
   }
   Future<void> _saveToHive(List<Message> freshMessages) async {
