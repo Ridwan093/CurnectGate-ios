@@ -17,18 +17,18 @@ class AttachmentAdapter extends TypeAdapter<Attachment> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Attachment(
-      id: NullSafetyHelper.safeInt(fields[0]),
-      fileName: NullSafetyHelper.safeString(fields[1]),
-      fileUrl: NullSafetyHelper.safeString(fields[2]),
-      fileType: NullSafetyHelper.safeString(fields[3]),
-      mimeType: NullSafetyHelper.safeString(fields[4]),
-      fileSize: NullSafetyHelper.safeInt(fields[5]),
-      fileSizeReadable: NullSafetyHelper.safeString(fields[6]),
-      thumbnailUrl: NullSafetyHelper.safeString(fields[7]),
-      isImage: NullSafetyHelper.safeBool(fields[8]),
-      isDocument: NullSafetyHelper.safeBool(fields[9]),
-      isVideo: NullSafetyHelper.safeBool(fields[10]),
-      localPath: NullSafetyHelper.safeString(fields[11]),
+      id: fields[0] as int?,
+      fileName: fields[1] as String?,
+      fileUrl: fields[2] as String?,
+      fileType: fields[3] as String?,
+      mimeType: fields[4] as String?,
+      fileSize: fields[5] as int?,
+      fileSizeReadable: fields[6] as String?,
+      thumbnailUrl: fields[7] as String?,
+      isImage: fields[8] as bool?,
+      isDocument: fields[9] as bool?,
+      isVideo: fields[10] as bool?,
+      localPath: fields[11] as String?,
     );
   }
 

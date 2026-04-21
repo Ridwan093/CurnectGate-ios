@@ -1,8 +1,8 @@
 import 'package:curnectgate/features/operations/OTP_Activation/model/nullSafty_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'wallet_transaction_item.dart';
-import 'page_link.dart';
 
+import 'page_link.dart';
+import 'wallet_transaction_item.dart';
 
 part 'wallet_transactions_paginator.freezed.dart';
 part 'wallet_transactions_paginator.g.dart';
@@ -32,16 +32,22 @@ class WalletTransactionsPaginator with _$WalletTransactionsPaginator {
   factory WalletTransactionsPaginator.safeFromJson(Map<String, dynamic>? json) {
     return WalletTransactionsPaginator(
       currentPage: NullSafetyHelper.safeInt(json?['current_page']),
-      data: (NullSafetyHelper.safeList(json?['data']) ?? [])
-          .map((e) => WalletTransactionItem.safeFromJson(NullSafetyHelper.safeMap(e)))
-          .toList(),
+      data:
+          (NullSafetyHelper.safeList(json?['data']))
+              .map(
+                (e) => WalletTransactionItem.safeFromJson(
+                  NullSafetyHelper.safeMap(e),
+                ),
+              )
+              .toList(),
       firstPageUrl: NullSafetyHelper.safeString(json?['first_page_url']),
       from: NullSafetyHelper.safeInt(json?['from']),
       lastPage: NullSafetyHelper.safeInt(json?['last_page']),
       lastPageUrl: NullSafetyHelper.safeString(json?['last_page_url']),
-      links: (NullSafetyHelper.safeList(json?['links']) ?? [])
-          .map((e) => PageLink.safeFromJson(NullSafetyHelper.safeMap(e)))
-          .toList(),
+      links:
+          (NullSafetyHelper.safeList(json?['links']))
+              .map((e) => PageLink.safeFromJson(NullSafetyHelper.safeMap(e)))
+              .toList(),
       nextPageUrl: NullSafetyHelper.safeString(json?['next_page_url']),
       path: NullSafetyHelper.safeString(json?['path']),
       perPage: NullSafetyHelper.safeInt(json?['per_page']),
@@ -51,7 +57,8 @@ class WalletTransactionsPaginator with _$WalletTransactionsPaginator {
     );
   }
 
-  factory WalletTransactionsPaginator.empty() => const WalletTransactionsPaginator(
+  factory WalletTransactionsPaginator.empty() =>
+      const WalletTransactionsPaginator(
         currentPage: 0,
         data: [],
         firstPageUrl: '',

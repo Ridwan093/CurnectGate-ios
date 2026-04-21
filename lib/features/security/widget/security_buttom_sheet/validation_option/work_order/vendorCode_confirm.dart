@@ -59,7 +59,7 @@ class WorkOrderConfirmWidget extends ConsumerWidget {
     final vendorPhone = workorder['vendor_phone']?.toString() ?? 'N/A';
     final category = workorder['category']?.toString() ?? 'N/A';
     final description = workorder['description']?.toString() ?? '';
-    final status = workorder['status']?.toString() ?? 'N/A';
+
     final startDate = _formatDate(workorder['start_date']?.toString());
     final endDate = _formatDate(workorder['end_date']?.toString());
     final timeWindow = workorder['daily_time_window']?.toString() ?? 'N/A';

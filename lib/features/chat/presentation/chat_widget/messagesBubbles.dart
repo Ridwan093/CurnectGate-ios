@@ -240,13 +240,17 @@ class _ChatBubbleState extends ConsumerState<ChatBubble> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.download, size: 40),
-                                SizedBox(height: 6),
+                                Icon(
+                                  Icons.cloud_download,
+                                  size: 40,
+                                  color: AppColors.instance.black600,
+                                ),
+                                const SizedBox(height: 6),
                                 Text(
                                   "Tap to download image",
                                   style: TextStyle(
                                     fontFamily: FontFamilies.interDisplay,
-                                    fontSize: 16,
+                                    fontSize: 12,
                                     color: AppColors.instance.black500,
                                   ),
                                 ),

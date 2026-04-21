@@ -86,6 +86,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.white,
       floatingActionButton:
           searchState.isSearching
               ? const SizedBox.shrink()
@@ -187,7 +188,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      // backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       elevation: 0,
       automaticallyImplyLeading: true, // Keeps back button if needed
       flexibleSpace: SafeArea(

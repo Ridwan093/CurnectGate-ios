@@ -51,6 +51,7 @@ class PermitData extends ConsumerWidget {
         },
 
         error: (error, stack) {
+          try {
           if (error.toString().contains("Unauthorized")) {
             return const Expiresessionbody();
           }
@@ -76,10 +77,17 @@ class PermitData extends ConsumerWidget {
                 ref.read(getActivePermit.notifier).refreshActive(context, ref),
             firstMessae: "Failed to load permit?",
           );
-        },
-      ),
-    );
-  }
+      
+    } catch (e) {
+       return Builderroul(
+            error: e.toString(),
+            onTap: () =>
+                ref.read(getActivePermit.notifier).refreshActive(context, ref),
+            firstMessae: "Failed to load permit?",
+          );
+      
+    
+  }} ));}
 
   Widget _buildEmtyBody() {
     return Center(

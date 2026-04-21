@@ -42,6 +42,7 @@ import 'package:curnectgate/features/operations/notifications/event/model/Event/
 import 'package:curnectgate/features/operations/notifications/event/model/Event/events_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/resv_model/rsvp_events_response.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/EventCodes/event_codes_response_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/household_members/reminder_household_members_response.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_count/notification_count_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_response.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/remider/reminders_response_model.dart';
@@ -145,6 +146,20 @@ class GetApiService {
     }
   }
 
+  Future<ReminderHouseholdMembersResponse> getReminderHouseholdMembers({
+    required String bearerToken,
+  }) async {
+    try {
+      final response = await _dio.get(
+        "estates/general/reminders/household-members",
+      );
+      log(response.toString());
+      return ReminderHouseholdMembersResponse.fromSafeJson(response.data);
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
+
   Future<EstateAddressResponse> getAllAdress({
     required String bearerToken,
   }) async {
@@ -236,6 +251,7 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(getWorkpermit);
+
       return ClearancePermitResponse.fromSafeJson(response.data);
     } on DioException catch (e) {
       throw _handleError(e);
@@ -378,6 +394,7 @@ class GetApiService {
   Future<ApiResponseModel> getCheckIn({required String bearerToken}) async {
     try {
       final response = await _dio.get(getCheckInVisitor);
+      log(response.toString());
       return ApiResponseModel.fromSafeJson(response.data);
     } on DioException catch (e) {
       throw _handleError(e);
@@ -570,7 +587,7 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(votingSetting);
-      log(response.toString());
+      // log(response.toString());
       return VotingSettingsResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       throw _handleError(e);
@@ -739,7 +756,7 @@ class GetApiService {
         getDutys,
         options: Options(extra: {'requiresAuth': true}),
       );
-      log(response.toString());
+
       return DutyResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       throw _handleError(e);

@@ -25,7 +25,7 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidateWorkOrders> {
   Widget build(BuildContext context) {
     // final state = ref.read(oTpformProvider.notifier);
     final isLoading = ref.watch(oTpformProvider).isLoading;
-    final notifiers = ref.read(oTpformProvider);
+
     return Stack(
       children: [
         SingleChildScrollView(
@@ -48,8 +48,8 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidateWorkOrders> {
                   SizedBox(height: 40),
                   Text(
                     widget.validateType == "workers"
-                        ? "Validate Workers Code"
-                        : "Validate  Vendor Code",
+                        ? "Worker Access Code"
+                        : "Vendor Access Code",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontWeight: FontFamilies.bold,
@@ -60,8 +60,8 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidateWorkOrders> {
                   const SizedBox(height: 4),
                   Text(
                     widget.validateType == "workers"
-                        ? "Valiate workers  code to grant entry."
-                        : "Valiate vendor code to grant entry.",
+                        ? "Enter the worker access code to manage movement"
+                        : "Enter the vendor access code to manage movement",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,

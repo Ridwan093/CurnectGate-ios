@@ -10,7 +10,7 @@ final dioProvider = Provider(
   (ref) =>
       Dio()
         ..options = BaseOptions(
-          baseUrl: "http://44.200.180.26/api/v1/",
+          baseUrl: "https://api.curnectgate.com/api/v1/",
           headers: {'Content-Type': 'application/json'},
           extra: {'requiresAuth': true},
         )
@@ -67,3 +67,8 @@ final dioProvider = Provider(
         )
         ..interceptors.add(LogInterceptor(error: true)),
 );
+
+
+
+
+

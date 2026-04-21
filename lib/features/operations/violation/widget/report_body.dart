@@ -9,7 +9,6 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/operations/violation/model/report_models/violation.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/getReport_provider.dart';
 import 'package:curnectgate/features/operations/violation/widget/report_card.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -122,95 +121,6 @@ class ReportBody extends ConsumerWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildLoadingState() {
-    return Center(
-      child: CircularProgressIndicator(color: AppColors.instance.yellow500),
-    );
-  }
-
-  Widget _buildSessionExpiredUI(BuildContext context, WidgetRef ref) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text("Session expired. Please login again."),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed:
-                () =>
-                    ref.read(authProvider.notifier).sessionExpire(context, ref),
-            child: const Text("Login"),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNetworkWarningBanner(String error) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      color: Colors.orange[100],
-      child: Row(
-        children: [
-          const Icon(Icons.warning_amber_rounded, color: Colors.orange),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              "Showing cached data. ${error.split(':').first}",
-              style: const TextStyle(color: Colors.black87),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildErrorUI(String error, WidgetRef ref, BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.error_outline, size: 48, color: Colors.red),
-          const SizedBox(height: 16),
-          Text(
-            "Error loading reports",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontSize: 16,
-              color: AppColors.instance.black600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            error,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.black400,
-            ),
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.instance.grey200,
-            ),
-            onPressed:
-                () => ref
-                    .read(userReportProvider.notifier)
-                    .refreshReports(context, ref),
-            child: Text(
-              "Try Again",
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                color: AppColors.instance.black600,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

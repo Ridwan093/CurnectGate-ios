@@ -54,6 +54,22 @@ class ReminderNotifier extends StateNotifier<ReminderState> {
     state = state.copyWith(notificationmethod: value);
   }
 
+  void toggleHouseholdMember(int memberId) {
+    final currentMembers = List<int>.from(
+      (state.selectedHouseholdMembers as dynamic) ?? <int>[],
+    );
+    if (currentMembers.contains(memberId)) {
+      currentMembers.remove(memberId);
+    } else {
+      currentMembers.add(memberId);
+    }
+    state = state.copyWith(selectedHouseholdMembers: currentMembers);
+  }
+
+  void clearHouseholdMembers() {
+    state = state.copyWith(selectedHouseholdMembers: []);
+  }
+
   // Loading state
   void updateLoading(bool isLoading) {
     state = state.copyWith(isLoading: isLoading);
@@ -83,7 +99,8 @@ class ReminderNotifier extends StateNotifier<ReminderState> {
       interva: "",
       notificationmethod: "",
       isLoading: false,
-      filter: ""
+      filter: "",
+      selectedHouseholdMembers: [],
     );
   }
 }

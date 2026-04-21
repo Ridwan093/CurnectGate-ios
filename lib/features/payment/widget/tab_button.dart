@@ -23,12 +23,12 @@ class TabButton extends StatelessWidget {
         onTap: onTap,
         child: ConstrainedBox(
           constraints: const BoxConstraints(
-            minHeight: 48, // Material minimum tap target
+            minHeight: 45, // Material minimum tap target
           ),
           child: Container(
             alignment: Alignment.center,
 
-            padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 3),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration:
                 isSelected
                     ? BoxDecoration(
@@ -36,9 +36,10 @@ class TabButton extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.instance.grey400,
-                          spreadRadius: 2,
-                          blurRadius: 3,
+                          color: Colors.black.withOpacity(0.12),
+                          spreadRadius: 0,
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     )

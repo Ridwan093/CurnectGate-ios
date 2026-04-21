@@ -33,6 +33,5 @@ class Unreadcountwidget extends StatelessWidget {
         ),
       ),
     );
-    ;
   }
 }

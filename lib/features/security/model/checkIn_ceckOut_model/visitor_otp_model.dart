@@ -82,7 +82,7 @@ class VisitorOtpModel with _$VisitorOtpModel {
       ),
       latestSecurityValidation: NullSafetyHelper.safeModel(
         json['latest_security_validation'],
-        SecurityValidationModel.fromJson,
+        SecurityValidationModel.fromSafeJson,
         SecurityValidationModel.empty(),
       ),
       property: NullSafetyHelper.safeModel(

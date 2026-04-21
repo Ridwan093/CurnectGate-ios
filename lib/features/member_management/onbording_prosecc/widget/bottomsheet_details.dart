@@ -79,6 +79,11 @@ import 'package:curnectgate/features/security/widget/security_buttom_sheet/valid
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/didgita_id/finalMessageApproved.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/didgita_id/finalMessageDenying.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/didgita_id/validateOtp.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/event_code/event_confirmation_page.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/event_code/validate_event_code.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/event_code/grant_event_entry.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/event_code/deny_event_entry.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/event_code/event_access_message.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/optionforCodeValidation.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/scanoption.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/validation_option.dart';
@@ -236,6 +241,7 @@ class BottomsheetDetails extends ConsumerWidget {
           id: id ?? 0,
           activity: activity,
         );
+
       case BottomSheetView.remidermarks:
         return MarksReminder(
           title: headertitle,
@@ -243,7 +249,23 @@ class BottomsheetDetails extends ConsumerWidget {
           id: id ?? 0,
           activity: activity,
         );
+      case BottomSheetView.validateEventCode:
+        return ValidatedEventCode();
 
+      case BottomSheetView.cornfirmEventCode:
+        return EventCodeConfirmationCode(rawMap: headertitle);
+
+      case BottomSheetView.grantEventCode:
+        return GrantEventEntry(rawMap: headertitle, eventId: id ?? 0);
+
+      case BottomSheetView.denyEventcode:
+        return DenyEventEntry(rawMap: headertitle, eventId: id ?? 0);
+
+      case BottomSheetView.grantMessage:
+        return EventAccessMessage(jsonData: headertitle, isGranted: true);
+
+      case BottomSheetView.denyMessage:
+        return EventAccessMessage(jsonData: headertitle, isGranted: false);
       case BottomSheetView.revorkActiveOtp:
         return Revokedotp(
           title: headertitle,
@@ -570,7 +592,7 @@ class BottomsheetDetails extends ConsumerWidget {
     late String title;
 
     final chatNotifier = ref.watch(chatProvider.notifier);
-    final chatState = ref.watch(chatProvider);
+
 
     switch (bottom) {
       case BottomSheetView.vendorLog:
@@ -790,7 +812,7 @@ class BottomsheetDetails extends ConsumerWidget {
           backgroundColor: AppColors.instance.error300,
           backgroundImage: AssetImage(AssetPaths.reachout),
         );
-        title = "Reach out to an estate Comittee";
+        title = "Reach out to an estate Committee";
         break;
       case BottomSheetView.messageuplodefile:
         onTap = () async {
@@ -865,7 +887,6 @@ class BottomsheetDetails extends ConsumerWidget {
     WidgetRef ref,
     BuildContext context,
   ) {
-  
     late VoidCallback onTap;
     late Widget leading;
     late String title;

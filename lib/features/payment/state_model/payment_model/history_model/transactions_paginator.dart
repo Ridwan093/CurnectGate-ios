@@ -1,8 +1,8 @@
 import 'package:curnectgate/features/operations/OTP_Activation/model/nullSafty_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'transaction_item.dart';
-import 'page_link.dart';
 
+import 'page_link.dart';
+import 'transaction_item.dart';
 
 part 'transactions_paginator.freezed.dart';
 part 'transactions_paginator.g.dart';
@@ -32,16 +32,21 @@ class TransactionsPaginator with _$TransactionsPaginator {
   factory TransactionsPaginator.safeFromJson(Map<String, dynamic>? json) {
     return TransactionsPaginator(
       currentPage: NullSafetyHelper.safeInt(json?['current_page']),
-      data: (NullSafetyHelper.safeList(json?['data']) ?? [])
-          .map((e) => TransactionItem.safeFromJson(NullSafetyHelper.safeMap(e)))
-          .toList(),
+      data:
+          (NullSafetyHelper.safeList(json?['data']))
+              .map(
+                (e) =>
+                    TransactionItem.safeFromJson(NullSafetyHelper.safeMap(e)),
+              )
+              .toList(),
       firstPageUrl: NullSafetyHelper.safeString(json?['first_page_url']),
       from: NullSafetyHelper.safeInt(json?['from']),
       lastPage: NullSafetyHelper.safeInt(json?['last_page']),
       lastPageUrl: NullSafetyHelper.safeString(json?['last_page_url']),
-      links: (NullSafetyHelper.safeList(json?['links']) ?? [])
-          .map((e) => PageLink.safeFromJson(NullSafetyHelper.safeMap(e)))
-          .toList(),
+      links:
+          (NullSafetyHelper.safeList(json?['links']))
+              .map((e) => PageLink.safeFromJson(NullSafetyHelper.safeMap(e)))
+              .toList(),
       nextPageUrl: NullSafetyHelper.safeString(json?['next_page_url']),
       path: NullSafetyHelper.safeString(json?['path']),
       perPage: NullSafetyHelper.safeInt(json?['per_page']),
@@ -52,18 +57,18 @@ class TransactionsPaginator with _$TransactionsPaginator {
   }
 
   factory TransactionsPaginator.empty() => const TransactionsPaginator(
-        currentPage: 0,
-        data: [],
-        firstPageUrl: '',
-        from: 0,
-        lastPage: 0,
-        lastPageUrl: '',
-        links: [],
-        nextPageUrl: '',
-        path: '',
-        perPage: 0,
-        prevPageUrl: '',
-        to: 0,
-        total: 0,
-      );
+    currentPage: 0,
+    data: [],
+    firstPageUrl: '',
+    from: 0,
+    lastPage: 0,
+    lastPageUrl: '',
+    links: [],
+    nextPageUrl: '',
+    path: '',
+    perPage: 0,
+    prevPageUrl: '',
+    to: 0,
+    total: 0,
+  );
 }

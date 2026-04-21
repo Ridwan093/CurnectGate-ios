@@ -104,6 +104,28 @@ class _PremiumSecurityHeaderState extends ConsumerState<PremiumSecurityHeader>
     final memberID = user?["member_code"] ?? "";
     final estateName = user?['estate_name'] ?? "";
 
+    // Extract first and last word logic
+    String firstWord = "";
+    // ignore: unused_local_variable
+    String lastWord = "";
+
+    if (estateName.trim().isNotEmpty) {
+      final parts = estateName.trim().split(RegExp(r"\s+"));
+      final containsEstate = parts.contains("Estate");
+
+      if (containsEstate) {
+        lastWord = "ESTATE";
+        final filtered = parts.where((w) => w != "Estate").toList();
+        firstWord = filtered.isNotEmpty ? "${filtered.first}." : "";
+      } else {
+        firstWord = parts.isNotEmpty ? "${parts.first}." : "";
+        lastWord =
+            parts.length > 1
+                ? parts.last.toUpperCase()
+                : parts.first.toUpperCase();
+      }
+    }
+
     final isSmall = MediaQuery.sizeOf(context).width < 360;
     final fontScale = isSmall ? 0.92 : 1.0;
 
@@ -132,7 +154,7 @@ class _PremiumSecurityHeaderState extends ConsumerState<PremiumSecurityHeader>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "CurnectGate",
+                            "$firstWord",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -144,13 +166,13 @@ class _PremiumSecurityHeaderState extends ConsumerState<PremiumSecurityHeader>
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            "SECURITY PORTAL",
+                            "ESTATE",
                             style: TextStyle(
                               fontFamily: FontFamilies.interDisplay,
-                              fontSize: isSmall ? 10 : 12,
-                              fontWeight: FontFamilies.medium,
+                              fontSize: isSmall ? 13 : 15,
+                              letterSpacing: isSmall ? 6 : 8,
                               color: AppColors.instance.grey400,
-                              letterSpacing: 0.6,
+                              fontWeight: FontFamilies.medium,
                             ),
                           ),
                         ],

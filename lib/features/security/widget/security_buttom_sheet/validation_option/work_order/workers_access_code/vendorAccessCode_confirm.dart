@@ -22,15 +22,6 @@ class VendorAccessCodeConfirm extends ConsumerWidget {
   });
 
   // helper: format date-only YYYY-MM-DDT... to readable date (you can adjust)
-  String _formatDate(String? dt) {
-    if (dt == null) return 'N/A';
-    try {
-      final d = DateTime.parse(dt).toLocal();
-      return '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
-    } catch (_) {
-      return dt;
-    }
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

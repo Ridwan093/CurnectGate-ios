@@ -1,4 +1,5 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -37,6 +38,7 @@ class Statistics extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final role = ref.watch(userRoleProvider);
     return ConstrainedBox(
       // ← safer than fixed height
       constraints: const BoxConstraints(
@@ -70,8 +72,30 @@ class Statistics extends ConsumerWidget {
             children: [
               _buildActiveOtPCount(context),
               const Divider(height: 1),
-              _buildWprkOrderCount(ref, context),
-              const Divider(height: 1),
+
+              role.when(
+                data: (data) {
+                  if (data.isNotEmpty) {
+                    if (data.toLowerCase().contains("staff") ||
+                        data.toLowerCase().contains("family_member")) {
+                      return SizedBox();
+                    } else {
+                      return Column(children:[
+                        _buildWprkOrderCount(ref, context),
+                        const Divider(height: 1),
+                      ]);
+                    }
+                  } else {
+                    return SizedBox();
+                  }
+                },
+                error: (e, s) {
+                  return SizedBox();
+                },
+                loading: () {
+                  return SizedBox();
+                },
+              ),
               _buildViolationCount(context, ref),
               const Divider(height: 1),
               _buildEventCount(context, ref),

@@ -44,6 +44,7 @@ import 'package:curnectgate/features/operations/notifications/event/model/EventC
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_count/notification_count_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_response.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/remider/reminders_response_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/household_members/reminder_household_members_response.dart';
 import 'package:curnectgate/features/operations/violation/model/GetReport_history_model.dart';
 import 'package:curnectgate/features/operations/violation/model/comment_model/comment_response.dart';
 import 'package:curnectgate/features/operations/violation/model/estate_Address/estate_address_response.dart';
@@ -127,6 +128,7 @@ class SharedPrefsService {
   static const String _eventKeyResv = "eventKey_rsvp";
   static const String _calenderKey = "Calender";
   static const String _eventCode = "codess";
+  static const String _reminderHouseholdKey = "reminder_household";
   static const String _notificationCountKey = "countKey";
   static const String _estateAddressKey = "estate_Address";
   static const String _reportListKey = "report_list";
@@ -459,6 +461,22 @@ class SharedPrefsService {
     final data = prefs.getString(_userMainReminder);
     if (data != null) {
       return RemindersResponseModel.fromJson(jsonDecode(data));
+    }
+    return null;
+  }
+
+  static Future<void> saveReminderHousehold(
+    ReminderHouseholdMembersResponse preference,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_reminderHouseholdKey, jsonEncode(preference.toJson()));
+  }
+
+  static Future<ReminderHouseholdMembersResponse?> getReminderHousehold() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_reminderHouseholdKey);
+    if (data != null) {
+      return ReminderHouseholdMembersResponse.fromSafeJson(jsonDecode(data));
     }
     return null;
   }

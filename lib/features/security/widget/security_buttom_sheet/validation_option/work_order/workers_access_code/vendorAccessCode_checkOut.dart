@@ -25,7 +25,7 @@ class _ValidateWorkOrderOtpState
   Widget build(BuildContext context) {
     // final state = ref.read(oTpformProvider.notifier);
     final isLoading = ref.watch(oTpformProvider).isLoading;
-    final notifiers = ref.read(oTpformProvider);
+    // final notifiers = ref.read(oTpformProvider);
     return Stack(
       children: [
         SingleChildScrollView(
@@ -47,7 +47,7 @@ class _ValidateWorkOrderOtpState
                   ),
                   SizedBox(height: 40),
                   Text(
-                    "Vendor Access code Checkout",
+                    "Check Out Worker",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontWeight: FontFamilies.bold,
@@ -57,7 +57,7 @@ class _ValidateWorkOrderOtpState
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Valiate work order code to grant entry.",
+                    "Confirm check-out worker",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,
@@ -71,7 +71,7 @@ class _ValidateWorkOrderOtpState
 
               ReusabelProfileForm(
                 controller: _noteController,
-                fieldType: FieldType.reason,
+                fieldType: FieldType.none,
                 hintText: "(eg. arrived in time )",
                 label: "Security note",
                 fieldKey: "Security note",
@@ -112,21 +112,18 @@ class _ValidateWorkOrderOtpState
     return ActionSecurityButton(
       isLoading: formState.isLoading,
       label: 'Validate',
-      onPressed:
-          _noteController.text.isNotEmpty && _noteController.text.length > 10
-              ? () {
-                providerState.vendorAccessCodeCheckOut(
-                  context: context,
-                  otpCode: widget.otpCode,
-                  securityNote: formState.securityNoted ?? "",
-                  override_time_window: false,
+      onPressed: () {
+        providerState.vendorAccessCodeCheckOut(
+          context: context,
+          otpCode: widget.otpCode,
+          securityNote: formState.securityNoted ?? "",
+          override_time_window: false,
 
-                  ref: ref,
-                );
+          ref: ref,
+        );
 
-                _noteController.clear();
-              }
-              : null,
+        _noteController.clear();
+      },
     );
   }
 }

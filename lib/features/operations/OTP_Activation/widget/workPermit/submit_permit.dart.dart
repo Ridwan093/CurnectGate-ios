@@ -37,7 +37,6 @@ class _SubmitPermitBottomSheetState
   @override
   Widget build(BuildContext context) {
     final items = ref.watch(itemListProvider);
-    final size = MediaQuery.sizeOf(context);
 
     final loading = ref.watch(reminderProvider).isLoading;
     final form = ref.read(formProvider.notifier);

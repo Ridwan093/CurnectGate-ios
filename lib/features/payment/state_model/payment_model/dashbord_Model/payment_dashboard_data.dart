@@ -1,9 +1,9 @@
 import 'package:curnectgate/features/operations/OTP_Activation/model/nullSafty_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'outstanding_due.dart';
-import 'wallet.dart';
-import 'recent_transaction.dart';
 
+import 'outstanding_due.dart';
+import 'recent_transaction.dart';
+import 'wallet.dart';
 
 part 'payment_dashboard_data.freezed.dart';
 part 'payment_dashboard_data.g.dart';
@@ -32,30 +32,36 @@ class PaymentDashboardData with _$PaymentDashboardData {
       walletBalance: NullSafetyHelper.safeString(json?['wallet_balance']),
       totalOutstanding: NullSafetyHelper.safeDouble(json?['total_outstanding']),
       totalOverdue: NullSafetyHelper.safeDouble(json?['total_overdue']),
-      outstandingDuesCount: NullSafetyHelper.safeInt(json?['outstanding_dues_count']),
+      outstandingDuesCount: NullSafetyHelper.safeInt(
+        json?['outstanding_dues_count'],
+      ),
       overdueDuesCount: NullSafetyHelper.safeInt(json?['overdue_dues_count']),
-      hasSufficientBalance: NullSafetyHelper.safeBool(json?['has_sufficient_balance']),
-      outstandingDues: (NullSafetyHelper.safeList(json?['outstanding_dues']))
-          .map((e) => OutstandingDue.safeFromJson(e))
-          .toList(),
+      hasSufficientBalance: NullSafetyHelper.safeBool(
+        json?['has_sufficient_balance'],
+      ),
+      outstandingDues:
+          (NullSafetyHelper.safeList(
+            json?['outstanding_dues'],
+          )).map((e) => OutstandingDue.safeFromJson(e)).toList(),
       wallet: Wallet.safeFromJson(NullSafetyHelper.safeMap(json?['wallet'])),
-      virtualAccounts: NullSafetyHelper.safeList(json?['virtual_accounts']) ,
-      recentTransactions: (NullSafetyHelper.safeList(json?['recent_transactions']) ?? [])
-          .map((e) => RecentTransaction.safeFromJson(e))
-          .toList(),
+      virtualAccounts: NullSafetyHelper.safeList(json?['virtual_accounts']),
+      recentTransactions:
+          (NullSafetyHelper.safeList(
+            json?['recent_transactions'],
+          )).map((e) => RecentTransaction.safeFromJson(e)).toList(),
     );
   }
 
   factory PaymentDashboardData.empty() => const PaymentDashboardData(
-        walletBalance: '0.00',
-        totalOutstanding: 0.0,
-        totalOverdue: 0.0,
-        outstandingDuesCount: 0,
-        overdueDuesCount: 0,
-        hasSufficientBalance: false,
-        outstandingDues: [],
-        wallet: null,
-        virtualAccounts: [],
-        recentTransactions: [],
-      );
+    walletBalance: '0.00',
+    totalOutstanding: 0.0,
+    totalOverdue: 0.0,
+    outstandingDuesCount: 0,
+    overdueDuesCount: 0,
+    hasSufficientBalance: false,
+    outstandingDues: [],
+    wallet: null,
+    virtualAccounts: [],
+    recentTransactions: [],
+  );
 }

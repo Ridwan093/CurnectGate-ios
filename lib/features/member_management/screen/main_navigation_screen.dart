@@ -38,6 +38,7 @@ class MainNavigationScreen extends ConsumerWidget {
 
     return BackButtonHandler(
       child: Scaffold(
+        backgroundColor: Colors.white,
         resizeToAvoidBottomInset: false,
         body: AgreementPopupData(
           child: Row(

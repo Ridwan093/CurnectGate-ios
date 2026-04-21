@@ -59,7 +59,7 @@ class _ChatMessageInputState extends ConsumerState<ChatMessageInput> {
       } else if (formattedType == 'estate_admin') {
         formattedType = 'admin';
       } else if (formattedType == 'committee_member') {
-        formattedType = 'committe';
+        formattedType = 'committee';
       } else if (formattedType == 'committee_member') {
       } else if (formattedType == 'board_member') {
         formattedType = 'board';

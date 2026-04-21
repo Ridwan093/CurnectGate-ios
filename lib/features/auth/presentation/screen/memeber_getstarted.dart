@@ -29,22 +29,6 @@ class _AuthOnboardingScreenState extends ConsumerState<AuthOnboardingScreen> {
   int _currentPage = 0;
   Timer? _autoTimer;
 
-  void _startAutoSlide(int length) {
-    _autoTimer?.cancel();
-
-    _autoTimer = Timer.periodic(const Duration(seconds: 4), (timer) {
-      if (!_pageController.hasClients) return;
-
-      int next = _currentPage + 1;
-      if (next >= length) next = 0;
-
-      _pageController.animateToPage(
-        next,
-        duration: const Duration(milliseconds: 600),
-        curve: Curves.easeInOut,
-      );
-    });
-  }
 
   @override
   void dispose() {
@@ -57,8 +41,6 @@ class _AuthOnboardingScreenState extends ConsumerState<AuthOnboardingScreen> {
   Widget build(BuildContext context) {
     final sliderState = ref.watch(getSliderprovider);
 
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final bool isSmallScreen = screenHeight < 700;
 
     return BackButtonHandler(
       child: Scaffold(

@@ -17,15 +17,12 @@ import 'package:curnectgate/features/member_management/Member_Dashboard/widget/b
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/dashBordRowcard.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/headCard.dart';
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/quikLink_card.dart';
-import 'package:curnectgate/features/member_management/Member_Dashboard/widget/vewMoreButton.dart';
 import 'package:curnectgate/features/member_management/membership_ID/provider/digitalD_status.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/expired_used_count_provider.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/widget/ActiveData_widget.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
-import 'package:curnectgate/features/operations/notifications/event/event_widget/event_limit_data.dart';
 import 'package:curnectgate/features/operations/notifications/provider/getevent_provider.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/getReport_provider.dart';
@@ -276,33 +273,6 @@ class Dashborad extends ConsumerWidget {
     );
   }
 
-  Widget _buildEventContent(WidgetRef ref, BuildContext context, Size size) {
-    final reminderprovider = ref.read(reminderProvider.notifier);
-    final notifier = ref.read(workOrderFormProvider.notifier);
-
-    return Column(
-      children: [
-        SizedBox(height: 200, child: EventLimitData()),
-        ViewMoreButton(
-          buttontext: "All events",
-          onTap: () {
-            reminderprovider.resetAll();
-            notifier.updateEndDate(null);
-            notifier.updateStartDate(null);
-            notifier.updateWorkType("", 0);
-            showUserBottomSheet(
-              context: context,
-              headertitle: "",
-              headersubtitle: "",
-              ref: ref,
-              bottom: BottomSheetView.events,
-            );
-          },
-        ),
-      ],
-    );
-  }
-
   Widget _buildAppBar(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
     final reminderprovider = ref.read(reminderProvider.notifier);
@@ -374,6 +344,8 @@ class Dashborad extends ConsumerWidget {
                 ),
                 SizedBox(width: 15),
                 NotificationCount(
+                  width: 18,
+
                   onTap: () {
                     context.pushNamed(AppRoutes.notification);
                   },
@@ -384,24 +356,6 @@ class Dashborad extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  Widget _buildContent(Size size, BuildContext context, WidgetRef ref) {
-    return SizedBox(height: 200, child: ActivedataWidget());
-    // return Column(
-    //   children: [
-    //     if (generatedList.isNotEmpty) ...[
-    //       SizedBox(height: 200, child: ActivedataWidget()),
-    //       ViewMoreButton(buttontext: "View all", onTap: () {}),
-    //     ] else
-    //       EmptyBody(
-    //         onTap: () {},
-    //         imagepath: AssetPaths.dashboardActivities,
-    //         emptyMessag: "Your visitor activity will appear here",
-    //         buttonTexe: "View all",
-    //       ),
-    //   ],
-    // );
   }
 
   Widget _buildDueCard(

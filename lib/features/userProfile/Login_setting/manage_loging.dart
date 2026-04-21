@@ -23,7 +23,6 @@ class ManageLoging extends ConsumerStatefulWidget {
 
 class _ManageLogingState extends ConsumerState<ManageLoging> {
   bool _isAvilable = false;
-  String _biometricType = "none";
 
   @override
   void initState() {
@@ -33,9 +32,8 @@ class _ManageLogingState extends ConsumerState<ManageLoging> {
 
   Future<void> _loadSetting() async {
     bool isavailables = await isAvailable();
-    String isType = await getBiometricType();
+   
     setState(() {
-      _biometricType = isType;
       _isAvilable = isavailables;
     });
   }

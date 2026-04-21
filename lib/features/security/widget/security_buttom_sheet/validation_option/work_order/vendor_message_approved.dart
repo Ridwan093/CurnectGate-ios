@@ -14,7 +14,7 @@ class VendorApprovedMessage extends StatelessWidget {
     final Map<String, dynamic> extractedData = jsonDecode(jsonData);
     final validation = extractedData['message'] ?? "";
     int index = validation.indexOf(".");
-    String firstPart = validation.substring(0, index + 1);
+
     String secondPart = validation.substring(index + 1).trim();
 
     return Column(

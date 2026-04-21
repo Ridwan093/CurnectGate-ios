@@ -9,19 +9,6 @@ class DenyEntryPermitMessage extends StatelessWidget {
   final String jsonData;
 
   const DenyEntryPermitMessage({super.key, required this.jsonData});
-  static String _extractValue(String notes, String label) {
-    try {
-      final line =
-          notes
-              .split('\n')
-              .firstWhere((l) => l.contains(label), orElse: () => '')
-              .replaceAll(label, '')
-              .trim();
-      return line.isNotEmpty ? line : 'N/A';
-    } catch (_) {
-      return 'N/A';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

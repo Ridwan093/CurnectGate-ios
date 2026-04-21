@@ -61,6 +61,7 @@ class _AgreementSignScreenState extends ConsumerState<AgreementSignScreen> {
   }
 
   int selectedTab = 0;
+  bool _showGuidanceCard = true;
   @override
   void initState() {
     super.initState();
@@ -141,6 +142,26 @@ class _AgreementSignScreenState extends ConsumerState<AgreementSignScreen> {
                         ],
                       ),
                     ),
+                    // 💡 Guidance Card
+                    SizedBox(height: 20),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 500),
+                      transitionBuilder: (child, animation) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: SizeTransition(
+                            sizeFactor: animation,
+                            axisAlignment: -1,
+                            child: child,
+                          ),
+                        );
+                      },
+                      child:
+                          _showGuidanceCard
+                              ? _buildGuidanceCard()
+                              : const SizedBox.shrink(),
+                    ),
+
                     const SizedBox(height: 20),
 
                     // 📋 Tab Content
@@ -251,6 +272,88 @@ class _AgreementSignScreenState extends ConsumerState<AgreementSignScreen> {
     return Container(
       color: AppColors.instance.grey300.withOpacity(.8),
       child: Loadingstates(),
+    );
+  }
+
+  Widget _buildGuidanceCard() {
+    return AnimatedPadding(
+      duration: const Duration(milliseconds: 300),
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Material(
+        elevation: 0,
+        borderRadius: BorderRadius.circular(16),
+        color: AppColors.instance.teal400.withOpacity(0.1),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: AppColors.instance.teal400.withOpacity(0.2),
+              width: 1,
+            ),
+          ),
+          child: Stack(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: AppColors.instance.teal400.withOpacity(0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.drive_file_rename_outline,
+                      color: AppColors.instance.teal400,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Complete Your Agreement",
+                          style: TextStyle(
+                            fontFamily: FontFamilies.interDisplay,
+                            fontWeight: FontFamilies.bold,
+                            fontSize: 16,
+                            color: AppColors.instance.black600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "Please type your full legal name and provide a digital signature below to proceed.",
+                          style: TextStyle(
+                            fontFamily: FontFamilies.interDisplay,
+                            fontSize: 13,
+                            color: AppColors.instance.black400,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Positioned(
+                right: -10,
+                top: -10,
+                child: IconButton(
+                  onPressed: () => setState(() => _showGuidanceCard = false),
+                  icon: Icon(
+                    Icons.close,
+                    size: 18,
+                    color: AppColors.instance.black300,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

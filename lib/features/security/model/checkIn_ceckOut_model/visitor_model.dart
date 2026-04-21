@@ -81,7 +81,7 @@ class VisitorModel with _$VisitorModel {
       visitDurationFormatted: NullSafetyHelper.safeString(json['visit_duration_formatted']),
       isCurrentlyVisiting: NullSafetyHelper.safeBool(json['is_currently_visiting']),
       checkoutStatus: NullSafetyHelper.safeString(json['checkout_status']),
-      visitorOtp: NullSafetyHelper.safeModel(json['visitor_otp'], VisitorOtpModel.fromJson,VisitorOtpModel.empty()),
+      visitorOtp: NullSafetyHelper.safeModel(json['visitor_otp'], VisitorOtpModel.fromSafeJson,VisitorOtpModel.empty()),
       property: NullSafetyHelper.safeModel(json['property'], PropertyModel.fromJson, PropertyModel.empty()),
     );
   }

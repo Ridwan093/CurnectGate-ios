@@ -1,4 +1,4 @@
-package com.curnectgate.app
+package com.ges.curnectgate
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

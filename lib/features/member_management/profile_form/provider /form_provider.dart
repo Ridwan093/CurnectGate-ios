@@ -2176,20 +2176,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (response['status'] == true) {
         ref.read(getNotificationCount.notifier).refreshCount(context, ref);
       } else {
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
-          context.pop();
-          showCustomSuccessToast(
-            context: context,
-            message: response["message"],
-            color: AppColors.instance.error500,
-            icon: Icons.error,
-            iconColors: AppColors.instance.grey200,
-            positionNumber: 70,
-          );
-        }
+       
       }
     } on DioException catch (e) {
       if (!context.mounted) return;
@@ -2454,7 +2441,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         final otpCode = response["data"]?["otp"]?["otp_code"];
         if (otpCode != null) {
           String title = "Your visitor access code:";
-          String shareContent = "Here's your vistor access $otpCode:";
+          String shareContent = "Here's your vistor access: ";
           context.pushNamed(
             AppRoutes.vendorAccessCode,
             extra: {'title': title, "code": otpCode, 'share': shareContent},
@@ -2562,7 +2549,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         final otpCode = response["data"]?["otp"]?["otp_code"];
         if (otpCode != null) {
           String title = "Your visitor access code: ";
-          String shareContent = "Here's your vistor access codes:";
+          String shareContent = "Here's your vistor access codes: ";
           context.pushNamed(
             AppRoutes.vendorAccessCode,
             extra: {'title': title, "code": otpCode, 'share': shareContent},
@@ -2917,7 +2904,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateGenrateMemberIdLoading(false);
 
         context.pop();
-ref.read(digitMemberIDprovider.notifier).refreshDigitalID(context, ref);
+        ref.read(digitMemberIDprovider.notifier).refreshDigitalID(context, ref);
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -2926,7 +2913,6 @@ ref.read(digitMemberIDprovider.notifier).refreshDigitalID(context, ref);
           iconColors: AppColors.instance.grey200,
           positionNumber: 70,
         );
-
       } else {
         updateGenrateMemberIdLoading(false);
 
@@ -5599,6 +5585,244 @@ ref.read(digitMemberIDprovider.notifier).refreshDigitalID(context, ref);
     }
   }
 
+  Future<void> validateEventCode({
+    required BuildContext context,
+    required String otpCode,
+
+    required String accessType,
+    required WidgetRef ref,
+  }) async {
+    try {
+      final notifiers = ref.read(oTpformProvider.notifier);
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(true);
+
+      final token = await ref.watch(accessTokenProvider.future);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .validateEvenCode(
+            token: token ?? "",
+            otpCode: otpCode,
+            accessType: accessType,
+            context: context,
+          );
+
+      if (!context.mounted) return;
+
+      if (response['status'] == true) {
+        context.pop();
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+
+        final userData = response;
+
+        final String jsonString = json.encode(userData);
+
+        notifier.resetForm();
+
+        showUserBottomSheet(
+          context: context,
+          headertitle: jsonString,
+          headersubtitle: '',
+          ref: ref,
+          bottom: BottomSheetView.cornfirmEventCode,
+        );
+      } else {
+        notifiers.updateLoading(false);
+        notifier.resetForm();
+
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+    } on DioException catch (e) {
+      final notifier = ref.read(oTpformProvider.notifier);
+
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      if (!context.mounted) return;
+
+      if (e.error is SocketException) {
+        notifiers.updateLoading(false);
+
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+    } catch (e) {
+      if (!context.mounted) return;
+
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      final notifier = ref.read(oTpformProvider.notifier);
+      final notifiers = ref.read(oTpformProvider.notifier);
+
+      notifiers.updateLoading(false);
+
+      notifier.resetForm();
+      notifiers.updateLoading(false);
+      updateOtp('', false);
+    }
+  }
+
+  Future<void> grantEventEntry({
+    required BuildContext context,
+    required int id,
+    required String guestName,
+    required String guestPhone,
+    required String vehiclePlate,
+    required int guestCount,
+    required String accessPoint,
+    required String securityNotes,
+    required WidgetRef ref,
+  }) async {
+    try {
+      final notifiers = ref.read(oTpformProvider.notifier);
+      notifiers.updateLoading(true);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .grantEventEntrys(
+            id: id,
+            guestName: guestName,
+            guestPhone: guestPhone,
+            vehiclePlate: vehiclePlate,
+            guestCount: guestCount,
+            accessPoint: accessPoint,
+            securityNotes: securityNotes,
+            validationMethod: "code_entry",
+          );
+
+      if (!context.mounted) return;
+
+      if (response['status'] == true) {
+        closeAllBottomSheets(context);
+        notifiers.updateLoading(false);
+        log(response.toString());
+        showUserBottomSheet(
+          context: context,
+          headertitle: json.encode(response),
+          headersubtitle: '',
+          ref: ref,
+          bottom: BottomSheetView.grantMessage,
+        );
+      } else {
+        notifiers.updateLoading(false);
+        final message = extractValidationMessage(response);
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+    } catch (e) {
+      ref.read(oTpformProvider.notifier).updateLoading(false);
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    }
+  }
+
+  Future<void> denyEventEntry({
+    required BuildContext context,
+    required int id,
+    required String guestName,
+    required String guestPhone,
+    required String vehiclePlate,
+    required int guestCount,
+    required String accessPoint,
+    required String securityNotes,
+    required String denialReason,
+    required WidgetRef ref,
+  }) async {
+    try {
+      final notifiers = ref.read(oTpformProvider.notifier);
+      notifiers.updateLoading(true);
+
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .denyEventEntry(
+            id: id,
+            guestName: guestName,
+            guestPhone: guestPhone,
+            vehiclePlate: vehiclePlate,
+            guestCount: guestCount,
+            accessPoint: accessPoint,
+            securityNotes: securityNotes,
+            validationMethod: "code_entry",
+            denialReason: denialReason,
+          );
+
+      if (!context.mounted) return;
+
+      if (response['status'] == true) {
+        closeAllBottomSheets(context);
+        notifiers.updateLoading(false);
+        showUserBottomSheet(
+          context: context,
+          headertitle: json.encode(response),
+          headersubtitle: '',
+          ref: ref,
+          bottom: BottomSheetView.denyMessage,
+        );
+      } else {
+        notifiers.updateLoading(false);
+        final message = extractValidationMessage(response);
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+    } catch (e) {
+      ref.read(oTpformProvider.notifier).updateLoading(false);
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    }
+  }
+
   Future<void> vendorAccessCodeCheckIn({
     required BuildContext context,
     required String otpCode,
@@ -7013,7 +7237,7 @@ ref.read(digitMemberIDprovider.notifier).refreshDigitalID(context, ref);
             isSharedWithHousehold: notifiers.isSharedWithHousehold,
             notificationmethod: notifiers.notificationmethod.toLowerCase(),
             intarver: notifiers.interva,
-
+            householdMembers: notifiers.selectedHouseholdMembers,
             id: id,
             context: context,
           );
@@ -8509,7 +8733,7 @@ ref.read(digitMemberIDprovider.notifier).refreshDigitalID(context, ref);
       } else {
         updateInitMessageLoading(false);
         final message = extractValidationMessage(response);
-       
+
         showCustomSuccessToast(
           context: context,
           message: message,

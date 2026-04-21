@@ -23,23 +23,20 @@ class _AddReminderDateState extends ConsumerState<AddReminderDate> {
 
     if (dateString.isNotEmpty) {
       DateTime dateTime = DateTime.parse(dateString);
-      final DateFormat formatter = DateFormat('MMM d, yyyy');
+      final DateFormat formatter = DateFormat('MMM d, yyyy HH:mm');
       formattedDate = formatter.format(dateTime);
     }
-
-    final selectedDate = ref.watch(
-      generateNotifierProvider.select((state) => state.selectedDate),
-    );
 
     return AbsorbPointer(
       absorbing: _isDatePickerOpen,
       child: InkWell(
-        onTap: _isDatePickerOpen ? null : () => _showDatePicker(context, ref),
+        onTap:
+            _isDatePickerOpen ? null : () => _showDateTimePicker(context, ref),
         borderRadius: BorderRadius.circular(8),
         child: Row(
           children: [
             Text(
-              'Date*',
+              'Date & Time*',
               style: TextStyle(
                 fontWeight: FontFamilies.medium,
                 fontFamily: FontFamilies.interDisplay,
@@ -49,14 +46,14 @@ class _AddReminderDateState extends ConsumerState<AddReminderDate> {
             ),
             const Spacer(),
             Text(
-              formattedDate != null ? formattedDate! : "Select date",
+              formattedDate != null ? formattedDate! : "Select",
               style: TextStyle(
                 fontSize: 14,
                 fontFamily: FontFamilies.interDisplay,
                 color:
-                    selectedDate != null
+                    formattedDate != null
                         ? AppColors.instance.black600
-                        : AppColors.instance.grey400,
+                        : AppColors.instance.black400,
               ),
             ),
             const SizedBox(width: 8),
@@ -71,7 +68,7 @@ class _AddReminderDateState extends ConsumerState<AddReminderDate> {
     );
   }
 
-  Future<void> _showDatePicker(BuildContext context, WidgetRef ref) async {
+  Future<void> _showDateTimePicker(BuildContext context, WidgetRef ref) async {
     if (_isDatePickerOpen) return;
 
     setState(() {
@@ -83,7 +80,7 @@ class _AddReminderDateState extends ConsumerState<AddReminderDate> {
       final currentDate =
           ref.read(generateNotifierProvider).selectedDate ?? DateTime.now();
 
-      final DateTime? picked = await showDatePicker(
+      final DateTime? datePicked = await showDatePicker(
         context: context,
         initialDate: currentDate,
         firstDate: DateTime.now(),
@@ -107,12 +104,49 @@ class _AddReminderDateState extends ConsumerState<AddReminderDate> {
         },
       );
 
-      if (picked != null && picked != currentDate) {
-        // Use a small delay to avoid gesture conflicts
-        Future.delayed(const Duration(milliseconds: 50), () {
-          ref.read(generateNotifierProvider.notifier).setSelectedDate(picked);
-          notifer.updateTime(picked.toString());
-        });
+      if (datePicked != null) {
+        final TimeOfDay? timePicked = await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay.fromDateTime(currentDate),
+          builder: (BuildContext context, Widget? child) {
+            return Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: ColorScheme.light(
+                  primary: AppColors.instance.yellow400,
+                  onPrimary: AppColors.instance.black600,
+                  onSurface: AppColors.instance.black500,
+                ),
+                textButtonTheme: TextButtonThemeData(
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.instance.black500,
+                  ),
+                ),
+              ),
+              child: child!,
+            );
+          },
+        );
+
+        if (timePicked != null) {
+          final DateTime combinedDateTime = DateTime(
+            datePicked.year,
+            datePicked.month,
+            datePicked.day,
+            timePicked.hour,
+            timePicked.minute,
+          );
+
+          // Use a small delay to avoid gesture conflicts
+          Future.delayed(const Duration(milliseconds: 50), () {
+            ref
+                .read(generateNotifierProvider.notifier)
+                .setSelectedDate(combinedDateTime);
+            ref
+                .read(generateNotifierProvider.notifier)
+                .setSelectedTime(timePicked);
+            notifer.updateTime(combinedDateTime.toString());
+          });
+        }
       }
     } finally {
       // Ensure we always reset the state

@@ -301,7 +301,7 @@ class _IndicatorPainter extends CustomPainter {
 
   List<double>? _currentTabOffsets;
   TextDirection? _currentTextDirection;
-  Rect? _currentRect;
+
   BoxPainter? _painter;
   bool _needsPaint = false;
 
@@ -371,7 +371,7 @@ class _IndicatorPainter extends CustomPainter {
       tabLeft,
       0.0,
       tabRight - tabLeft,
-      tabBarSize.height * 0.7,
+      tabBarSize.height,
     ); // Use size.height for consistency
     if (!(rect.size >= insets.collapsedSize)) {
       print(
@@ -388,9 +388,12 @@ class _IndicatorPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     _needsPaint = false;
 
-    const double _kRadius = 16.0;
+    // Use full available height for better visibility
+    final double radius = 16.0;
+    final double gap = 3.0;
 
     final double value = controller.animation!.value;
+
     final int to =
         controller.indexIsChanging
             ? controller.index
@@ -398,6 +401,7 @@ class _IndicatorPainter extends CustomPainter {
                     ? value.ceil()
                     : value.floor())
                 .clamp(0, maxTabIndex);
+
     final int from =
         controller.indexIsChanging
             ? controller.previousIndex
@@ -409,52 +413,47 @@ class _IndicatorPainter extends CustomPainter {
     final Rect toRect = indicatorRect(size, to);
     final Rect fromRect = indicatorRect(size, from);
 
-    _currentRect = Rect.lerp(fromRect, toRect, (value - from).abs());
-    _currentRect = switch (indicatorAnimation) {
-      TabIndicatorAnimation.linear => _currentRect,
+    Rect? currentRect = Rect.lerp(fromRect, toRect, (value - from).abs());
+    if (currentRect == null) return;
+
+    currentRect = switch (indicatorAnimation) {
+      TabIndicatorAnimation.linear => currentRect,
       TabIndicatorAnimation.elastic => _applyElasticEffect(
         fromRect,
         toRect,
-        _currentRect!,
+        currentRect,
       ),
     };
 
-    if (_currentRect == null) return;
+    // Dynamic tab width
+    final double tabWidth =
+        _currentTabOffsets![to + 1] - _currentTabOffsets![to];
+    final double centerX = currentRect.center.dx;
 
-    final Paint paint = Paint()..color = tabForegroundColor;
+    // Add small safe margin to prevent clipping on high-density devices
+    const double safeMargin = 4.0;
+    double leftX = (centerX - tabWidth / 2).clamp(
+      safeMargin,
+      size.width - safeMargin,
+    );
+    double rightX = (centerX + tabWidth / 2).clamp(
+      safeMargin,
+      size.width - safeMargin,
+    );
+
+    final Paint fillPaint = Paint()..color = tabForegroundColor;
+
     final Paint borderPaint =
         Paint()
           ..color = tabBorderColor
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 2;
+          ..strokeWidth = 2.0;
 
-    const double radius = _kRadius;
-    const double gap = 3.0;
+    final Path path = Path();
 
-    // Calculate dynamic width from the selected tab
-    final double sizeWidth =
-        _currentTabOffsets![to + 1] - _currentTabOffsets![to];
-
-    // Center the indicator horizontally on the tab position
-    final double centerX = _currentRect!.center.dx;
-    double leftX = centerX - sizeWidth / 2;
-    double rightX = centerX + sizeWidth / 2;
-
-    // Clamp so the bezier does not go out of bounds
-    if (leftX < 0) {
-      leftX = 0;
-      rightX = sizeWidth * 2;
-    } else if (rightX > size.width) {
-      rightX = size.width;
-      leftX = size.width - (sizeWidth * 2);
-    }
-
-    final path = Path();
-
-    // ---- LEFT stretch ----
+    // Left side
     if (to == 0) {
-      // Remove left border for first index by starting at the top left edge
-      path.moveTo(leftX, radius); // Start at the top left without left stretch
+      path.moveTo(leftX, radius);
     } else {
       path.moveTo(0, size.height - gap);
       if (leftX > 0) {
@@ -465,12 +464,12 @@ class _IndicatorPainter extends CustomPainter {
       }
     }
 
-    // ---- TOP bezier ----
+    // Top curve
     path.quadraticBezierTo(leftX, 0, leftX + radius, 0);
     path.lineTo(rightX - radius, 0);
     path.quadraticBezierTo(rightX, 0, rightX, radius);
 
-    // ---- RIGHT stretch ----
+    // Right side
     if (rightX < size.width) {
       path.quadraticBezierTo(
         rightX,
@@ -488,73 +487,54 @@ class _IndicatorPainter extends CustomPainter {
       );
     }
 
-    final path2 = Path.from(path);
+    final Path borderPath = Path.from(path);
+
+    // Close the fill path
     path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);
     path.close();
 
-    canvas.drawPath(path, paint);
-    canvas.drawPath(
-      path2,
-      Paint()
-        ..color = tabBorderColor
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2,
-    );
+    // Draw fill and border
+    canvas.drawPath(path, fillPaint);
+    canvas.drawPath(borderPath, borderPaint);
 
-    canvas.drawPath(path, paint);
-    canvas.drawPath(path2, borderPaint);
-
-    // Draw the selected tab's text on the indicator
+    // ====================== DRAW TEXT ON SELECTED TAB (Safe Version) ======================
     final int selectedIndex = controller.index;
     if (selectedIndex >= 0 && selectedIndex < tabs.length) {
       final Widget tab = tabs[selectedIndex];
-      if (tab is Tab) {
-        String? textToRender = tab.text;
-        if (tab.child != null && tab.child is Text) {
-          textToRender =
-              (tab.child as Text).data; // Use child text if available
-        }
-        if (textToRender != null) {
-          final TextPainter textPainter = TextPainter(
-            text: TextSpan(
-              text: textToRender,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 14.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            maxLines: 1,
-            ellipsis: '...',
-            textDirection: textDirection,
-            textAlign: TextAlign.center,
-          );
-          textPainter.layout(maxWidth: _currentRect!.width);
-          final double textX =
-              _currentRect!.left +
-              (_currentRect!.width - textPainter.width) / 2;
-          final double textY =
-              _currentRect!.top +
-              (_currentRect!.height - textPainter.height) / 2;
-          textPainter.paint(canvas, Offset(textX, textY));
-        } else {
-          print(
-            'Warning: Tab at index $selectedIndex has no text or child text',
-          );
-        }
-      } else {
-        print('Warning: Tab at index $selectedIndex is not a Tab widget');
-      }
-    } else {
-      print(
-        'Warning: Tabs is null or selected index $selectedIndex out of bounds for tabs length ${tabs.length}',
-      );
-    }
+      String? textToRender;
 
-    print(
-      'Painting indicator: left=$leftX, right=$rightX, height=${size.height}, rect=$_currentRect',
-    );
+      if (tab is Tab) {
+        textToRender = tab.text;
+        if (textToRender == null && tab.child is Text) {
+          textToRender = (tab.child as Text).data;
+        }
+      }
+
+      if (textToRender != null && textToRender.isNotEmpty) {
+        final TextPainter textPainter = TextPainter(
+          text: TextSpan(
+            text: textToRender,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 14.0, // Fixed size - more consistent across devices
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          textDirection: textDirection,
+          textAlign: TextAlign.center,
+        );
+
+        // Give extra breathing room so text doesn't get cut
+        textPainter.layout(maxWidth: (rightX - leftX) - 24.0);
+
+        final double textX = leftX + ((rightX - leftX) - textPainter.width) / 2;
+        final double textY =
+            (size.height - textPainter.height) / 2 - 1; // slight vertical tweak
+
+        textPainter.paint(canvas, Offset(textX, textY));
+      }
+    }
   }
 
   Rect _applyElasticEffect(Rect fromRect, Rect toRect, Rect currentRect) {

@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<void> openEstateAdminWebsite() async {
-  final Uri url = Uri.parse("https://44.192.254.133/"); // <-- CHANGE LINK
+  final Uri url = Uri.parse("http://www.curnectgate.com"); // <-- CHANGE LINK
 
   if (!await launchUrl(
     url,

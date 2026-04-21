@@ -22,10 +22,15 @@ class OptionForCodes extends ConsumerWidget {
         label: 'Validate Digital ID',
         icon: AssetPaths.dashboardIdVerification,
       ),
+
       ValidationOption(label: 'Validate OTP', icon: AssetPaths.otpValidation),
       ValidationOption(
         label: 'Validate Work Order',
         icon: AssetPaths.dashboardWorkOrder,
+      ),
+      ValidationOption(
+        label: 'Validate Event Code',
+        icon: AssetPaths.navEventCodeDeactive,
       ),
     ];
 
@@ -216,6 +221,7 @@ class OptionForCodes extends ConsumerWidget {
           ref: ref,
           bottom: BottomSheetView.visitorValidation,
         );
+
         break;
       case 'Validate Work Order':
         notifier.updateValidationType("");
@@ -228,6 +234,19 @@ class OptionForCodes extends ConsumerWidget {
           headersubtitle: "",
           ref: ref,
           bottom: BottomSheetView.workOderSeletion,
+        );
+        break;
+      case 'Validate Event Code':
+        notifier.updateValidationType("");
+        // ref.read(bottomSheetStateProvider.notifier).state =
+        //     BottomSheetView.workOderSeletion;
+        context.pop();
+        showUserBottomSheet(
+          context: context,
+          headertitle: "",
+          headersubtitle: "",
+          ref: ref,
+          bottom: BottomSheetView.validateEventCode,
         );
         break;
     }

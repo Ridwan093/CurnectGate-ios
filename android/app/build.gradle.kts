@@ -15,12 +15,12 @@ plugins {
 }
 
 android {
-    namespace = "com.curnectgate.app"
+    namespace = "com.ges.curnectgate"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "29.0.13599879" 
 
     defaultConfig {
-        applicationId = "com.curnectgate.app"
+        applicationId = "com.ges.curnectgate"
         minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -48,9 +48,13 @@ signingConfigs {
 }
 buildTypes {
     getByName("release") {
-        isMinifyEnabled = false
-        isShrinkResources = false
+        isMinifyEnabled = true
+        isShrinkResources = true
         signingConfig = signingConfigs.getByName("release")
+        proguardFiles(
+            getDefaultProguardFile("proguard-android-optimize.txt"),
+            "proguard-rules.pro"
+        )
     }
 
     getByName("debug") {

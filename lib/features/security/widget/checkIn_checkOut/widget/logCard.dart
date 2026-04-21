@@ -140,12 +140,17 @@ class Logcard extends ConsumerWidget {
             ),
           ),
 
-          Text(
-            value,
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontSize: 13,
-              color: AppColors.instance.black600,
+          Expanded(
+            child: Text(
+              value,
+              textAlign: TextAlign.right,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                fontSize: 13,
+                color: AppColors.instance.black600,
+              ),
             ),
           ),
         ],

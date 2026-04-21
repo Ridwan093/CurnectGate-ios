@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
@@ -230,9 +231,9 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildCopyButton(widget.accessCode!),
+              _buildCopyButton(mainCode),
               const SizedBox(width: 30),
-              _buildShareButtons(widget.accessCode ?? ""),
+              _buildShareButtons(mainCode, "Here is your vendor code:"),
             ],
           ),
           if (hasSubCodes) ...[
@@ -392,7 +393,7 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
           children: [
             _buildCopyButton(widget.accessCode!),
             const SizedBox(width: 30),
-            _buildShareButtons(widget.accessCode ?? ""),
+            _buildShareButtons(widget.accessCode ?? "", widget.share ?? ""),
           ],
         ),
       ],
@@ -415,7 +416,7 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
   void _shareAllCodes(List<String> codes) {
     if (codes.isEmpty) return;
 
-    final message = 'Here are your work codes:\n${codes.join('\n')}';
+    final message = 'Here is your work codes:\n${codes.join('\n')}';
     // ignore: deprecated_member_use
     Share.share(message);
   }
@@ -423,7 +424,7 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
   void _shareCode(String code) {
     // Use Share.share(code) if you have `share_plus` package
     // ignore: deprecated_member_use
-    Share.share("Here are your work code: ${code}");
+    Share.share("Here is your work code: ${code}");
   }
 
   Widget _buildCopyButton(String code) {
@@ -481,13 +482,14 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
     );
   }
 
-  Widget _buildShareButtons(String code) {
+  Widget _buildShareButtons(String code, String share) {
     return Column(
       children: [
         InkWell(
           onTap: () {
             // ignore: deprecated_member_use
-            Share.share("${widget.share} ${code}");
+            log(share + code);
+            Share.share("$share $code");
           },
           borderRadius: BorderRadius.circular(25),
           child: Container(

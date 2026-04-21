@@ -20,13 +20,13 @@ plugins {
     id("dev.flutter.flutter-plugin-loader") version "1.0.0"
 
     // Core Android Gradle Plugin
-    id("com.android.application") version "8.3.2" apply false
+    id("com.android.application") version "8.7.3" apply false
 
     // Firebase services (Google Services plugin)
-    id("com.google.gms.google-services") version "4.3.15" apply false
+    id("com.google.gms.google-services") version "4.4.2" apply false
 
     // Kotlin for Android
-    id("org.jetbrains.kotlin.android") version "2.3.10" apply false
+    id("org.jetbrains.kotlin.android") version "2.3.20" apply false
 
     // Flutter plugin loader (ensure not applied at root)
     id("dev.flutter.flutter-gradle-plugin") version "1.0.0" apply false

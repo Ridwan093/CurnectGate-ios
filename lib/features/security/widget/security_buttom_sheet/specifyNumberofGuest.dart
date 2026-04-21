@@ -53,7 +53,7 @@ class _SpecifyumberOfGuestState extends ConsumerState<SpecifyumberOfGuest> {
                   ),
                   SizedBox(height: 40),
                   Text(
-                    "Specify number of guest ${widget.id}",
+                    "Specify number of guest",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontWeight: FontFamilies.bold,

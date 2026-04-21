@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:curnectgate/features/estate_management/elections/models/election_enum.dart'
     show ElectionTab;
 import 'package:curnectgate/features/estate_management/elections/models/eletion_state.dart';
@@ -31,6 +33,7 @@ class ElectionNotifier extends StateNotifier<ElectionState> {
   }
 
   void setError(String? value) {
+    log("SetErrorMessage:$value");
     state = state.copyWith(isError: value);
   }
 

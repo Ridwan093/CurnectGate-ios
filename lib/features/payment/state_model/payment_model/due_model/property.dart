@@ -1,7 +1,6 @@
 import 'package:curnectgate/features/operations/OTP_Activation/model/nullSafty_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-
 part 'property.freezed.dart';
 part 'property.g.dart';
 
@@ -66,9 +65,10 @@ class Property with _$Property {
       longitude: NullSafetyHelper.safeDouble(json?['longitude']),
       condition: NullSafetyHelper.safeString(json?['condition']),
       rentalFrequency: NullSafetyHelper.safeString(json?['rental_frequency']),
-      amenities: (NullSafetyHelper.safeList(json?['amenities']) ?? [])
-          .map((e) => e.toString())
-          .toList(),
+      amenities:
+          (NullSafetyHelper.safeList(
+            json?['amenities'],
+          )).map((e) => e.toString()).toList(),
       utilityConnections: json?['utility_connections'],
       images: json?['images'],
       parkingSpaces: NullSafetyHelper.safeInt(json?['parking_spaces']),
@@ -82,35 +82,35 @@ class Property with _$Property {
   }
 
   factory Property.empty() => const Property(
-        id: 0,
-        estateId: 0,
-        landlordId: 0,
-        managerId: 0,
-        estateAddressId: 0,
-        propertyCode: '',
-        propertyName: '',
-        propertyType: '',
-        imageUrl: '',
-        imageKey: '',
-        bedrooms: 0,
-        bathrooms: 0,
-        size: '',
-        description: '',
-        specialFeatures: null,
-        rentalAmount: '0.00',
-        latitude: 0,
-        longitude: 0,
-        condition: '',
-        rentalFrequency: '',
-        amenities: [],
-        utilityConnections: null,
-        images: null,
-        parkingSpaces: 0,
-        status: '',
-        smokingAllowed: 0,
-        isFurnished: false,
-        maxOccupants: 0,
-        createdAt: '',
-        updatedAt: '',
-      );
+    id: 0,
+    estateId: 0,
+    landlordId: 0,
+    managerId: 0,
+    estateAddressId: 0,
+    propertyCode: '',
+    propertyName: '',
+    propertyType: '',
+    imageUrl: '',
+    imageKey: '',
+    bedrooms: 0,
+    bathrooms: 0,
+    size: '',
+    description: '',
+    specialFeatures: null,
+    rentalAmount: '0.00',
+    latitude: 0,
+    longitude: 0,
+    condition: '',
+    rentalFrequency: '',
+    amenities: [],
+    utilityConnections: null,
+    images: null,
+    parkingSpaces: 0,
+    status: '',
+    smokingAllowed: 0,
+    isFurnished: false,
+    maxOccupants: 0,
+    createdAt: '',
+    updatedAt: '',
+  );
 }

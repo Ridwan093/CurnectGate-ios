@@ -69,7 +69,6 @@ class WorkpermitCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final size = MediaQuery.sizeOf(context);
     return PermitCard(
       title: "Item Exit Authorization",
       itemCount: generated.items?.length ?? 0,
@@ -99,6 +98,10 @@ class WorkpermitCard extends ConsumerWidget {
       case PermitStatus.approved:
         notifier.updateLoading(false);
         showPermitDetailsDialog(context: context, permit: permit);
+
+      case PermitStatus.used:
+        notifier.updateLoading(false);
+        showPermitDetailsDialog(context: context, permit: permit);
       case PermitStatus.rejected:
         notifier.updateLoading(false);
         log("Reject Press");
@@ -108,36 +111,21 @@ class WorkpermitCard extends ConsumerWidget {
     }
   }
 
-
   PermitStatus statusCheck(String status) {
     switch (status) {
       case "revoked":
         return PermitStatus.rejected;
       case "active":
         return PermitStatus.approved;
-
+      case "used":
+        return PermitStatus.used;
       default:
         return PermitStatus.pending;
     }
   }
-
-  Color color(String status) {
-    switch (status) {
-      case "revoked":
-        return AppColors.instance.error500;
-      case "expired":
-        return AppColors.instance.black300;
-
-      default:
-        return AppColors.instance.error500;
-    }
-  }
-
-
-
 }
 
-enum PermitStatus { approved, pending, rejected, draft }
+enum PermitStatus { approved, pending, rejected, used }
 
 class PermitStatusStyle {
   final Color borderColor;
@@ -179,12 +167,12 @@ PermitStatusStyle getPermitStyle(PermitStatus status) {
         icon: Icons.cancel,
       );
 
-    case PermitStatus.draft:
+    case PermitStatus.used:
       return PermitStatusStyle(
-        borderColor: Colors.grey.shade400,
-        badgeColor: Colors.grey.shade200,
+        borderColor: AppColors.instance.grey400,
+        badgeColor: AppColors.instance.grey300,
         badgeTextColor: Colors.grey.shade700,
-        icon: Icons.description_outlined,
+        icon: Icons.check_circle_outline_sharp,
       );
   }
 }
@@ -396,9 +384,9 @@ class _ActionButton extends StatelessWidget {
         ),
         child: Text(
           _buttonName(status),
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 11,
-            color: Colors.white,
+            color: style.badgeTextColor,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -414,9 +402,8 @@ class _ActionButton extends StatelessWidget {
         return "Awating Approval";
       case PermitStatus.rejected:
         return "View Reason";
-
-      default:
-        return "Approved";
+      case PermitStatus.used:
+        return "View Details";
     }
   }
 }

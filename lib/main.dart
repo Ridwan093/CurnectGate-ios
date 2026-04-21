@@ -2,19 +2,18 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/%20utils/service/app_lifecycle_service.dart';
 import 'package:curnectgate/core/%20utils/service/notification_service.dart';
+import 'package:curnectgate/core/%20utils/update/update_config.dart';
 import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/app_rout.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/chat/data/hive_migration.dart';
 import 'package:curnectgate/features/chat/services/reverb_service.dart';
-import 'package:upgrader/upgrader.dart';
-import 'package:curnectgate/core/%20utils/update/update_config.dart';
 // Your models (from earlier steps)
 
 import 'package:curnectgate/features/signOut/errorWidget/sesional_expired.dart';
 import 'package:curnectgate/firebase_options.dart';
-import 'package:device_preview/device_preview.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +21,7 @@ import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:upgrader/upgrader.dart';
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -68,7 +68,8 @@ void main() async {
 
   runApp(
     ProviderScope(
-      child: DevicePreview(enabled: false, builder: (context) => MyApp()),
+      child: MyApp(),
+      // child: DevicePreview(enabled: false, builder: (context) => MyApp()),
     ),
   );
 }
@@ -144,8 +145,7 @@ class _MyAppState extends ConsumerState<MyApp> {
           ),
           routerConfig: router,
           useInheritedMediaQuery: true,
-          locale: DevicePreview.locale(context),
-          builder: DevicePreview.appBuilder,
+       
           // GoRouter integration
           debugShowCheckedModeBanner: false,
           title: 'CurnectGate',

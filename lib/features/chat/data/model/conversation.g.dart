@@ -17,29 +17,17 @@ class ConversationAdapter extends TypeAdapter<Conversation> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Conversation(
-      id: NullSafetyHelper.safeInt(fields[0]),
-      estateId: NullSafetyHelper.safeInt(fields[1]),
-      type: NullSafetyHelper.safeString(fields[2]),
-      title: NullSafetyHelper.safeString(fields[3]),
-
-      participants:
-          fields[4] is List
-              ? (fields[4] as List)
-                  .map((e) => e is Participant ? e : null)
-                  .whereType<Participant>()
-                  .toList()
-              : null,
-
-      latestMessage: fields[5] is LatestMessage ? fields[5] : null,
-
-      lastMessageAt: NullSafetyHelper.safeString(fields[6]),
-
-      unreadCount: NullSafetyHelper.safeInt(fields[7]),
-
-      settings: fields[8] is ConversationSettings ? fields[8] : null,
-
-      createdAt: NullSafetyHelper.safeString(fields[9]),
-      updatedAt: NullSafetyHelper.safeString(fields[10]),
+      id: fields[0] as int?,
+      estateId: fields[1] as int?,
+      type: fields[2] as String?,
+      title: fields[3] as String?,
+      participants: (fields[4] as List?)?.cast<Participant>(),
+      latestMessage: fields[5] as LatestMessage?,
+      lastMessageAt: fields[6] as String?,
+      unreadCount: fields[7] as int?,
+      settings: fields[8] as ConversationSettings?,
+      createdAt: fields[9] as String?,
+      updatedAt: fields[10] as String?,
     );
   }
 
@@ -93,13 +81,13 @@ class ParticipantAdapter extends TypeAdapter<Participant> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Participant(
-      userId: NullSafetyHelper.safeInt(fields[0]),
-      fullName: NullSafetyHelper.safeString(fields[1]),
-      avatarUrl: NullSafetyHelper.safeString(fields[2]),
-      role: NullSafetyHelper.safeString(fields[3]),
-      onlineStatus: NullSafetyHelper.safeString(fields[4]),
-      unreadCount: NullSafetyHelper.safeInt(fields[5]),
-      lastReadAt: NullSafetyHelper.safeString(fields[6]),
+      userId: fields[0] as int?,
+      fullName: fields[1] as String?,
+      avatarUrl: fields[2] as String?,
+      role: fields[3] as String?,
+      onlineStatus: fields[4] as String?,
+      unreadCount: fields[5] as int?,
+      lastReadAt: fields[6] as String?,
     );
   }
 
@@ -145,27 +133,18 @@ class LatestMessageAdapter extends TypeAdapter<LatestMessage> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return LatestMessage(
-      id: NullSafetyHelper.safeInt(fields[0]),
-      conversationId: NullSafetyHelper.safeInt(fields[1]),
-      senderId: NullSafetyHelper.safeInt(fields[2]),
-
-      sender: fields[3] is Sender ? fields[3] : null,
-
-      messageText: NullSafetyHelper.safeString(fields[4]),
-      status: NullSafetyHelper.safeString(fields[5]),
-      read: NullSafetyHelper.safeBool(fields[6]),
-      isSender: NullSafetyHelper.safeBool(fields[7]),
-
-      createdAt: NullSafetyHelper.safeString(fields[8]),
-      updatedAt: NullSafetyHelper.safeString(fields[9]),
-      timeAgo: NullSafetyHelper.safeString(fields[10]),
-      attachments:
-          fields[11] is List
-              ? (fields[11] as List)
-                  .map((e) => e is Attachment ? e : null)
-                  .whereType<Attachment>()
-                  .toList()
-              : null,
+      id: fields[0] as int?,
+      conversationId: fields[1] as int?,
+      senderId: fields[2] as int?,
+      sender: fields[3] as Sender?,
+      messageText: fields[4] as String?,
+      status: fields[5] as String?,
+      read: fields[6] as bool?,
+      isSender: fields[7] as bool?,
+      createdAt: fields[8] as String?,
+      updatedAt: fields[9] as String?,
+      timeAgo: fields[10] as String?,
+      attachments: (fields[11] as List?)?.cast<Attachment>(),
     );
   }
 
@@ -221,12 +200,12 @@ class SenderAdapter extends TypeAdapter<Sender> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Sender(
-      id: NullSafetyHelper.safeInt(fields[0]),
-      firstname: NullSafetyHelper.safeString(fields[1]),
-      lastname: NullSafetyHelper.safeString(fields[2]),
-      fullName: NullSafetyHelper.safeString(fields[3]),
-      avatarUrl: NullSafetyHelper.safeString(fields[4]),
-      role: NullSafetyHelper.safeString(fields[5]),
+      id: fields[0] as int?,
+      firstname: fields[1] as String?,
+      lastname: fields[2] as String?,
+      fullName: fields[3] as String?,
+      avatarUrl: fields[4] as String?,
+      role: fields[5] as String?,
     );
   }
 
@@ -270,16 +249,16 @@ class ConversationSettingsAdapter extends TypeAdapter<ConversationSettings> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ConversationSettings(
-      id: NullSafetyHelper.safeInt(fields[0]),
-      conversationId: NullSafetyHelper.safeInt(fields[1]),
-      notificationsEnabled: NullSafetyHelper.safeBool(fields[2]),
-      doNotDisturb: NullSafetyHelper.safeBool(fields[3]),
-      dndUntil: NullSafetyHelper.safeString(fields[4]),
-      dndActive: NullSafetyHelper.safeBool(fields[5]),
-      archived: NullSafetyHelper.safeBool(fields[6]),
-      pinned: NullSafetyHelper.safeBool(fields[7]),
-      createdAt: NullSafetyHelper.safeString(fields[8]),
-      updatedAt: NullSafetyHelper.safeString(fields[9]),
+      id: fields[0] as int?,
+      conversationId: fields[1] as int?,
+      notificationsEnabled: fields[2] as bool?,
+      doNotDisturb: fields[3] as bool?,
+      dndUntil: fields[4] as String?,
+      dndActive: fields[5] as bool?,
+      archived: fields[6] as bool?,
+      pinned: fields[7] as bool?,
+      createdAt: fields[8] as String?,
+      updatedAt: fields[9] as String?,
     );
   }
 

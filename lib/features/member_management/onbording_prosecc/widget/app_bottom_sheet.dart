@@ -177,7 +177,57 @@ Widget _buildCurrentView(
         headersubtitle: userRole,
         bottom: bottom,
       );
+
+  // validateEventCode,
+  // cornfirmEventCode,
+  // grantEventCode,
+  // denyEventcode,
+  // grantMessage,
+  // denyMessage,
+
     case BottomSheetView.termsAndCondition:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+      case BottomSheetView.validateEventCode:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+      case BottomSheetView.cornfirmEventCode:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+      case BottomSheetView.grantEventCode:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+      case BottomSheetView.denyEventcode:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+      case BottomSheetView.grantMessage:
+      return BottomsheetDetails(
+        id: id,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
+       case BottomSheetView.denyMessage:
       return BottomsheetDetails(
         id: id,
         headertitle: userName,

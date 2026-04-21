@@ -14,6 +14,7 @@ enum FieldType {
   reason,
   year,
   itemName,
+  none,
 }
 
 class ReusabelProfileForm extends StatefulWidget {
@@ -177,15 +178,13 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
     String? error;
     bool isValid = false;
     widget.onChanged;
-    if (value.isEmpty) {
+    if (value.isEmpty && widget.fieldType != FieldType.none) {
       error = '${widget.label} is required';
     } else {
       switch (widget.fieldType) {
         case FieldType.name:
           if (value.length < 2) {
             error = '${widget.label} must be at least 2 characters';
-          } else if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(value)) {
-            error = 'Only letters and spaces allowed';
           }
           break;
         case FieldType.email:
@@ -236,6 +235,7 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
           if (value.length < 5) {
             error = '${widget.label} must be at least 5 characters';
           }
+        case FieldType.none:
           break;
       }
     }
@@ -263,8 +263,6 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
 
   List<TextInputFormatter>? _getInputFormatters() {
     switch (widget.fieldType) {
-      case FieldType.name:
-        return [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]'))];
       case FieldType.phone:
         return [FilteringTextInputFormatter.allow(RegExp(r'[0-9+\-]'))];
       default:

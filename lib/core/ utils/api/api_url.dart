@@ -81,6 +81,7 @@ const String checkOutValidatorOtpBymanual =
     "estates/security/validations/checkout-with-otp";
 const String checkInValidatorwithOtpbymanual =
     "estates/security/validations/validate-otp-manual";
+const String validateEventCode = "estates/security/event-codes/validate";
 const String ckeckOutWithPermit =
     "estates/security/clearance-permits/validate-checkout";
 const String approveEntry = "estates/security/validations/5/approve";
@@ -181,3 +182,6 @@ const String startConversation =
     "estates/general/messaging/conversations/start";
 const String markUnreadCount = "estates/general/messaging/mark-all-read";
 const String getConversation = "estates/general/messaging/conversations";
+
+const String grantEventEntry = "estates/security/event-codes/";
+const String denyEventEntrys= "estates/security/event-codes/";

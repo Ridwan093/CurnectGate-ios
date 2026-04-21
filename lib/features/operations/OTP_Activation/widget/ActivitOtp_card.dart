@@ -180,9 +180,6 @@ class ActivitOtpCard extends ConsumerWidget {
         );
       case false:
         return SizedBox();
-
-      default:
-        return SizedBox();
     }
   }
 

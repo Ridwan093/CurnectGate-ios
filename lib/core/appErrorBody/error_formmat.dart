@@ -10,7 +10,7 @@ String formatErrorMessage(Object error) {
     return error.toString();
   }
 
-  final dioError = error as DioException;
+  final dioError = error;
 
   // === 1. Backend Error (Server responded with error status) ===
   if (dioError.response != null) {

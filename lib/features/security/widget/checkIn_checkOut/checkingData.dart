@@ -97,7 +97,8 @@ class CheckInData extends ConsumerWidget {
         var data = Visitor[index];
         return Logcard(
           entrytitle:
-              data.visitorOtp?.latestSecurityValidation?.validationStatus ?? "",
+              data.visitorOtp?.latestSecurityValidation?.validationStatus ??
+              '',
           entryTime: data.checkin ?? "",
           entryType: data.status ?? "",
           entrypath: "",
@@ -116,7 +117,7 @@ class CheckInData extends ConsumerWidget {
           Image.asset(AssetPaths.dashboardWorkOrder, height: 100, width: 100),
           const SizedBox(height: 10),
           Text(
-            "Your log List appear here",
+            "Your log List here",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               color: AppColors.instance.black300,

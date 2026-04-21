@@ -10,6 +10,7 @@ class ReminderState {
   final bool isSharedWithHousehold;
   final String interva;
   final String notificationmethod;
+  final List<int> selectedHouseholdMembers;
   final bool isLoading;
   final String filter;
 
@@ -27,15 +28,23 @@ class ReminderState {
     this.piority = "",
     this.isSharedWithHousehold = false,
     this.interva = "",
+    this.selectedHouseholdMembers = const [],
   });
 
-  bool get reminderValidate =>
-      title.isNotEmpty &&
-      dec.isNotEmpty &&
-      category.isNotEmpty &&
-      time.isNotEmpty &&
-      remberType.isNotEmpty &&
-      notificationmethod.isNotEmpty && interva.isNotEmpty && frequence.isNotEmpty;
+  bool get reminderValidate {
+    final baseValid = title.isNotEmpty &&
+        dec.isNotEmpty &&
+        category.isNotEmpty &&
+        time.isNotEmpty &&
+        remberType.isNotEmpty &&
+        notificationmethod.isNotEmpty;
+
+    if (remberType.toLowerCase().contains("recurring")) {
+      return baseValid && frequence.isNotEmpty && interva.isNotEmpty;
+    }
+
+    return baseValid;
+  }
 
   bool get updateValid =>
       title.isNotEmpty &&
@@ -58,6 +67,7 @@ class ReminderState {
     String? notificationmethod,
     String? filter,
     bool? isLoading,
+    List<int>? selectedHouseholdMembers,
   }) {
     return ReminderState(
       filter: filter ?? this.filter,
@@ -74,6 +84,8 @@ class ReminderState {
       isSharedWithHousehold:
           isSharedWithHousehold ?? this.isSharedWithHousehold,
       interva: interva ?? this.interva,
+      selectedHouseholdMembers:
+          selectedHouseholdMembers ?? this.selectedHouseholdMembers,
     );
   }
 }

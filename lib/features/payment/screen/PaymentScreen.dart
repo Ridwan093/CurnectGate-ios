@@ -16,6 +16,7 @@ class PaymentScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       appBar: _buildAppBar(),
       body: SizedBox(
         width: size.width,
@@ -89,6 +90,7 @@ class PaymentScreen extends ConsumerWidget {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
+      backgroundColor: Colors.grey.shade100,
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 20),

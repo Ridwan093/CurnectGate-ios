@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,15 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -51,7 +42,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCDN09etKnt_2_p1XohbtBPmxE3Jhp48Wk',
-    appId: '1:1038277350674:android:2577c162060f98eaf94fcb',
+    appId: '1:1038277350674:android:79c7e8d647609646f94fcb',
     messagingSenderId: '1038277350674',
     projectId: 'curnectgate-f9770',
     storageBucket: 'curnectgate-f9770.firebasestorage.app',
@@ -59,11 +50,40 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCvWrzPP-YzjJninbgasSUsqRh9HgManzY',
-    appId: '1:1038277350674:ios:57935587a6c96d1ff94fcb',
+    appId: '1:1038277350674:ios:de2f01033a3dc801f94fcb',
     messagingSenderId: '1038277350674',
     projectId: 'curnectgate-f9770',
     storageBucket: 'curnectgate-f9770.firebasestorage.app',
-    iosBundleId: 'com.curnectgate.app',
+    iosBundleId: 'com.ges.curnectgate',
+  );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCDdfKq64UngolfA_vfpvrlmu9P4aUkrlY',
+    appId: '1:1038277350674:web:f0772e4a248dc2d3f94fcb',
+    messagingSenderId: '1038277350674',
+    projectId: 'curnectgate-f9770',
+    authDomain: 'curnectgate-f9770.firebaseapp.com',
+    storageBucket: 'curnectgate-f9770.firebasestorage.app',
+    measurementId: 'G-EJT8S0KD0N',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyCvWrzPP-YzjJninbgasSUsqRh9HgManzY',
+    appId: '1:1038277350674:ios:de2f01033a3dc801f94fcb',
+    messagingSenderId: '1038277350674',
+    projectId: 'curnectgate-f9770',
+    storageBucket: 'curnectgate-f9770.firebasestorage.app',
+    iosBundleId: 'com.ges.curnectgate',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyCDdfKq64UngolfA_vfpvrlmu9P4aUkrlY',
+    appId: '1:1038277350674:web:5f4ba57daae988fef94fcb',
+    messagingSenderId: '1038277350674',
+    projectId: 'curnectgate-f9770',
+    authDomain: 'curnectgate-f9770.firebaseapp.com',
+    storageBucket: 'curnectgate-f9770.firebasestorage.app',
+    measurementId: 'G-CDV2CD07B6',
   );
 
 }

@@ -2,7 +2,6 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/payment/state_model/state.dart';
 import 'package:curnectgate/features/payment/widget/payment_data/payment_history_data.dart';
 import 'package:curnectgate/features/payment/widget/tab_button.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -37,24 +36,24 @@ class _CustomTabViewState extends ConsumerState<CustomTabView> {
 
     return Column(
       children: [
-        // Custom Tab Bar
+        // Custom Tab Bar (Segmented Control style)
         Container(
-          margin: const EdgeInsets.all(12),
+          // margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          margin: const EdgeInsets.fromLTRB(5, 10, 5, 0),
+          padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: AppColors.instance.grey300,
+            color: AppColors.instance.grey400.withOpacity(0.5),
             borderRadius: BorderRadius.circular(20),
           ),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children:
-                  WalletTab.values.map((tab) {
-                    return TabButton(
-                      label: tab.name,
+          child: Row(
+            children:
+                WalletTab.values.map((tab) {
+                  final targetPage = WalletTab.values.indexOf(tab);
+                  return Expanded(
+                    child: TabButton(
+                      label: tab.name.toUpperCase(),
                       isSelected: currentTab == tab,
                       onTap: () async {
-                        final targetPage = WalletTab.values.indexOf(tab);
                         // Animate first
                         await _pageController.animateToPage(
                           targetPage,
@@ -64,18 +63,14 @@ class _CustomTabViewState extends ConsumerState<CustomTabView> {
                         // Then update provider
                         ref.read(tabProvider.notifier).state = tab;
                       },
-                    );
-                  }).toList(),
-            ),
+                    ),
+                  );
+                }).toList(),
           ),
         ),
 
         // Tab Content
-        Expanded(
-          child:PaymentHistory(
-            controller: _pageController,
-          )
-        ),
+        Expanded(child: PaymentHistory(controller: _pageController)),
       ],
     );
   }

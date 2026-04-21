@@ -21,60 +21,74 @@ class Builderroul extends ConsumerWidget {
     final displayError =
         _shouldShowFullError(error) ? error.trim() : _shortenError(error);
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.error_outline,
-              size: 48,
-              color: AppColors.instance.error600,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              firstMessae,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontSize: 16,
-                color: AppColors.instance.black600,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              displayError,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontSize: _shouldShowFullError(error) ? 15 : 16,
-                color: AppColors.instance.black400,
-                height: 1.4,
-              ),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.instance.grey200,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 12,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isCompact = constraints.maxHeight < 300;
+
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: isCompact ? 32 : 48,
+                  color: AppColors.instance.error600,
                 ),
-              ),
-              onPressed: onTap,
-              child: Text(
-                "Try Again",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black600,
-                  fontWeight: FontWeight.bold,
+                SizedBox(height: isCompact ? 8 : 16),
+                Text(
+                  firstMessae,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    fontSize: isCompact ? 14 : 16,
+                    color: AppColors.instance.black600,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
+                if (!isCompact) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    displayError,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontSize: _shouldShowFullError(error) ? 15 : 16,
+                      color: AppColors.instance.black400,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+                SizedBox(height: isCompact ? 12 : 24),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: AppColors.instance.grey200,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isCompact ? 24 : 32,
+                      vertical: isCompact ? 8 : 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  onPressed: onTap,
+                  child: Text(
+                    "Try Again",
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      color: AppColors.instance.black600,
+                      fontWeight: FontWeight.bold,
+                      fontSize: isCompact ? 12 : 14,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

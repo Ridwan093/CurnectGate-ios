@@ -4,12 +4,13 @@ import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/features/signOut/provider/authProvider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+////flutter build appbundle --release
 
 final dioProvider = Provider<Dio>((ref) {
   return Dio()
     ..options = BaseOptions(
       extra: {'requiresAuth': true},
-      baseUrl: "http://44.200.180.26/api/v1/",
+      baseUrl: "https://api.curnectgate.com/api/v1/",
       headers: {'Content-Type': 'application/json'},
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),

@@ -17,37 +17,26 @@ class MessageAdapter extends TypeAdapter<Message> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Message(
-      id: NullSafetyHelper.safeInt(fields[0]),
-      conversationId: NullSafetyHelper.safeInt(fields[1]),
-      senderId: NullSafetyHelper.safeInt(fields[2]),
-      messageText: NullSafetyHelper.safeString(fields[3]),
-      status: NullSafetyHelper.safeString(fields[4]),
-      isRead: NullSafetyHelper.safeBool(fields[5]),
-      isSender: NullSafetyHelper.safeBool(fields[6]),
-      timeAgo: NullSafetyHelper.safeString(fields[7]),
-
-      attachments:
-          fields[8] is List
-              ? (fields[8] as List)
-                  .map((e) => e is Attachment ? e : null)
-                  .whereType<Attachment>()
-                  .toList()
-              : null,
-
-      senderName: NullSafetyHelper.safeString(fields[9]),
-      senderAvatar: NullSafetyHelper.safeString(fields[10]),
-      createdAt: NullSafetyHelper.safeString(fields[11]),
-      updatedAt: NullSafetyHelper.safeString(fields[12]),
-
-      isSending: NullSafetyHelper.safeBool(fields[13]),
-      isFailed: NullSafetyHelper.safeBool(fields[14]),
-      localId: NullSafetyHelper.safeString(fields[15]),
-      serverId: NullSafetyHelper.safeInt(fields[16]),
-
-      createdLocalAt: fields[17] is DateTime ? fields[17] : DateTime.now(),
-
-      syncStatus: NullSafetyHelper.safeString(fields[18]),
-      hiveKey: NullSafetyHelper.safeInt(fields[19]),
+      id: fields[0] as int?,
+      conversationId: fields[1] as int?,
+      senderId: fields[2] as int?,
+      messageText: fields[3] as String?,
+      status: fields[4] as String?,
+      isRead: fields[5] as bool?,
+      isSender: fields[6] as bool?,
+      timeAgo: fields[7] as String?,
+      attachments: (fields[8] as List?)?.cast<Attachment>(),
+      senderName: fields[9] as String?,
+      senderAvatar: fields[10] as String?,
+      createdAt: fields[11] as String?,
+      updatedAt: fields[12] as String?,
+      isSending: fields[13] as bool?,
+      isFailed: fields[14] as bool?,
+      hiveKey: fields[19] as int?,
+      localId: fields[15] as String?,
+      serverId: fields[16] as int?,
+      createdLocalAt: fields[17] as DateTime?,
+      syncStatus: fields[18] as String?,
     );
   }
 

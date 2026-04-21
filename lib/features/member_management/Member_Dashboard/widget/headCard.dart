@@ -8,11 +8,7 @@ import 'package:curnectgate/features/estate_management/elections/widgets/votingS
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// desili1887@badfist.com
-/// siyaf87150@badfist.com
-/// narow43831@besenica.com
-/// bajodo5925@besenica.com
-/// jerel47960@besenica.com
+
 class Headcard extends ConsumerWidget {
   Headcard({super.key});
 

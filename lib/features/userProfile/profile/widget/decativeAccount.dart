@@ -89,12 +89,8 @@ class DeactiveAccount extends ConsumerWidget {
                 state.allReasonValid
                     ? () async {
                       final authData = await SharedPrefsService().getAuthData();
-                      final data = authData?['user'];
-                      if (authData != null) {
-                        final gender = data?['gender'] as String?;
-                        final notfypre =
-                            data?['preferred_notification'] as String?;
 
+                      if (authData != null) {
                         formprovider.deactiveAccount(
                           context: context,
                           reason: state.reason,

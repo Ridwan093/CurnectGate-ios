@@ -1,9 +1,9 @@
 import 'package:curnectgate/features/operations/OTP_Activation/model/nullSafty_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'metadata.dart';
-import 'due_item.dart';
-import 'receipt.dart';
 
+import 'due_item.dart';
+import 'metadata.dart';
+import 'receipt.dart';
 
 part 'transaction_item.freezed.dart';
 part 'transaction_item.g.dart';
@@ -53,7 +53,7 @@ class TransactionItem with _$TransactionItem {
       paidAt: NullSafetyHelper.safeString(json?['paid_at']),
       createdAt: NullSafetyHelper.safeString(json?['created_at']),
       updatedAt: NullSafetyHelper.safeString(json?['updated_at']),
-      dues: (NullSafetyHelper.safeList(json?['dues']) ?? [])
+      dues: (NullSafetyHelper.safeList(json?['dues']) )
           .map((e) => DueItem.safeFromJson(NullSafetyHelper.safeMap(e)))
           .toList(),
       receipt: Receipt.safeFromJson(NullSafetyHelper.safeMap(json?['receipt'])),

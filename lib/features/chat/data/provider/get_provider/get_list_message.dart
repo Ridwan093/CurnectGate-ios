@@ -372,6 +372,7 @@ class MessagesNotifier extends AutoDisposeFamilyNotifier<List<Message>, int> {
       state = currentMessages;
     }
   }
+
   Future<void> _saveToHive(List<Message> freshMessages) async {
     final userId = ref.read(currentUserIdProvider);
     final box = Hive.box<Message>(chatMessagesBoxName(userId));
@@ -396,9 +397,7 @@ class MessagesNotifier extends AutoDisposeFamilyNotifier<List<Message>, int> {
         // UPDATE existing
         // If the ID in Hive was a temporary one (timestamp), replace it
         if (existing.id != msg.id) {
-          log(
-            "Replacing temporary ID ${existing.id} with server ID ${msg.id}",
-          );
+          log("Replacing temporary ID ${existing.id} with server ID ${msg.id}");
           final updated = existing.copyWith(
             id: msg.id,
             serverId: msg.id,
@@ -479,6 +478,7 @@ class MessagesNotifier extends AutoDisposeFamilyNotifier<List<Message>, int> {
     state =
         box.values.where((m) => m.conversationId == conversationId).toList();
   }
+
   Future<void> addIncomingMessage(Map<String, dynamic> data) async {
     try {
       final newMsg = Message.safeFromJson(data);
@@ -533,7 +533,7 @@ class MessagesNotifier extends AutoDisposeFamilyNotifier<List<Message>, int> {
           createdAt: newMsg.createdAt,
           attachments: newMsg.attachments,
           syncStatus: 'sent',
-          isRead: newMsg.isRead
+          isRead: newMsg.isRead,
         );
 
         //  UPDATE IN HIVE (NOT ADD, NOT DELETE)
@@ -555,6 +555,15 @@ class MessagesNotifier extends AutoDisposeFamilyNotifier<List<Message>, int> {
       }
 
       //  4. ADD NEW MESSAGE (only if truly new)
+      // Guard against duplicate in Hive (e.g., after app restart or race conditions)
+      bool existsInHive = box.values.any(
+        (m) => m.id == newMsg.id || m.serverId == newMsg.id,
+      );
+      if (existsInHive) {
+        log("Duplicate incoming message detected in Hive, skipping add.");
+        return;
+      }
+
       log(" Adding NEW incoming message");
 
       final newMessage = Message(

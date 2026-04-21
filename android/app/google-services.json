@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1038277350674:android:2577c162060f98eaf94fcb",
+        "mobilesdk_app_id": "1:1038277350674:android:79c7e8d647609646f94fcb",
         "android_client_info": {
-          "package_name": "com.curnectgate.app"
+          "package_name": "com.ges.curnectgate"
         }
       },
       "oauth_client": [],

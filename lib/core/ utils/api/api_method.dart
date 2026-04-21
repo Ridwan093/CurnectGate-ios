@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:curnectgate/core/%20utils/api/api_url.dart';
-
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
@@ -42,7 +41,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -89,7 +88,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       rethrow;
     }
   }
@@ -152,7 +151,7 @@ class AppApiMethod {
         await SharedPrefsService().saveSessionCookie(cookieString);
       }
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -178,7 +177,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -229,7 +228,7 @@ class AppApiMethod {
         ),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -262,7 +261,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -297,7 +296,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -329,7 +328,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       rethrow;
     }
   }
@@ -376,7 +375,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -407,7 +406,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -435,7 +434,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -491,7 +490,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -546,7 +545,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -588,7 +587,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -631,7 +630,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -659,7 +658,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -683,7 +682,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -790,7 +789,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -817,7 +816,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -879,7 +878,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -934,7 +933,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -996,7 +995,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1020,7 +1019,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1091,7 +1090,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1128,7 +1127,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1202,7 +1201,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1275,7 +1274,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1318,7 +1317,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1365,7 +1364,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1402,7 +1401,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1471,7 +1470,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1495,7 +1494,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1529,7 +1528,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1568,7 +1567,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1663,7 +1662,102 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> grantEventEntrys({
+    required int id,
+    required String guestName,
+    required String guestPhone,
+    required String vehiclePlate,
+    required int guestCount,
+    required String accessPoint,
+    required String securityNotes,
+    required String validationMethod,
+  }) async {
+    try {
+      final response = await _dio.post(
+        "$grantEventEntry$id/grant-entry",
+        data: {
+          "guest_name": guestName,
+          "guest_phone": guestPhone,
+          "vehicle_plate_number": vehiclePlate,
+          "guest_count": guestCount,
+          "access_point": accessPoint,
+          "security_notes": securityNotes,
+          "validation_method": validationMethod,
+        },
+        options: Options(validateStatus: (status) => status! < 500),
+      );
+      return response.data;
+    } on DioException {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> denyEventEntry({
+    required int id,
+    required String guestName,
+    required String guestPhone,
+    required String vehiclePlate,
+    required int guestCount,
+    required String accessPoint,
+    required String securityNotes,
+    required String validationMethod,
+    required String denialReason,
+  }) async {
+    try {
+      final response = await _dio.post(
+        "$denyEventEntrys$id/deny-entry",
+        data: {
+          "guest_name": guestName,
+          "guest_phone": guestPhone,
+          "vehicle_plate_number": vehiclePlate,
+          "guest_count": guestCount,
+          "access_point": accessPoint,
+          "security_notes": securityNotes,
+          "validation_method": validationMethod,
+          "denial_reason": denialReason,
+        },
+        options: Options(validateStatus: (status) => status! < 500),
+      );
+      return response.data;
+    } on DioException {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> validateEvenCode({
+    required String token,
+    required String otpCode,
+    required String accessType,
+    required BuildContext context,
+  }) async {
+    try {
+      final Map<String, dynamic> requestData = {
+        "event_code": otpCode,
+        "validation_method": "code_entry", //manual, code_entry
+        "access_point": accessType,
+      };
+
+      final response = await _dio.post(
+        validateEventCode,
+        data: requestData,
+        options: Options(validateStatus: (status) => status! < 500),
+      );
+
+      return response.data;
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1696,7 +1790,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1728,7 +1822,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1761,7 +1855,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException{
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1794,7 +1888,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1851,7 +1945,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1913,7 +2007,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1945,7 +2039,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -1978,7 +2072,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2011,7 +2105,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2043,7 +2137,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2075,7 +2169,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2107,7 +2201,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2139,7 +2233,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2167,7 +2261,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2195,7 +2289,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2233,7 +2327,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException{
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2277,29 +2371,37 @@ class AppApiMethod {
     required bool isSharedWithHousehold,
     required String notificationmethod,
     required String intarver,
+    List<int>? householdMembers,
     required String id,
     required BuildContext context,
   }) async {
     try {
+      final String type = remeberType(remberType);
       final Map<String, dynamic> requestData = {
         "title": title,
         "description": dec,
         "category": categorys(category),
-        "reminder_type": remeberType(remberType),
-        "reminder_datetime": time,
-        "recurrence_pattern": {"frequency": frequence, "interval": intarver},
-        "notification_method": notificationmethod,
+        "reminder_type": type,
+        "reminder_datetime": time.split('.').first,
+        if (type != "one_time")
+          "recurrence_pattern": {
+            "frequency": frequence.toLowerCase(),
+            "interval": int.tryParse(intarver) ?? 1,
+          },
+        "notification_method": notificationmethod.toLowerCase(),
         "is_shared_with_household": isSharedWithHousehold,
+        if (isSharedWithHousehold) "household_members": householdMembers ?? [],
         "custom_alert_settings": {"sound": "default", "vibration": true},
       };
-
+      log(requestData.toString());
       final response = await _dio.post(
         createReminder,
         data: requestData,
         options: Options(validateStatus: (status) => status! < 500),
       );
+      log(response.toString());
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2324,7 +2426,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2351,7 +2453,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2383,7 +2485,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2426,7 +2528,7 @@ class AppApiMethod {
         ),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2474,7 +2576,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2522,7 +2624,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2561,7 +2663,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2585,7 +2687,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2609,7 +2711,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2672,7 +2774,7 @@ class AppApiMethod {
         await SharedPrefsService().saveSessionCookie(cookieString);
       }
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2740,7 +2842,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException{
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2794,7 +2896,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       showCustomSuccessToast(
         context: context,
         message: "",
@@ -2857,7 +2959,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       rethrow;
     }
   }
@@ -2877,7 +2979,7 @@ class AppApiMethod {
         ),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       rethrow;
     }
   }
@@ -2895,7 +2997,7 @@ class AppApiMethod {
         ),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       rethrow;
     }
   }
@@ -2929,7 +3031,7 @@ class AppApiMethod {
         ),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       rethrow;
     }
   }
@@ -2944,7 +3046,7 @@ class AppApiMethod {
         ),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       rethrow;
     }
   }
@@ -2992,7 +3094,7 @@ class AppApiMethod {
         ),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       rethrow;
     }
   }
@@ -3077,7 +3179,7 @@ class AppApiMethod {
         ),
       );
       return response.data;
-    } on DioException  {
+    } on DioException {
       rethrow;
     }
   }

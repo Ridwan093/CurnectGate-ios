@@ -32,64 +32,42 @@ class Votingsettingcheck extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-   ref.listen<AsyncValue<dynamic>>(
-    votingSettingsProvider,
-    (previous, next) {
-      next.whenOrNull(
-        error: (error, stackTrace) {
-          final errorStr = error.toString().toLowerCase();
+    ref.listen<AsyncValue<dynamic>>(votingSettingsProvider, (previous, next) {
+      if (next.hasError) {
+        final err = next.error;
+        final errorStr = err.toString().toLowerCase();
+        bool isAccessDenied = false;
 
-          if (errorStr.contains("access denied")) {
-            // Only set the error if it's different from the previous one
-            // (prevents duplicates when the provider keeps the same error)
-            if (previous?.hasError != true || 
-                previous?.error.toString() != error.toString()) {
-              
-              ref.read(electionProvider.notifier).setError(error.toString());
-            }
+        if (err is DioException && err.response?.statusCode == 403) {
+          isAccessDenied = true;
+        } else if (errorStr.contains("access denied")) {
+          isAccessDenied = true;
+        }
+
+        if (isAccessDenied) {
+          // Only set the error if it's different from the previous one
+          if (previous?.hasError != true ||
+              previous?.error.toString() != err.toString()) {
+            ref.read(electionProvider.notifier).setError(err.toString());
           }
-        },
-      );
-    },
-    // Optional: fireImmediately: false (default) is usually what you want
-  );
+        }
+      }
+    });
 
-          // final message = getUserFriendlyError(error);
-          // showCustomSuccessToast(
-          //   context: context,
-    
     final voteSetting = ref.watch(votingSettingsProvider);
-    //   if (voteSetting?.data?.settings != null &&
-    //       voteSetting!.data!.settings!.votingEnabled!) {
-    //     return child;
-    //   } else {
-    //     return Container();
-    //   }
-    //   // VoteProgressCard(),
-    // }
 
-    return voteSetting.when(
-      data: (poll) {
-        try {
-          final polls =
-              (poll?.data?.settings?.votingEnabled ?? false) &&
-              poll?.data?.settings! != null;
-          return polls ? child : SizedBox.shrink();
-        } catch (e) {
-          return SizedBox.shrink();
-        }
-      },
+    if (voteSetting.hasValue) {
+      final poll = voteSetting.value;
+      try {
+        final polls =
+            (poll?.data?.settings?.votingEnabled ?? false) &&
+            poll?.data?.settings != null;
+        return polls ? child : const SizedBox.shrink();
+      } catch (e) {
+        return const SizedBox.shrink();
+      }
+    }
 
-      loading: () {
-        try {
-          return SizedBox.shrink();
-        } catch (e) {
-          return SizedBox.shrink();
-        }
-      },
-      error: (error, stack) {
-        return SizedBox.shrink();
-      },
-    );
+    return const SizedBox.shrink();
   }
 }
