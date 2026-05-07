@@ -25,6 +25,7 @@ mixin _$OutstandingDuesResponse {
   String? get message => throw _privateConstructorUsedError;
   int? get code => throw _privateConstructorUsedError;
   OutstandingDuesData? get data => throw _privateConstructorUsedError;
+  String? get minimumPayableAmount => throw _privateConstructorUsedError;
 
   /// Serializes this OutstandingDuesResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -43,7 +44,11 @@ abstract class $OutstandingDuesResponseCopyWith<$Res> {
       _$OutstandingDuesResponseCopyWithImpl<$Res, OutstandingDuesResponse>;
   @useResult
   $Res call(
-      {bool? status, String? message, int? code, OutstandingDuesData? data});
+      {bool? status,
+      String? message,
+      int? code,
+      OutstandingDuesData? data,
+      String? minimumPayableAmount});
 
   $OutstandingDuesDataCopyWith<$Res>? get data;
 }
@@ -68,6 +73,7 @@ class _$OutstandingDuesResponseCopyWithImpl<$Res,
     Object? message = freezed,
     Object? code = freezed,
     Object? data = freezed,
+    Object? minimumPayableAmount = freezed,
   }) {
     return _then(_value.copyWith(
       status: freezed == status
@@ -86,6 +92,10 @@ class _$OutstandingDuesResponseCopyWithImpl<$Res,
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
               as OutstandingDuesData?,
+      minimumPayableAmount: freezed == minimumPayableAmount
+          ? _value.minimumPayableAmount
+          : minimumPayableAmount // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 
@@ -114,7 +124,11 @@ abstract class _$$OutstandingDuesResponseImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {bool? status, String? message, int? code, OutstandingDuesData? data});
+      {bool? status,
+      String? message,
+      int? code,
+      OutstandingDuesData? data,
+      String? minimumPayableAmount});
 
   @override
   $OutstandingDuesDataCopyWith<$Res>? get data;
@@ -139,6 +153,7 @@ class __$$OutstandingDuesResponseImplCopyWithImpl<$Res>
     Object? message = freezed,
     Object? code = freezed,
     Object? data = freezed,
+    Object? minimumPayableAmount = freezed,
   }) {
     return _then(_$OutstandingDuesResponseImpl(
       status: freezed == status
@@ -157,6 +172,10 @@ class __$$OutstandingDuesResponseImplCopyWithImpl<$Res>
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
               as OutstandingDuesData?,
+      minimumPayableAmount: freezed == minimumPayableAmount
+          ? _value.minimumPayableAmount
+          : minimumPayableAmount // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -166,7 +185,11 @@ class __$$OutstandingDuesResponseImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class _$OutstandingDuesResponseImpl implements _OutstandingDuesResponse {
   const _$OutstandingDuesResponseImpl(
-      {this.status, this.message, this.code, this.data});
+      {this.status,
+      this.message,
+      this.code,
+      this.data,
+      this.minimumPayableAmount});
 
   factory _$OutstandingDuesResponseImpl.fromJson(Map<String, dynamic> json) =>
       _$$OutstandingDuesResponseImplFromJson(json);
@@ -179,10 +202,12 @@ class _$OutstandingDuesResponseImpl implements _OutstandingDuesResponse {
   final int? code;
   @override
   final OutstandingDuesData? data;
+  @override
+  final String? minimumPayableAmount;
 
   @override
   String toString() {
-    return 'OutstandingDuesResponse(status: $status, message: $message, code: $code, data: $data)';
+    return 'OutstandingDuesResponse(status: $status, message: $message, code: $code, data: $data, minimumPayableAmount: $minimumPayableAmount)';
   }
 
   @override
@@ -193,12 +218,15 @@ class _$OutstandingDuesResponseImpl implements _OutstandingDuesResponse {
             (identical(other.status, status) || other.status == status) &&
             (identical(other.message, message) || other.message == message) &&
             (identical(other.code, code) || other.code == code) &&
-            (identical(other.data, data) || other.data == data));
+            (identical(other.data, data) || other.data == data) &&
+            (identical(other.minimumPayableAmount, minimumPayableAmount) ||
+                other.minimumPayableAmount == minimumPayableAmount));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, status, message, code, data);
+  int get hashCode =>
+      Object.hash(runtimeType, status, message, code, data, minimumPayableAmount);
 
   /// Create a copy of OutstandingDuesResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -222,7 +250,8 @@ abstract class _OutstandingDuesResponse implements OutstandingDuesResponse {
       {final bool? status,
       final String? message,
       final int? code,
-      final OutstandingDuesData? data}) = _$OutstandingDuesResponseImpl;
+      final OutstandingDuesData? data,
+      final String? minimumPayableAmount}) = _$OutstandingDuesResponseImpl;
 
   factory _OutstandingDuesResponse.fromJson(Map<String, dynamic> json) =
       _$OutstandingDuesResponseImpl.fromJson;
@@ -235,6 +264,8 @@ abstract class _OutstandingDuesResponse implements OutstandingDuesResponse {
   int? get code;
   @override
   OutstandingDuesData? get data;
+  @override
+  String? get minimumPayableAmount;
 
   /// Create a copy of OutstandingDuesResponse
   /// with the given fields replaced by the non-null parameter values.

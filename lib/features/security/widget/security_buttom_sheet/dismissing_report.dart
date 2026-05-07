@@ -83,7 +83,7 @@ class _DismissingReportState extends ConsumerState<DismissingReport> {
                   ),
                   SizedBox(height: 24),
                   if (widget.title.toString().toLowerCase().contains(
-                    "resovled",
+                    "resolve",
                   )) ...[
                     ReusabelProfileForm(
                       controller: _noteController,
@@ -118,7 +118,7 @@ class _DismissingReportState extends ConsumerState<DismissingReport> {
 
                   SizedBox(height: 30),
                   if (widget.title.toString().toLowerCase().contains(
-                    "resovled",
+                    "resolve",
                   )) ...[
                     _buildCommentButton(
                       onTap:

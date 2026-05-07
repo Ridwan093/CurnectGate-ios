@@ -22,13 +22,6 @@ class ReportCard extends ConsumerWidget {
     final size = MediaQuery.sizeOf(context);
     return InkWell(
       onTap: () {
-        // showUserBottomSheet(
-        //   context: context,
-        //   headertitle: "Report violation",
-        //   headersubtitle: "Report issues like noise, parking, or misconduct",
-        //   ref: ref,
-        //   bottom: BottomSheetView.resolutionTime,
-        // );
         Navigator.push(
           context,
           PageRouteBuilder(
@@ -73,26 +66,29 @@ class ReportCard extends ConsumerWidget {
                     context,
                     ref,
                     violation.id,
-                    violation.locationDetails?.additionalLocation??"",
+                    violation.locationDetails?.additionalLocation ?? "",
                   ),
                   _buildReportdiscription(
                     truncateWithEllipsis(violation.description, maxLength: 20),
                   ),
                   _buildAnonymouswidget(
                     violation.isAnonymous,
-                    violation.reporter?.name??"",
+                    violation.reporter?.name ?? "",
                   ),
                   SizedBox(height: 15),
-
-                  SizedBox(
-                    height: 100,
-                    child: PageView(
-                      children:
-                          violation.evidence!.mediaUrls.map((e) {
-                            return _buildCarReportImage(size, e);
-                          }).toList(),
+                  if (violation.evidence?.mediaUrls != null &&
+                      violation.evidence!.mediaUrls.isNotEmpty) ...[
+                    SizedBox(
+                      height: 100,
+                      child: PageView(
+                        children:
+                            violation.evidence!.mediaUrls.map((e) {
+                              return _buildCarReportImage(size, e);
+                            }).toList(),
+                      ),
                     ),
-                  ),
+                  ],
+
                   SizedBox(height: 10),
 
                   if (violation.status.contains("resolved")) ...[

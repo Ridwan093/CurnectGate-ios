@@ -196,16 +196,16 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
           },
         ),
         IconButton(
-          icon: Icon(tabIndex == 0 ? Icons.settings_outlined : Icons.add),
+          icon: Icon(tabIndex == 0 ? null : Icons.add),
           onPressed: () {
             if (tabIndex == 0) {
-              showUserBottomSheet(
-                context: context,
-                headertitle: "",
-                headersubtitle: "",
-                ref: ref,
-                bottom: BottomSheetView.notificationSetting,
-              );
+              // showUserBottomSheet(
+              //   context: context,
+              //   headertitle: "",
+              //   headersubtitle: "",
+              //   ref: ref,
+              //   bottom: BottomSheetView.notificationSetting,
+              // );
             } else {
               ref.watch(reminderProvider.notifier).resetAll();
               showUserBottomSheet(

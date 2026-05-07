@@ -15,6 +15,7 @@ _$OutstandingDuesResponseImpl _$$OutstandingDuesResponseImplFromJson(
       data: json['data'] == null
           ? null
           : OutstandingDuesData.fromJson(json['data'] as Map<String, dynamic>),
+      minimumPayableAmount: json['minimum_payable_amount'] as String?,
     );
 
 Map<String, dynamic> _$$OutstandingDuesResponseImplToJson(
@@ -24,4 +25,5 @@ Map<String, dynamic> _$$OutstandingDuesResponseImplToJson(
       'message': instance.message,
       'code': instance.code,
       'data': instance.data?.toJson(),
+      'minimum_payable_amount': instance.minimumPayableAmount,
     };

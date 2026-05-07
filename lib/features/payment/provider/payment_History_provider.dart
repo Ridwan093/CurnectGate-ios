@@ -44,9 +44,9 @@ class PaymentHistoryNotifier
       return freshPaymentHistory;
     } catch (e) {
       // If error occurs, return local data if available
-      log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");
+      log("${e}payment History");
       if (localPaymentHistory != null) {
-        log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");
+        log("${e} payment History");
         // Show error toast but still return local data
         // WidgetsBinding.instance.addPostFrameCallback((_) {
         //   ScaffoldMessenger.of(context).showSnackBar(

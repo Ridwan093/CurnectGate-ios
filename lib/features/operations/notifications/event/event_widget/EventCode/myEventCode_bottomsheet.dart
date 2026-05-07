@@ -21,7 +21,7 @@ class MyEventCode extends ConsumerWidget {
       child: SafeArea(
         child: Column(
           key: const ValueKey('userDetails'),
-        
+
           mainAxisSize: MainAxisSize.min,
           children: [
             // Header section
@@ -31,7 +31,7 @@ class MyEventCode extends ConsumerWidget {
                 const SizedBox(height: 30),
                 _buildAddMemberButton(size, context, ref),
                 const SizedBox(height: 30),
-        
+
                 Text(
                   "Event code",
                   style: TextStyle(
@@ -45,7 +45,7 @@ class MyEventCode extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 35),
-            Expanded(child: EventCodeData()),
+            Expanded(child: EventCodeData(isBottomSheet: !isTab)),
           ],
         ),
       ),

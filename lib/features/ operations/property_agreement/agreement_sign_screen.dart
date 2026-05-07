@@ -164,7 +164,7 @@ class _AgreementSignScreenState extends ConsumerState<AgreementSignScreen> {
 
                     const SizedBox(height: 20),
 
-                    // 📋 Tab Content
+                    // Tab Content
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 250),
                       child:
@@ -175,7 +175,7 @@ class _AgreementSignScreenState extends ConsumerState<AgreementSignScreen> {
 
                     const SizedBox(height: 40),
 
-                    // 🔘 Buttons
+                    //Buttons
                     Column(
                       children: [
                         ValueListenableBuilder<bool>(

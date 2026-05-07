@@ -134,7 +134,11 @@ class SecurityReportBody extends ConsumerWidget {
             );
           },
           child: ParkingViolationCard(
-            imageUrl: data.evidence?.mediaUrls.first.toString(),
+            imageUrl:
+                (data.evidence?.mediaUrls != null &&
+                        data.evidence!.mediaUrls.isNotEmpty)
+                    ? data.evidence!.mediaUrls.first.toString()
+                    : null,
             violationType: data.locationDetails?.additionalLocation ?? "",
             reportedBy:
                 data.isAnonymous ? "Anonymous" : data.reporter?.name ?? "",
@@ -159,7 +163,7 @@ class SecurityReportBody extends ConsumerWidget {
               showUserBottomSheet(
                 id: data.id,
                 context: context,
-                headertitle: "Resovled this violation?",
+                headertitle: "Resolve this violation?",
                 headersubtitle:
                     "please provide the resolution notes for this report",
                 ref: ref,

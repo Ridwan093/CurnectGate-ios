@@ -26,8 +26,6 @@ import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/a
 import 'package:curnectgate/features/member_management/estate_settings/widget/bottom_seet/emergency.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/provider/active_provider.dart';
-import 'package:curnectgate/features/operations/OTP_Activation/widget/custom_validity.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/generateOTP_with_validity.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/revokedOTP.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/Permit_sheet.dart';
@@ -59,7 +57,6 @@ import 'package:curnectgate/features/operations/violation/widget/resulationTime.
 import 'package:curnectgate/features/operations/violation/widget/violation_form_bottom_sheet.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/dashbord_Model/payment_dashboard_data.dart';
 import 'package:curnectgate/features/payment/widget/buttom_sheet_widget/funding_wallet.dart';
-import 'package:curnectgate/features/payment/widget/buttom_sheet_widget/funding_wallet_amout.dart';
 import 'package:curnectgate/features/payment/widget/buttom_sheet_widget/payOutstanding.dart';
 import 'package:curnectgate/features/payment/widget/buttom_sheet_widget/succeful_button_sheet.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/MenatainLog.dart';
@@ -79,11 +76,11 @@ import 'package:curnectgate/features/security/widget/security_buttom_sheet/valid
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/didgita_id/finalMessageApproved.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/didgita_id/finalMessageDenying.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/didgita_id/validateOtp.dart';
-import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/event_code/event_confirmation_page.dart';
-import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/event_code/validate_event_code.dart';
-import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/event_code/grant_event_entry.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/event_code/deny_event_entry.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/event_code/event_access_message.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/event_code/event_confirmation_page.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/event_code/grant_event_entry.dart';
+import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/event_code/validate_event_code.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/optionforCodeValidation.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/scanoption.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/validation_option.dart';
@@ -172,18 +169,6 @@ class BottomsheetDetails extends ConsumerWidget {
         // return ActiveHistory();fundingAmount
         return OtpTabsPage();
 
-      case BottomSheetView.fundingAmount:
-        // return ActiveHistory();fundingAmount
-        return FundWalletBottomSheet(
-          private: headertitle,
-          puplic: headersubtitle,
-        );
-      case BottomSheetView.validatorcustom:
-        return CustomValidity(
-          onChanged:
-              (value) =>
-                  ref.read(generateNotifierProvider.notifier).setPeriod(value),
-        );
       case BottomSheetView.eventRsvpDetails:
         // return ActiveHistory();fundingAmount
         return EventRsvpDetaile(data: event!);
@@ -592,7 +577,6 @@ class BottomsheetDetails extends ConsumerWidget {
     late String title;
 
     final chatNotifier = ref.watch(chatProvider.notifier);
-
 
     switch (bottom) {
       case BottomSheetView.vendorLog:

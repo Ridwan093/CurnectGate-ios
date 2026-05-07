@@ -9,11 +9,8 @@ import 'package:curnectgate/core/navigation/app_rout.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/chat/data/hive_migration.dart';
 import 'package:curnectgate/features/chat/services/reverb_service.dart';
-// Your models (from earlier steps)
-
 import 'package:curnectgate/features/signOut/errorWidget/sesional_expired.dart';
 import 'package:curnectgate/firebase_options.dart';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -34,10 +31,8 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   //  CRITICAL: Must be the VERY FIRST call in main() before anything else.
-  // This registers the Dart entry point for background message handling.
 
   WidgetsFlutterBinding.ensureInitialized();
-
   // 2. Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -69,7 +64,7 @@ void main() async {
   runApp(
     ProviderScope(
       child: MyApp(),
-      // child: DevicePreview(enabled: false, builder: (context) => MyApp()),
+      // child: DevicePreview(enabled: true, builder: (context) => MyApp()),
     ),
   );
 }
@@ -136,16 +131,31 @@ class _MyAppState extends ConsumerState<MyApp> {
             Locale('en'), // English
             // Add more locales if you support them
           ],
+          builder: (context, child) {
+            final mediaQuery = MediaQuery.of(context);
+            final scale = mediaQuery.textScaleFactor.clamp(0.9, 1.1);
+
+            return MediaQuery(
+              data: mediaQuery.copyWith(textScaleFactor: scale),
+              child: child!,
+            );
+          },
+
           theme: ThemeData(
+            progressIndicatorTheme: ProgressIndicatorThemeData(
+              color: AppColors.instance.yellow500,
+              refreshBackgroundColor: Colors.white,
+            ),
             textSelectionTheme: TextSelectionThemeData(
               selectionColor: AppColors.instance.teal400,
               selectionHandleColor: AppColors.instance.teal400,
               cursorColor: Colors.black,
             ),
           ),
+
           routerConfig: router,
           useInheritedMediaQuery: true,
-       
+
           // GoRouter integration
           debugShowCheckedModeBanner: false,
           title: 'CurnectGate',
@@ -154,3 +164,8 @@ class _MyAppState extends ConsumerState<MyApp> {
     );
   }
 }
+
+/// spouse => vojeyep499@inraud.com /pass =Jimoh3310@
+/// project Manager => fisori1255@iapapi.com/
+/// family member => tajokah766@iapapi.com/
+/// Staf Member => garokag883@inraud.com

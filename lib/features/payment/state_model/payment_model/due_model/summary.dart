@@ -13,6 +13,7 @@ class Summary with _$Summary {
     int? totalOverdue,
     int? count,
     int? overdueCount,
+    String? minimumPayableAmount,
   }) = _Summary;
 
   factory Summary.fromJson(Map<String, dynamic> json) =>
@@ -24,6 +25,7 @@ class Summary with _$Summary {
       totalOverdue: NullSafetyHelper.safeInt(json?['total_overdue']),
       count: NullSafetyHelper.safeInt(json?['count']),
       overdueCount: NullSafetyHelper.safeInt(json?['overdue_count']),
+      minimumPayableAmount: NullSafetyHelper.safeString(json?['total_minimum_payable']),
     );
   }
 
@@ -32,5 +34,6 @@ class Summary with _$Summary {
         totalOverdue: 0,
         count: 0,
         overdueCount: 0,
+        minimumPayableAmount: '0.00',
       );
 }

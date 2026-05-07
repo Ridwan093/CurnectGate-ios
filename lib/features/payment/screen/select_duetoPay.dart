@@ -1,396 +1,322 @@
-import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'dart:developer';
+
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/payment/state_model/payment_model/due_model/outstanding_due.dart';
+import 'package:curnectgate/features/payment/provider/due_payment_provider.dart';
+import 'package:curnectgate/features/payment/provider/due_state_provider.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/due_model/outstanding_dues_data.dart';
-import 'package:curnectgate/features/payment/state_model/state.dart';
+import 'package:curnectgate/features/payment/widget/bill_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
+// ================== MAIN SCREEN ==================
+
+// ================== MAIN SCREEN ==================
 class DuePaymentSelection extends ConsumerWidget {
   final OutstandingDuesData? data;
-
   final String walletBalance;
   final String totalDue;
+
   const DuePaymentSelection({
     super.key,
     required this.data,
     required this.walletBalance,
     required this.totalDue,
   });
-  String formatPrice(String price) {
-    final number = double.tryParse(price) ?? 0.0;
-    final formatter = NumberFormat('#,##0.00');
-    return formatter.format(number);
-  }
-
-  String formatDueDate(String isoDate) {
-    DateTime date = DateTime.parse(isoDate);
-    return DateFormat('dd MMM yyyy').format(date);
-  }
-
-  String _iconLogo(String icon) {
-    switch (icon.toLowerCase()) {
-      case "water":
-        return AssetPaths.waterDrop;
-      case "service":
-        return AssetPaths.serviceFee;
-
-      case "maintenace":
-        return AssetPaths.maintenance;
-      case "light":
-        return AssetPaths.navCreditCardFilled;
-
-      default:
-        return AssetPaths.maintenance;
-    }
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final size = MediaQuery.sizeOf(context);
-    final duePayments = data?.dues ?? [];
-    final hasSelection = ref.watch(selectedDueIdsProvider).isNotEmpty;
+    final bills = data?.dues ?? [];
+    final selectedAmounts = ref.watch(selectedBillsProvider);
+    final totalPayable = selectedAmounts.values.fold(0.0, (a, b) => a + b);
+
+    final totalDueAmount = double.tryParse(totalDue) ?? 0.0;
+    final hasPartial = bills.any((b) => b.allowPartialPayment == true);
+    final allSelected =
+        bills.isNotEmpty && selectedAmounts.length == bills.length;
+
+    final response = ref.watch(paymentDueProvider).value;
+    final minimumAmountGlobal =
+        double.tryParse(
+          response?.minimumPayableAmount ??
+              data?.minimumPayableAmount ??
+              data?.summary?.minimumPayableAmount ??
+              '0',
+        ) ??
+        0.0;
+
+    log(
+      "MINIMUM PAYABLE: $minimumAmountGlobal (Response: ${response?.minimumPayableAmount}, Data: ${data?.minimumPayableAmount}, Summary: ${data?.summary?.minimumPayableAmount})",
+    );
+
+    final anyBelowMinimum = selectedAmounts.entries.any((entry) {
+      final bill = bills.firstWhere((b) => b.id == entry.key);
+      final totalAmount = double.tryParse(bill.amount ?? '0') ?? 0.0;
+      final isFullPayment = (entry.value - totalAmount).abs() < 0.01;
+      final billMinimum =
+          double.tryParse(bill.minimumPayableAmount ?? '0') ?? 0.0;
+      final effectiveMinimum =
+          billMinimum > 0 ? billMinimum : minimumAmountGlobal;
+
+      return !isFullPayment &&
+          effectiveMinimum > 0 &&
+          entry.value < effectiveMinimum;
+    });
 
     return Scaffold(
-      bottomNavigationBar: SizedBox(
-        height: 70,
-        child: _buildBottonsheet(
-          ref,
-          context,
-          hasSelection,
-          duePayments,
-          walletBalance,
-        ),
-      ),
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
         leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back_ios, color: AppColors.instance.black600),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: AppColors.instance.black600,
+            size: 20,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+        centerTitle: true,
+        title: Text(
+          'Outstanding Bills',
+          style: TextStyle(
+            fontFamily: FontFamilies.interDisplay,
+            fontWeight: FontFamilies.bold,
+            color: AppColors.instance.black600,
+            fontSize: 18,
+          ),
         ),
       ),
-      body: _buildbody(size, ref, duePayments),
-    );
-  }
-
-  Widget _buildBottonsheet(
-    WidgetRef ref,
-    BuildContext context,
-    bool hasSelection,
-    List<OutstandingDue> listData,
-    String walletBalance,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-      child: SingleChildScrollView(
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
         child: Column(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap:
-                        hasSelection
-                            ? () {
-                              final selectedIds = ref.read(
-                                selectedDueIdsProvider,
-                              );
-                              final selectedPayments =
-                                  listData
-                                      .where((p) => selectedIds.contains(p.id))
-                                      .toList();
-                              context.pop();
-                              context.pushNamed(
-                                AppRoutes.paymentReview,
-                                extra: {
-                                  "list": selectedPayments,
-                                  "wallet": walletBalance,
-                                },
-                              );
-                            }
-                            : null,
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color:
-                            hasSelection
-                                ? AppColors.instance.black600
-                                : AppColors.instance.grey400,
-                        borderRadius: BorderRadius.circular(6),
+            // Total Outstanding Card
+            Container(
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(24),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: AppColors.instance.teal400,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.instance.teal400.withOpacity(0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'TOTAL DUE AMOUNT',
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          color: Colors.white.withOpacity(0.8),
+                          fontSize: 12,
+                          letterSpacing: 1.2,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      child: Center(
-                        child: Text(
-                          "Next",
-                          style: TextStyle(
-                            fontFamily: FontFamilies.interDisplay,
-                            color: Colors.white,
-
-                            fontSize: 14,
+                      if (hasPartial)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
                           ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Text(
+                            'PARTIAL',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    '₦ ${totalDueAmount.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${bills.length} bills pending',
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      color: Colors.white.withOpacity(0.7),
+                      fontSize: 13,
+                    ),
+                  ),
+                  if (data?.minimumPayableAmount != null &&
+                      (double.tryParse(data!.minimumPayableAmount!) ?? 0) > 0)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        'Minimum partial payment: ₦ ${data!.minimumPayableAmount}',
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          color: Colors.white.withOpacity(0.9),
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  ),
-                ),
-                SizedBox(width: 10),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Next step:",
-                      style: TextStyle(
-                        fontFamily: FontFamilies.interDisplay,
-                        color: AppColors.instance.black300,
-                        fontSize: 12,
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      "2:Review",
-                      style: TextStyle(
-                        fontFamily: FontFamilies.interDisplay,
-                        color: AppColors.instance.black300,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildbody(Size size, WidgetRef ref, List<OutstandingDue> listData) {
-    final duePayments = listData;
-    return Container(
-      width: size.width,
-      padding: EdgeInsets.all(12),
-      margin: EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            spreadRadius: 2,
-            blurRadius: 4,
-            color: AppColors.instance.grey300,
-          ),
-        ],
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Pay Custom",
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                fontWeight: FontFamilies.bold,
-                color: AppColors.instance.black600,
-              ),
-            ),
-            SizedBox(height: 13),
-            _buildNotifyerBox(),
-            ...duePayments.map(
-              (payment) => Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: _buildPaymentItem(payment, ref),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNotifyerBox() {
-    return Container(
-      padding: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        border: Border.all(
-          style: BorderStyle.solid,
-          color: AppColors.instance.grey300,
-        ),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Your Wallet",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontSize: 12,
-                    wordSpacing: 2,
-                    color: AppColors.instance.black600,
-                  ),
-                ),
-                Text(
-                  "₦${formatPrice(walletBalance)}",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontSize: 12,
-                    wordSpacing: 2,
-                    color: AppColors.instance.black300,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                style: BorderStyle.solid,
-                color: AppColors.instance.grey300,
+                ],
               ),
             ),
 
-            child: Icon(
-              Icons.arrow_forward,
-              color: AppColors.instance.black600,
-              size: 12,
-            ),
-          ),
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  "Your Total due",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontSize: 12,
-                    wordSpacing: 2,
-                    color: AppColors.instance.black600,
-                  ),
-                ),
-                Text(
-                  "₦${formatPrice(totalDue)}",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontSize: 12,
-                    wordSpacing: 2,
-                    color: AppColors.instance.black300,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPaymentItem(OutstandingDue payment, WidgetRef ref) {
-    final isSelected = ref
-        .watch(selectedDueIdsProvider)
-        .contains(payment.id ?? 0);
-
-    return InkWell(
-      onTap:
-          () => ref
-              .read(selectedDueIdsProvider.notifier)
-              .toggleSelection(payment.id ?? 0),
-
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-        decoration: BoxDecoration(
-          color: AppColors.instance.grey300,
-
-          border:
-              isSelected
-                  ? Border.all(color: AppColors.instance.black600, width: 2)
-                  : Border.all(color: Colors.transparent),
-          boxShadow:
-              isSelected
-                  ? [
-                    BoxShadow(
-                      color: AppColors.instance.black600.withOpacity(0.2),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ]
-                  : null,
-        ),
-        child: Row(
-          children: [
-            // Leading Icon
-            CircleAvatar(
-              radius: 22,
-              backgroundColor: AppColors.instance.teal300,
-              child: Image.asset(
-                _iconLogo(payment.feeCategory?.icon ?? ""),
-                width: 28,
-                height: 28,
-                fit: BoxFit.contain,
-              ),
-            ),
-
-            const SizedBox(width: 16),
-
-            // Title + Subtitle — takes available space
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    payment.feeCategory?.name ?? "Unknown Fee",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    'Pending Bills',
                     style: TextStyle(
+                      fontSize: 16,
                       fontFamily: FontFamilies.interDisplay,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontFamilies.bold,
                       color: AppColors.instance.black600,
-                      fontSize: 15,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    formatDueDate(payment.dueDate ?? ""),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.instance.black400,
-                      fontSize: 13,
+                  TextButton(
+                    onPressed: () {
+                      if (allSelected) {
+                        ref
+                            .read(selectedBillsProvider.notifier)
+                            .clearSelection();
+                      } else {
+                        ref
+                            .read(selectedBillsProvider.notifier)
+                            .selectAll(bills);
+                      }
+                    },
+                    child: Text(
+                      allSelected ? 'Unselect All' : 'Select All',
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        color: AppColors.instance.teal400,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
 
-            const SizedBox(width: 16),
-
-            // Trailing Radio Button
-            Icon(
-              isSelected
-                  ? Icons.radio_button_checked
-                  : Icons.radio_button_unchecked,
-              color:
-                  isSelected
-                      ? AppColors.instance.black600
-                      : AppColors.instance.black300,
-              size: 26,
+            // Bills List
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: bills.length,
+                itemBuilder: (context, index) {
+                  return BillCard(bill: bills[index]);
+                },
+              ),
             ),
           ],
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, -4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '${selectedAmounts.length} items selected',
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      color: AppColors.instance.black400,
+                    ),
+                  ),
+                  Text(
+                    '₦ ${totalPayable.toStringAsFixed(2)}',
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.instance.black600,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                height: 54,
+                child: ElevatedButton(
+                  onPressed:
+                      totalPayable > 0 && !anyBelowMinimum
+                          ? () {
+                            final selectedPaymentsList =
+                                bills
+                                    .where(
+                                      (b) => selectedAmounts.containsKey(b.id),
+                                    )
+                                    .toList();
+
+                            context.pushNamed(
+                              AppRoutes.paymentReview,
+                              extra: {
+                                "list": selectedPaymentsList,
+                                "wallet": walletBalance,
+                                "isFull": false,
+                              },
+                            );
+                          }
+                          : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.instance.teal400,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    'Proceed to Checkout',
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      fontSize: 16,
+                      fontWeight: FontFamilies.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

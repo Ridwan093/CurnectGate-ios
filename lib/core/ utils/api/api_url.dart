@@ -163,7 +163,8 @@ const String workOrdercategorie = "estates/general/workorders/categories";
 
 const String getPaymentDashbords = "estates/general/payments/dashboard";
 const String getDuePayments = "estates/general/payments/outstanding-dues";
-const String getWalletHistorys = "estates/general/wallet/history?type=credit";
+const String getWalletHistorys =
+    "estates/general/wallet/history?payment_method=credit";
 const String getPaymentHistorys = "estates/general/payments/history";
 const String getPaymentMethod = "estates/general/payment-config/methods";
 
@@ -184,4 +185,4 @@ const String markUnreadCount = "estates/general/messaging/mark-all-read";
 const String getConversation = "estates/general/messaging/conversations";
 
 const String grantEventEntry = "estates/security/event-codes/";
-const String denyEventEntrys= "estates/security/event-codes/";
+const String denyEventEntrys = "estates/security/event-codes/";

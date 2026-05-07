@@ -38,6 +38,7 @@ _$OutstandingDueImpl _$$OutstandingDueImplFromJson(Map<String, dynamic> json) =>
       property: json['property'] == null
           ? null
           : Property.fromJson(json['property'] as Map<String, dynamic>),
+      minimumPayableAmount: json['minimum_payable_amount'] as String?,
     );
 
 Map<String, dynamic> _$$OutstandingDueImplToJson(
@@ -69,4 +70,5 @@ Map<String, dynamic> _$$OutstandingDueImplToJson(
       'fee_category': instance.feeCategory?.toJson(),
       'late_fees': instance.lateFees,
       'property': instance.property?.toJson(),
+      'minimum_payable_amount': instance.minimumPayableAmount,
     };

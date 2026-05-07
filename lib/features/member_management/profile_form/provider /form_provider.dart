@@ -58,6 +58,7 @@ import 'package:curnectgate/features/operations/violation/report_provider/commen
 import 'package:curnectgate/features/operations/violation/report_provider/getReport_provider.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/report_provider.dart';
 import 'package:curnectgate/features/payment/provider/dashbord_provider.dart';
+import 'package:curnectgate/features/payment/provider/due_payment_provider.dart';
 import 'package:curnectgate/features/payment/provider/payment_History_provider.dart';
 import 'package:curnectgate/features/security/model/close_all.dart';
 import 'package:curnectgate/features/security/provider/dismiss_provider.dart';
@@ -1599,6 +1600,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         final fullName = data["full_name"].toString();
         await SharedPrefsService().saveFullName(fullName);
+        ref.read(authState.authProvider.notifier).loadfullName();
 
         ref.read(userProfileProvider.notifier).refreshProfile(context, ref);
         context.pop();
@@ -2175,9 +2177,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (response['status'] == true) {
         ref.read(getNotificationCount.notifier).refreshCount(context, ref);
-      } else {
-       
-      }
+      } else {}
     } on DioException catch (e) {
       if (!context.mounted) return;
       context.pop();
@@ -5088,7 +5088,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         showCustomSuccessToast(
           context: context,
-          message: message,
+          message: message.replaceAll("_", " "),
           color: AppColors.instance.error500,
           icon: Icons.error,
           iconColors: AppColors.instance.grey200,
@@ -8488,8 +8488,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
   Future<void> payDueOutstanding({
     required BuildContext context,
-    required List<int> selected_dues,
-    required double totalAmout,
+    required List<Map<String, dynamic>> payments,
     required WidgetRef ref,
   }) async {
     updateGenrateMemberIdLoading(true);
@@ -8497,22 +8496,92 @@ class FormNotifier extends StateNotifier<FormStates> {
     try {
       final response = await ref
           .read(profileRepositoryProvider)
-          .paydueOutStanding(
-            selected_dues: selected_dues,
-            totalAmout: totalAmout,
-
-            context: context,
-          );
+          .paydueOutStanding(payments: payments, context: context);
 
       if (!context.mounted) return;
 
       if (response['status'] == true) {
         updateGenrateMemberIdLoading(false);
-
         context.pop();
         ref
             .read(paymentDashbordProvider.notifier)
             .refreshPaymentDashbord(context, ref);
+        ref.read(paymentDueProvider.notifier).refreshDuePayment(context, ref);
+        context.pushNamed(
+          AppRoutes.paymentSuccess,
+          extra: {"fails_succs": false, "ErrorMessage": response["message"]},
+        );
+      } else {
+        updateGenrateMemberIdLoading(false);
+
+        context.pop();
+        context.pushNamed(
+          AppRoutes.paymentSuccess,
+          extra: {"fails_succs": true, "ErrorMessage": response["message"]},
+        );
+      }
+    } on DioException catch (e) {
+      updateGenrateMemberIdLoading(false);
+      resteRasion();
+      final reportStatess = ref.watch(reportProvider.notifier);
+
+      if (!context.mounted) return;
+      reportStatess.resetState();
+
+      if (e.error is SocketException) {
+        showCustomSuccessToast(
+          context: context,
+          message:
+              "Network unavailable. Please check your internet connection.",
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+    } catch (e) {
+      resteRasion();
+      updateGenrateMemberIdLoading(false);
+      final visitor = ref.watch(generateNotifierProvider.notifier);
+      visitor.resetState();
+      if (!context.mounted) return;
+      context.pop();
+
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      resteRasion();
+      updateGenrateMemberIdLoading(false);
+      updateOtp('', false);
+    }
+  }
+
+  Future<void> payFullOutstanding({
+    required BuildContext context,
+    required WidgetRef ref,
+  }) async {
+    updateGenrateMemberIdLoading(true);
+
+    try {
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .payFullOutstanding(context: context);
+
+      if (!context.mounted) return;
+
+      if (response['status'] == true) {
+        updateGenrateMemberIdLoading(false);
+        context.pop();
+        ref
+            .read(paymentDashbordProvider.notifier)
+            .refreshPaymentDashbord(context, ref);
+        ref.read(paymentDueProvider.notifier).refreshDuePayment(context, ref);
         context.pushNamed(
           AppRoutes.paymentSuccess,
           extra: {"fails_succs": false, "ErrorMessage": response["message"]},
@@ -8592,10 +8661,12 @@ class FormNotifier extends StateNotifier<FormStates> {
         ref
             .read(paymentDashbordProvider.notifier)
             .refreshPaymentDashbord(context, ref);
-        context.pop();
+        log(response.toString());
+        closeAllBottomSheets(context);
         ref
             .read(paymentHistoryProvider.notifier)
             .refreshPaymentHistory(context, ref);
+        context.pop();
         showUserBottomSheet(
           context: context,
           headertitle: response["message"].toString(),
@@ -8604,6 +8675,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           bottom: BottomSheetView.paymentSuccess,
         );
       } else {
+        log(response.toString());
         updateGenrateMemberIdLoading(false);
 
         context.pop();

@@ -29,6 +29,14 @@ class _SubmitPermitBottomSheetState extends ConsumerState<CreatEvent> {
   final TextEditingController _eventLocationController =
       TextEditingController();
 
+  @override
+  void initState() {
+    super.initState(); 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(workOrderFormProvider.notifier).updateWorkType("", 0);
+    });
+  }
+
   final List<String> event_type = [
     "Party",
     "Wedding",

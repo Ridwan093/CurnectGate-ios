@@ -45,7 +45,7 @@ class ParkingViolationCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (imageUrl != null) ...[
+            if (imageUrl != null && imageUrl!.isNotEmpty) ...[
               Container(
                 height: 80,
                 width: 80,
@@ -57,8 +57,8 @@ class ParkingViolationCard extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(width: 10),
             ],
-            SizedBox(width: 10),
             Flexible(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,7 +125,7 @@ class ParkingViolationCard extends StatelessWidget {
                         Flexible(
                           child: _buildButton(
                             onTap: onAccept,
-                            buttonText: "Resolved",
+                            buttonText: "Resolve",
                             buttonColor: AppColors.instance.teal300,
                           ),
                         ),

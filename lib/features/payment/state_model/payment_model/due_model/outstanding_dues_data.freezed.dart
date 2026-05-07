@@ -12,7 +12,8 @@ part of 'outstanding_dues_data.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 OutstandingDuesData _$OutstandingDuesDataFromJson(Map<String, dynamic> json) {
   return _OutstandingDuesData.fromJson(json);
@@ -22,6 +23,7 @@ OutstandingDuesData _$OutstandingDuesDataFromJson(Map<String, dynamic> json) {
 mixin _$OutstandingDuesData {
   List<OutstandingDue>? get dues => throw _privateConstructorUsedError;
   Summary? get summary => throw _privateConstructorUsedError;
+  String? get minimumPayableAmount => throw _privateConstructorUsedError;
 
   /// Serializes this OutstandingDuesData to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -36,10 +38,15 @@ mixin _$OutstandingDuesData {
 /// @nodoc
 abstract class $OutstandingDuesDataCopyWith<$Res> {
   factory $OutstandingDuesDataCopyWith(
-          OutstandingDuesData value, $Res Function(OutstandingDuesData) then) =
-      _$OutstandingDuesDataCopyWithImpl<$Res, OutstandingDuesData>;
+    OutstandingDuesData value,
+    $Res Function(OutstandingDuesData) then,
+  ) = _$OutstandingDuesDataCopyWithImpl<$Res, OutstandingDuesData>;
   @useResult
-  $Res call({List<OutstandingDue>? dues, Summary? summary});
+  $Res call({
+    List<OutstandingDue>? dues,
+    Summary? summary,
+    String? minimumPayableAmount,
+  });
 
   $SummaryCopyWith<$Res>? get summary;
 }
@@ -61,17 +68,28 @@ class _$OutstandingDuesDataCopyWithImpl<$Res, $Val extends OutstandingDuesData>
   $Res call({
     Object? dues = freezed,
     Object? summary = freezed,
+    Object? minimumPayableAmount = freezed,
   }) {
-    return _then(_value.copyWith(
-      dues: freezed == dues
-          ? _value.dues
-          : dues // ignore: cast_nullable_to_non_nullable
-              as List<OutstandingDue>?,
-      summary: freezed == summary
-          ? _value.summary
-          : summary // ignore: cast_nullable_to_non_nullable
-              as Summary?,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            dues:
+                freezed == dues
+                    ? _value.dues
+                    : dues // ignore: cast_nullable_to_non_nullable
+                        as List<OutstandingDue>?,
+            summary:
+                freezed == summary
+                    ? _value.summary
+                    : summary // ignore: cast_nullable_to_non_nullable
+                        as Summary?,
+            minimumPayableAmount:
+                freezed == minimumPayableAmount
+                    ? _value.minimumPayableAmount
+                    : minimumPayableAmount // ignore: cast_nullable_to_non_nullable
+                        as String?,
+          )
+          as $Val,
+    );
   }
 
   /// Create a copy of OutstandingDuesData
@@ -92,12 +110,17 @@ class _$OutstandingDuesDataCopyWithImpl<$Res, $Val extends OutstandingDuesData>
 /// @nodoc
 abstract class _$$OutstandingDuesDataImplCopyWith<$Res>
     implements $OutstandingDuesDataCopyWith<$Res> {
-  factory _$$OutstandingDuesDataImplCopyWith(_$OutstandingDuesDataImpl value,
-          $Res Function(_$OutstandingDuesDataImpl) then) =
-      __$$OutstandingDuesDataImplCopyWithImpl<$Res>;
+  factory _$$OutstandingDuesDataImplCopyWith(
+    _$OutstandingDuesDataImpl value,
+    $Res Function(_$OutstandingDuesDataImpl) then,
+  ) = __$$OutstandingDuesDataImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<OutstandingDue>? dues, Summary? summary});
+  $Res call({
+    List<OutstandingDue>? dues,
+    Summary? summary,
+    String? minimumPayableAmount,
+  });
 
   @override
   $SummaryCopyWith<$Res>? get summary;
@@ -107,9 +130,10 @@ abstract class _$$OutstandingDuesDataImplCopyWith<$Res>
 class __$$OutstandingDuesDataImplCopyWithImpl<$Res>
     extends _$OutstandingDuesDataCopyWithImpl<$Res, _$OutstandingDuesDataImpl>
     implements _$$OutstandingDuesDataImplCopyWith<$Res> {
-  __$$OutstandingDuesDataImplCopyWithImpl(_$OutstandingDuesDataImpl _value,
-      $Res Function(_$OutstandingDuesDataImpl) _then)
-      : super(_value, _then);
+  __$$OutstandingDuesDataImplCopyWithImpl(
+    _$OutstandingDuesDataImpl _value,
+    $Res Function(_$OutstandingDuesDataImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of OutstandingDuesData
   /// with the given fields replaced by the non-null parameter values.
@@ -118,17 +142,27 @@ class __$$OutstandingDuesDataImplCopyWithImpl<$Res>
   $Res call({
     Object? dues = freezed,
     Object? summary = freezed,
+    Object? minimumPayableAmount = freezed,
   }) {
-    return _then(_$OutstandingDuesDataImpl(
-      dues: freezed == dues
-          ? _value._dues
-          : dues // ignore: cast_nullable_to_non_nullable
-              as List<OutstandingDue>?,
-      summary: freezed == summary
-          ? _value.summary
-          : summary // ignore: cast_nullable_to_non_nullable
-              as Summary?,
-    ));
+    return _then(
+      _$OutstandingDuesDataImpl(
+        dues:
+            freezed == dues
+                ? _value._dues
+                : dues // ignore: cast_nullable_to_non_nullable
+                    as List<OutstandingDue>?,
+        summary:
+            freezed == summary
+                ? _value.summary
+                : summary // ignore: cast_nullable_to_non_nullable
+                    as Summary?,
+        minimumPayableAmount:
+            freezed == minimumPayableAmount
+                ? _value.minimumPayableAmount
+                : minimumPayableAmount // ignore: cast_nullable_to_non_nullable
+                    as String?,
+      ),
+    );
   }
 }
 
@@ -136,9 +170,11 @@ class __$$OutstandingDuesDataImplCopyWithImpl<$Res>
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class _$OutstandingDuesDataImpl implements _OutstandingDuesData {
-  const _$OutstandingDuesDataImpl(
-      {final List<OutstandingDue>? dues, this.summary})
-      : _dues = dues;
+  const _$OutstandingDuesDataImpl({
+    final List<OutstandingDue>? dues,
+    this.summary,
+    this.minimumPayableAmount,
+  }) : _dues = dues;
 
   factory _$OutstandingDuesDataImpl.fromJson(Map<String, dynamic> json) =>
       _$$OutstandingDuesDataImplFromJson(json);
@@ -155,10 +191,12 @@ class _$OutstandingDuesDataImpl implements _OutstandingDuesData {
 
   @override
   final Summary? summary;
+  @override
+  final String? minimumPayableAmount;
 
   @override
   String toString() {
-    return 'OutstandingDuesData(dues: $dues, summary: $summary)';
+    return 'OutstandingDuesData(dues: $dues, summary: $summary, minimumPayableAmount: $minimumPayableAmount)';
   }
 
   @override
@@ -167,13 +205,19 @@ class _$OutstandingDuesDataImpl implements _OutstandingDuesData {
         (other.runtimeType == runtimeType &&
             other is _$OutstandingDuesDataImpl &&
             const DeepCollectionEquality().equals(other._dues, _dues) &&
-            (identical(other.summary, summary) || other.summary == summary));
+            (identical(other.summary, summary) || other.summary == summary) &&
+            (identical(other.minimumPayableAmount, minimumPayableAmount) ||
+                other.minimumPayableAmount == minimumPayableAmount));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(_dues), summary);
+    runtimeType,
+    const DeepCollectionEquality().hash(_dues),
+    summary,
+    minimumPayableAmount,
+  );
 
   /// Create a copy of OutstandingDuesData
   /// with the given fields replaced by the non-null parameter values.
@@ -182,20 +226,22 @@ class _$OutstandingDuesDataImpl implements _OutstandingDuesData {
   @pragma('vm:prefer-inline')
   _$$OutstandingDuesDataImplCopyWith<_$OutstandingDuesDataImpl> get copyWith =>
       __$$OutstandingDuesDataImplCopyWithImpl<_$OutstandingDuesDataImpl>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$OutstandingDuesDataImplToJson(
-      this,
-    );
+    return _$$OutstandingDuesDataImplToJson(this);
   }
 }
 
 abstract class _OutstandingDuesData implements OutstandingDuesData {
-  const factory _OutstandingDuesData(
-      {final List<OutstandingDue>? dues,
-      final Summary? summary}) = _$OutstandingDuesDataImpl;
+  const factory _OutstandingDuesData({
+    final List<OutstandingDue>? dues,
+    final Summary? summary,
+    final String? minimumPayableAmount,
+  }) = _$OutstandingDuesDataImpl;
 
   factory _OutstandingDuesData.fromJson(Map<String, dynamic> json) =
       _$OutstandingDuesDataImpl.fromJson;
@@ -204,6 +250,8 @@ abstract class _OutstandingDuesData implements OutstandingDuesData {
   List<OutstandingDue>? get dues;
   @override
   Summary? get summary;
+  @override
+  String? get minimumPayableAmount;
 
   /// Create a copy of OutstandingDuesData
   /// with the given fields replaced by the non-null parameter values.

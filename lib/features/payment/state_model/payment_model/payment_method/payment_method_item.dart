@@ -16,6 +16,13 @@ class PaymentMethodItem with _$PaymentMethodItem {
     String? publicKey,
     String? secretKey,
     String? currency,
+    String? environment,
+    /// Percentage charge e.g. "1.5" → 1.5% of the entered amount.
+    /// If this is "0" or null, fall back to [chargeFlat].
+    String? chargePercentage,
+    /// Flat charge e.g. "100" → ₦100 fixed fee.
+    /// If this is "0" or null, use [chargePercentage] instead.
+    String? chargeFlat,
   }) = _PaymentMethodItem;
 
   factory PaymentMethodItem.fromJson(Map<String, dynamic> json) =>
@@ -30,6 +37,9 @@ class PaymentMethodItem with _$PaymentMethodItem {
       publicKey: NullSafetyHelper.safeString(json?['public_key']),
       secretKey: NullSafetyHelper.safeString(json?['secret_key']),
       currency: NullSafetyHelper.safeString(json?['currency']),
+      environment: NullSafetyHelper.safeString(json?['environment']),
+      chargePercentage: NullSafetyHelper.safeString(json?['charge_percentage']),
+      chargeFlat: NullSafetyHelper.safeString(json?['charge_flat']),
     );
   }
 
@@ -41,5 +51,8 @@ class PaymentMethodItem with _$PaymentMethodItem {
         publicKey: '',
         secretKey: '',
         currency: '',
+        environment: '',
+        chargePercentage: '0',
+        chargeFlat: '0',
       );
 }

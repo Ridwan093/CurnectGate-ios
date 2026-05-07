@@ -126,7 +126,10 @@ class DismissedData extends ConsumerWidget {
           },
           child: ParkingViolationCard(
             isDismissing: true,
-            imageUrl: data.evidence?.mediaUrls.first.toString(),
+            imageUrl: (data.evidence?.mediaUrls != null &&
+                    data.evidence!.mediaUrls.isNotEmpty)
+                ? data.evidence!.mediaUrls.first.toString()
+                : null,
             violationType: data.locationDetails?.additionalLocation ??"",
             reportedBy: data.isAnonymous ? "Anonymous" : data.reporter?.name??"",
 

@@ -64,7 +64,7 @@ class WorkDropDown extends ConsumerWidget {
           fontSize: 13,
         ),
       ),
-      value: state.workType == "" ? null : state.workType,
+      value: (state.workType == null || state.workType == "" || !workTypes.contains(state.workType)) ? null : state.workType,
       items:
           workTypes.map((String value) {
             return DropdownMenuItem<String>(value: value, child: Text(value));

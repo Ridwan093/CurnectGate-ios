@@ -24,6 +24,7 @@ mixin _$Summary {
   int? get totalOverdue => throw _privateConstructorUsedError;
   int? get count => throw _privateConstructorUsedError;
   int? get overdueCount => throw _privateConstructorUsedError;
+  String? get minimumPayableAmount => throw _privateConstructorUsedError;
 
   /// Serializes this Summary to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -43,7 +44,8 @@ abstract class $SummaryCopyWith<$Res> {
       {int? totalOutstanding,
       int? totalOverdue,
       int? count,
-      int? overdueCount});
+      int? overdueCount,
+      String? minimumPayableAmount});
 }
 
 /// @nodoc
@@ -65,6 +67,7 @@ class _$SummaryCopyWithImpl<$Res, $Val extends Summary>
     Object? totalOverdue = freezed,
     Object? count = freezed,
     Object? overdueCount = freezed,
+    Object? minimumPayableAmount = freezed,
   }) {
     return _then(_value.copyWith(
       totalOutstanding: freezed == totalOutstanding
@@ -83,6 +86,10 @@ class _$SummaryCopyWithImpl<$Res, $Val extends Summary>
           ? _value.overdueCount
           : overdueCount // ignore: cast_nullable_to_non_nullable
               as int?,
+      minimumPayableAmount: freezed == minimumPayableAmount
+          ? _value.minimumPayableAmount
+          : minimumPayableAmount // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -98,7 +105,8 @@ abstract class _$$SummaryImplCopyWith<$Res> implements $SummaryCopyWith<$Res> {
       {int? totalOutstanding,
       int? totalOverdue,
       int? count,
-      int? overdueCount});
+      int? overdueCount,
+      String? minimumPayableAmount});
 }
 
 /// @nodoc
@@ -118,6 +126,7 @@ class __$$SummaryImplCopyWithImpl<$Res>
     Object? totalOverdue = freezed,
     Object? count = freezed,
     Object? overdueCount = freezed,
+    Object? minimumPayableAmount = freezed,
   }) {
     return _then(_$SummaryImpl(
       totalOutstanding: freezed == totalOutstanding
@@ -136,6 +145,10 @@ class __$$SummaryImplCopyWithImpl<$Res>
           ? _value.overdueCount
           : overdueCount // ignore: cast_nullable_to_non_nullable
               as int?,
+      minimumPayableAmount: freezed == minimumPayableAmount
+          ? _value.minimumPayableAmount
+          : minimumPayableAmount // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -148,7 +161,8 @@ class _$SummaryImpl implements _Summary {
       {this.totalOutstanding,
       this.totalOverdue,
       this.count,
-      this.overdueCount});
+      this.overdueCount,
+      this.minimumPayableAmount});
 
   factory _$SummaryImpl.fromJson(Map<String, dynamic> json) =>
       _$$SummaryImplFromJson(json);
@@ -161,10 +175,12 @@ class _$SummaryImpl implements _Summary {
   final int? count;
   @override
   final int? overdueCount;
+  @override
+  final String? minimumPayableAmount;
 
   @override
   String toString() {
-    return 'Summary(totalOutstanding: $totalOutstanding, totalOverdue: $totalOverdue, count: $count, overdueCount: $overdueCount)';
+    return 'Summary(totalOutstanding: $totalOutstanding, totalOverdue: $totalOverdue, count: $count, overdueCount: $overdueCount, minimumPayableAmount: $minimumPayableAmount)';
   }
 
   @override
@@ -178,13 +194,15 @@ class _$SummaryImpl implements _Summary {
                 other.totalOverdue == totalOverdue) &&
             (identical(other.count, count) || other.count == count) &&
             (identical(other.overdueCount, overdueCount) ||
-                other.overdueCount == overdueCount));
+                other.overdueCount == overdueCount) &&
+            (identical(other.minimumPayableAmount, minimumPayableAmount) ||
+                other.minimumPayableAmount == minimumPayableAmount));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, totalOutstanding, totalOverdue, count, overdueCount);
+  int get hashCode => Object.hash(runtimeType, totalOutstanding, totalOverdue,
+      count, overdueCount, minimumPayableAmount);
 
   /// Create a copy of Summary
   /// with the given fields replaced by the non-null parameter values.
@@ -207,7 +225,8 @@ abstract class _Summary implements Summary {
       {final int? totalOutstanding,
       final int? totalOverdue,
       final int? count,
-      final int? overdueCount}) = _$SummaryImpl;
+      final int? overdueCount,
+      final String? minimumPayableAmount}) = _$SummaryImpl;
 
   factory _Summary.fromJson(Map<String, dynamic> json) = _$SummaryImpl.fromJson;
 
@@ -219,6 +238,8 @@ abstract class _Summary implements Summary {
   int? get count;
   @override
   int? get overdueCount;
+  @override
+  String? get minimumPayableAmount;
 
   /// Create a copy of Summary
   /// with the given fields replaced by the non-null parameter values.

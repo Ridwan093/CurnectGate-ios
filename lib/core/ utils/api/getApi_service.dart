@@ -11,7 +11,10 @@ final dioProvider = Provider<Dio>((ref) {
     ..options = BaseOptions(
       extra: {'requiresAuth': true},
       baseUrl: "https://api.curnectgate.com/api/v1/",
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
     )
@@ -59,8 +62,10 @@ final dioProvider = Provider<Dio>((ref) {
           final cookie = await prefs.getSessionCookie();
           final token = await prefs.getUserToken();
           if (options.extra['requiresAuth'] == true) {
-            options.headers['Authorization'] = 'Bearer $token';
-            if (cookie != null) {
+            if (token != null && token.isNotEmpty) {
+              options.headers['Authorization'] = 'Bearer $token';
+            } else if (cookie != null && cookie.isNotEmpty) {
+              // Only send cookie if we DON'T have a bearer token
               options.headers['Cookie'] = cookie;
             }
           }

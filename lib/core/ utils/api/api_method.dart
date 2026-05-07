@@ -2910,21 +2910,40 @@ class AppApiMethod {
   }
 
   Future<Map<String, dynamic>> paydueOutStanding({
-    required List<int> selected_dues,
-    required double totalAmout,
+    required List<Map<String, dynamic>> payments,
     required BuildContext context,
   }) async {
     try {
-      final Map<String, dynamic> requestData = {
-        "selected_dues": selected_dues,
-        "custom_amount": totalAmout,
-      };
+      final Map<String, dynamic> requestData = {"payments": payments};
 
       final response = await _dio.post(
         payduePayment,
         data: requestData,
         options: Options(validateStatus: (status) => status! < 500),
       );
+      return response.data;
+    } on DioException {
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> payFullOutstanding({
+    required BuildContext context,
+  }) async {
+    try {
+      final response = await _dio.post(
+        payFullPayment,
+        options: Options(validateStatus: (status) => status! < 500),
+      );
+      log(response.toString());
       return response.data;
     } on DioException {
       showCustomSuccessToast(
@@ -2952,12 +2971,13 @@ class AppApiMethod {
         "payment_gateway": "paystack",
         "transaction_reference": paymentRefrenc,
       };
-
+      // log(requestData.toString());
       final response = await _dio.post(
         initialFundWallet,
         data: requestData,
         options: Options(validateStatus: (status) => status! < 500),
       );
+      // log(response.data.toString());
       return response.data;
     } on DioException {
       rethrow;

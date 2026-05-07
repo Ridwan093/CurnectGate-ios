@@ -1,4 +1,5 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/back_manageent/back_widget/back_navigator.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -20,21 +21,25 @@ class MainNavigationScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentIndex = ref.watch(tabStateProvider);
-    final tabController = ref.read(tabStateProvider.notifier);
-    final tabCount = 5;
+    final tabController = ref.watch(tabStateProvider.notifier);
     final screenWidth = MediaQuery.of(context).size.width;
-    final tabWidth = screenWidth / tabCount;
+
+    final roleAsync = ref.watch(userRoleProvider);
+    final isStaff = roleAsync.value?.toLowerCase().contains("staff") ?? false;
 
     final List<Widget> screens = [
       mainPage,
-      const PaymentScreen(),
+      if (!isStaff) const PaymentScreen(),
       const MyEventCode(isTab: true),
       const CommunityScreen(),
       const ProfileScreen(),
     ];
 
+    final tabCount = screens.length;
+    final double tabWidth = screenWidth / tabCount;
+
     // Detect tablet
-    final bool isTablet = MediaQuery.of(context).size.width >= 600;
+    final bool isTablet = screenWidth >= 600;
 
     return BackButtonHandler(
       child: Scaffold(
@@ -48,7 +53,12 @@ class MainNavigationScreen extends ConsumerWidget {
                 Container(
                   width: 80,
                   color: Colors.white,
-                  child: _buildNavigationRail(currentIndex, tabController, ref),
+                  child: _buildNavigationRail(
+                    currentIndex,
+                    tabController,
+                    ref,
+                    isStaff,
+                  ),
                 ),
 
               // Main content — full on tablet, constrained on phone for beauty
@@ -105,19 +115,20 @@ class MainNavigationScreen extends ConsumerWidget {
                             activeIcon: AssetPaths.navHomefilled,
                             label: 'Home',
                           ),
+                          if (!isStaff)
+                            _buildTabItem(
+                              context,
+                              ref,
+                              index: 1,
+                              currentIndex: currentIndex,
+                              normalIcon: AssetPaths.navCreditCard,
+                              activeIcon: AssetPaths.navCreditCardFilled,
+                              label: 'Payments',
+                            ),
                           _buildTabItem(
                             context,
                             ref,
-                            index: 1,
-                            currentIndex: currentIndex,
-                            normalIcon: AssetPaths.navCreditCard,
-                            activeIcon: AssetPaths.navCreditCardFilled,
-                            label: 'Payments',
-                          ),
-                          _buildTabItem(
-                            context,
-                            ref,
-                            index: 2,
+                            index: isStaff ? 1 : 2,
                             currentIndex: currentIndex,
                             normalIcon: AssetPaths.navEventCodeDeactive,
                             activeIcon: AssetPaths.navEventCodeActive,
@@ -126,17 +137,16 @@ class MainNavigationScreen extends ConsumerWidget {
                           _buildTabItem(
                             context,
                             ref,
-                            index: 3,
+                            index: isStaff ? 2 : 3,
                             currentIndex: currentIndex,
                             normalIcon: AssetPaths.navMessages,
                             activeIcon: AssetPaths.navMessageactive,
                             label: 'Chats',
                           ),
-
                           _buildTabItem(
                             context,
                             ref,
-                            index: 4,
+                            index: isStaff ? 3 : 4,
                             currentIndex: currentIndex,
                             normalIcon: AssetPaths.navProfileInactive,
                             activeIcon: AssetPaths.navProfileActive,
@@ -168,6 +178,7 @@ class MainNavigationScreen extends ConsumerWidget {
     int currentIndex,
     dynamic tabController,
     WidgetRef ref,
+    bool isStaff,
   ) {
     return NavigationRail(
       selectedIndex: currentIndex,
@@ -192,26 +203,24 @@ class MainNavigationScreen extends ConsumerWidget {
           AssetPaths.navHome,
           "Home",
         ),
-        _buildRailDestination(
-          AssetPaths.navCreditCardFilled,
-          AssetPaths.navCreditCard,
-
-          "Payment",
-        ),
+        if (!isStaff)
+          _buildRailDestination(
+            AssetPaths.navCreditCardFilled,
+            AssetPaths.navCreditCard,
+            "Payment",
+          ),
         _buildRailDestination(
           AssetPaths.navEventCodeActive,
           AssetPaths.navEventCodeDeactive,
-
           "Codes",
         ),
         _buildRailDestination(
           AssetPaths.navMessageactive,
           AssetPaths.navMessages,
           "Chats",
-          index: 3,
+          labelName: "Chats",
           ref: ref,
         ),
-
         _buildRailDestination(
           AssetPaths.navProfileActive,
           AssetPaths.navProfileInactive,
@@ -225,7 +234,7 @@ class MainNavigationScreen extends ConsumerWidget {
     String activeIcon,
     String inactiveIcon,
     String label, {
-    int? index,
+    String? labelName,
     WidgetRef? ref,
   }) {
     final unreadAsync = ref?.watch(unreadCountsProvider);
@@ -238,7 +247,7 @@ class MainNavigationScreen extends ConsumerWidget {
         isActive: isActive,
         size: 28,
       );
-      if (index == 3)
+      if (labelName == "Chats")
         unreadAsync?.when(
           data: (data) {
             final count = data?.totalUnreadMessages ?? 0;
@@ -378,7 +387,7 @@ class MainNavigationScreen extends ConsumerWidget {
                 isActive: currentIndex == index,
                 size: 24,
               ),
-              if (index == 3)
+              if (label == 'Chats')
                 unreadAsync.when(
                   data: (data) {
                     final count = data?.totalUnreadMessages ?? 0;

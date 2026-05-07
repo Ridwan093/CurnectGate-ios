@@ -37,7 +37,13 @@ class OutstandingDue with _$OutstandingDue {
     FeeCategory? feeCategory,
     List<dynamic>? lateFees,
     Property? property,
+    String? minimumPayableAmount,
   }) = _OutstandingDue;
+
+  const OutstandingDue._();
+
+  String get title => feeCategory?.name ?? description ?? 'Bill';
+  bool get isFullPaymentOnly => !(allowPartialPayment ?? true);
 
   factory OutstandingDue.fromJson(Map<String, dynamic> json) =>
       _$OutstandingDueFromJson(json);
@@ -70,6 +76,7 @@ class OutstandingDue with _$OutstandingDue {
       feeCategory: FeeCategory.safeFromJson(NullSafetyHelper.safeMap(json?['fee_category'])),
       lateFees: NullSafetyHelper.safeList(json?['late_fees']),
       property: Property.safeFromJson(NullSafetyHelper.safeMap(json?['property'])),
+      minimumPayableAmount: NullSafetyHelper.safeString(json?['minimum_payable_amount']),
     );
   }
 
@@ -100,5 +107,6 @@ class OutstandingDue with _$OutstandingDue {
         feeCategory: null,
         lateFees: [],
         property: null,
+        minimumPayableAmount: '0.00',
       );
 }

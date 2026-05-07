@@ -80,10 +80,14 @@ class Statistics extends ConsumerWidget {
                         data.toLowerCase().contains("family_member")) {
                       return SizedBox();
                     } else {
-                      return Column(children:[
-                        _buildWprkOrderCount(ref, context),
-                        const Divider(height: 1),
-                      ]);
+                      return Column(
+                        children: [
+                          _buildWprkOrderCount(ref, context),
+                          const Divider(height: 1),
+                          _buildViolationCount(context, ref),
+                          const Divider(height: 1),
+                        ],
+                      );
                     }
                   } else {
                     return SizedBox();
@@ -96,8 +100,6 @@ class Statistics extends ConsumerWidget {
                   return SizedBox();
                 },
               ),
-              _buildViolationCount(context, ref),
-              const Divider(height: 1),
               _buildEventCount(context, ref),
               const Divider(height: 1),
               _buildPoll(ref, context),
@@ -260,16 +262,29 @@ class Statistics extends ConsumerWidget {
       },
 
       error: (error, stack) {
-        final cached = ref.read(userReportProvider).value;
-        final count = _calculateViolationCount(cached);
+        if (error.toString().toLowerCase().contains("access denied")) {
+          return const SizedBox.shrink();
+        }
 
-        return _buildStatContent(
-          trailing: count,
-          title: "Violation",
-          subtitle: "Pending/Investigating Report",
-          icon: AssetPaths.vaolationIcon,
-          onTap: () => context.pushNamed(AppRoutes.violation),
-        );
+        try {
+          final cached = ref.read(userReportProvider).value;
+          final count = _calculateViolationCount(cached);
+          return _buildStatContent(
+            trailing: count,
+            title: "Violation",
+            subtitle: "Pending/Investigating Report",
+            icon: AssetPaths.vaolationIcon,
+            onTap: () => context.pushNamed(AppRoutes.violation),
+          );
+        } catch (e) {
+          return _buildStatContent(
+            trailing: 0,
+            title: "Violation",
+            subtitle: "Pending/Investigating Report",
+            icon: AssetPaths.vaolationIcon,
+            onTap: () => context.pushNamed(AppRoutes.violation),
+          );
+        }
       },
     );
   }

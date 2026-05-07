@@ -53,23 +53,14 @@ class _TermsAndConditionScreenState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 🏠 Home Icon
+                
                     const SizedBox(height: 20),
 
-                    // // 📝 Header Text
-                    // Text(
-                    //   "Take a look at the property agreement below. We value transparency, and always want you to choose the option that’s best for you.",
-                    //   style: TextStyle(
-                    //     fontFamily: FontFamilies.interDisplay,
-                    //     fontWeight: FontFamilies.medium,
-                    //     fontSize: 15,
-                    //     color: AppColors.instance.black500,
-                    //     height: 1.5,
-                    //   ),
-                    // ),
+                
+     
                     const SizedBox(height: 30),
 
-                    // 📄 Sub Header
+              
                     Text(
                       "Terms and conditions",
                       style: TextStyle(

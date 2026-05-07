@@ -96,7 +96,7 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
           SliverAppBar(
             expandedHeight:
                 MediaQuery.of(context).size.height *
-                0.35, // Reduced height to minimize space
+                (widget.images.isEmpty ? 0.22 : 0.35), // Adaptive height
             stretch: true,
             pinned: false,
             snap: false,
@@ -230,14 +230,16 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
                           title: "Property Owner:",
                           icon: Icons.verified_user,
                           color: AppColors.instance.teal400,
-                          leading: widget.violation.propertyOwner?.name ?? "",
+                          leading:
+                              widget.violation.propertyOwner?.name ??
+                              "No property owner",
                         ),
                         const SizedBox(height: 12),
                         _buildAdditionalInfo(
                           title: "Report category:",
                           icon: Icons.category,
                           color: AppColors.instance.teal400,
-                          leading: widget.violation.category?.name ?? "",
+                          leading: widget.violation.category?.name ?? "N/A",
                         ),
                         const SizedBox(height: 12),
                       ],
@@ -249,7 +251,10 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
           ),
           // Comments Section Preview
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 8.0,
+            ),
             sliver: SliverToBoxAdapter(
               child: FadeTransition(
                 opacity: _fadeAnimation,

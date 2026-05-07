@@ -620,6 +620,7 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(getDuePayments);
+      log(response.toString());
       return OutstandingDuesResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       throw _handleError(e);
@@ -631,6 +632,7 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(getWalletHistorys);
+      log(response.toString());
       return WalletHistoryResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       throw _handleError(e);
@@ -642,8 +644,14 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(getPaymentHistorys);
+
+      log("Avilable History" + response.toString());
       return PaymentHistoryResponse.safeFromJson(response.data);
     } on DioException catch (e) {
+      log("STATUS: ${e.response?.statusCode}");
+      log("ERROR DATA: ${e.response?.data}");
+      log("REQUEST PATH: ${e.requestOptions.path}");
+      log("HEADERS: ${e.requestOptions.headers}");
       throw _handleError(e);
     }
   }
@@ -665,6 +673,7 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(getPaymentMethod);
+      log(response.toString());
       return PaymentMethodsResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       throw _handleError(e);
@@ -723,6 +732,7 @@ class GetApiService {
   Future<ComplianceResponse> getMyComplence() async {
     try {
       final response = await _dio.get(compliance);
+      log(response.toString());
       return ComplianceResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       throw _handleError(e);

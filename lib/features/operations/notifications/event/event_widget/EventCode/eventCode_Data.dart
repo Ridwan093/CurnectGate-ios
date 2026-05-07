@@ -1,4 +1,5 @@
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
+import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
 import 'package:curnectgate/core/appErrorBody/emmergencyBody.dart';
 import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
@@ -8,14 +9,14 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/widget/
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/EventCode/eventCode_card.dart';
-import 'package:curnectgate/features/operations/notifications/event/event_widget/build_errorUlfor_event.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/EventCodes/event_code_model.dart';
 import 'package:curnectgate/features/operations/notifications/provider/EventCode_provider/getlistofEventCode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class EventCodeData extends ConsumerWidget {
-  const EventCodeData({super.key});
+  final bool isBottomSheet;
+  const EventCodeData({super.key, required this.isBottomSheet});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -75,7 +76,8 @@ class EventCodeData extends ConsumerWidget {
             }
 
             // No cached data available
-            return Builderrouls(
+            return Builderroul(
+              isBottomSheet: isBottomSheet,
               error: error.toString(),
               onTap:
                   () => ref
@@ -84,7 +86,8 @@ class EventCodeData extends ConsumerWidget {
               firstMessae: "Faile to load Event",
             );
           } catch (e) {
-            return Builderrouls(
+            return Builderroul(
+              isBottomSheet: isBottomSheet,
               error: e.toString(),
               onTap:
                   () => ref

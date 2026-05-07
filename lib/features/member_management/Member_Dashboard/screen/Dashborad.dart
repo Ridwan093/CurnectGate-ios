@@ -47,6 +47,7 @@ class Dashborad extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
+    final role = ref.watch(userRoleProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -78,9 +79,10 @@ class Dashborad extends ConsumerWidget {
                         .read(getEventProvider.notifier)
                         .refreshEvent(context, ref, ""),
                     //Newlife3310
-                    ref
-                        .read(paymentDashbordProvider.notifier)
-                        .refreshPaymentDashbord(context, ref),
+                    if (!(role.value?.toLowerCase().contains("staff") ?? false))
+                      ref
+                          .read(paymentDashbordProvider.notifier)
+                          .refreshPaymentDashbord(context, ref),
                   ]);
                 },
                 child: SingleChildScrollView(
@@ -94,13 +96,22 @@ class Dashborad extends ConsumerWidget {
                       _buildRow(context, ref),
                       const SizedBox(height: 15),
 
-                      DashbordData(
-                        builder:
-                            (context, data) => _buildDueCard(
-                              data as PaymentDashboardData,
-                              context,
-                              ref,
-                            ),
+                      role.when(
+                        data: (data) {
+                          if (data.toLowerCase().contains("staff")) {
+                            return const SizedBox.shrink();
+                          }
+                          return DashbordData(
+                            builder:
+                                (context, data) => _buildDueCard(
+                                  data as PaymentDashboardData,
+                                  context,
+                                  ref,
+                                ),
+                          );
+                        },
+                        error: (e, s) => const SizedBox.shrink(),
+                        loading: () => const SizedBox.shrink(),
                       ),
 
                       const SizedBox(height: 20),
@@ -125,7 +136,7 @@ class Dashborad extends ConsumerWidget {
     );
   }
 
-  Widget _buildTopTitile(String title) {
+  Widget _buildTopTitile(String title, {VoidCallback? onSeeAll}) {
     return Row(
       children: [
         Text(
@@ -136,11 +147,23 @@ class Dashborad extends ConsumerWidget {
             fontWeight: FontFamilies.bold,
           ),
         ),
-        SizedBox(width: 10),
-        Expanded(child: Divider(color: AppColors.instance.grey300)),
-        // Expanded(
-        //   child: Container(height: 1.0, color: AppColors.instance.black600),
-        // ),
+        const SizedBox(width: 10),
+        if (onSeeAll != null) ...[
+          const Spacer(),
+          TextButton(
+            onPressed: onSeeAll,
+            child: Text(
+              "See All",
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                color: AppColors.instance.teal400,
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ] else
+          Expanded(child: Divider(color: AppColors.instance.grey300)),
       ],
     );
   }
@@ -226,14 +249,15 @@ class Dashborad extends ConsumerWidget {
           title: "Event",
           icon: Icons.event,
         ),
-        QuikLinkCard(
-          isfund: true,
-          onTap: () {
-            context.pushNamed(AppRoutes.paymentMethod);
-          },
-          title: "Add Fund",
-          icon: Icons.payments,
-        ),
+        if (!(role.value?.toLowerCase().contains("staff") ?? false))
+          QuikLinkCard(
+            isfund: true,
+            onTap: () {
+              context.pushNamed(AppRoutes.paymentMethod);
+            },
+            title: "Add Fund",
+            icon: Icons.payments,
+          ),
         QuikLinkCard(
           isfund: false,
           onTap: () {

@@ -28,42 +28,79 @@ class ImageScroll extends ConsumerWidget {
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
-          // Full-width PageView
+          // Full-width PageView or Placeholder
           SizedBox(
-            width: double.infinity, // Full width
-            child: PageView.builder(
-              controller: imageController,
-              itemCount: images.length,
-              itemBuilder: (context, index) {
-                return Hero(
-                  tag: 'violation_image_${images[index]}',
-                  child: Image.network(
-                    images[index],
-                    fit: BoxFit.cover,
-                    width: double.infinity, // Full width
-                    alignment: Alignment.center,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Center(
-                        child: CircularProgressIndicator(
-                          value:
-                              loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                  : null,
+            width: double.infinity,
+            child:
+                images.isEmpty
+                    ? Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            AppColors.instance.teal400.withOpacity(0.1),
+                            AppColors.instance.teal400.withOpacity(0.05),
+                          ],
                         ),
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.grey[200],
-                        child: const Icon(Icons.broken_image, size: 50),
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.assignment_turned_in_outlined,
+                              size: 48,
+                              color: AppColors.instance.teal400.withOpacity(0.3),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              "No Photographic Evidence",
+                              style: TextStyle(
+                                fontFamily: FontFamilies.interDisplay,
+                                color: AppColors.instance.teal400
+                                    .withOpacity(0.4),
+                                fontWeight: FontWeight.w500,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                    : PageView.builder(
+                      controller: imageController,
+                      itemCount: images.length,
+                      itemBuilder: (context, index) {
+                        return Hero(
+                          tag: 'violation_image_${images[index]}',
+                          child: Image.network(
+                            images[index],
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value:
+                                      loadingProgress.expectedTotalBytes != null
+                                          ? loadingProgress.cumulativeBytesLoaded /
+                                              loadingProgress.expectedTotalBytes!
+                                          : null,
+                                ),
+                              );
+                            },
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Colors.grey[200],
+                                child: const Icon(Icons.broken_image, size: 50),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    ),
           ),
 
           // Back Button (positioned absolutely)

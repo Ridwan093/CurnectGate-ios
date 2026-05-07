@@ -26,6 +26,8 @@ class FundWalletBottomSheet extends ConsumerStatefulWidget {
 
 class _FundWalletBottomSheetState extends ConsumerState<FundWalletBottomSheet> {
   late TextEditingController amountController;
+  // ── local state: drives the button — no Riverpod rebuild delay ──
+  double _enteredAmount = 0;
 
   @override
   void initState() {
@@ -68,10 +70,10 @@ class _FundWalletBottomSheetState extends ConsumerState<FundWalletBottomSheet> {
     return "$shortEstate-PAY-$formatted";
   }
 
-  // @override
   @override
   Widget build(BuildContext context) {
-    bool isValidAmount = ref.watch(isAmountValidProvider);
+    // ── derive validity from LOCAL state so the button reacts immediately ──
+    final bool isValidAmount = _enteredAmount >= 1000;
     final authState = ref.watch(authProvider);
     final AppColors colors = AppColors.instance;
     return SafeArea(
@@ -153,18 +155,12 @@ class _FundWalletBottomSheetState extends ConsumerState<FundWalletBottomSheet> {
               ),
             ),
             onChanged: (value) {
-              // Remove commas, store in provider
-              String cleaned = value.replaceAll(',', '');
+              final cleaned = value.replaceAll(',', '');
+              final parsed = double.tryParse(cleaned) ?? 0.0;
+              // Update local state → triggers immediate rebuild & button re-enable
+              setState(() => _enteredAmount = parsed);
+              // Also keep the global provider in sync for other consumers
               ref.read(amountTextProvider.notifier).state = cleaned;
-
-              // Optional: add commas while typing
-              // String formatted = NumberFormat(
-              //   '#,##0',
-              // ).format(double.tryParse(cleaned) ?? 0);
-              // amountController.value = amountController.value.copyWith(
-              //   text: formatted,
-              //   selection: TextSelection.collapsed(offset: formatted.length),
-              // );
             },
           ),
           const SizedBox(height: 25),
@@ -202,7 +198,7 @@ class _FundWalletBottomSheetState extends ConsumerState<FundWalletBottomSheet> {
                           privateKey: widget.private,
                           publiceKey: widget.puplic,
                           context: context,
-                          email: 'testuser@example.com',
+                          email: authState.user?['email'] ?? '',
                           amount: double.parse(cleaned), // ₦500
                           reference: refs,
                         );

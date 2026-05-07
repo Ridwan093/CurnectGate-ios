@@ -15,6 +15,7 @@ _$OutstandingDuesDataImpl _$$OutstandingDuesDataImplFromJson(
       summary: json['summary'] == null
           ? null
           : Summary.fromJson(json['summary'] as Map<String, dynamic>),
+      minimumPayableAmount: json['minimum_payable_amount'] as String?,
     );
 
 Map<String, dynamic> _$$OutstandingDuesDataImplToJson(
@@ -22,4 +23,5 @@ Map<String, dynamic> _$$OutstandingDuesDataImplToJson(
     <String, dynamic>{
       'dues': instance.dues?.map((e) => e.toJson()).toList(),
       'summary': instance.summary?.toJson(),
+      'minimum_payable_amount': instance.minimumPayableAmount,
     };

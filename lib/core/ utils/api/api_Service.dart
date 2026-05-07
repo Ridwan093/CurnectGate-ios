@@ -11,7 +11,10 @@ final dioProvider = Provider(
       Dio()
         ..options = BaseOptions(
           baseUrl: "https://api.curnectgate.com/api/v1/",
-          headers: {'Content-Type': 'application/json'},
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
           extra: {'requiresAuth': true},
         )
         ..interceptors.add(
@@ -45,9 +48,9 @@ final dioProvider = Provider(
               final token = await prefs.getUserToken();
 
               if (options.extra['requiresAuth'] == true) {
-                options.headers['Authorization'] = 'Bearer $token';
-
-                if (cookie != null) {
+                if (token != null && token.isNotEmpty) {
+                  options.headers['Authorization'] = 'Bearer $token';
+                } else if (cookie != null && cookie.isNotEmpty) {
                   options.headers['Cookie'] = cookie;
                 }
               }

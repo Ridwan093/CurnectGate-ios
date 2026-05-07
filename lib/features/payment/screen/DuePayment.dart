@@ -1,7 +1,7 @@
-import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
+import 'package:curnectgate/features/payment/provider/due_state_provider.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/due_model/outstanding_dues_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -68,13 +68,18 @@ class DuePayment extends ConsumerWidget {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
+                      // Pre-select all bills at full amount for the review screen
+                      ref
+                          .read(selectedBillsProvider.notifier)
+                          .selectAll(listoutStanding);
+
                       // Navigate to next screen
-                      context.pop();
                       context.pushNamed(
                         AppRoutes.paymentReview,
                         extra: {
                           "list": listoutStanding,
                           "wallet": walletBalance,
+                          "isFull": true,
                         },
                       );
                     },
@@ -170,44 +175,16 @@ class DuePayment extends ConsumerWidget {
             _buildNotifyerBox(wallet, due),
             SizedBox(height: 20),
 
-            ...listoutStanding.map(
-              (e) => _buildPaymentClick(
+            ...listoutStanding.map((e) {
+              final categoryName = e.feeCategory?.name ?? "Fee";
+              return _buildPaymentClick(
                 amount: '₦${formatPrice(e.amount ?? "")}',
-                title: e.feeCategory?.icon ?? "",
+                title: categoryName,
                 subtitle: formatDueDate(e.dueDate ?? ""),
-                iconPath: _iconLogo(e.feeCategory?.icon ?? ""),
-
+                iconData: _getIconData(categoryName),
                 onTap: () {},
-              ),
-            ),
-
-            // SizedBox(height: 10),
-            // _buildPaymentClick(
-            //   amount: "₦10,000",
-            //   title: "Service Fee",
-            //   subtitle: "April 2, 2024",
-            //   iconPath: AssetPaths.serviceFee,
-
-            //   onTap: () {},
-            // ),
-            // SizedBox(height: 10),
-            // _buildPaymentClick(
-            //   amount: "₦10,000",
-            //   title: "Maintenance Fee",
-            //   subtitle: "April 2, 2024",
-            //   iconPath: AssetPaths.maintenance,
-
-            //   onTap: () {},
-            // ),
-            // SizedBox(height: 10),
-            // _buildPaymentClick(
-            //   amount: "₦32,587",
-            //   title: "Light Fee",
-            //   subtitle: "April 2, 2024",
-            //   iconPath: AssetPaths.navCreditCardFilled,
-
-            //   onTap: () {},
-            // ),
+              );
+            }),
           ],
         ),
       ),
@@ -298,7 +275,7 @@ class DuePayment extends ConsumerWidget {
                     fontFamily: FontFamilies.interDisplay,
                     fontSize: 15,
                     color: AppColors.instance.black300,
-                    fontWeight: FontFamilies.bold,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
@@ -310,7 +287,7 @@ class DuePayment extends ConsumerWidget {
   }
 
   Widget _buildPaymentClick({
-    required String iconPath,
+    required IconData iconData,
     required String title,
     required String amount,
     required String subtitle,
@@ -335,16 +312,10 @@ class DuePayment extends ConsumerWidget {
         ),
         child: Row(
           children: [
-            // Icon
             CircleAvatar(
               radius: 22,
               backgroundColor: AppColors.instance.teal300,
-              child: Image.asset(
-                iconPath,
-                width: 28,
-                height: 28,
-                fit: BoxFit.contain,
-              ),
+              child: Icon(iconData, color: Colors.white, size: 24),
             ),
 
             const SizedBox(width: 16),
@@ -400,20 +371,35 @@ class DuePayment extends ConsumerWidget {
     );
   }
 
-  String _iconLogo(String icon) {
-    switch (icon.toLowerCase()) {
-      case "water":
-        return AssetPaths.waterDrop;
-      case "service":
-        return AssetPaths.serviceFee;
+  IconData _getIconData(String? categoryName) {
+    if (categoryName == null) return Icons.receipt_long;
+    final name = categoryName.toLowerCase();
 
-      case "maintenace":
-        return AssetPaths.maintenance;
-      case "light":
-        return AssetPaths.navCreditCardFilled;
+    if (name.contains("water")) return Icons.water_drop;
+    if (name.contains("security") || name.contains("cctv"))
+      return Icons.security;
+    if (name.contains("light")) return Icons.lightbulb;
+    if (name.contains("gate") || name.contains("card")) return Icons.badge;
+    if (name.contains("event")) return Icons.event;
+    if (name.contains("packing") || name.contains("parking"))
+      return Icons.local_parking;
+    if (name.contains("waste") || name.contains("trash"))
+      return Icons.delete_outline;
+    if (name.contains("recreation") ||
+        name.contains("playground") ||
+        name.contains("landscaping") ||
+        name.contains("garden"))
+      return Icons.park;
+    if (name.contains("maintenance") ||
+        name.contains("mentanace") ||
+        name.contains("mentainace"))
+      return Icons.build;
+    if (name.contains("service") ||
+        name.contains("charge") ||
+        name.contains("assesment") ||
+        name.contains("levy"))
+      return Icons.account_balance_wallet;
 
-      default:
-        return AssetPaths.maintenance;
-    }
+    return Icons.receipt_long;
   }
 }

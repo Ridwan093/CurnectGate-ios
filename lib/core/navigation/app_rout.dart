@@ -37,7 +37,7 @@ import 'package:curnectgate/features/operations/OTP_Activation/screen/Activate_O
 import 'package:curnectgate/features/operations/OTP_Activation/screen/Active_history.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/activites_log.dart';
 import 'package:curnectgate/features/operations/violation/screens/reportViolation.dart';
-import 'package:curnectgate/features/payment/screen/Activites.dart';
+import 'package:curnectgate/features/payment/screen/PaymentHistoryScreen.dart';
 import 'package:curnectgate/features/payment/screen/ReviewPayment.dart';
 import 'package:curnectgate/features/payment/screen/payment_method_screen.dart';
 import 'package:curnectgate/features/payment/screen/success_error_scren/success_error.dart';
@@ -468,7 +468,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final extra = state.extra as Map<String, dynamic>;
           final walletBalce = extra["wallet"] as String;
-
+          final isFull = extra["isFull"] as bool;
           final lists =
               (extra["list"] as Iterable?)
                   ?.whereType<OutstandingDue>()
@@ -476,7 +476,11 @@ final routerProvider = Provider<GoRouter>((ref) {
               [];
 
           // Extract values with null checks
-          return ReviewPayment(list: lists, wallet: walletBalce);
+          return ReviewPayment(
+            list: lists,
+            wallet: walletBalce,
+            isFull: isFull,
+          );
         },
       ),
 
@@ -560,14 +564,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/payment_History',
         name: AppRoutes.paymentHistory,
         builder: (context, state) {
-          // final lists =
-          //     (extra["list"] as Iterable?)
-          //         ?.whereType<OutstandingDue>()
-          //         .toList() ??
-          //     [];
-
-          // Extract values with null checks
-          return Activites();
+          return const PaymentHistoryScreen();
         },
       ),
 

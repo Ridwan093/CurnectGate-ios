@@ -1,20 +1,14 @@
 import 'dart:developer';
 
-import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
-import 'package:curnectgate/core/appErrorBody/buildEmptyBody.dart';
-import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
-import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
-import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/payment/provider/payment_method_provider.dart';
+import 'package:curnectgate/features/payment/screen/fund_wallet_page.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/payment_method/payment_method_item.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/payment_method/payment_methods_data.dart';
 import 'package:curnectgate/features/payment/state_model/state.dart';
 import 'package:curnectgate/features/payment/widget/payment_data/payment_not_available.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/widget/featureNotavailableDialog.dart';
-import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,89 +19,60 @@ class PaymentMethodData extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dashbordProviderAsync = ref.watch(getpaymentMethodProvider);
-    return RefreshIndicator(
-      color: AppColors.instance.yellow500,
-      onRefresh:
-          () => ref
-              .read(getpaymentMethodProvider.notifier)
-              .refreshPaymentmethod(context, ref),
-      child: dashbordProviderAsync.when(
-        data: (due) {
-          try {
-            final user = due?.data;
-            return user != null
-                ? _getList(user, ref, context, isMethodSelected)
-                : EmptyBodys(message: "No payment data?");
-          } catch (e) {
-            return Builderroul(
-              error: e.toString(),
-              onTap:
-                  () => ref
-                      .read(getpaymentMethodProvider.notifier)
-                      .refreshPaymentmethod(context, ref),
-              firstMessae: "Faile to load payment method?",
-            );
+    return dashbordProviderAsync.when(
+      data: (due) {
+        try {
+          final user = due?.data;
+          return user != null
+              ? _getList(user, ref, context, isMethodSelected)
+              : _buildErrorState(context, ref, "No payment data?");
+        } catch (e) {
+          return _buildErrorState(context, ref, e.toString());
+        }
+      },
+      loading: () {
+        try {
+          return _buildLoadingState(context);
+        } catch (e) {
+          return _buildErrorState(context, ref, e.toString());
+        }
+      },
+      error: (error, stack) {
+        try {
+          // Handle session expiration
+          if (error.toString().contains("Unauthorized")) {
+            return _buildErrorState(context, ref, error.toString());
           }
-        },
-        loading: () {
-          try {
-            final cachedProfile = ref.read(getpaymentMethodProvider).value;
-            return cachedProfile != null
-                ? _getList(cachedProfile.data, ref, context, isMethodSelected)
-                : Loadingstates();
-          } catch (e) {
-            return Builderroul(
-              error: e.toString(),
-              onTap:
-                  () => ref
-                      .read(getpaymentMethodProvider.notifier)
-                      .refreshPaymentmethod(context, ref),
-              firstMessae: "Faile to load payment method?",
-            );
-          }
-        },
-        error: (error, stack) {
-          try {
-            // Handle session expiration
-            if (error.toString().contains("Unauthorized")) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                ref.read(authProvider.notifier).sessionExpire(context, ref);
-              });
-              return Expiresessionbody();
-            }
+    
+          // Try to show cached data
+    
+          return _buildErrorState(context, ref, error.toString());
+        } catch (e) {
+          return _buildErrorState(context, ref, e.toString());
+        }
+      },
+    );
+  }
 
-            // Try to show cached data
-            final cachedProfile = ref.read(getpaymentMethodProvider).value;
-            if (cachedProfile?.data != null) {
-              return _getList(
-                cachedProfile?.data,
-                ref,
-                context,
-                isMethodSelected,
-              );
-            }
+  /// PRO STYLE LOADING: Shows a disabled "Continue" button with a shimmer-like color
+  Widget _buildLoadingState(BuildContext context) {
+    return _buildBottonsheet(
+      null, // No ref needed for loading
+      false, // Disabled
+      context,
+      PaymentMethodItem.empty().copyWith(name: "Loading..."),
+      isLoading: true,
+    );
+  }
 
-            // No cached data available
-            return Builderroul(
-              error: error.toString(),
-              onTap:
-                  () => ref
-                      .read(getpaymentMethodProvider.notifier)
-                      .refreshPaymentmethod(context, ref),
-              firstMessae: "Faile to payment method?",
-            );
-          } catch (e) {
-            return Builderroul(
-              error: e.toString(),
-              onTap:
-                  () => ref
-                      .read(getpaymentMethodProvider.notifier)
-                      .refreshPaymentmethod(context, ref),
-              firstMessae: "Faile to load method?",
-            );
-          }
-        },
-      ),
+  /// PRO STYLE ERROR: Shows a disabled button with a small retry nudge
+  Widget _buildErrorState(BuildContext context, WidgetRef ref, String error) {
+    return _buildBottonsheet(
+      ref,
+      false, // Disabled
+      context,
+      PaymentMethodItem.empty().copyWith(name: "Error loading"),
+      error: error,
     );
   }
 
@@ -130,12 +95,13 @@ class PaymentMethodData extends ConsumerWidget {
   }
 
   Widget _buildBottonsheet(
-    WidgetRef ref,
+    WidgetRef? ref,
     bool isMethodSelected,
     BuildContext context,
-
-    PaymentMethodItem e,
-  ) {
+    PaymentMethodItem e, {
+    String? error,
+    bool isLoading = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
       child: Row(
@@ -143,10 +109,9 @@ class PaymentMethodData extends ConsumerWidget {
           Expanded(
             child: GestureDetector(
               onTap:
-                  isMethodSelected
+                  isMethodSelected && !isLoading && error == null
                       ? () async {
-                        // Navigate to next screen
-                        final method = ref.read(paymentMethodProvider);
+                        final method = ref!.read(paymentMethodProvider);
 
                         if (method == PaymentMethod.bankTransfer) {
                           log('Selected method: $method');
@@ -181,12 +146,14 @@ class PaymentMethodData extends ConsumerWidget {
                                   (_) => const PaymentNotConfiguredDialog(),
                             );
                           } else {
-                            showUserBottomSheet(
-                              context: context,
-                              headertitle: e.secretKey ?? "",
-                              headersubtitle: e.publicKey ?? "",
-                              ref: ref,
-                              bottom: BottomSheetView.fundingAmount,
+                            // Navigate to the premium Fund Wallet page
+                            // Reset amount state so the page starts fresh
+                            ref.read(amountTextProvider.notifier).state = '';
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => FundWalletPage(method: e),
+                              ),
                             );
                           }
                         }
@@ -203,43 +170,88 @@ class PaymentMethodData extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Center(
-                  child: Text(
-                    "Continue",
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      color:
-                          isMethodSelected
-                              ? Colors.white
-                              : AppColors.instance.black300,
-                      fontSize: 14,
-                    ),
-                  ),
+                  child:
+                      isLoading
+                          ? SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.instance.black300,
+                            ),
+                          )
+                          : Text(
+                            error != null ? "Continue" : "Continue",
+                            style: TextStyle(
+                              fontFamily: FontFamilies.interDisplay,
+                              color:
+                                  isMethodSelected && error == null
+                                      ? Colors.white
+                                      : AppColors.instance.black300,
+                              fontSize: 14,
+                            ),
+                          ),
                 ),
               ),
             ),
           ),
-          SizedBox(width: 10),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Next step:",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black300,
-                  fontSize: 12,
-                ),
-              ),
-              SizedBox(height: 5),
-              Text(
-                "2:information",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black300,
-                  fontSize: 12,
-                ),
-              ),
-            ],
+          const SizedBox(width: 10),
+          // Information Column: Shows next step or Error message if present
+          Expanded(
+            flex: 0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (error != null) ...[
+                  GestureDetector(
+                    onTap:
+                        () => ref!
+                            .read(getpaymentMethodProvider.notifier)
+                            .refreshPaymentmethod(context, ref),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.refresh,
+                          size: 14,
+                          color: AppColors.instance.error600,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          "Retry",
+                          style: TextStyle(
+                            fontFamily: FontFamilies.interDisplay,
+                            color: AppColors.instance.error600,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ] else ...[
+                  Text(
+                    "Next step:",
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      color: AppColors.instance.black300,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    "2:information",
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      color: AppColors.instance.black300,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ],
+            ),
           ),
         ],
       ),

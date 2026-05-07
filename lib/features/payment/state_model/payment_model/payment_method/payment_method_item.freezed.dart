@@ -27,6 +27,9 @@ mixin _$PaymentMethodItem {
   String? get publicKey => throw _privateConstructorUsedError;
   String? get secretKey => throw _privateConstructorUsedError;
   String? get currency => throw _privateConstructorUsedError;
+  String? get environment => throw _privateConstructorUsedError;
+  String? get chargePercentage => throw _privateConstructorUsedError;
+  String? get chargeFlat => throw _privateConstructorUsedError;
 
   /// Serializes this PaymentMethodItem to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -51,7 +54,10 @@ abstract class $PaymentMethodItemCopyWith<$Res> {
       String? description,
       String? publicKey,
       String? secretKey,
-      String? currency});
+      String? currency,
+      String? environment,
+      String? chargePercentage,
+      String? chargeFlat});
 }
 
 /// @nodoc
@@ -76,6 +82,9 @@ class _$PaymentMethodItemCopyWithImpl<$Res, $Val extends PaymentMethodItem>
     Object? publicKey = freezed,
     Object? secretKey = freezed,
     Object? currency = freezed,
+    Object? environment = freezed,
+    Object? chargePercentage = freezed,
+    Object? chargeFlat = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -106,6 +115,18 @@ class _$PaymentMethodItemCopyWithImpl<$Res, $Val extends PaymentMethodItem>
           ? _value.currency
           : currency // ignore: cast_nullable_to_non_nullable
               as String?,
+      environment: freezed == environment
+          ? _value.environment
+          : environment // ignore: cast_nullable_to_non_nullable
+              as String?,
+      chargePercentage: freezed == chargePercentage
+          ? _value.chargePercentage
+          : chargePercentage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      chargeFlat: freezed == chargeFlat
+          ? _value.chargeFlat
+          : chargeFlat // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -125,7 +146,10 @@ abstract class _$$PaymentMethodItemImplCopyWith<$Res>
       String? description,
       String? publicKey,
       String? secretKey,
-      String? currency});
+      String? currency,
+      String? environment,
+      String? chargePercentage,
+      String? chargeFlat});
 }
 
 /// @nodoc
@@ -148,6 +172,9 @@ class __$$PaymentMethodItemImplCopyWithImpl<$Res>
     Object? publicKey = freezed,
     Object? secretKey = freezed,
     Object? currency = freezed,
+    Object? environment = freezed,
+    Object? chargePercentage = freezed,
+    Object? chargeFlat = freezed,
   }) {
     return _then(_$PaymentMethodItemImpl(
       id: freezed == id
@@ -178,6 +205,18 @@ class __$$PaymentMethodItemImplCopyWithImpl<$Res>
           ? _value.currency
           : currency // ignore: cast_nullable_to_non_nullable
               as String?,
+      environment: freezed == environment
+          ? _value.environment
+          : environment // ignore: cast_nullable_to_non_nullable
+              as String?,
+      chargePercentage: freezed == chargePercentage
+          ? _value.chargePercentage
+          : chargePercentage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      chargeFlat: freezed == chargeFlat
+          ? _value.chargeFlat
+          : chargeFlat // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -193,7 +232,10 @@ class _$PaymentMethodItemImpl implements _PaymentMethodItem {
       this.description,
       this.publicKey,
       this.secretKey,
-      this.currency});
+      this.currency,
+      this.environment,
+      this.chargePercentage,
+      this.chargeFlat});
 
   factory _$PaymentMethodItemImpl.fromJson(Map<String, dynamic> json) =>
       _$$PaymentMethodItemImplFromJson(json);
@@ -212,10 +254,16 @@ class _$PaymentMethodItemImpl implements _PaymentMethodItem {
   final String? secretKey;
   @override
   final String? currency;
+  @override
+  final String? environment;
+  @override
+  final String? chargePercentage;
+  @override
+  final String? chargeFlat;
 
   @override
   String toString() {
-    return 'PaymentMethodItem(id: $id, name: $name, type: $type, description: $description, publicKey: $publicKey, secretKey: $secretKey, currency: $currency)';
+    return 'PaymentMethodItem(id: $id, name: $name, type: $type, description: $description, publicKey: $publicKey, secretKey: $secretKey, currency: $currency, environment: $environment, chargePercentage: $chargePercentage, chargeFlat: $chargeFlat)';
   }
 
   @override
@@ -233,13 +281,19 @@ class _$PaymentMethodItemImpl implements _PaymentMethodItem {
             (identical(other.secretKey, secretKey) ||
                 other.secretKey == secretKey) &&
             (identical(other.currency, currency) ||
-                other.currency == currency));
+                other.currency == currency) &&
+            (identical(other.environment, environment) ||
+                other.environment == environment) &&
+            (identical(other.chargePercentage, chargePercentage) ||
+                other.chargePercentage == chargePercentage) &&
+            (identical(other.chargeFlat, chargeFlat) ||
+                other.chargeFlat == chargeFlat));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, id, name, type, description, publicKey, secretKey, currency);
+      runtimeType, id, name, type, description, publicKey, secretKey, currency, environment, chargePercentage, chargeFlat);
 
   /// Create a copy of PaymentMethodItem
   /// with the given fields replaced by the non-null parameter values.
@@ -266,7 +320,10 @@ abstract class _PaymentMethodItem implements PaymentMethodItem {
       final String? description,
       final String? publicKey,
       final String? secretKey,
-      final String? currency}) = _$PaymentMethodItemImpl;
+      final String? currency,
+      final String? environment,
+      final String? chargePercentage,
+      final String? chargeFlat}) = _$PaymentMethodItemImpl;
 
   factory _PaymentMethodItem.fromJson(Map<String, dynamic> json) =
       _$PaymentMethodItemImpl.fromJson;
@@ -285,6 +342,12 @@ abstract class _PaymentMethodItem implements PaymentMethodItem {
   String? get secretKey;
   @override
   String? get currency;
+  @override
+  String? get environment;
+  @override
+  String? get chargePercentage;
+  @override
+  String? get chargeFlat;
 
   /// Create a copy of PaymentMethodItem
   /// with the given fields replaced by the non-null parameter values.

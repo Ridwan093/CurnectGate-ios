@@ -320,7 +320,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                 iconPath: AssetPaths.setCurfew,
               ),
 
-               _buildSignOut(
+              _buildSignOut(
                 ref: ref,
                 iconPath: AssetPaths.logOut,
                 title: "Sign out",
@@ -392,6 +392,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
   Widget _buildRow(BuildContext context, WidgetRef ref) {
     final reminderprovider = ref.read(reminderProvider.notifier);
     final notifier = ref.read(workOrderFormProvider.notifier);
+    final role = ref.watch(userRoleProvider).valueOrNull;
     return Wrap(
       // runAlignment: WrapAlignment.spaceBetween,
       spacing: 5, // horizontal space
@@ -423,13 +424,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
             notifier.updateEndDate(null);
             notifier.updateStartDate(null);
             notifier.updateWorkType("", 0);
-            showUserBottomSheet(
-              context: context,
-              headertitle: "",
-              headersubtitle: "",
-              ref: ref,
-              bottom: BottomSheetView.seletctEvent,
-            );
+            if (role.toString().toLowerCase().contains("security_personnel")) {
+              showUserBottomSheet(
+                context: context,
+                headertitle: "",
+                headersubtitle: "Revoked  OTP",
+                ref: ref,
+                bottom: BottomSheetView.events,
+                id: 0,
+              );
+            } else {
+              showUserBottomSheet(
+                context: context,
+                headertitle: "",
+                headersubtitle: "",
+                ref: ref,
+                bottom: BottomSheetView.seletctEvent,
+              );
+            }
           },
         ),
       ],
