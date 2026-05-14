@@ -63,6 +63,7 @@ class Dashborad extends ConsumerWidget {
                 color: AppColors.instance.yellow500,
                 onRefresh: () async {
                   await Future.wait([
+                    ref.refresh(digitalIdStatusProvider.future),
                     ref.refresh(expiredCountProvider("used").future),
                     ref.refresh(expiredCountProvider("expired").future),
                     ref.read(pollProvider.notifier).refreshPoll(context, ref),
@@ -500,7 +501,7 @@ class Dashborad extends ConsumerWidget {
           onTap: () async {
             ref.read(formProvider.notifier).updateRegenerateDigiterCode("");
             ref.read(formProvider.notifier).updateGenrateMemberIdLoading(false);
-
+            ref.invalidate(digitalIdStatusProvider);
             final status = await ref.read(digitalIdStatusProvider.future);
 
             log(status.hasDigitalId.toString());

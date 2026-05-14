@@ -49,7 +49,8 @@ String _formatRole(String role) {
       .join(' ');
 }
 
-class _MessageScreenState extends ConsumerState<MessageScreens> with WidgetsBindingObserver {
+class _MessageScreenState extends ConsumerState<MessageScreens>
+    with WidgetsBindingObserver {
   final TextEditingController _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
@@ -227,10 +228,11 @@ class _MessageScreenState extends ConsumerState<MessageScreens> with WidgetsBind
         if (lastMessage.senderId.toString() != myId.toString()) {
           // If we are already at the bottom or the screen is active, mark as read
           // We mark as read if user is near bottom (latest messages) OR if they are typing
-          final isNearBottom = _scrollController.hasClients &&
+          final isNearBottom =
+              _scrollController.hasClients &&
               _scrollController.position.pixels <=
                   _scrollController.position.minScrollExtent + 200;
-          
+
           if (isNearBottom || _focusNode.hasFocus) {
             markAsRead();
           }
@@ -425,7 +427,6 @@ class _MessageScreenState extends ConsumerState<MessageScreens> with WidgetsBind
                 id: widget.id,
                 bottom: BottomSheetView.residentEmgencyContacts,
               );
-             
             },
           ),
           IconButton(

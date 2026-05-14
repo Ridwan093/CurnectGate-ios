@@ -17,7 +17,8 @@ class SecurityTapScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentIndex = ref.watch(tabStateProvider);
+    final tabState = ref.watch(tabStateProvider);
+    final currentIndex = tabState.clamp(0, 2);
     final tabController = ref.read(tabStateProvider.notifier);
     final isScanning = ref.watch(qrScanProvider);
 

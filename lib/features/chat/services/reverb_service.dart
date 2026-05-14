@@ -11,12 +11,12 @@ import 'package:curnectgate/features/chat/data/provider/reverb_provider.dart';
 import 'package:curnectgate/features/chat/data/provider/typingindicator_provider.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:dart_pusher_channels/dart_pusher_channels.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
 class ReverbService {
   static PusherChannelsClient? _client;
   static bool _initialized = false;
+  static dynamic _ref; // Store a ref for global use
   static int? _currentUserId; // Track for re-setup
   static int? _currentChatId; // Track for re-setup
 
@@ -25,8 +25,10 @@ class ReverbService {
 
   static PrivateChannel? _chatChannel;
   static StreamSubscription<ChannelReadEvent>? _chatMessageSub;
+  static StreamSubscription<ChannelReadEvent>? _messageReadSub;
   static StreamSubscription<ChannelReadEvent>? _typingSub;
   static StreamSubscription<ChannelReadEvent>? _chatBindAllSub;
+  static StreamSubscription<ChannelReadEvent>? _conversationCreatedSub;
 
   static StreamSubscription? _connectionStateSub;
   static StreamSubscription? _errorEventSub;
@@ -45,7 +47,7 @@ class ReverbService {
   }
 
   static Future<void> init({
-    required WidgetRef ref,
+    required dynamic ref,
     required String token,
     required String appKey,
     required String host,
@@ -54,6 +56,7 @@ class ReverbService {
     required String broadcaster,
     String? cluster,
   }) async {
+    _ref = ref;
     // We remove the strict _initialized gate to allow updating the connection
     // if called again with a new token or configuration.
     if (_initialized && _client != null) {
@@ -160,7 +163,8 @@ class ReverbService {
     }
   }
 
-  static Future<void> initRealtime(WidgetRef ref, int userId) async {
+  static Future<void> initRealtime(dynamic ref, int userId) async {
+    _ref = ref;
     _log('initRealtime triggered for User ID: $userId');
     try {
       final token = await SharedPrefsService().getUserToken();
@@ -202,7 +206,8 @@ class ReverbService {
     }
   }
 
-  static Future<void> setupGlobalListener(int userId, WidgetRef ref) async {
+  static Future<void> setupGlobalListener(int userId, dynamic ref) async {
+    _ref ??= ref;
     _log('Setting up global conversation listener for User ID: $userId');
     _currentUserId = userId;
 
@@ -223,6 +228,7 @@ class ReverbService {
         _log('Removing existing global channel subscription.');
         _globalChannel?.unsubscribe();
         _globalMessageSub?.cancel();
+        _conversationCreatedSub?.cancel();
       }
 
       final channelName = 'private-user.$userId.conversations';
@@ -250,14 +256,15 @@ class ReverbService {
         _log('Global channel authentication failed: ${event.data}');
       });
 
-      _globalChannel!.bind('conversation.created').listen((event) {
+      _conversationCreatedSub = _globalChannel!.bind('conversation.created').listen((event) {
         _log('Event received: conversation.created');
         try {
           final payload =
               jsonDecode(event.data as String) as Map<String, dynamic>;
           final conversationJson = payload['conversation'];
 
-          ref
+          final effectiveRef = _ref ?? ref;
+          effectiveRef
               .read(conversationListProvider.notifier)
               .updateConversation(Conversation.safeFromJson(conversationJson));
         } catch (e) {
@@ -275,19 +282,20 @@ class ReverbService {
           final messageJson = payload['message'];
           final conversationId = messageJson['conversation_id'];
 
-          ref
+          final effectiveRef = _ref ?? ref;
+          effectiveRef
               .read(conversationListProvider.notifier)
               .updateLastMessage(
                 conversationId: conversationId,
                 message: messageJson,
               );
 
-          await ref.read(unreadCountsProvider.notifier).refreshCounts();
+          await effectiveRef.read(unreadCountsProvider.notifier).refreshCounts();
 
           if (_chatChannel == null ||
               _chatChannel!.name != 'private-conversation.$conversationId') {
             _log('Redirecting message to background message provider.');
-            ref
+            effectiveRef
                 .read(messagesProvider(conversationId).notifier)
                 .addIncomingMessage(messageJson);
           }
@@ -302,8 +310,9 @@ class ReverbService {
 
   static Future<void> subscribeChat({
     required int chatId,
-    required WidgetRef ref,
+    required dynamic ref,
   }) async {
+    _ref ??= ref;
     _log('Subscribing to specific chat: $chatId');
     _currentChatId = chatId;
     try {
@@ -314,6 +323,7 @@ class ReverbService {
       if (token == null) return;
 
       await _chatMessageSub?.cancel();
+      await _messageReadSub?.cancel();
       await _typingSub?.cancel();
       await _chatBindAllSub?.cancel();
 
@@ -359,7 +369,8 @@ class ReverbService {
               jsonDecode(event.data as String) as Map<String, dynamic>;
           final messageJson = payload['message'];
 
-          ref
+          final effectiveRef = _ref ?? ref;
+          effectiveRef
               .read(messagesProvider(chatId).notifier)
               .addIncomingMessage(messageJson);
         } catch (e) {
@@ -367,9 +378,10 @@ class ReverbService {
         }
       });
 
-      _chatChannel!.bind('message.read').listen((event) {
+      _messageReadSub = _chatChannel!.bind('message.read').listen((event) {
         _log('Event received: message.read');
-        ref
+        final effectiveRef = _ref ?? ref;
+        effectiveRef
             .read(messagesProvider(chatId).notifier)
             .markSentMessagesAsReadLocally();
       });
@@ -387,7 +399,8 @@ class ReverbService {
 
           if (senderStr != null) {
             final senderId = int.tryParse(senderStr) ?? 0;
-            ref
+            final effectiveRef = _ref ?? ref;
+            effectiveRef
                 .read(typingStatusProvider(chatId).notifier)
                 .updateTyping(senderId, isTyping);
           }
@@ -404,6 +417,7 @@ class ReverbService {
     _log('Unsubscribing from chat...');
     _currentChatId = null;
     _chatMessageSub?.cancel();
+    _messageReadSub?.cancel();
     _typingSub?.cancel();
     _chatBindAllSub?.cancel();
 
@@ -440,7 +454,9 @@ class ReverbService {
   static void disconnect() {
     _log('Disconnecting ReverbService and clearing all subscriptions...');
     _globalMessageSub?.cancel();
+    _conversationCreatedSub?.cancel();
     _chatMessageSub?.cancel();
+    _messageReadSub?.cancel();
     _typingSub?.cancel();
     _chatBindAllSub?.cancel();
     _connectionStateSub?.cancel();

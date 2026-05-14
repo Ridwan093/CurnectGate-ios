@@ -17,8 +17,8 @@ import 'package:go_router/go_router.dart';
 class EstateCodeVerificationScreen extends BaseVerificationScreen {
   const EstateCodeVerificationScreen({super.key})
     : super(
-        currentStep: 2,
-        totalSteps: 5,
+        currentStep: 1,
+        totalSteps: 6,
         title: 'Your estate code',
         description:
             'To confirm the estate you are registered to, enter your estate code',
@@ -38,7 +38,10 @@ class _EstateCodeVerificationScreenState
 
     return Scaffold(
       appBar: !formState.isLoading ? _buildAppBar() : null,
-      bottomNavigationBar: !formState.isLoading ? _buildBottomAction() : null,
+      bottomNavigationBar:
+          !formState.isLoading
+              ? SafeArea(top: false, child: _buildBottomAction())
+              : null,
       body:
           formState.isLoading
               ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)
@@ -79,8 +82,8 @@ class _EstateCodeVerificationScreenState
         children: [
           const SizedBox(height: 23),
           const ProgressIndicators(
-            currentStep: 2,
-            totalSteps: 5,
+            currentStep: 1,
+            totalSteps: 6,
             height: 2.0,
             borderRadius: 4.0,
           ),
@@ -119,7 +122,7 @@ class _EstateCodeVerificationScreenState
     final submitNotifier = ref.read(estateCodeSubmissionProvider.notifier);
 
     return ActionButton(
-      label: 'Validate',
+      label: 'Continue',
 
       onPressed:
           formState.isValid ? () => submitNotifier.submitCode(context) : null,

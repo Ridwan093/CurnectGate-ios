@@ -23,7 +23,7 @@ class PaymentHistory extends ConsumerWidget {
       onRefresh:
           () => ref
               .read(paymentHistoryProvider.notifier)
-              .refreshPaymentHistory(context, ref),
+              .refreshPaymentHistory(context),
       child: paymentHistoryProviderAsync.when(
         data: (due) {
           try {
@@ -42,15 +42,15 @@ class PaymentHistory extends ConsumerWidget {
                     DepositTabContent(data: user.transactions?.data),
                   ],
                 )
-                : EmptyBodys(message: "No history data?");
+                : EmptyBodys(message: "No history data");
           } catch (e) {
             return Builderroul(
               error: e.toString(),
               onTap:
                   () => ref
                       .read(paymentHistoryProvider.notifier)
-                      .refreshPaymentHistory(context, ref),
-              firstMessae: "Faile to load history data?",
+                      .refreshPaymentHistory(context),
+              firstMessae: "Faile to load history data",
             );
           }
         },
@@ -80,7 +80,7 @@ class PaymentHistory extends ConsumerWidget {
               onTap:
                   () => ref
                       .read(paymentHistoryProvider.notifier)
-                      .refreshPaymentHistory(context, ref),
+                      .refreshPaymentHistory(context),
               firstMessae: "Faile to load history data?",
             );
           }
@@ -121,7 +121,7 @@ class PaymentHistory extends ConsumerWidget {
               onTap:
                   () => ref
                       .read(paymentHistoryProvider.notifier)
-                      .refreshPaymentHistory(context, ref),
+                      .refreshPaymentHistory(context),
               firstMessae: "Faile to load history?",
             );
           } catch (e) {
@@ -130,7 +130,7 @@ class PaymentHistory extends ConsumerWidget {
               onTap:
                   () => ref
                       .read(paymentHistoryProvider.notifier)
-                      .refreshPaymentHistory(context, ref),
+                      .refreshPaymentHistory(context),
               firstMessae: "Faile to load history data",
             );
           }

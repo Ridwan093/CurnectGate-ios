@@ -3,18 +3,18 @@ import 'dart:developer';
 import 'package:crypto/crypto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// 🔐 BiometricSignatureHelper
+/// BiometricSignatureHelper
 /// Handles secure generation and persistence of unique signatures per user/device.
 class BiometricSignatureHelper {
-  // 🔑 Storage keys
+  // Storage keys
   static const _signatureKey = "biometric_signature";
   static const _biometricIdKey = "unique_biometric_id";
   static const _sharedPrefsEmailKey = "user_email";
 
-  // ⚙️ Secret key (keep consistent across versions)
+  // Secret key (keep consistent across versions)
   static const _secretAppKey = "my_super_secret_app_key_v1";
 
-  /// ✅ Get existing signature or generate a new one if needed
+  /// Get existing signature or generate a new one if needed
   static Future<String> getOrCreateSignature({
     required String uniqueBiometricId,
   }) async {
@@ -22,7 +22,6 @@ class BiometricSignatureHelper {
     final email = prefs.getString(_sharedPrefsEmailKey);
 
     if (email == null || email.isEmpty) {
-      log("❌ No user email found in SharedPreferences");
       throw Exception("No user email found in SharedPreferences");
     }
 
@@ -30,21 +29,14 @@ class BiometricSignatureHelper {
     final savedEmail = prefs.getString(_sharedPrefsEmailKey);
     final savedId = prefs.getString(_biometricIdKey);
 
-    log("🔍 Email from prefs: $savedEmail");
-    log("🔍 Saved Biometric ID: $savedId");
-    log("🔍 Current Biometric ID: $uniqueBiometricId");
-    log("🔍 Existing Signature: $existingSignature");
-
     // ✅ Check if all identifiers match
     if (existingSignature != null &&
         savedEmail == email &&
         savedId == uniqueBiometricId) {
-      log("✅ Using existing signature for user: $email");
       return existingSignature;
     }
 
     // ⚙️ Generate new one when not found or mismatched
-    log("⚙️ Regenerating signature for user: $email");
     return await _refreshForUser(
       email: email,
       uniqueBiometricId: uniqueBiometricId,
@@ -70,9 +62,6 @@ class BiometricSignatureHelper {
     await prefs.setString(_biometricIdKey, uniqueBiometricId);
     await prefs.setString(_sharedPrefsEmailKey, email);
 
-    log("✅ New signature generated and stored for $email");
-    log("🔐 Signature: $signature");
-
     return signature;
   }
 
@@ -80,11 +69,10 @@ class BiometricSignatureHelper {
   static Future<String?> getStoredSignature() async {
     final prefs = await SharedPreferences.getInstance();
     final signature = prefs.getString(_signatureKey);
-    log("📄 Retrieved stored signature: $signature");
     return signature;
   }
 
-  /// 📧 Retrieve stored email
+  /// Retrieve stored email
   static Future<String?> getStoredEmail() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_sharedPrefsEmailKey);

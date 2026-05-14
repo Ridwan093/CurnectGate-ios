@@ -18,8 +18,8 @@ class OtpScreen extends BaseVerificationScreen {
 
   const OtpScreen(this.data, {super.key})
     : super(
-        currentStep: 5,
-        totalSteps: 5,
+        currentStep: 6,
+        totalSteps: 6,
         title: "Confirm your identity",
         description: "Code sent via email ",
       );
@@ -251,7 +251,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
       formProvider.select((state) => state.isOtpComplete),
     );
     return ActionButton(
-      label: 'Verify OTP',
+      label: 'Finish setup',
       onPressed:
           isOtpComplete
               ? () {

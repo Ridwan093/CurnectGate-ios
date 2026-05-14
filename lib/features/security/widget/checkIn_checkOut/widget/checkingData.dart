@@ -1,8 +1,8 @@
-import 'dart:developer';
+import 'package:curnectgate/core/appErrorBody/buildEmptyBody.dart';
+import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
 
-import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
-import 'package:curnectgate/core/style/fontStyle.dart';
+
 import 'package:curnectgate/features/security/model/checkIn_ceckOut_model/visitor_model.dart';
 import 'package:curnectgate/features/security/provider/check_in_provider.dart';
 import 'package:curnectgate/features/security/widget/checkIn_checkOut/widget/logCard.dart';
@@ -32,10 +32,17 @@ class CheckInData extends ConsumerWidget {
               if (visitor != null) {
                 return _buildVisitortList(visitor, ref);
               } else {
-                return _buildEmptyBody();
+                return EmptyBodys(message: "No Check In Logs Yet");
               }
             } catch (e) {
-              return _buildErrorUI('Failed to load logs', ref, context);
+              return Builderroul(
+                error: e.toString(),
+                onTap:
+                    () => ref
+                        .read(getCheckInProvider.notifier)
+                        .refreshCheckIn(context, ref),
+                firstMessae: "Faile to load logs",
+              );
             }
           },
           loading: () {
@@ -68,20 +75,23 @@ class CheckInData extends ConsumerWidget {
                 );
               }
 
-              // No cached data available
-              return _buildErrorUI(
-                error.toString().contains("connection")
-                    ? "Connection failed. Please check your network"
-                    : "Failed to load logs",
-                ref,
-                context,
+              // No c
+              return Builderroul(
+                error: error.toString(),
+                onTap:
+                    () => ref
+                        .read(getCheckInProvider.notifier)
+                        .refreshCheckIn(context, ref),
+                firstMessae: "Faile to load logs",
               );
             } catch (e) {
-              log(e.toString());
-              return _buildErrorUI(
-                "An unexpected error occurred",
-                ref,
-                context,
+              return Builderroul(
+                error: e.toString(),
+                onTap:
+                    () => ref
+                        .read(getCheckInProvider.notifier)
+                        .refreshCheckIn(context, ref),
+                firstMessae: "Faile to load logs",
               );
             }
           },
@@ -97,8 +107,7 @@ class CheckInData extends ConsumerWidget {
         var data = Visitor[index];
         return Logcard(
           entrytitle:
-              data.visitorOtp?.latestSecurityValidation?.validationStatus ??
-              '',
+              data.visitorOtp?.latestSecurityValidation?.validationStatus ?? '',
           entryTime: data.checkin ?? "",
           entryType: data.status ?? "",
           entrypath: "",
@@ -106,27 +115,6 @@ class CheckInData extends ConsumerWidget {
           isAllow: "approved",
         );
       },
-    );
-  }
-
-  Widget _buildEmptyBody() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(AssetPaths.dashboardWorkOrder, height: 100, width: 100),
-          const SizedBox(height: 10),
-          Text(
-            "Your log List here",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.black300,
-              fontSize: 12,
-              fontWeight: FontFamilies.medium,
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -166,52 +154,6 @@ class CheckInData extends ConsumerWidget {
             child: Text(
               "Showing cached data. ${error.split(':').first}",
               style: const TextStyle(color: Colors.black87),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildErrorUI(String error, WidgetRef ref, BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.error_outline, size: 48, color: Colors.red),
-          const SizedBox(height: 16),
-          Text(
-            "Error loading logs",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontSize: 16,
-              color: AppColors.instance.black600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            error,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.black400,
-            ),
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.instance.grey200,
-            ),
-            onPressed:
-                () => ref
-                    .read(getCheckInProvider.notifier)
-                    .refreshCheckIn(context, ref),
-            child: Text(
-              "Try Again",
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                color: AppColors.instance.black600,
-              ),
             ),
           ),
         ],

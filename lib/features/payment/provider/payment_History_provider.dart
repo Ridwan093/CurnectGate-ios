@@ -62,14 +62,11 @@ class PaymentHistoryNotifier
     }
   }
 
-  Future<void> refreshPaymentHistory(
-    BuildContext context,
-    WidgetRef ref,
-  ) async {
+  Future<void> refreshPaymentHistory(BuildContext context) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       try {
-        final token = await ref.watch(accessTokenProvider.future);
+        final token = await ref.read(accessTokenProvider.future);
         final freshProfile = await ref
             .read(getApiServiceProvider)
             .getPaymentHistory(bearerToken: token ?? "");
@@ -78,7 +75,6 @@ class PaymentHistoryNotifier
       } catch (e) {
         if (e is DioException && e.response?.statusCode == 401) {
           log(e.toString());
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else if (e.toString().contains("The connection errored")) {
           log(e.toString());
           showCustomSuccessToast(

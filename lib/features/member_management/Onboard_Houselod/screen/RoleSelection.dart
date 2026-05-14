@@ -141,19 +141,22 @@ class _PasswordScreenState extends ConsumerState<MemberSelection> {
   }
 
   Widget _buildBottomAction() {
-    // final isLoading = ref.watch(estateCodeSubmissionProvider).isLoading;
-
     return Positioned(
       bottom: 0,
       right: 0,
       left: 0,
-      child: Consumer(
-        builder: (context, ref, _) {
-          return ActionButton(
-            label: 'Continue',
-            onPressed: selectedRole != null ? _submitForm : null,
-          );
-        },
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: Consumer(
+            builder: (context, ref, _) {
+              return ActionButton(
+                label: 'Continue',
+                onPressed: selectedRole != null ? _submitForm : null,
+              );
+            },
+          ),
+        ),
       ),
     );
   }

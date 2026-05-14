@@ -68,7 +68,16 @@ final dioProvider = Provider(
             },
           ),
         )
-        ..interceptors.add(LogInterceptor(error: true)),
+        ..interceptors.add(
+          LogInterceptor(
+            request: false,
+            requestHeader: false,
+            responseHeader: false,
+            requestBody: false,
+            responseBody: false,
+            error: true,
+          ),
+        ),
 );
 
 

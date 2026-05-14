@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -27,8 +26,6 @@ class NewPassword extends BaseVerificationScreen {
 
 class _SignInState extends ConsumerState<NewPassword> {
   void _submitForm() {
-    log(widget.token.toString());
-    log(widget.localEmail.toString());
     ref
         .read(formProvider.notifier)
         .creatNewPassword(

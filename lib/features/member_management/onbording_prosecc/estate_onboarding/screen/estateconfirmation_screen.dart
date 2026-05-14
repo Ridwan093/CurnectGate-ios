@@ -15,7 +15,7 @@ class ConfirmInfomation extends BaseVerificationScreen {
   const ConfirmInfomation({super.key, required this.estateData})
     : super(
         currentStep: 2,
-        totalSteps: 5,
+        totalSteps: 6,
         title: 'Confirm your Estate information',
         description: '',
       );
@@ -71,7 +71,7 @@ class _ConfirmInfomationState extends ConsumerState<ConfirmInfomation> {
           const SizedBox(height: 25),
           const ProgressIndicators(
             currentStep: 2,
-            totalSteps: 5,
+            totalSteps: 6,
             height: 2.0,
             borderRadius: 4.0,
           ),
@@ -100,6 +100,6 @@ class _ConfirmInfomationState extends ConsumerState<ConfirmInfomation> {
   Widget _buildBottomAction() {
     // final isLoading = ref.watch(estateCodeSubmissionProvider).isLoading;
 
-    return ActionButton(label: 'Yes, Confirm', onPressed: _submitForm);
+    return ActionButton(label: 'Continue', onPressed: _submitForm);
   }
 }

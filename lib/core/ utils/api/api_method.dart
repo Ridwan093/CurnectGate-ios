@@ -2705,11 +2705,14 @@ class AppApiMethod {
     required BuildContext context,
   }) async {
     try {
+      log(requestData.toString());
       final response = await _dio.post(
         registerDeviceToken,
         data: requestData,
         options: Options(validateStatus: (status) => status! < 500),
       );
+      log(response.toString());
+
       return response.data;
     } on DioException {
       showCustomSuccessToast(
@@ -2728,6 +2731,7 @@ class AppApiMethod {
     required Map<String, dynamic> requestData,
     required BuildContext context,
   }) async {
+    log(requestData.toString());
     try {
       final response = await _dio.delete(
         removedDeviceToken,
@@ -2761,6 +2765,8 @@ class AppApiMethod {
       "biometric_signature": biometric_signature,
     };
 
+    log(" [PUSH DEBUG] Biometric Login Request: $requestData");
+
     try {
       final response = await _dio.post(
         biometricLogin,
@@ -2768,21 +2774,17 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
 
+      print("📥 [PUSH DEBUG] Biometric Login Response: ${response.data}");
+
       final rawCookies = response.headers['set-cookie'];
       if (rawCookies != null && rawCookies.isNotEmpty) {
         final cookieString = rawCookies.first.split(';').first;
         await SharedPrefsService().saveSessionCookie(cookieString);
       }
       return response.data;
-    } on DioException {
-      showCustomSuccessToast(
-        context: context,
-        message: "",
-        color: AppColors.instance.teal400,
-        icon: Icons.close,
-        iconColors: AppColors.instance.grey200,
-        positionNumber: 70,
-      );
+    } on DioException catch (e) {
+      print("❌ [PUSH DEBUG] Biometric Login Error: ${e.message}");
+      print("📥 [PUSH DEBUG] Biometric Login Error Data: ${e.response?.data}");
       rethrow;
     }
   }

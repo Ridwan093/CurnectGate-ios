@@ -168,7 +168,9 @@ class _SetUppRofiledState extends ConsumerState<AddCOowner> {
       bottomNavigationBar:
           isLoading
               ? null
-              : _buildBottomAction(widget.selectedRole.toLowerCase()),
+              : SafeArea(
+                child: _buildBottomAction(widget.selectedRole.toLowerCase()),
+              ),
       body:
           isLoading
               ? AppLoader(

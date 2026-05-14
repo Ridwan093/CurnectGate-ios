@@ -36,7 +36,7 @@ class SetUppRofiled extends BaseVerificationScreen {
     required this.digitalID,
   }) : super(
          currentStep: 4,
-         totalSteps: 5,
+         totalSteps: 6,
          title: "Let's get you setup",
          description: 'Your information are pre-filed',
        );
@@ -139,7 +139,7 @@ class _SetUppRofiledState extends ConsumerState<SetUppRofiled> {
           const SizedBox(height: 25),
           const ProgressIndicators(
             currentStep: 4,
-            totalSteps: 5,
+            totalSteps: 6,
             height: 2.0,
             borderRadius: 4.0,
           ),

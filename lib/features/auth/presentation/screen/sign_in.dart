@@ -15,9 +15,11 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/estate_
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:curnectgate/features/userProfile/Login_setting/state/biometric_provider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 ///flutter_screenutil: ^5.9.0
 class SignIn extends BaseVerificationScreen {
   const SignIn({super.key})
@@ -261,72 +263,76 @@ class _SignInState extends ConsumerState<SignIn> {
   }
 
   Widget _buildBiometricWidget() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(height: 100),
-          if (Platform.isAndroid) ...[
-            InkWell(
-              onTap: () {
-                ref
-                    .read(formProvider.notifier)
-                    .signInwithFaceID(context: context, ref: ref, slug: "");
-              },
-              child: Icon(
-                Icons.fingerprint,
-                size: 55,
-                color: AppColors.instance.teal300,
-              ),
-            ),
-            const SizedBox(height: 10),
-            InkWell(
-              onTap: () {
-                ref
-                    .read(formProvider.notifier)
-                    .signInwithFaceID(context: context, ref: ref, slug: "");
-              },
+    final bool isIOS = Platform.isIOS;
+
+    return Column(
+      children: [
+        const SizedBox(height: 40),
+        Row(
+          children: [
+            Expanded(child: Divider(color: AppColors.instance.grey200)),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                "Log in with fingerprint",
+                "Fast login with",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black600,
-                  fontWeight: FontFamilies.medium,
+                  fontSize: 12,
+                  color: AppColors.instance.black300,
                 ),
               ),
             ),
-          ] else ...[
-            InkWell(
-              onTap: () {
-                ref
-                    .read(formProvider.notifier)
-                    .signInwithFaceID(context: context, ref: ref, slug: "");
-              },
-              child: Icon(
-                Icons.face,
-                size: 55,
-                color: AppColors.instance.teal300,
-              ),
-            ),
-            const SizedBox(height: 10),
-            InkWell(
-              onTap: () {
-                ref
-                    .read(formProvider.notifier)
-                    .signInwithFaceID(context: context, ref: ref, slug: "");
-              },
-              child: Text(
-                "Log in with face ID",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black600,
-                  fontWeight: FontFamilies.medium,
-                ),
-              ),
-            ),
+            Expanded(child: Divider(color: AppColors.instance.grey200)),
           ],
-        ],
-      ),
+        ),
+        const SizedBox(height: 30),
+        Center(
+          child: Column(
+            children: [
+              InkWell(
+                onTap: () {
+                  ref
+                      .read(formProvider.notifier)
+                      .signInwithFaceID(context: context, ref: ref, slug: "");
+                },
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: AppColors.instance.grey200.withOpacity(0.5),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.03),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    isIOS ? CupertinoIcons.viewfinder : Icons.fingerprint,
+                    size: 42,
+                    color: AppColors.instance.teal300,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                isIOS ? "Face ID" : "Fingerprint",
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  color: AppColors.instance.black400,
+                  fontSize: 13,
+                  fontWeight: FontFamilies.medium,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 

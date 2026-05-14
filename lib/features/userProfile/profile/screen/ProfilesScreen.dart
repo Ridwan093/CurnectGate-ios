@@ -412,7 +412,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
           icon: Icons.chat_bubble_outline,
           color: AppColors.instance.teal300.withOpacity(.6),
           onTap: () {
-            ref.read(tabStateProvider.notifier).resetTochat();
+            final isSecurity =
+                role?.toLowerCase().contains("security") ?? false;
+            if (isSecurity) {
+              ref.read(tabStateProvider.notifier).setTab(1);
+            } else {
+              ref.read(tabStateProvider.notifier).resetTochat();
+            }
           },
         ),
         _builddirectriyButton(

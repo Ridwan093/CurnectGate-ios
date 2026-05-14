@@ -1,5 +1,4 @@
 // validation_bottom_sheet.dart
-import 'dart:developer';
 
 import 'package:curnectgate/features/member_management/membership_ID/bottomSheet/validation_state.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/model/estate_code_validator_state.dart';
@@ -48,7 +47,6 @@ class ValidationNotifier extends StateNotifier<ValidationState> {
           userEmail: response["data"]["email"],
           userPhoneNumber: response["data"]["phone"],
         );
-        log(response['data'].toString());
       } else {
         formNotifier.clearApiError();
         state = state.copyWith(

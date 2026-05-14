@@ -34,7 +34,17 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   // 2. Initialize Firebase
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  try {
+    print('🔵 [DEBUG] Starting Firebase initialization...');
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    print('✅ [DEBUG] Firebase initialized successfully!');
+  } catch (e, stack) {
+    print('❌ [DEBUG] FIREBASE INITIALIZATION FAILED!');
+    print('Error: $e');
+    print('Stack trace: $stack');
+  }
 
   // 3. Register background handler ONLY ONCE, as early as possible
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
@@ -61,6 +71,7 @@ void main() async {
     log('Hive box init error: $e');
   }
 
+  print('🚀 [DEBUG] Reaching runApp()...');
   runApp(
     ProviderScope(
       child: MyApp(),
@@ -164,8 +175,3 @@ class _MyAppState extends ConsumerState<MyApp> {
     );
   }
 }
-
-/// spouse => vojeyep499@inraud.com /pass =Jimoh3310@
-/// project Manager => fisori1255@iapapi.com/
-/// family member => tajokah766@iapapi.com/
-/// Staf Member => garokag883@inraud.com

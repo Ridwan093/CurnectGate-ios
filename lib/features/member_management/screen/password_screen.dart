@@ -35,7 +35,7 @@ class PasswordScreen extends BaseVerificationScreen {
     required this.terms,
   }) : super(
          currentStep: 5,
-         totalSteps: 5,
+         totalSteps: 6,
          title: "Hi $firstName.",
          description: "Let's cerate a password",
        );
@@ -106,8 +106,8 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
         children: [
           const SizedBox(height: 25),
           const ProgressIndicators(
-            currentStep: 4,
-            totalSteps: 5,
+            currentStep: 5,
+            totalSteps: 6,
             height: 2.0,
             borderRadius: 4.0,
           ),
@@ -159,7 +159,7 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
           formProvider.select((state) => state.passValid),
         );
         return ActionButton(
-          label: 'Finish setup',
+          label: 'Continue',
           onPressed: isValid ? _submitForm : null,
         );
       },

@@ -36,8 +36,8 @@ class ResolvedData extends ConsumerWidget {
         child: reportAsync.when(
           data: (report) {
             try {
-              final violations = report?.data?.violations??[];
-              if ( violations.isNotEmpty) {
+              final violations = report?.data?.violations ?? [];
+              if (violations.isNotEmpty) {
                 return _buildReportList(violations, ref);
               } else {
                 return _buildEmptyBody();
@@ -114,7 +114,7 @@ class ResolvedData extends ConsumerWidget {
                     opacity: animation,
                     child: ViolationDetailPage(
                       violation: data,
-                      images: data.evidence?.mediaUrls??[],
+                      images: data.evidence?.mediaUrls ?? [],
                     ),
                   );
                 },
@@ -123,12 +123,14 @@ class ResolvedData extends ConsumerWidget {
           },
           child: ParkingViolationCard(
             isInvestigation: true,
-            imageUrl: (data.evidence?.mediaUrls != null &&
-                    data.evidence!.mediaUrls.isNotEmpty)
-                ? data.evidence!.mediaUrls.first.toString()
-                : null,
-            violationType: data.locationDetails?.additionalLocation??"",
-            reportedBy: data.isAnonymous ? "Anonymous" : data.reporter?.name??"",
+            imageUrl:
+                (data.evidence?.mediaUrls != null &&
+                        data.evidence!.mediaUrls.isNotEmpty)
+                    ? data.evidence!.mediaUrls.first.toString()
+                    : null,
+            violationType: data.locationDetails?.additionalLocation ?? "",
+            reportedBy:
+                data.isAnonymous ? "Anonymous" : data.reporter?.name ?? "",
 
             resolutionType: "Awareness",
             date: formatDate(data.updatedAt),

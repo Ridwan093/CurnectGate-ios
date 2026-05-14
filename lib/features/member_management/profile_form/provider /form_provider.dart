@@ -587,6 +587,10 @@ class FormNotifier extends StateNotifier<FormStates> {
   }
 
   String extractValidationMessage(Map<String, dynamic> response) {
+    if (response["message"] != null &&
+        response["message"].toString().contains("on duty")) {
+      return response["message"];
+    }
     final List<String> messages = [];
 
     void extract(dynamic value) {
@@ -857,6 +861,8 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (response['status'] == true) {
         updateloginLodaing(false);
 
+        await DeviceInfoHelper.saveUserEmail(email);
+
         if (response["data"]["password_change_required"] == true) {
           showForcePasswordChangeDialog(
             context: context,
@@ -956,13 +962,13 @@ class FormNotifier extends StateNotifier<FormStates> {
       final email = await BiometricSignatureHelper.getStoredEmail();
       final signature = await BiometricSignatureHelper.getStoredSignature();
       final deviceToken = await DeviceInfoHelper.getDeviceToken();
-      final token = await ref.watch(accessTokenProvider.future) ?? "";
+      final token = (await ref.read(accessTokenProvider.future)) ?? "";
 
       if (email == null || signature == null) {
         showCustomSuccessToast(
           context: context,
           message:
-              "Biometric data not found. Please enable biometric login first.",
+              "Biometric data not found. Please enable biometric login again in settings.",
           color: AppColors.instance.error500,
           icon: Icons.error,
           iconColors: AppColors.instance.grey200,
@@ -994,7 +1000,6 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
       } else {
         final message = response["message"] ?? "Biometric login failed.";
-
         updateloginLodaing(false);
         _handleLoginError(context, ref, message);
       }
@@ -5310,7 +5315,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       } else {
         notifiers.updateLoading(false);
         notifier.resetForm();
-
         final message = extractValidationMessage(response);
 
         showCustomSuccessToast(
@@ -5723,7 +5727,6 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (response['status'] == true) {
         closeAllBottomSheets(context);
         notifiers.updateLoading(false);
-        log(response.toString());
         showUserBottomSheet(
           context: context,
           headertitle: json.encode(response),
@@ -7937,6 +7940,15 @@ class FormNotifier extends StateNotifier<FormStates> {
       final biometricType = await DeviceInfoHelper.getBiometricType();
       final deviceInfo = await DeviceInfoHelper.getDeviceInfo();
 
+      String? email = await BiometricSignatureHelper.getStoredEmail();
+      if (email == null || email.isEmpty) {
+        final auth = ref.read(authState.authProvider);
+        email = auth.user?['email'];
+        if (email != null) {
+          await DeviceInfoHelper.saveUserEmail(email);
+        }
+      }
+
       final isBiometricEnabled = ref.watch(biometricPrefProvider);
       final isBiometricEnableds = ref.read(biometricPrefProvider.notifier);
 
@@ -7982,10 +7994,16 @@ class FormNotifier extends StateNotifier<FormStates> {
         if (!context.mounted) return;
 
         if (response['status'] == true) {
+          final deviceData = await DeviceInfoHelper.deviceInfo();
+
+          await BiometricSignatureHelper.getOrCreateSignature(
+            uniqueBiometricId: deviceData['device_id'] ?? 'unknown_id',
+          );
+
           await DeviceInfoHelper.saveFirstTimeCheck(false);
           isBiometricEnableds.toggleBiometric(true);
         } else {
-          final message = extractValidationMessage(response);
+          final message = response['message'] ?? "Biometric setup failed.";
 
           showCustomSuccessToast(
             context: context,
@@ -8665,7 +8683,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         closeAllBottomSheets(context);
         ref
             .read(paymentHistoryProvider.notifier)
-            .refreshPaymentHistory(context, ref);
+            .refreshPaymentHistory(context);
         context.pop();
         showUserBottomSheet(
           context: context,
@@ -8877,6 +8895,8 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (response["success"] == true) {
         ref.read(conversationListProvider.notifier).refreshConversations();
         await ref.read(unreadCountsProvider.notifier).refreshCounts();
+      } else {
+        log(response.toString());
       }
     } on DioException catch (e) {
       if (e.error is SocketException) {}

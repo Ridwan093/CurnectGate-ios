@@ -43,16 +43,18 @@ class NotificationService {
       sound: true,
     );
 
-    log('✅ NotificationService initialized successfully');
+    log(' NotificationService initialized successfully');
   }
 
   Future<void> _onMessageReceived(RemoteMessage message) async {
-    log('🔔 Foreground message: ${message.data}');
+    log('Foreground message: ${message.data}');
+    log("ON MESSAGE FIRED: ${message.notification?.title}");
+    log("DATA: ${message.data}");
     await showLocalNotification(message);
   }
 
   Future<void> _onMessageOpenedApp(RemoteMessage message) async {
-    print('🟢 Notification tapped: ${message.data}');
+    print('Notification tapped: ${message.data}');
   }
 
   Future<void> _initializeLocalNotifications() async {
@@ -90,7 +92,7 @@ class NotificationService {
     await _localNotifications.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) async {
-        log('📩 Local notification tapped with payload: ${response.payload}');
+        log('Local notification tapped with payload: ${response.payload}');
         final payload = response.payload;
         if (response.actionId == 'OPEN_URL' &&
             payload != null &&
@@ -113,9 +115,9 @@ class NotificationService {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('🔓 User granted notification permission');
+      print(' User granted notification permission');
     } else {
-      print('🚫 User declined or has not accepted notification permission');
+      print(' User declined or has not accepted notification permission');
     }
   }
 
@@ -143,7 +145,7 @@ class NotificationService {
     final String body =
         data["body"] ?? notification?.body ?? 'You have a new message';
 
-    // ✅ download image if exists
+    // download image if exists
     String? imagePath;
     if (data["media_url"] != null && data["media_url"].toString().isNotEmpty) {
       imagePath = await downloadAndSaveImage(
@@ -181,7 +183,7 @@ class NotificationService {
       title,
       body,
       notificationDetails,
-      payload: actionUrl, // 👈 used when tapped
+      payload: actionUrl, // used when tapped
     );
   }
 
@@ -212,7 +214,7 @@ class NotificationService {
         shouldShowActionByPriority && actionText != null && actionUrl != null;
     final bool isplaySound = playsound.toLowerCase() == "true";
 
-    // 🔥 STYLE SELECTION
+    //  STYLE SELECTION
     StyleInformation style;
 
     if (imagePath != null) {
@@ -226,7 +228,7 @@ class NotificationService {
       style = BigTextStyleInformation(body, htmlFormatBigText: true);
     }
 
-    // 🔥 CHANNEL SELECTION
+    //  CHANNEL SELECTION
     switch (type) {
       case 'payment':
         return AndroidNotificationDetails(
@@ -362,7 +364,6 @@ class NotificationService {
 
   Future<String?> getToken() async {
     final token = await _messaging.getToken();
-    print('🔥 FCM Token: $token');
     return token;
   }
 }

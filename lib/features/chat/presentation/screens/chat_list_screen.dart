@@ -49,8 +49,11 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref.read(conversationListProvider.notifier).refreshConversations();
       await ref.read(unreadCountsProvider.notifier).refreshCounts();
-      final authState = ref.watch(authProvider);
+      
+      if (!mounted) return;
 
+      final authState = ref.read(authProvider);
+      
       final user = authState.user;
       final userId = user?["id"] ?? "";
       log("Ok let seee if you log ot not we see :${userId}");

@@ -98,12 +98,14 @@ class _AuthOnboardingScreenState extends ConsumerState<AuthOnboardingScreen> {
           Container(
             width: double.infinity,
             height: double.infinity,
-            color: Colors.black,
-            child: Image.asset(
-              AssetPaths
-                  .appLogo, // You might want a background image here instead
-              fit: BoxFit.contain,
-              color: Colors.white.withOpacity(0.05),
+            color: Colors.blue, // 👈 TEST COLOR
+            child: Center(
+              child: Image.asset(
+                AssetPaths.appLogo,
+                width: 200,
+                fit: BoxFit.contain,
+                color: Colors.white.withOpacity(0.5), // 👈 Higher visibility
+              ),
             ),
           ),
 

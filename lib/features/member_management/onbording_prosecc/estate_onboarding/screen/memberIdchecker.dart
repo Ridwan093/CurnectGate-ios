@@ -17,7 +17,7 @@ class MemberIdchecker extends BaseVerificationScreen {
   const MemberIdchecker({super.key, required this.estateData})
     : super(
         currentStep: 3,
-        totalSteps: 5,
+        totalSteps: 6,
         title: 'Confirm Your Member ID',
         description:
             'Let’s confirm your member ID matches the record of the estate ',
@@ -42,12 +42,7 @@ class _EstateCodeVerificationScreenState
 
     return Scaffold(
       appBar: _buildAppBar(),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.paddingOf(context).bottom + 10,
-        ),
-        child: _buildBottomAction(),
-      ),
+      bottomNavigationBar: SafeArea(top: false, child: _buildBottomAction()),
       body: _biuldbody(size),
     );
   }
@@ -77,8 +72,8 @@ class _EstateCodeVerificationScreenState
         children: [
           const SizedBox(height: 23),
           const ProgressIndicators(
-            currentStep: 2,
-            totalSteps: 5,
+            currentStep: 3,
+            totalSteps: 6,
             height: 2.0,
             borderRadius: 4.0,
           ),
@@ -120,7 +115,7 @@ class _EstateCodeVerificationScreenState
     final submitNotifier = ref.read(memberCodeSubmissionProvider.notifier);
 
     return ActionButton(
-      label: 'Validate',
+      label: 'Continue',
       onPressed:
           formState.isValid
               ? () {

@@ -117,7 +117,7 @@ class DismissedData extends ConsumerWidget {
                     opacity: animation,
                     child: ViolationDetailPage(
                       violation: data,
-                      images: data.evidence?.mediaUrls??[],
+                      images: data.evidence?.mediaUrls ?? [],
                     ),
                   );
                 },
@@ -126,12 +126,14 @@ class DismissedData extends ConsumerWidget {
           },
           child: ParkingViolationCard(
             isDismissing: true,
-            imageUrl: (data.evidence?.mediaUrls != null &&
-                    data.evidence!.mediaUrls.isNotEmpty)
-                ? data.evidence!.mediaUrls.first.toString()
-                : null,
-            violationType: data.locationDetails?.additionalLocation ??"",
-            reportedBy: data.isAnonymous ? "Anonymous" : data.reporter?.name??"",
+            imageUrl:
+                (data.evidence?.mediaUrls != null &&
+                        data.evidence!.mediaUrls.isNotEmpty)
+                    ? data.evidence!.mediaUrls.first.toString()
+                    : null,
+            violationType: data.locationDetails?.additionalLocation ?? "",
+            reportedBy:
+                data.isAnonymous ? "Anonymous" : data.reporter?.name ?? "",
 
             resolutionType: "Awareness",
             date: formatDate(data.updatedAt),

@@ -46,49 +46,51 @@ class AddNewMember extends StatelessWidget {
   }
 
   Widget _buildtopcontent(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 15, right: 15),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 100,
-                  width: 100,
-                  child: Image.asset(AssetPaths.addMember),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  "Add a co-owner, family memeber or staff to your property",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontFamily: FontFamilies.interDisplay,
-                    color: AppColors.instance.grey200,
-                    fontWeight: FontFamilies.bold,
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 15, right: 15),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 100,
+                    width: 100,
+                    child: Image.asset(AssetPaths.addMember),
                   ),
-                ),
-              ],
+                  SizedBox(height: 10),
+                  Text(
+                    "Add a co-owner, family memeber or staff to your property",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: FontFamilies.interDisplay,
+                      color: AppColors.instance.grey200,
+                      fontWeight: FontFamilies.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          OnBoardButton(
-            label: "Add new member",
-            onPressed: () {
-              ////domin rought change later
-              ///MemberSelection
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MemberSelection()),
-              );
-            },
-            bodycolor: AppColors.instance.grey200,
-            textcolor: AppColors.instance.black500,
-          ),
-        ],
+            OnBoardButton(
+              label: "Add new member",
+              onPressed: () {
+                ////domin rought change later
+                ///MemberSelection
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MemberSelection()),
+                );
+              },
+              bodycolor: AppColors.instance.grey200,
+              textcolor: AppColors.instance.black500,
+            ),
+          ],
+        ),
       ),
     );
   }

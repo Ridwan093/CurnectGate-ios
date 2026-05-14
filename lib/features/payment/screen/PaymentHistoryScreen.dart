@@ -45,7 +45,7 @@ class PaymentHistoryScreen extends ConsumerWidget {
         onRefresh:
             () => ref
                 .read(paymentHistoryProvider.notifier)
-                .refreshPaymentHistory(context, ref),
+                .refreshPaymentHistory(context),
         child: historyAsync.when(
           data: (history) {
             final transactions = history?.data?.transactions?.data ?? [];
@@ -70,7 +70,7 @@ class PaymentHistoryScreen extends ConsumerWidget {
               onTap:
                   () => ref
                       .read(paymentHistoryProvider.notifier)
-                      .refreshPaymentHistory(context, ref),
+                      .refreshPaymentHistory(context),
               firstMessae: "Failed to load transaction history",
             );
           },
