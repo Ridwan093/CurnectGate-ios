@@ -90,6 +90,7 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
         },
       ),
       body: SafeArea(
+        top: false,
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
