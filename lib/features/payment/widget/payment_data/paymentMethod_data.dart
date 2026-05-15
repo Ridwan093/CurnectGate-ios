@@ -102,9 +102,11 @@ class PaymentMethodData extends ConsumerWidget {
     String? error,
     bool isLoading = false,
   }) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-      child: Row(
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+        child: Row(
         children: [
           Expanded(
             child: GestureDetector(
