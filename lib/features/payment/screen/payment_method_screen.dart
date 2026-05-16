@@ -15,7 +15,7 @@ class PaymentMethodScreen extends ConsumerWidget {
     final selectedMethod = ref.watch(paymentMethodProvider);
     return Scaffold(
       bottomNavigationBar: SizedBox(
-        height: 70,
+        height: 90,
         child: PaymentMethodData(
           isMethodSelected: selectedMethod != PaymentMethod.none,
         ),
