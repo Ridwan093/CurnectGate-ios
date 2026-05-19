@@ -1876,9 +1876,10 @@ class FormNotifier extends StateNotifier<FormStates> {
             "Unauthenticated. Please login to continue.") {
           ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else {
+          final message = extractValidationMessage(response);
           showCustomSuccessToast(
             context: context,
-            message: response["message"],
+            message: message,
             color: AppColors.instance.error500,
             icon: Icons.error,
             iconColors: AppColors.instance.grey200,

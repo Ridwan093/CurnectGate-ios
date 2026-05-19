@@ -60,77 +60,79 @@ class DuePayment extends ConsumerWidget {
     final listoutStanding = data?.dues ?? [];
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      // Pre-select all bills at full amount for the review screen
-                      ref
-                          .read(selectedBillsProvider.notifier)
-                          .selectAll(listoutStanding);
+      child: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        // Pre-select all bills at full amount for the review screen
+                        ref
+                            .read(selectedBillsProvider.notifier)
+                            .selectAll(listoutStanding);
 
-                      // Navigate to next screen
-                      context.pushNamed(
-                        AppRoutes.paymentReview,
-                        extra: {
-                          "list": listoutStanding,
-                          "wallet": walletBalance,
-                          "isFull": true,
-                        },
-                      );
-                    },
+                        // Navigate to next screen
+                        context.pushNamed(
+                          AppRoutes.paymentReview,
+                          extra: {
+                            "list": listoutStanding,
+                            "wallet": walletBalance,
+                            "isFull": true,
+                          },
+                        );
+                      },
 
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: AppColors.instance.black600,
+                      child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: AppColors.instance.black600,
 
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Next",
-                          style: TextStyle(
-                            fontFamily: FontFamilies.interDisplay,
-                            color: Colors.white,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Next",
+                            style: TextStyle(
+                              fontFamily: FontFamilies.interDisplay,
+                              color: Colors.white,
 
-                            fontSize: 14,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(width: 10),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Next step:",
-                      style: TextStyle(
-                        fontFamily: FontFamilies.interDisplay,
-                        color: AppColors.instance.black300,
-                        fontSize: 12,
+                  SizedBox(width: 10),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Next step:",
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          color: AppColors.instance.black300,
+                          fontSize: 12,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      "2:Review",
-                      style: TextStyle(
-                        fontFamily: FontFamilies.interDisplay,
-                        color: AppColors.instance.black300,
-                        fontSize: 12,
+                      SizedBox(height: 5),
+                      Text(
+                        "2:Review",
+                        style: TextStyle(
+                          fontFamily: FontFamilies.interDisplay,
+                          color: AppColors.instance.black300,
+                          fontSize: 12,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
