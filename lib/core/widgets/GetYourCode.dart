@@ -70,42 +70,43 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
     // final accessCodes = extractWorkerAccessCodes(extractedData);
     // final vendorCode = extractVendorAccessCode(extractedData);
     return Scaffold(
-      bottomNavigationBar: ActionButton(
-        label: "Got it",
-        onPressed: () {
-          // if (widget.title!.contains("Your visitor access code")) {
-          //   Navigator.pop(context);
-          //   // Navigator.push(
-          //   //   context,
-          //   //   MaterialPageRoute(
-          //   //     builder:
-          //   //         (context) => MainNavigationScreen(mainPage: VendorLog()),
-          //   //   ),
-          //   // );
-          // } else {
-          //   log(widget.title.toString());
-          // }
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: ActionButton(
+          label: "Got it",
+          onPressed: () {
+            // if (widget.title!.contains("Your visitor access code")) {
+            //   Navigator.pop(context);
+            //   // Navigator.push(
+            //   //   context,
+            //   //   MaterialPageRoute(
+            //   //     builder:
+            //   //         (context) => MainNavigationScreen(mainPage: VendorLog()),
+            //   //   ),
+            //   // );
+            // } else {
+            //   log(widget.title.toString());
+            // }
 
-          context.pop();
-        },
+            context.pop();
+          },
+        ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              if (widget.title!.contains("Your visitor access code")) ...[
-                _buildSuccessContainer(),
-              ] else ...[
-                ///DESINGE THIS TO MEET THE OHTER CODE SUB WORKERS CODE
-                _buildSuccessContainerEvendor(
-                  title: "Your vendor access code:",
-                  subCodes: accessCodes,
-                  mainCode: vendorCode,
-                ),
-              ],
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            if (widget.title!.contains("Your visitor access code")) ...[
+              _buildSuccessContainer(),
+            ] else ...[
+              ///DESINGE THIS TO MEET THE OHTER CODE SUB WORKERS CODE
+              _buildSuccessContainerEvendor(
+                title: "Your vendor access code:",
+                subCodes: accessCodes,
+                mainCode: vendorCode,
+              ),
             ],
-          ),
+          ],
         ),
       ),
     );

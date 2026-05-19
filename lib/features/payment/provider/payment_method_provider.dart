@@ -21,45 +21,18 @@ class PaymentMethodNotifier
     extends AutoDisposeAsyncNotifier<PaymentMethodsResponse?> {
   @override
   Future<PaymentMethodsResponse?> build() async {
-    // First try to load from local storage
-    final localpaymentMethod = await SharedPrefsService.getPayMethod();
+    // Always fetch fresh data to ensure accurate rates/percentages
+    final token = await ref.watch(accessTokenProvider.future);
 
-    try {
-      // Then try to fetch fresh data
-      final token = await ref.watch(accessTokenProvider.future);
-
-      if (token == null || token.isEmpty) {
-        throw Exception("Unauthenticated");
-      }
-
-      final fresPaymentMethod = await ref
-          .read(getApiServiceProvider)
-          .getPayMethod(bearerToken: token);
-
-      // Only update local storage if data is different
-      if (localpaymentMethod?.toJson() != fresPaymentMethod.toJson()) {
-        await SharedPrefsService.savePayMethod(fresPaymentMethod);
-      }
-
-      return fresPaymentMethod;
-    } catch (e) {
-      // If error occurs, return local data if available
-      log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");
-      if (localpaymentMethod != null) {
-        log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");
-        // Show error toast but still return local data
-        // WidgetsBinding.instance.addPostFrameCallback((_) {
-        //   ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(
-        //       content: Text('Using cached data: ${e.toString()}'),
-        //       duration: const Duration(seconds: 2),
-        //     ),
-        //   );
-        // });
-        return localpaymentMethod;
-      }
-      rethrow;
+    if (token == null || token.isEmpty) {
+      throw Exception("Unauthenticated");
     }
+
+    final fresPaymentMethod = await ref
+        .read(getApiServiceProvider)
+        .getPayMethod(bearerToken: token);
+
+    return fresPaymentMethod;
   }
 
   Future<void> refreshPaymentmethod(BuildContext context, WidgetRef ref) async {

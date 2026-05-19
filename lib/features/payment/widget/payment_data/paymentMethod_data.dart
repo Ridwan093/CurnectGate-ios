@@ -43,9 +43,9 @@ class PaymentMethodData extends ConsumerWidget {
           if (error.toString().contains("Unauthorized")) {
             return _buildErrorState(context, ref, error.toString());
           }
-    
+
           // Try to show cached data
-    
+
           return _buildErrorState(context, ref, error.toString());
         } catch (e) {
           return _buildErrorState(context, ref, e.toString());
@@ -102,158 +102,161 @@ class PaymentMethodData extends ConsumerWidget {
     String? error,
     bool isLoading = false,
   }) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap:
-                  isMethodSelected && !isLoading && error == null
-                      ? () async {
-                        final method = ref!.read(paymentMethodProvider);
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+        child: Row(
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap:
+                    isMethodSelected && !isLoading && error == null
+                        ? () async {
+                          final method = ref!.read(paymentMethodProvider);
 
-                        if (method == PaymentMethod.bankTransfer) {
-                          log('Selected method: $method');
+                          if (method == PaymentMethod.bankTransfer) {
+                            log('Selected method: $method');
 
-                          showFuturNotAvailableDialog(context, method.name);
-                          // showUserBottomSheet(
-                          //   context: context,
-                          //   headertitle: "Funding with bank transfer?",
-                          //   headersubtitle: "",
-                          //   ref: ref,
-                          //   bottom: BottomSheetView.fundingWithbankTransfer,
-                          // );
-                        } else {
-                          // final ref =
-                          //     'TEST_REF_${DateTime.now().millisecondsSinceEpoch}';
-                          // await PaystackService().checkout(
-                          //   context: context,
-                          //   email: 'testuser@example.com',
-                          //   amount: 500, // ₦500
-                          //   reference: ref,
-                          // );
-                          if (e.publicKey!.contains(
-                                "pk_test_sample_public_key_here",
-                              ) &&
-                              e.secretKey!.contains(
-                                "sk_test_sample_secret_key_here",
-                              )) {
-                            showDialog(
-                              context: context,
-                              barrierDismissible: true,
-                              builder:
-                                  (_) => const PaymentNotConfiguredDialog(),
-                            );
+                            showFuturNotAvailableDialog(context, method.name);
+                            // showUserBottomSheet(
+                            //   context: context,
+                            //   headertitle: "Funding with bank transfer?",
+                            //   headersubtitle: "",
+                            //   ref: ref,
+                            //   bottom: BottomSheetView.fundingWithbankTransfer,
+                            // );
                           } else {
-                            // Navigate to the premium Fund Wallet page
-                            // Reset amount state so the page starts fresh
-                            ref.read(amountTextProvider.notifier).state = '';
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => FundWalletPage(method: e),
-                              ),
-                            );
+                            // final ref =
+                            //     'TEST_REF_${DateTime.now().millisecondsSinceEpoch}';
+                            // await PaystackService().checkout(
+                            //   context: context,
+                            //   email: 'testuser@example.com',
+                            //   amount: 500, // ₦500
+                            //   reference: ref,
+                            // );
+                            if (e.publicKey!.contains(
+                                  "pk_test_sample_public_key_here",
+                                ) &&
+                                e.secretKey!.contains(
+                                  "sk_test_sample_secret_key_here",
+                                )) {
+                              showDialog(
+                                context: context,
+                                barrierDismissible: true,
+                                builder:
+                                    (_) => const PaymentNotConfiguredDialog(),
+                              );
+                            } else {
+                              // Navigate to the premium Fund Wallet page
+                              // Reset amount state so the page starts fresh
+                              ref.read(amountTextProvider.notifier).state = '';
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => FundWalletPage(method: e),
+                                ),
+                              );
+                            }
                           }
+                          // Navigator.push(...);
                         }
-                        // Navigator.push(...);
-                      }
-                      : null,
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color:
-                      isMethodSelected
-                          ? AppColors.instance.black600
-                          : AppColors.instance.grey400,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Center(
-                  child:
-                      isLoading
-                          ? SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: AppColors.instance.black300,
+                        : null,
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color:
+                        isMethodSelected
+                            ? AppColors.instance.black600
+                            : AppColors.instance.grey400,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Center(
+                    child:
+                        isLoading
+                            ? SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.instance.black300,
+                              ),
+                            )
+                            : Text(
+                              error != null ? "Continue" : "Continue",
+                              style: TextStyle(
+                                fontFamily: FontFamilies.interDisplay,
+                                color:
+                                    isMethodSelected && error == null
+                                        ? Colors.white
+                                        : AppColors.instance.black300,
+                                fontSize: 14,
+                              ),
                             ),
-                          )
-                          : Text(
-                            error != null ? "Continue" : "Continue",
-                            style: TextStyle(
-                              fontFamily: FontFamilies.interDisplay,
-                              color:
-                                  isMethodSelected && error == null
-                                      ? Colors.white
-                                      : AppColors.instance.black300,
-                              fontSize: 14,
-                            ),
-                          ),
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(width: 10),
-          // Information Column: Shows next step or Error message if present
-          Expanded(
-            flex: 0,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (error != null) ...[
-                  GestureDetector(
-                    onTap:
-                        () => ref!
-                            .read(getpaymentMethodProvider.notifier)
-                            .refreshPaymentmethod(context, ref),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.refresh,
-                          size: 14,
-                          color: AppColors.instance.error600,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          "Retry",
-                          style: TextStyle(
-                            fontFamily: FontFamilies.interDisplay,
+            const SizedBox(width: 10),
+            // Information Column: Shows next step or Error message if present
+            Expanded(
+              flex: 0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (error != null) ...[
+                    GestureDetector(
+                      onTap:
+                          () => ref!
+                              .read(getpaymentMethodProvider.notifier)
+                              .refreshPaymentmethod(context, ref),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.refresh,
+                            size: 14,
                             color: AppColors.instance.error600,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 4),
+                          Text(
+                            "Retry",
+                            style: TextStyle(
+                              fontFamily: FontFamilies.interDisplay,
+                              color: AppColors.instance.error600,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ] else ...[
-                  Text(
-                    "Next step:",
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      color: AppColors.instance.black300,
-                      fontSize: 12,
+                  ] else ...[
+                    Text(
+                      "Next step:",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        color: AppColors.instance.black300,
+                        fontSize: 12,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    "2:information",
-                    style: TextStyle(
-                      fontFamily: FontFamilies.interDisplay,
-                      color: AppColors.instance.black300,
-                      fontSize: 12,
+                    const SizedBox(height: 5),
+                    Text(
+                      "2:information",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        color: AppColors.instance.black300,
+                        fontSize: 12,
+                      ),
                     ),
-                  ),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
