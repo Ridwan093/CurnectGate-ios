@@ -11,7 +11,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class Committee extends ConsumerWidget {
   const Committee({super.key});
 
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final searchState = ref.watch(committeeSearchProvider);
@@ -52,13 +51,18 @@ class Committee extends ConsumerWidget {
           searchState.committeeData.when(
             data:
                 (residentData) => Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        ...searchState.committeeFilteredResidents.map(
-                          (committee) => CommitteeCard(committee: committee),
-                        ),
-                      ],
+                  child: RefreshIndicator(
+                    onRefresh: () => searchNotifier.refresh(context, ref),
+                    color: AppColors.instance.yellow500,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: Column(
+                        children: [
+                          ...searchState.committeeFilteredResidents.map(
+                            (committee) => CommitteeCard(committee: committee),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -111,8 +115,6 @@ class Committee extends ConsumerWidget {
       ),
     );
   }
-
-
 
   Widget _buildErrorUI(
     String error,

@@ -588,7 +588,8 @@ class FormNotifier extends StateNotifier<FormStates> {
 
   String extractValidationMessage(Map<String, dynamic> response) {
     if (response["message"] != null &&
-        response["message"].toString().contains("on duty")) {
+        (response["message"].toString().contains("on duty") ||
+            response["message"].toString().contains("clearance permit"))) {
       return response["message"];
     }
     final List<String> messages = [];
@@ -2182,7 +2183,18 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       if (response['status'] == true) {
         ref.read(getNotificationCount.notifier).refreshCount(context, ref);
-      } else {}
+      } else {
+        log(response.toString());
+        context.pop();
+        showCustomSuccessToast(
+          context: context,
+          message: response['message'].toString(),
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
     } on DioException catch (e) {
       if (!context.mounted) return;
       context.pop();
@@ -4731,7 +4743,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         final String jsonString = json.encode(userData);
 
         notifier.resetForm();
-
+        log(jsonString);
         showUserBottomSheet(
           context: context,
           headertitle: jsonString,
@@ -4844,7 +4856,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         notifier.resetForm();
         context.pop();
-
+        log(jsonString);
         showUserBottomSheet(
           context: context,
           headertitle: jsonString,
@@ -5090,7 +5102,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         notifier.resetForm();
 
         final message = extractValidationMessage(response);
-
+        log(response.toString());
         showCustomSuccessToast(
           context: context,
           message: message.replaceAll("_", " "),

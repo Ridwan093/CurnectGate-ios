@@ -104,7 +104,7 @@ import 'package:curnectgate/features/security/widget/security_buttom_sheet/valid
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/work_order/workers_access_code/vendorAccessCode_confirm.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/work_order/workers_access_code/vendorAccessCode_denyWorkers_message.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/work_order/workers_access_code/vendorAccesscode_checkIn.dart';
-import 'package:curnectgate/features/security/widget/security_buttom_sheet/validatorComfirmEntry.dart';
+// import 'package:curnectgate/features/security/widget/security_buttom_sheet/validatorComfirmEntry.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/violationTrack.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/workEmergency.dart';
 import 'package:curnectgate/features/userProfile/profile/widget/change_password_sheet.dart';
@@ -186,8 +186,8 @@ class BottomsheetDetails extends ConsumerWidget {
         );
       case BottomSheetView.validatedOTP:
         return Validateotp();
-      case BottomSheetView.valdationConfrm:
-        return ValidateConfirmEntry();
+      // case BottomSheetView.valdationConfrm:
+      //   return ValidateConfirmEntry();
       case BottomSheetView.accesGranted:
         return AccessGranted(
           isGranted: headersubtitle.isNotEmpty,

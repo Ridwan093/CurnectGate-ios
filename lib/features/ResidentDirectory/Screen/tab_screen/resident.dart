@@ -71,25 +71,30 @@ class Residentss extends ConsumerWidget {
           searchState.residentData.when(
             data:
                 (residentData) => Expanded(
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: Column(
-                      children: [
-                        ...searchState.filteredResidents.map(
-                          (resident) => ResidentCard(
-                            email: resident.email ?? "",
-                            userName: resident.fullName,
-                            block: resident.memberCode,
-                            adrress: resident.address,
-                            onChangePressed:
-                                resident.phone == null
-                                    ? null
-                                    : () {
-                                      _launchDialer(resident.phone ?? "");
-                                    },
+                  child: RefreshIndicator(
+                    onRefresh: () => searchNotifier.refresh(context, ref),
+                    color: AppColors.instance.yellow500,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: Column(
+                        children: [
+                          ...searchState.filteredResidents.map(
+                            (resident) => ResidentCard(
+                              email: resident.email ?? "",
+                              userName: resident.fullName,
+                              block: resident.memberCode,
+                              adrress: resident.address,
+                              onChangePressed:
+                                  resident.phone == null
+                                      ? null
+                                      : () {
+                                        _launchDialer(resident.phone ?? "");
+                                      },
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

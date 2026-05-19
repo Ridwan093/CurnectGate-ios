@@ -145,7 +145,7 @@ class Confirmentry extends ConsumerWidget {
           SizedBox(height: 20),
           _buildText(
             title: "House Address",
-            subtitle: extractedData["estate_name"] ?? "N/A",
+            subtitle: extractedData["address"] ?? "N/A",
           ),
         ],
       ),

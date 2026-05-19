@@ -82,7 +82,7 @@ class ConfirmentryDigital extends ConsumerWidget {
                                 //   ref: ref,
                                 //   bottom: BottomSheetView.digitalIdDeny,
                                 // );
-                         
+
                                 showUserBottomSheet(
                                   context: context,
                                   headertitle:
@@ -188,7 +188,7 @@ class ConfirmentryDigital extends ConsumerWidget {
           SizedBox(height: 20),
           _buildText(
             title: "House Address",
-            subtitle: extractedData["estate_name"] ?? "N/A",
+            subtitle: extractedData["address"] ?? "N/A",
           ),
         ],
       ),
