@@ -66,10 +66,9 @@ workflows:
         script: |
           flutter config --no-enable-swift-package-manager
           flutter pub get
-          # Final build with explicit signing overrides
+          # The signing settings are already patched into the project file by the previous step!
           flutter build ipa --release --build-number=6 \
-            --export-options-plist=/tmp/ExportOptions.plist \
-            --xcargs="DEVELOPMENT_TEAM=5648G3VS73,CODE_SIGN_STYLE=Manual,PROVISIONING_PROFILE_SPECIFIER=$UUID"
+            --export-options-plist=/tmp/ExportOptions.plist
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
