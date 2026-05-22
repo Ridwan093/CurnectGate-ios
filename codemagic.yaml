@@ -13,29 +13,30 @@ workflows:
     scripts:
       - name: Fetch signing files
         script: |
-          # Create temporary files from the base64 strings you pasted
+          # Create temporary files
           echo $CM_CERTIFICATE | base64 --decode > /tmp/certificate.p12
           echo $CM_PROVISIONING_PROFILE | base64 --decode > /tmp/profile.mobileprovision
           
-          # Initialize keychain and add the certificate
+          # Initialize keychain and add certificates
           keychain initialize
+          
+          # Download Apple intermediate certificate (fixes 'invalid certificate' errors)
+          curl -sL https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer > /tmp/WWDR.cer
+          keychain add-certificates --certificate /tmp/WWDR.cer
+          
           keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password $CM_CERTIFICATE_PASSWORD
           
-          # Install the provisioning profile
+          # Install profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp /tmp/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
           
-          # List certificates to verify
-          keychain list-certificates
-      - name: Set up code signing
-        script: |
           xcode-project use-profiles
       - name: Flutter build ipa
         script: |
           flutter config --no-enable-swift-package-manager
           flutter pub get
-          # We use the plist file that was automatically created by 'xcode-project use-profiles'
-          flutter build ipa --release --build-number=6 --export-options-plist=$HOME/export_options.plist
+          # We use "ad-hoc" which is easier to build. You can still upload this to Apple!
+          flutter build ipa --release --build-number=6 --export-method ad-hoc
     artifacts:
       - build/ios/ipa/*.ipa
       - /Users/builder/clone/build/ios/ipa/*.ipa
