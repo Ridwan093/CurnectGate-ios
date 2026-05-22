@@ -35,9 +35,12 @@ workflows:
           flutter config --no-enable-swift-package-manager
           flutter packages pub get
           cd ios && pod install && cd ..
-          flutter build ipa --release --build-number=6
+          flutter build ipa --release --build-number=6 --export-method app-store
+          # List files to make sure we know where the IPA is
+          find build/ios/ipa -maxdepth 2 -name "*.ipa"
     artifacts:
       - build/ios/ipa/*.ipa
+      - /Users/builder/clone/build/ios/ipa/*.ipa
     publishing:
       app_store_connect:
         auth: integration
