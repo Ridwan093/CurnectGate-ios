@@ -11,16 +11,24 @@ workflows:
       groups:
         - app_store_credentials
     scripts:
-      - name: Initialize keychain
-        script: |
-          keychain initialize
       - name: Fetch signing files
         script: |
-          # Try to pull certificates from the environment groups
-          keychain add-certificates
-          # List what was found
+          # Create temporary files from the base64 strings you pasted
+          echo $CM_CERTIFICATE | base64 --decode > /tmp/certificate.p12
+          echo $CM_PROVISIONING_PROFILE | base64 --decode > /tmp/profile.mobileprovision
+          
+          # Initialize keychain and add the certificate
+          keychain initialize
+          keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password $CM_CERTIFICATE_PASSWORD
+          
+          # Install the provisioning profile
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp /tmp/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          
+          # List certificates to verify
           keychain list-certificates
-          # Fetch signing files with verbose logging
+          
+          # Fetch final signing files (this should now succeed because it sees the certificate)
           app-store-connect fetch-signing-files "com.ges.curnectgate" --type IOS_APP_STORE --verbose
       - name: Set up code signing
         script: |
