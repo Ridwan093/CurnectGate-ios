@@ -59,9 +59,10 @@ workflows:
         script: |
           flutter config --no-enable-swift-package-manager
           flutter pub get
-          # Building without the incorrect flag
+          # We use --xcargs to FORCE Xcode to use our manual signing settings
           flutter build ipa --release --build-number=6 \
-            --export-options-plist=/tmp/ExportOptions.plist
+            --export-options-plist=/tmp/ExportOptions.plist \
+            --xcargs="DEVELOPMENT_TEAM=5648G3VS73,CODE_SIGN_STYLE=Manual,PROVISIONING_PROFILE_SPECIFIER=$PROV_PROFILE_NAME,CODE_SIGN_IDENTITY=Apple Distribution"
     artifacts:
       - build/ios/ipa/*.ipa
       - /Users/builder/clone/build/ios/ipa/*.ipa
