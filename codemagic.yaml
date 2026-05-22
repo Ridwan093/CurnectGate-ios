@@ -11,7 +11,7 @@ workflows:
       groups:
         - app_store_credentials
     scripts:
-      - name: Fetch signing files
+      - name: Fetch and Patch signing files
         script: |
           echo $CM_CERTIFICATE | base64 --decode > /tmp/certificate.p12
           echo $CM_PROVISIONING_PROFILE | base64 --decode > /tmp/profile.mobileprovision
@@ -26,14 +26,22 @@ workflows:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp /tmp/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
 
-          # Force local project to Manual Signing and correct Team ID
-          sed -i '' 's/ProvisioningStyle = Automatic;/ProvisioningStyle = Manual;/g' ios/Runner.xcodeproj/project.pbxproj
-          sed -i '' 's/DEVELOPMENT_TEAM = [A-Z0-9]*/DEVELOPMENT_TEAM = 5648G3VS73/g' ios/Runner.xcodeproj/project.pbxproj
+          # Read provisioning profile professionally using PlistBuddy
+          security cms -D -i /tmp/profile.mobileprovision > /tmp/profile.plist
+          # UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" /tmp/profile.plist)
+          PROFILE_NAME=$(/usr/libexec/PlistBuddy -c "Print Name" /tmp/profile.plist)
+          echo "Detected Profile Name: $PROFILE_NAME"
+
+          PROJECT=ios/Runner.xcodeproj/project.pbxproj
+
+          # Aggressively Force Manual Signing and IDs in the project file
+          sed -i '' 's/ProvisioningStyle = Automatic;/ProvisioningStyle = Manual;/g' $PROJECT
+          sed -i '' 's/DEVELOPMENT_TEAM = .*;/DEVELOPMENT_TEAM = 5648G3VS73;/g' $PROJECT
+          sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER = .*;/PRODUCT_BUNDLE_IDENTIFIER = com.ges.curnectgate;/g' $PROJECT
+          sed -i '' "s/PROVISIONING_PROFILE_SPECIFIER = .*;/PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\";/g" $PROJECT || true
+          sed -i '' 's/CODE_SIGN_IDENTITY = .*;/CODE_SIGN_IDENTITY = "Apple Distribution";/g' $PROJECT || true
           
-          # Detect the exact profile name from the file
-          PROV_PROFILE_NAME=$(grep -aA1 "Name" ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision | grep "<string>" | sed -e 's/<string>//' -e 's/<\/string>//' | tr -d '[:space:]' | head -n 1)
-          
-          # Create a bulletproof ExportOptions.plist
+          # Create the final ExportOptions.plist
           cat > /tmp/ExportOptions.plist <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -50,7 +58,7 @@ workflows:
             <key>provisioningProfiles</key>
             <dict>
               <key>com.ges.curnectgate</key>
-              <string>\$PROV_PROFILE_NAME</string>
+              <string>$PROFILE_NAME</string>
             </dict>
           </dict>
           </plist>
@@ -59,10 +67,8 @@ workflows:
         script: |
           flutter config --no-enable-swift-package-manager
           flutter pub get
-          # We use --xcargs to FORCE Xcode to use our manual signing settings
-          flutter build ipa --release --build-number=6 \
-            --export-options-plist=/tmp/ExportOptions.plist \
-            --xcargs="DEVELOPMENT_TEAM=5648G3VS73,CODE_SIGN_STYLE=Manual,PROVISIONING_PROFILE_SPECIFIER=$PROV_PROFILE_NAME,CODE_SIGN_IDENTITY=Apple Distribution"
+          # Building the IPA with the newly patched project and configuration
+          flutter build ipa --release --build-number=6 --export-options-plist=/tmp/ExportOptions.plist
     artifacts:
       - build/ios/ipa/*.ipa
       - /Users/builder/clone/build/ios/ipa/*.ipa
