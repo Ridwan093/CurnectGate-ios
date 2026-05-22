@@ -11,13 +11,13 @@ workflows:
       groups:
         - app_store_credentials
     scripts:
-      - name: Fetch and Patch signing files
+      - name: Fetch and Force signing files
         script: |
           echo $CM_CERTIFICATE | base64 --decode > /tmp/certificate.p12
           echo $CM_PROVISIONING_PROFILE | base64 --decode > /tmp/profile.mobileprovision
           keychain initialize
           
-          # Download Apple intermediate certificate
+          # Fix trust issues
           curl -sL https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer > /tmp/WWDR.cer
           keychain add-certificates --certificate /tmp/WWDR.cer
           keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password $CM_CERTIFICATE_PASSWORD
@@ -26,23 +26,24 @@ workflows:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp /tmp/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
 
-          # Read provisioning profile professionally using PlistBuddy
+          # Extract UUID and Name
           security cms -D -i /tmp/profile.mobileprovision > /tmp/profile.plist
-          # UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" /tmp/profile.plist)
+          UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" /tmp/profile.plist)
           PROFILE_NAME=$(/usr/libexec/PlistBuddy -c "Print Name" /tmp/profile.plist)
-          echo "Detected Profile Name: $PROFILE_NAME"
+          echo "Profile UUID: $UUID"
+          echo "Profile Name: $PROFILE_NAME"
 
           PROJECT=ios/Runner.xcodeproj/project.pbxproj
 
-          # Aggressively Force Manual Signing and IDs in the project file
+          # THE SILVER BULLET: Force these settings into every build configuration
           sed -i '' 's/ProvisioningStyle = Automatic;/ProvisioningStyle = Manual;/g' $PROJECT
           sed -i '' 's/DEVELOPMENT_TEAM = .*;/DEVELOPMENT_TEAM = 5648G3VS73;/g' $PROJECT
-          sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER = .*;/PRODUCT_BUNDLE_IDENTIFIER = com.ges.curnectgate;/g' $PROJECT
-          sed -i '' "s/PROVISIONING_PROFILE_SPECIFIER = .*;/PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\";/g" $PROJECT || true
-          sed -i '' 's/CODE_SIGN_IDENTITY = .*;/CODE_SIGN_IDENTITY = "Apple Distribution";/g' $PROJECT || true
-          sed -i '' '/PROVISIONING_PROFILE =/d' $PROJECT || true
+          sed -i '' "s/PROVISIONING_PROFILE_SPECIFIER = .*;/PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\";/g" $PROJECT
+          sed -i '' "s/PROVISIONING_PROFILE = .*;/PROVISIONING_PROFILE = \"$UUID\";/g" $PROJECT
+          sed -i '' 's/CODE_SIGN_STYLE = .*;/CODE_SIGN_STYLE = Manual;/g' $PROJECT
+          sed -i '' 's/CODE_SIGN_IDENTITY = .*;/CODE_SIGN_IDENTITY = "Apple Distribution";/g' $PROJECT
           
-          # Create the final ExportOptions.plist
+          # Create ExportOptions
           cat > /tmp/ExportOptions.plist <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -54,12 +55,10 @@ workflows:
             <string>5648G3VS73</string>
             <key>signingStyle</key>
             <string>manual</string>
-            <key>signingCertificate</key>
-            <string>Apple Distribution</string>
             <key>provisioningProfiles</key>
             <dict>
               <key>com.ges.curnectgate</key>
-              <string>$PROFILE_NAME</string>
+              <string>$UUID</string>
             </dict>
           </dict>
           </plist>
@@ -68,11 +67,10 @@ workflows:
         script: |
           flutter config --no-enable-swift-package-manager
           flutter pub get
-          # Building the IPA with the newly patched project and configuration
+          # Final build command with standard flags
           flutter build ipa --release --build-number=6 --export-options-plist=/tmp/ExportOptions.plist
     artifacts:
       - build/ios/ipa/*.ipa
-      - /Users/builder/clone/build/ios/ipa/*.ipa
     publishing:
       app_store_connect:
         auth: integration
