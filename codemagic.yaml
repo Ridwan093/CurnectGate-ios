@@ -30,14 +30,24 @@ workflows:
       - name: Set up code signing
         script: |
           xcode-project use-profiles
+          cat > /tmp/ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>5648G3VS73</string>
+          </dict>
+          </plist>
+          EOF
       - name: Flutter build ipa
         script: |
           flutter config --no-enable-swift-package-manager
           flutter packages pub get
           cd ios && pod install && cd ..
-          flutter build ipa --release --build-number=6 --export-method app-store
-          # List files to make sure we know where the IPA is
-          find build/ios/ipa -maxdepth 2 -name "*.ipa"
+          flutter build ipa --release --build-number=6 --export-options-plist=/tmp/ExportOptions.plist
     artifacts:
       - build/ios/ipa/*.ipa
       - /Users/builder/clone/build/ios/ipa/*.ipa
