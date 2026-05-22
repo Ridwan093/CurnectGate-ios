@@ -13,30 +13,49 @@ workflows:
     scripts:
       - name: Fetch signing files
         script: |
-          # Create temporary files
           echo $CM_CERTIFICATE | base64 --decode > /tmp/certificate.p12
           echo $CM_PROVISIONING_PROFILE | base64 --decode > /tmp/profile.mobileprovision
-          
-          # Initialize keychain and add certificates
           keychain initialize
           
-          # Download Apple intermediate certificate (fixes 'invalid certificate' errors)
+          # Download Apple intermediate certificate
           curl -sL https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer > /tmp/WWDR.cer
           keychain add-certificates --certificate /tmp/WWDR.cer
-          
           keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password $CM_CERTIFICATE_PASSWORD
           
           # Install profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp /tmp/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
           
-          xcode-project use-profiles
+          # Detect the exact profile name from the file
+          PROV_PROFILE_NAME=$(grep -aA1 "Name" ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision | grep "<string>" | sed -e 's/<string>//' -e 's/<\/string>//' | tr -d '[:space:]' | head -n 1)
+          
+          # Create a bulletproof ExportOptions.plist
+          cat > /tmp/ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>5648G3VS73</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>signingCertificate</key>
+            <string>Apple Distribution</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>com.ges.curnectgate</key>
+              <string>$PROV_PROFILE_NAME</string>
+            </dict>
+          </dict>
+          </plist>
+          EOF
       - name: Flutter build ipa
         script: |
           flutter config --no-enable-swift-package-manager
           flutter pub get
-          # We use "ad-hoc" which is easier to build. You can still upload this to Apple!
-          flutter build ipa --release --build-number=6 --export-method ad-hoc
+          flutter build ipa --release --build-number=6 --export-options-plist=/tmp/ExportOptions.plist
     artifacts:
       - build/ios/ipa/*.ipa
       - /Users/builder/clone/build/ios/ipa/*.ipa
