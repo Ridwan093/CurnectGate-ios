@@ -59,9 +59,8 @@ workflows:
         script: |
           flutter config --no-enable-swift-package-manager
           flutter pub get
-          # We add explicit signing flags here to force Xcode to use our profile during the Archive step
+          # Building without the incorrect flag
           flutter build ipa --release --build-number=6 \
-            --code-signing-identity="Apple Distribution" \
             --export-options-plist=/tmp/ExportOptions.plist
     artifacts:
       - build/ios/ipa/*.ipa
