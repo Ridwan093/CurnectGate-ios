@@ -16,10 +16,12 @@ workflows:
           keychain initialize
       - name: Fetch signing files
         script: |
-          # List available certificates for debugging
+          # Try to pull certificates from the environment groups
+          keychain add-certificates
+          # List what was found
           keychain list-certificates
-          # Fetch only what we have keys for
-          app-store-connect fetch-signing-files "com.ges.curnectgate" --type IOS_APP_STORE --ignore-cert-errors
+          # Fetch signing files with verbose logging
+          app-store-connect fetch-signing-files "com.ges.curnectgate" --type IOS_APP_STORE --verbose
       - name: Set up code signing
         script: |
           xcode-project use-profiles
