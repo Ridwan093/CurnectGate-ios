@@ -32,6 +32,7 @@ workflows:
           xcode-project use-profiles
       - name: Flutter build ipa
         script: |
+          flutter config --no-enable-swift-package-manager
           flutter packages pub get
           cd ios && pod install && cd ..
           flutter build ipa --release --build-number=6
