@@ -33,6 +33,11 @@ workflows:
           PROFILE_NAME=$(/usr/libexec/PlistBuddy -c "Print Name" /tmp/profile.plist)
           echo "Using Profile: $PROFILE_NAME ($UUID)"
 
+          # DETECTIVE WORK: Print the permissions inside this profile
+          echo "--- Profile Entitlements ---"
+          /usr/libexec/PlistBuddy -c "Print Entitlements" /tmp/profile.plist || true
+          echo "----------------------------"
+
           # 5. AGGRESSIVELY patch the project to Manual Signing
           PROJECT=ios/Runner.xcodeproj/project.pbxproj
           sed -i '' 's/ProvisioningStyle = Automatic;/ProvisioningStyle = Manual;/g' $PROJECT
