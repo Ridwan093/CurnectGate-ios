@@ -25,14 +25,15 @@ workflows:
           # Install profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp /tmp/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
-          
-          # Force the project to use the correct Team ID (5648G3VS73)
-          sed -i '' 's/DEVELOPMENT_TEAM = YP44JNDYC6/DEVELOPMENT_TEAM = 5648G3VS73/g' ios/Runner.xcodeproj/project.pbxproj
+
+          # Force local project to Manual Signing and correct Team ID
+          sed -i '' 's/ProvisioningStyle = Automatic;/ProvisioningStyle = Manual;/g' ios/Runner.xcodeproj/project.pbxproj
+          sed -i '' 's/DEVELOPMENT_TEAM = [A-Z0-9]*/DEVELOPMENT_TEAM = 5648G3VS73/g' ios/Runner.xcodeproj/project.pbxproj
           
           # Detect the exact profile name from the file
           PROV_PROFILE_NAME=$(grep -aA1 "Name" ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision | grep "<string>" | sed -e 's/<string>//' -e 's/<\/string>//' | tr -d '[:space:]' | head -n 1)
           
-          # Create a bulletproof ExportOptions.plist with the CORRECT Team ID
+          # Create a bulletproof ExportOptions.plist
           cat > /tmp/ExportOptions.plist <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -49,7 +50,7 @@ workflows:
             <key>provisioningProfiles</key>
             <dict>
               <key>com.ges.curnectgate</key>
-              <string>$PROV_PROFILE_NAME</string>
+              <string>\$PROV_PROFILE_NAME</string>
             </dict>
           </dict>
           </plist>
@@ -58,7 +59,10 @@ workflows:
         script: |
           flutter config --no-enable-swift-package-manager
           flutter pub get
-          flutter build ipa --release --build-number=6 --export-options-plist=/tmp/ExportOptions.plist
+          # We add explicit signing flags here to force Xcode to use our profile during the Archive step
+          flutter build ipa --release --build-number=6 \
+            --code-signing-identity="Apple Distribution" \
+            --export-options-plist=/tmp/ExportOptions.plist
     artifacts:
       - build/ios/ipa/*.ipa
       - /Users/builder/clone/build/ios/ipa/*.ipa
