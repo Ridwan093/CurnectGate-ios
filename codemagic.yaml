@@ -27,9 +27,6 @@ workflows:
           
           # List certificates to verify
           keychain list-certificates
-          
-          # Fetch final signing files (this should now succeed because it sees the certificate)
-          app-store-connect fetch-signing-files "com.ges.curnectgate" --type IOS_APP_STORE --verbose
       - name: Set up code signing
         script: |
           xcode-project use-profiles
@@ -37,7 +34,7 @@ workflows:
         script: |
           flutter packages pub get
           cd ios && pod install && cd ..
-          flutter build ipa --release --build-number=6 --export-options-plist=$HOME/export_options.plist
+          flutter build ipa --release --build-number=6
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
