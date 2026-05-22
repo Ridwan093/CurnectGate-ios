@@ -26,10 +26,13 @@ workflows:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp /tmp/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
           
+          # Force the project to use the correct Team ID (YP44JNDYC6)
+          sed -i '' 's/DEVELOPMENT_TEAM = 5648G3VS73/DEVELOPMENT_TEAM = YP44JNDYC6/g' ios/Runner.xcodeproj/project.pbxproj
+          
           # Detect the exact profile name from the file
           PROV_PROFILE_NAME=$(grep -aA1 "Name" ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision | grep "<string>" | sed -e 's/<string>//' -e 's/<\/string>//' | tr -d '[:space:]' | head -n 1)
           
-          # Create a bulletproof ExportOptions.plist
+          # Create a bulletproof ExportOptions.plist with the CORRECT Team ID
           cat > /tmp/ExportOptions.plist <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -38,7 +41,7 @@ workflows:
             <key>method</key>
             <string>app-store</string>
             <key>teamID</key>
-            <string>5648G3VS73</string>
+            <string>YP44JNDYC6</string>
             <key>signingStyle</key>
             <string>manual</string>
             <key>signingCertificate</key>
