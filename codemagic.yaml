@@ -33,10 +33,9 @@ workflows:
       - name: Flutter build ipa
         script: |
           flutter config --no-enable-swift-package-manager
-          flutter packages pub get
-          cd ios && pod install && cd ..
-          # Use the advanced xcode-project tool to build and sign the IPA
-          xcode-project build-ipa --workspace ios/Runner.xcworkspace --scheme Runner --bundle-id com.ges.curnectgate --build-number 6 --archive-flags "-allowProvisioningUpdates" --export-flags "-allowProvisioningUpdates"
+          flutter pub get
+          # This command builds the IPA and uses the profiles we installed automatically
+          flutter build ipa --release --build-number=6 --export-method app-store
     artifacts:
       - build/ios/ipa/*.ipa
       - /Users/builder/clone/build/ios/ipa/*.ipa
