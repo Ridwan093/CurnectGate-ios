@@ -40,6 +40,7 @@ workflows:
           sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER = .*;/PRODUCT_BUNDLE_IDENTIFIER = com.ges.curnectgate;/g' $PROJECT
           sed -i '' "s/PROVISIONING_PROFILE_SPECIFIER = .*;/PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\";/g" $PROJECT || true
           sed -i '' 's/CODE_SIGN_IDENTITY = .*;/CODE_SIGN_IDENTITY = "Apple Distribution";/g' $PROJECT || true
+          sed -i '' '/PROVISIONING_PROFILE =/d' $PROJECT || true
           
           # Create the final ExportOptions.plist
           cat > /tmp/ExportOptions.plist <<EOF
