@@ -11,64 +11,17 @@ workflows:
       groups:
         - app_store_credentials
     scripts:
-      - name: Fetch and Force signing files
+      - name: Set up code signing
         script: |
-          echo $CM_CERTIFICATE | base64 --decode > /tmp/certificate.p12
-          echo $CM_PROVISIONING_PROFILE | base64 --decode > /tmp/profile.mobileprovision
           keychain initialize
-          
-          # Fix trust issues
-          curl -sL https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer > /tmp/WWDR.cer
-          keychain add-certificates --certificate /tmp/WWDR.cer
-          keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password $CM_CERTIFICATE_PASSWORD
-          
-          # Install profile
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp /tmp/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
-
-          # Extract UUID and Name
-          security cms -D -i /tmp/profile.mobileprovision > /tmp/profile.plist
-          UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" /tmp/profile.plist)
-          PROFILE_NAME=$(/usr/libexec/PlistBuddy -c "Print Name" /tmp/profile.plist)
-          echo "Profile UUID: $UUID"
-          echo "Profile Name: $PROFILE_NAME"
-
-          PROJECT=ios/Runner.xcodeproj/project.pbxproj
-
-          # THE SILVER BULLET: Force these settings into every build configuration
-          sed -i '' 's/ProvisioningStyle = Automatic;/ProvisioningStyle = Manual;/g' $PROJECT
-          sed -i '' 's/DEVELOPMENT_TEAM = .*;/DEVELOPMENT_TEAM = 5648G3VS73;/g' $PROJECT
-          sed -i '' "s/PROVISIONING_PROFILE_SPECIFIER = .*;/PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\";/g" $PROJECT
-          sed -i '' "s/PROVISIONING_PROFILE = .*;/PROVISIONING_PROFILE = \"$UUID\";/g" $PROJECT
-          sed -i '' 's/CODE_SIGN_STYLE = .*;/CODE_SIGN_STYLE = Manual;/g' $PROJECT
-          sed -i '' 's/CODE_SIGN_IDENTITY = .*;/CODE_SIGN_IDENTITY = "Apple Distribution";/g' $PROJECT
-          
-          # Create ExportOptions
-          cat > /tmp/ExportOptions.plist <<EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>app-store</string>
-            <key>teamID</key>
-            <string>5648G3VS73</string>
-            <key>signingStyle</key>
-            <string>manual</string>
-            <key>provisioningProfiles</key>
-            <dict>
-              <key>com.ges.curnectgate</key>
-              <string>$UUID</string>
-            </dict>
-          </dict>
-          </plist>
-          EOF
+          # This command automatically finds your certs/profiles from Apple using your API key
+          app-store-connect fetch-signing-files "com.ges.curnectgate" --type IOS_APP_STORE --install
+          xcode-project use-profiles
       - name: Flutter build ipa
         script: |
           flutter config --no-enable-swift-package-manager
           flutter pub get
-          # Final build command with standard flags
-          flutter build ipa --release --build-number=6 --export-options-plist=/tmp/ExportOptions.plist
+          flutter build ipa --release --build-number=6
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
