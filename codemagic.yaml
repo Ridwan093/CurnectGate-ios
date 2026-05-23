@@ -11,69 +11,38 @@ workflows:
       groups:
         - app_store_credentials
     scripts:
-      - name: Hard-Fix Code Signing
+      - name: Dynamic Code Signing
         script: |
-          # 1. Prepare files from your Codemagic variables
+          # 1. Install your Certificate (the .p12) from the variable
           echo $CM_CERTIFICATE | base64 --decode > /tmp/certificate.p12
-          echo $CM_PROVISIONING_PROFILE | base64 --decode > /tmp/profile.mobileprovision
           keychain initialize
-          
-          # 2. Fix trust issues with Intermediate Certificate
-          curl -sL https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer > /tmp/WWDR.cer
-          keychain add-certificates --certificate /tmp/WWDR.cer
           keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password $CM_CERTIFICATE_PASSWORD
           
-          # 3. Install your profile
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp /tmp/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          # 2. Fix intermediate certs
+          curl -sL https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer > /tmp/WWDR.cer
+          keychain add-certificates --certificate /tmp/WWDR.cer
+          
+          # 3. LIVE FETCH: Download the latest profile from Apple using your API Key
+          # This replaces the need for the CM_PROVISIONING_PROFILE variable
+          app-store-connect fetch-signing-files "com.ges.curnectgate" --type IOS_APP_STORE --install-id-profile --install
 
-          # 4. Extract UUID and Name
-          security cms -D -i /tmp/profile.mobileprovision > /tmp/profile.plist
-          UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" /tmp/profile.plist)
-          PROFILE_NAME=$(/usr/libexec/PlistBuddy -c "Print Name" /tmp/profile.plist)
-          echo "Using Profile: $PROFILE_NAME ($UUID)"
+          # 4. Extract the name of what we just downloaded
+          PROFILE_NAME=$(grep -aA1 "Name" ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision | grep "<string>" | sed -e 's/<string>//' -e 's/<\/string>//' | tr -d '[:space:]' | head -n 1)
+          echo "Using Live Profile: $PROFILE_NAME"
 
-          # DETECTIVE WORK: Print the permissions inside this profile
-          echo "--- Profile Entitlements ---"
-          /usr/libexec/PlistBuddy -c "Print Entitlements" /tmp/profile.plist || true
-          echo "----------------------------"
-
-          # 5. AGGRESSIVELY patch the project to Manual Signing
+          # 5. Patch the project
           PROJECT=ios/Runner.xcodeproj/project.pbxproj
           sed -i '' 's/ProvisioningStyle = Automatic;/ProvisioningStyle = Manual;/g' $PROJECT
           sed -i '' 's/DEVELOPMENT_TEAM = .*;/DEVELOPMENT_TEAM = 5648G3VS73;/g' $PROJECT
+          sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER = .*;/PRODUCT_BUNDLE_IDENTIFIER = com.ges.curnectgate;/g' $PROJECT
           sed -i '' "s/PROVISIONING_PROFILE_SPECIFIER = .*;/PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\";/g" $PROJECT
-          sed -i '' "s/PROVISIONING_PROFILE = .*;/PROVISIONING_PROFILE = \"$UUID\";/g" $PROJECT
-          sed -i '' 's/CODE_SIGN_STYLE = .*;/CODE_SIGN_STYLE = Manual;/g' $PROJECT
           sed -i '' 's/CODE_SIGN_IDENTITY = .*;/CODE_SIGN_IDENTITY = "Apple Distribution";/g' $PROJECT
-          
-          # 6. Create ExportOptions
-          cat > /tmp/ExportOptions.plist <<EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>app-store</string>
-            <key>teamID</key>
-            <string>5648G3VS73</string>
-            <key>signingStyle</key>
-            <string>manual</string>
-            <key>provisioningProfiles</key>
-            <dict>
-              <key>com.ges.curnectgate</key>
-              <string>$UUID</string>
-            </dict>
-          </dict>
-          </plist>
-          EOF
       - name: Flutter build ipa
         script: |
           flutter config --no-enable-swift-package-manager
           flutter pub get
-          # The signing settings are already patched into the project file by the previous step!
-          flutter build ipa --release --build-number=6 \
-            --export-options-plist=/tmp/ExportOptions.plist
+          # Building with the fresh, live profile
+          flutter build ipa --release --build-number=6 --export-method app-store
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
