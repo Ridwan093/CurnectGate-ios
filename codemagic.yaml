@@ -11,40 +11,40 @@ workflows:
       groups:
         - app_store_credentials
     scripts:
-      - name: Final Code signing & Trust Fix
+      - name: Hardened Signing Script
         script: |
           # Kill Duplicate Symbols
           flutter config --no-enable-swift-package-manager
           
-          # Setup Keys
+          # Decode. If this fails, the base64 text is corrupted.
           echo $CM_CERTIFICATE | base64 --decode > /tmp/certificate.p12
           echo $CM_PROVISIONING_PROFILE | base64 --decode > /tmp/profile.mobileprovision
           keychain initialize
           
-          # DOWNLOAD THE TRUST CERTIFICATE (The missing link!)
+          # Add Trust
           curl -sL https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer > /tmp/WWDR.cer
           keychain add-certificates --certificate /tmp/WWDR.cer
-          
-          # Install your new .p12
           keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password $CM_CERTIFICATE_PASSWORD
           
-          # Install profile
+          # Install Profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp /tmp/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
 
-          # Force UUID/Manual for Archive
+          # Extract UUID and Name SAFELY
           security cms -D -i /tmp/profile.mobileprovision > /tmp/profile.plist
           UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" /tmp/profile.plist)
           PROFILE_NAME=$(/usr/libexec/PlistBuddy -c "Print Name" /tmp/profile.plist)
+          echo "Detected: $PROFILE_NAME ($UUID)"
+
+          # Patch with safer delimiters to avoid "bad flag" errors
           PROJECT=ios/Runner.xcodeproj/project.pbxproj
-          sed -i '' 's/ProvisioningStyle = .*/ProvisioningStyle = Manual;/g' $PROJECT
-          sed -i '' 's/DEVELOPMENT_TEAM = .*/DEVELOPMENT_TEAM = 5648G3VS73;/g' $PROJECT
-          sed -i '' "s/PROVISIONING_PROFILE_SPECIFIER = .*/PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\";/g" $PROJECT
-          sed -i '' "s/PROVISIONING_PROFILE = .*/PROVISIONING_PROFILE = \"$UUID\";/g" $PROJECT
+          sed -i '' 's|ProvisioningStyle = .*|ProvisioningStyle = Manual;|g' $PROJECT
+          sed -i '' 's|DEVELOPMENT_TEAM = .*|DEVELOPMENT_TEAM = 5648G3VS73;|g' $PROJECT
+          sed -i '' "s|PROVISIONING_PROFILE_SPECIFIER = .*|PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\";|g" $PROJECT
+          sed -i '' "s|PROVISIONING_PROFILE = .*|PROVISIONING_PROFILE = \"$UUID\";|g" $PROJECT
       - name: Flutter build ipa
         script: |
           flutter pub get
-          # Final build with local export options
           flutter build ipa --release --build-number=6
     artifacts:
       - build/ios/ipa/*.ipa
