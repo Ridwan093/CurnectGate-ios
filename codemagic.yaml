@@ -16,9 +16,13 @@ workflows:
           # Step 1: Disable Swift Package Manager
           flutter config --no-enable-swift-package-manager
 
-          # Step 2: Decode files
-          echo $CM_CERTIFICATE | base64 --decode > /tmp/certificate.p12
-          echo $CM_PROVISIONING_PROFILE | base64 --decode > /tmp/profile.mobileprovision
+          # Step 2: Decode files (using printf to avoid echo corrupting long strings)
+          printf '%s' "$CM_CERTIFICATE" | base64 --decode > /tmp/certificate.p12
+          printf '%s' "$CM_PROVISIONING_PROFILE" | base64 --decode > /tmp/profile.mobileprovision
+          
+          # Verify files decoded correctly
+          echo "Certificate size: $(wc -c < /tmp/certificate.p12) bytes"
+          echo "Profile size: $(wc -c < /tmp/profile.mobileprovision) bytes"
 
           # Step 3: Setup keychain
           keychain initialize
