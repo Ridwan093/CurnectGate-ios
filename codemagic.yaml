@@ -33,12 +33,15 @@ workflows:
 
           # EXTREME PATCHING: Search and Destroy all Automatic settings
           PROJECT=ios/Runner.xcodeproj/project.pbxproj
+          ENTITLEMENTS="Runner/Runner.entitlements"
+          
           sed -i '' 's/ProvisioningStyle = .*/ProvisioningStyle = Manual;/g' $PROJECT
           sed -i '' 's/DEVELOPMENT_TEAM = .*/DEVELOPMENT_TEAM = 5648G3VS73;/g' $PROJECT
           sed -i '' "s/PROVISIONING_PROFILE_SPECIFIER = .*/PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\";/g" $PROJECT
           sed -i '' "s/PROVISIONING_PROFILE = .*/PROVISIONING_PROFILE = \"$UUID\";/g" $PROJECT
           sed -i '' 's/CODE_SIGN_IDENTITY = .*/CODE_SIGN_IDENTITY = "Apple Distribution";/g' $PROJECT
           sed -i '' 's/CODE_SIGN_STYLE = .*/CODE_SIGN_STYLE = Manual;/g' $PROJECT
+          sed -i '' "s|CODE_SIGN_ENTITLEMENTS = .*;|CODE_SIGN_ENTITLEMENTS = $ENTITLEMENTS;|g" $PROJECT
           
           # Create ExportOptions
           cat > /tmp/ExportOptions.plist <<EOF
@@ -63,8 +66,9 @@ workflows:
       - name: Flutter build ipa
         script: |
           flutter pub get
-          # Final build with export flags
-          flutter build ipa --release --build-number=6 --export-options-plist=/tmp/ExportOptions.plist
+          # Final clean build for tonight
+          flutter build ipa --release --build-number=6 \
+            --export-options-plist=/tmp/ExportOptions.plist
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
