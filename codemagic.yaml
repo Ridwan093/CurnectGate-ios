@@ -11,26 +11,25 @@ workflows:
       groups:
         - app_store_credentials
     scripts:
-      - name: Dynamic Code Signing
+      - name: Set up code signing
         script: |
-          # 1. Install your Certificate (the .p12) from the variable
+          # Disable Swift Package Manager to fix "137 Duplicate Symbols" error
+          flutter config --no-enable-swift-package-manager
+          
+          # Install your Certificate
           echo $CM_CERTIFICATE | base64 --decode > /tmp/certificate.p12
           keychain initialize
           keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password $CM_CERTIFICATE_PASSWORD
           
-          # 2. Fix intermediate certs
+          # Fix intermediate certs for Push Notifications
           curl -sL https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer > /tmp/WWDR.cer
           keychain add-certificates --certificate /tmp/WWDR.cer
           
-          # 3. LIVE FETCH: Download the latest profile from Apple using your API Key
-          # This replaces the need for the CM_PROVISIONING_PROFILE variable
+          # LIVE FETCH: Get the latest Push-enabled profile
           app-store-connect fetch-signing-files "com.ges.curnectgate" --type IOS_APP_STORE --install-id-profile --install
 
-          # 4. Extract the name of what we just downloaded
+          # Patch the project to use the profile we just downloaded
           PROFILE_NAME=$(grep -aA1 "Name" ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision | grep "<string>" | sed -e 's/<string>//' -e 's/<\/string>//' | tr -d '[:space:]' | head -n 1)
-          echo "Using Live Profile: $PROFILE_NAME"
-
-          # 5. Patch the project
           PROJECT=ios/Runner.xcodeproj/project.pbxproj
           sed -i '' 's/ProvisioningStyle = Automatic;/ProvisioningStyle = Manual;/g' $PROJECT
           sed -i '' 's/DEVELOPMENT_TEAM = .*;/DEVELOPMENT_TEAM = 5648G3VS73;/g' $PROJECT
@@ -39,9 +38,8 @@ workflows:
           sed -i '' 's/CODE_SIGN_IDENTITY = .*;/CODE_SIGN_IDENTITY = "Apple Distribution";/g' $PROJECT
       - name: Flutter build ipa
         script: |
-          flutter config --no-enable-swift-package-manager
           flutter pub get
-          # Building with the fresh, live profile
+          # Building the IPA with specific export method
           flutter build ipa --release --build-number=6 --export-method app-store
     artifacts:
       - build/ios/ipa/*.ipa
