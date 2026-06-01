@@ -67,6 +67,7 @@ enum BottomSheetView {
   profileUpdat,
   profilePiceUpdate,
   deactivateAccount,
+  deleteAccount,
   changePassword,
   securityViolationTrack,
   securityCommentMaker,

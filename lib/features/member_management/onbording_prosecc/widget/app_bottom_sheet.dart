@@ -998,6 +998,13 @@ Widget _buildCurrentView(
         headersubtitle: userRole,
         bottom: bottom,
       );
+    case BottomSheetView.deleteAccount:
+      return BottomsheetDetails(
+        eventData: vendor,
+        headertitle: userName,
+        headersubtitle: userRole,
+        bottom: bottom,
+      );
     case BottomSheetView.changePassword:
       return BottomsheetDetails(
         eventData: vendor,

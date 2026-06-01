@@ -32,7 +32,7 @@ class _ManageLogingState extends ConsumerState<ManageLoging> {
 
   Future<void> _loadSetting() async {
     bool isavailables = await isAvailable();
-   
+
     setState(() {
       _isAvilable = isavailables;
     });
@@ -186,6 +186,18 @@ class _ManageLogingState extends ConsumerState<ManageLoging> {
                   );
                 },
               ),
+              _buildDangerTile(
+                title: "Delete Account",
+                onTap: () {
+                  showUserBottomSheet(
+                    context: context,
+                    headertitle: "",
+                    headersubtitle: "",
+                    ref: ref,
+                    bottom: BottomSheetView.deleteAccount,
+                  );
+                },
+              ),
             ],
           ),
         ],
@@ -224,6 +236,30 @@ class _ManageLogingState extends ConsumerState<ManageLoging> {
       trailing: Icon(
         Icons.arrow_forward_ios,
         color: AppColors.instance.black400,
+        size: 16,
+      ),
+    );
+  }
+
+  Widget _buildDangerTile({
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      onTap: onTap,
+      title: Text(
+        title,
+        style: TextStyle(
+          fontFamily: FontFamilies.interDisplay,
+          color: AppColors.instance.error600,
+          fontSize: 15,
+          fontWeight: FontFamilies.medium,
+        ),
+      ),
+
+      trailing: Icon(
+        Icons.arrow_forward_ios,
+        color: AppColors.instance.error400,
         size: 16,
       ),
     );

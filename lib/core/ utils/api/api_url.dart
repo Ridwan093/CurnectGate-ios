@@ -46,6 +46,7 @@ const String updateUserProfile = "estates/general/profile/update";
 const String updateuserPicture = "estates/general/profile/upload-picture";
 const String updateUserpassWord = "estates/general/profile/change-password";
 const String accountDetactive = "estates/general/profile/deactivate";
+const String accountDelete = "estates/general/profile/delete-account";
 const String addhousedHol = "estates/owner-portal/households/onboarding";
 
 const String grantAccessPermission =

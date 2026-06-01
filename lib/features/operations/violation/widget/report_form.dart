@@ -253,6 +253,15 @@ Widget _buildSubmitButton({
           iconColors: AppColors.instance.black600,
           positionNumber: 70,
         );
+      } else if (report.description.length > 100) {
+        showCustomSuccessToast(
+          context: context,
+          message: "Description cannot exceed 100 characters!",
+          color: AppColors.instance.grey200,
+          icon: Icons.error,
+          iconColors: AppColors.instance.black600,
+          positionNumber: 70,
+        );
       } else if (report.addressId!.isEmpty) {
         showCustomSuccessToast(
           context: context,

@@ -383,41 +383,58 @@ class Statistics extends ConsumerWidget {
       data: (data) {
         final list = data?.data.workorders.data;
         final count = resolveCount(list);
-
-        return _buildStatContent(
-          title: "Work Order",
-          subtitle: "Start/in progress",
-          icon: AssetPaths.dashboardWorkOrder,
-          trailing: count,
-          onTap: () => context.pushNamed(AppRoutes.workOrder),
-        );
+        if (count > 0) {
+          return _buildStatContent(
+            title: "Work Order",
+            subtitle: "Start/in progress",
+            icon: AssetPaths.dashboardWorkOrder,
+            trailing: count,
+            onTap: () => context.pushNamed(AppRoutes.workOrder),
+          );
+        } else {
+          return _buildStatContent(
+            title: "Work Order",
+            subtitle: "Start/in progress",
+            icon: AssetPaths.dashboardWorkOrder,
+            trailing: 0,
+            onTap: () => context.pushNamed(AppRoutes.workOrder),
+          );
+        }
       },
 
       error: (e, st) {
-        final cached = ref.read(workOrderProvider).value;
-        final count = resolveCount(cached?.data.workorders.data);
-
-        return _buildStatContent(
-          title: "Work Order",
-          subtitle: "Start/in progress",
-          icon: AssetPaths.dashboardWorkOrder,
-          trailing: count,
-          onTap: () => context.pushNamed(AppRoutes.workOrder),
-        );
+        try {
+          final cached = ref.read(workOrderProvider).value;
+          final count = resolveCount(cached?.data.workorders.data);
+          if (cached != null && cached.data.workorders.data.isNotEmpty) {
+            return _buildStatContent(
+              title: "Work Order",
+              subtitle: "Start/in progress",
+              icon: AssetPaths.dashboardWorkOrder,
+              trailing: count,
+              onTap: () => context.pushNamed(AppRoutes.workOrder),
+            );
+          } else {
+            return _buildStatContent(
+              title: "Work Order",
+              subtitle: "Start/in progress",
+              icon: AssetPaths.dashboardWorkOrder,
+              trailing: 0,
+              onTap: () => context.pushNamed(AppRoutes.workOrder),
+            );
+          }
+        } catch (e) {
+          return _buildStatContent(
+            title: "Work Order",
+            subtitle: "Start/in progress",
+            icon: AssetPaths.dashboardWorkOrder,
+            trailing: 0,
+            onTap: () => context.pushNamed(AppRoutes.workOrder),
+          );
+        }
       },
 
-      loading: () {
-        final cached = ref.read(workOrderProvider).value;
-        final count = resolveCount(cached?.data.workorders.data);
-
-        return _buildStatContent(
-          title: "Work Order",
-          subtitle: "Start/in progress",
-          icon: AssetPaths.dashboardWorkOrder,
-          trailing: count,
-          onTap: () => context.pushNamed(AppRoutes.workOrder),
-        );
-      },
+      loading: () => const SizedBox.shrink(),
     );
   }
 

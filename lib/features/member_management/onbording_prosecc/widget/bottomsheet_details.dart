@@ -109,6 +109,7 @@ import 'package:curnectgate/features/security/widget/security_buttom_sheet/viola
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/workEmergency.dart';
 import 'package:curnectgate/features/userProfile/profile/widget/change_password_sheet.dart';
 import 'package:curnectgate/features/userProfile/profile/widget/decativeAccount.dart';
+import 'package:curnectgate/features/userProfile/profile/widget/deleteAccount.dart';
 import 'package:curnectgate/features/userProfile/profile/widget/updateUserProfile.dart';
 import 'package:curnectgate/features/userProfile/profile/widget/uplodeImage.dart';
 import 'package:flutter/material.dart';
@@ -212,6 +213,8 @@ class BottomsheetDetails extends ConsumerWidget {
 
       case BottomSheetView.deactivateAccount:
         return DeactiveAccount();
+      case BottomSheetView.deleteAccount:
+        return const DeleteAccount();
       case BottomSheetView.changePassword:
         return ChangePasswordSheet();
       case BottomSheetView.notificationReminderFilter:

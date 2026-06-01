@@ -22,6 +22,7 @@ import 'package:curnectgate/features/chat/data/provider/get_provider/get_chat_se
 import 'package:curnectgate/features/chat/data/provider/get_provider/get_conversation_provider.dart';
 import 'package:curnectgate/features/chat/data/provider/get_provider/get_list_message.dart';
 import 'package:curnectgate/features/chat/data/provider/get_provider/unread_counts_provider.dart';
+import 'package:curnectgate/features/chat/services/reverb_service.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/candidate_provider.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/eletion_provider.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/afterImage_provider.dart';
@@ -42,6 +43,7 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/widget/
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/estate_admin_dialog.dart';
 import 'package:curnectgate/features/member_management/profile_form/validator/password_validator.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/features/member_management/tabState/tab_state.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/active_provider.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/getPermittactive_permitt.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/submit_permit_provider.dart';
@@ -65,6 +67,7 @@ import 'package:curnectgate/features/security/provider/dismiss_provider.dart';
 import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:curnectgate/features/security/provider/investigation_provider.dart';
 import 'package:curnectgate/features/security/provider/resolved_provider.dart';
+import 'package:curnectgate/features/signOut/provider/authProvider.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:curnectgate/features/userProfile/Login_setting/state/biometric_provider.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/provider/prefrence_provider.dart';
@@ -1830,6 +1833,82 @@ class FormNotifier extends StateNotifier<FormStates> {
     }
   }
 
+  /// Delete account permanently.
+
+  Future<void> deleteAccount({
+    required BuildContext context,
+    required String password,
+    required String confirmation,
+    required WidgetRef ref,
+  }) async {
+    if (password.isEmpty) return;
+
+    updatedeActivatAccountLoading(true);
+    try {
+      final response = await ref
+          .read(profileRepositoryProvider)
+          .deleteAccount(
+            currentPassword: password,
+            confirmation: confirmation,
+            context: context,
+          );
+
+      if (response['status'] == true) {
+        updatedeActivatAccountLoading(false);
+
+        showCustomSuccessToast(
+          context: context,
+          message: response["message"],
+          color: AppColors.instance.teal300,
+          icon: Icons.check_circle,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+
+        // 1. Clear session and user data locally
+        ReverbService.disconnect();
+        await SharedPrefsService().clearAuthData();
+        await ref.read(profilePicProvider.notifier).clearAllProfilePics();
+        ref.read(tabStateProvider.notifier).resetToMainTab();
+        ref.read(sessionExpiredProvider.notifier).reset();
+
+        // 2. Dismiss dialog and navigate to login/sign-in screen
+        if (context.mounted) {
+          context.pop();
+          context.goNamed(AppRoutes.signIN);
+        }
+      } else {
+        if (!context.mounted) return;
+        updatedeActivatAccountLoading(false);
+        final message = extractValidationMessage(response);
+
+        showCustomSuccessToast(
+          context: context,
+          message: message,
+          color: AppColors.instance.error500,
+          icon: Icons.error,
+          iconColors: AppColors.instance.grey200,
+          positionNumber: 70,
+        );
+      }
+
+      // Placeholder until backend is ready:
+    } catch (e) {
+      updatedeActivatAccountLoading(false);
+      if (!context.mounted) return;
+      showCustomSuccessToast(
+        context: context,
+        message: e.toString(),
+        color: AppColors.instance.error500,
+        icon: Icons.error,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+    } finally {
+      updatedeActivatAccountLoading(false);
+    }
+  }
+
   Future<void> updateUserPix({
     required BuildContext context,
     required File file,
@@ -2275,6 +2354,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         reportStatess.resetState();
         final message = extractValidationMessage(response);
+        log(response.toString());
 
         showCustomSuccessToast(
           context: context,

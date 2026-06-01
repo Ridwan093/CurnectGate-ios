@@ -35,13 +35,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // 2. Initialize Firebase
   try {
-    print('🔵 [DEBUG] Starting Firebase initialization...');
+    print('[DEBUG] Starting Firebase initialization...');
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    print('✅ [DEBUG] Firebase initialized successfully!');
+    print('[DEBUG] Firebase initialized successfully!');
   } catch (e, stack) {
-    print('❌ [DEBUG] FIREBASE INITIALIZATION FAILED!');
+    print(' [DEBUG] FIREBASE INITIALIZATION FAILED!');
     print('Error: $e');
     print('Stack trace: $stack');
   }

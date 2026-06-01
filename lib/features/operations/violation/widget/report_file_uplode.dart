@@ -67,6 +67,9 @@ class ReportFileUplode extends ConsumerWidget {
               if (index != null) {
                 final image = await ImagePicker().pickImage(
                   source: ImageSource.camera,
+                  imageQuality: 70,
+                  maxWidth: 1800,
+                  maxHeight: 1800,
                 );
                 if (image != null) {
                   ref
@@ -91,6 +94,9 @@ class ReportFileUplode extends ConsumerWidget {
               if (index != null) {
                 final image = await ImagePicker().pickImage(
                   source: ImageSource.gallery,
+                  imageQuality: 70,
+                  maxWidth: 1800,
+                  maxHeight: 1800,
                 );
                 if (image != null) {
                   ref

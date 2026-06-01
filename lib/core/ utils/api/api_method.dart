@@ -419,6 +419,38 @@ class AppApiMethod {
     }
   }
 
+  Future<Map<String, dynamic>> deleteAccount({
+    required String currentPassword,
+    required String confirmation,
+
+    required BuildContext context,
+  }) async {
+    try {
+      final Map<String, dynamic> requestData = {
+        "confirmation": confirmation,
+
+        "password": currentPassword,
+      };
+
+      final response = await _dio.post(
+        accountDelete,
+        data: requestData,
+        options: Options(validateStatus: (status) => status! < 500),
+      );
+      return response.data;
+    } on DioException {
+      showCustomSuccessToast(
+        context: context,
+        message: "",
+        color: AppColors.instance.teal400,
+        icon: Icons.close,
+        iconColors: AppColors.instance.grey200,
+        positionNumber: 70,
+      );
+      rethrow;
+    }
+  }
+
   Future<Map<String, dynamic>> updateNotificationSettings({
     required bool value,
     required String token,
@@ -737,7 +769,7 @@ class AppApiMethod {
           );
         }
       }
-
+      log(formData.toString());
       final response = await _dio.post(
         creatViolation,
         data: formData,

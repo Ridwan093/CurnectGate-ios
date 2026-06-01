@@ -26,15 +26,9 @@ class WorkOderData extends ConsumerWidget {
 
       child: activeOtasync.when(
         data: (workOder) {
-          // if (workOder?.data.workorders != null) {
-          //   return Workoderlist(data: workOder?.data);
-          // } else {
-          //   return _buildEmtyBody();
-          // }
           return workOder?.data.workorders.data != null
               ? Workoderlist(data: workOder?.data)
               : _buildEmtyBody();
-          // If data is valid
         },
         loading: () {
           final workOder = ref.read(workOrderProvider).value;
@@ -55,11 +49,11 @@ class WorkOderData extends ConsumerWidget {
 
             // Try to show cached data
 
-            if (workOder!.data.workorders.data.isNotEmpty) {
+            if (workOder?.data.workorders.data.isNotEmpty ?? false) {
               return SingleChildScrollView(
                 child: Column(
                   children: [
-                    Workoderlist(data: workOder.data),
+                    Workoderlist(data: workOder?.data),
                     Emmergencybody(error: error.toString()),
                   ],
                 ),

@@ -28,7 +28,7 @@ class Workoderlist extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ListView.builder(
       physics: const BouncingScrollPhysics(),
-      itemCount: data?.workorders.data.length,
+      itemCount: data?.workorders.data.length ?? 0,
       itemBuilder: (BuildContext context, int index) {
         final vendorLog = data?.workorders.data[index];
         return WorkOrderCard(
