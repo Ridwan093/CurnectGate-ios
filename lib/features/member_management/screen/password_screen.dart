@@ -37,7 +37,7 @@ class PasswordScreen extends BaseVerificationScreen {
          currentStep: 5,
          totalSteps: 6,
          title: "Hi $firstName.",
-         description: "Let's cerate a password",
+         description: "Let's create a password",
        );
 
   @override

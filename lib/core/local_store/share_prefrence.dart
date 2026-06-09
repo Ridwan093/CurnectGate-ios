@@ -1595,6 +1595,7 @@ class SharedPrefsService {
     clearChatSeetings();
     clearsecurity();
     clearChatCount();
+    await prefs.remove(_medialUrl);
     await prefs.remove(_keyAuthData);
   }
 }

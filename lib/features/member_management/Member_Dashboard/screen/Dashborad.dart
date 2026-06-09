@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
 import 'package:curnectgate/core/local_store/getUserprofile_file_provider.dart';
@@ -303,7 +304,9 @@ class Dashborad extends ConsumerWidget {
     final reminderprovider = ref.read(reminderProvider.notifier);
     final notifier = ref.read(workOrderFormProvider.notifier);
 
-    final profileFile = ref.watch(profilePicProvider);
+    final authState = ref.watch(authProvider);
+    final user = authState.user;
+    final mediaUrl = user?['media_url'] as String?;
     return SafeArea(
       child: Container(
         height: 70,
@@ -322,16 +325,16 @@ class Dashborad extends ConsumerWidget {
                   color: AppColors.instance.teal400,
                 ),
                 image:
-                    profileFile != null
+                    mediaUrl != null && mediaUrl.isNotEmpty
                         ? DecorationImage(
-                          image: FileImage(profileFile),
+                          image: CachedNetworkImageProvider(mediaUrl),
                           fit: BoxFit.cover,
                         )
                         : null,
               ),
               child: Center(
                 child:
-                    profileFile != null
+                    mediaUrl != null && mediaUrl.isNotEmpty
                         ? null
                         : Image.asset(
                           AssetPaths.navProfileActive,

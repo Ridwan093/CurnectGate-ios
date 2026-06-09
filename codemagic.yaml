@@ -73,7 +73,7 @@ workflows:
       - name: Flutter build ipa
         script: |
           flutter pub get
-          flutter build ipa --release --build-number=7 \
+          flutter build ipa --release --build-number=9 \
             --export-options-plist=/tmp/ExportOptions.plist
     artifacts:
       - build/ios/ipa/*.ipa

@@ -1942,6 +1942,12 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         if (url != null) {
           await SharedPrefsService().saveMedialUrl(url);
+          final authData = await SharedPrefsService().getAuthData();
+          if (authData != null && authData['user'] != null) {
+            authData['user']['media_url'] = url;
+            await SharedPrefsService().saveAuthData(authData);
+            ref.read(authState.authProvider.notifier).loadAuthData();
+          }
           profileFile.refreshProfilePic();
         }
 

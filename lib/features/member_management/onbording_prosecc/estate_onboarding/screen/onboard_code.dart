@@ -104,7 +104,7 @@ class _EstateCodeVerificationScreenState
             ),
           ),
           const SizedBox(height: 32),
-          ReUsableForm(label: "Estate ID", length: 10, hintText: 'eg 045679'),
+          ReUsableForm(label: "Estate Code", length: 10, hintText: 'eg 045679'),
           const SizedBox(height: 24),
           const InfoMessage(
             icon: AssetPaths.location,

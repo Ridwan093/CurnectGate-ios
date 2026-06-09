@@ -1,8 +1,8 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/onboard_button.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/screen/RoleSelection.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/onboard_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -34,8 +34,8 @@ class AddNewMember extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: InkWell(
-        onTap: (){
-            context.pop();
+        onTap: () {
+          context.pop();
         },
         child: Icon(
           Icons.arrow_back_ios_new,
@@ -64,7 +64,7 @@ class AddNewMember extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    "Add a co-owner, family memeber or staff to your property",
+                    "Add a co-owner, family member or staff to your property",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 20,

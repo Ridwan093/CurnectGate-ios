@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
 import 'package:curnectgate/core/local_store/getUserprofile_file_provider.dart';
@@ -146,11 +147,11 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
   }
 
   Widget _buildHeader(WidgetRef ref) {
-    final profileFile = ref.watch(profilePicProvider);
     final authState = ref.watch(authProvider);
     final user = authState.user;
     final fullname = authState.fullname ?? "User";
     final String role = user?["role"] ?? "Security Officer";
+    final mediaUrl = user?['media_url'] as String?;
 
     final size = MediaQuery.of(context).size;
     final isSmallScreen = size.height < 700 || size.width < 380;
@@ -165,10 +166,12 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
               CircleAvatar(
                 radius: isSmallScreen ? 26 : 32,
                 backgroundImage:
-                    profileFile != null ? FileImage(profileFile) : null,
+                    mediaUrl != null && mediaUrl.isNotEmpty
+                        ? CachedNetworkImageProvider(mediaUrl)
+                        : null,
                 backgroundColor: AppColors.instance.teal100,
                 child:
-                    profileFile != null
+                    mediaUrl != null && mediaUrl.isNotEmpty
                         ? null
                         : Image.asset(
                           AssetPaths.navProfileActive,

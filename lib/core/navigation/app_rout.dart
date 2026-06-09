@@ -28,7 +28,7 @@ import 'package:curnectgate/features/member_management/membership_ID/mainScreen/
 import 'package:curnectgate/features/member_management/membership_ID/mainScreen/memberIDScreen.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/estateconfirmation_screen.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/memberIdchecker.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/onboard_code_confirm.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/onboard_code.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/setuprofilledInfo.dart';
 import 'package:curnectgate/features/member_management/screen/main_navigation_screen.dart';
 import 'package:curnectgate/features/member_management/screen/otp_screen.dart';
