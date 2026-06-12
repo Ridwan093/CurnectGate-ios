@@ -117,7 +117,7 @@ class _ReportFormState extends ConsumerState<ReportForm> {
                     const CustomSearchDropdown(),
                     const SizedBox(height: 25),
                     Text(
-                      "Uploade image Proof",
+                      "Upload image Proof",
                       style: TextStyle(
                         fontFamily: FontFamilies.interDisplay,
                         color: AppColors.instance.black500,

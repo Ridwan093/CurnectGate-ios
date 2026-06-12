@@ -10,11 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ReportFileUplode extends ConsumerWidget {
+class ReportFileUpload extends ConsumerWidget {
   final String title;
   final String subtitle;
 
-  const ReportFileUplode({
+  const ReportFileUpload({
     super.key,
     required this.title,
     required this.subtitle,

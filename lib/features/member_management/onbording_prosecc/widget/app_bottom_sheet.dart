@@ -178,12 +178,12 @@ Widget _buildCurrentView(
         bottom: bottom,
       );
 
-  // validateEventCode,
-  // cornfirmEventCode,
-  // grantEventCode,
-  // denyEventcode,
-  // grantMessage,
-  // denyMessage,
+    // validateEventCode,
+    // cornfirmEventCode,
+    // grantEventCode,
+    // denyEventcode,
+    // grantMessage,
+    // denyMessage,
 
     case BottomSheetView.termsAndCondition:
       return BottomsheetDetails(
@@ -192,42 +192,42 @@ Widget _buildCurrentView(
         headersubtitle: userRole,
         bottom: bottom,
       );
-      case BottomSheetView.validateEventCode:
+    case BottomSheetView.validateEventCode:
       return BottomsheetDetails(
         id: id,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
-      case BottomSheetView.cornfirmEventCode:
+    case BottomSheetView.cornfirmEventCode:
       return BottomsheetDetails(
         id: id,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
-      case BottomSheetView.grantEventCode:
+    case BottomSheetView.grantEventCode:
       return BottomsheetDetails(
         id: id,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
-      case BottomSheetView.denyEventcode:
+    case BottomSheetView.denyEventcode:
       return BottomsheetDetails(
         id: id,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
-      case BottomSheetView.grantMessage:
+    case BottomSheetView.grantMessage:
       return BottomsheetDetails(
         id: id,
         headertitle: userName,
         headersubtitle: userRole,
         bottom: bottom,
       );
-       case BottomSheetView.denyMessage:
+    case BottomSheetView.denyMessage:
       return BottomsheetDetails(
         id: id,
         headertitle: userName,
@@ -714,9 +714,9 @@ Widget _buildCurrentView(
         bottom: bottom,
       );
     case BottomSheetView.reportfileuplode:
-      return ReportFileUplode(
-        title: "Uplode file",
-        subtitle: "Attache image from your gallery",
+      return ReportFileUpload(
+        title: "Upload file",
+        subtitle: "Attach image from your gallery",
       );
     case BottomSheetView.resolutionTime:
       return BottomsheetDetails(
