@@ -11,7 +11,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 void showBottomSheets(BuildContext context, WidgetRef ref) {
   showModalBottomSheet(
     context: context,
-    isScrollControlled: true, // Required for proper keyboard handling
+
+    isScrollControlled: true,
+    enableDrag: true,
+    useSafeArea: true,
+    isDismissible: true,
+    useRootNavigator: true,
+    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width),
+    // backgroundColor:
+    //     Colors.transparent, // Required for proper keyboard handling
     builder: (context) {
       return Padding(
         // Add padding equal to keyboard height

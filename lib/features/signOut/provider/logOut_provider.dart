@@ -43,11 +43,15 @@ class SignOutNotifier extends StateNotifier<SharedPrefsService> {
             .read(getApiServiceProvider)
             .signOut(token: token ?? "");
         if (response['status'] == true) {
-          final responses = await ref
-              .read(profileRepositoryProvider)
-              .removedDeviceTokens(requestData: data, context: context);
+          try {
+            await ref
+                .read(profileRepositoryProvider)
+                .removedDeviceTokens(requestData: data, context: context);
+          } catch (e) {
+            log("Removed device tokens failed: $e");
+          }
 
-          if (responses["status"] = true) {
+          if (context.mounted) {
             showCustomSuccessToast(
               context: context,
               message: response["message"],
@@ -56,14 +60,19 @@ class SignOutNotifier extends StateNotifier<SharedPrefsService> {
               iconColors: AppColors.instance.grey200,
               positionNumber: 70,
             );
-            ReverbService.disconnect();
-            state.clearAuthData();
-            await ref.read(profilePicProvider.notifier).clearAllProfilePics();
-            ref.read(tabStateProvider.notifier).resetToMainTab();
-            context.goNamed(AppRoutes.signIN);
-            ref.read(sessionExpiredProvider.notifier).reset();
-            ref.read(formProvider.notifier).updateLogOutLoadin(false);
           }
+
+          ReverbService.disconnect();
+          await state.clearAuthData();
+          await ref.read(profilePicProvider.notifier).clearAllProfilePics();
+          ref.read(tabStateProvider.notifier).resetToMainTab();
+          
+          if (context.mounted) {
+            context.goNamed(AppRoutes.signIN);
+          }
+          
+          ref.read(sessionExpiredProvider.notifier).reset();
+          ref.read(formProvider.notifier).updateLogOutLoadin(false);
 
           log("TRUE------->");
           // ref
@@ -132,7 +141,7 @@ class SignOutNotifier extends StateNotifier<SharedPrefsService> {
     if (shouldLogout) {
       // 2. Clear states only after user confirms
       ReverbService.disconnect();
-      state.clearAuthData();
+      await state.clearAuthData();
 
       await ref.read(profilePicProvider.notifier).clearAllProfilePics();
       ref.read(tabStateProvider.notifier).resetToMainTab();

@@ -178,44 +178,104 @@ class ConfirmPermitentry extends ConsumerWidget {
                     items.map((item) {
                       return Container(
                         width: size.width,
-                        padding: const EdgeInsets.all(10),
-                        margin: const EdgeInsets.only(bottom: 10),
+                        margin: const EdgeInsets.only(bottom: 12),
                         decoration: BoxDecoration(
-                          color: AppColors.instance.grey200,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: AppColors.instance.teal300),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              item["item_name"] ?? "Unknown Item",
-                              style: TextStyle(
-                                fontFamily: FontFamilies.interDisplay,
-                                fontWeight: FontFamilies.bold,
-                                fontSize: 13,
-                                color: AppColors.instance.black600,
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              item["description"] ?? "",
-                              style: TextStyle(
-                                fontFamily: FontFamilies.interDisplay,
-                                fontSize: 11,
-                                color: AppColors.instance.black400,
-                              ),
-                            ),
-                            const SizedBox(height: 3),
-                            Text(
-                              item["item_category"] ?? "",
-                              style: TextStyle(
-                                fontFamily: FontFamilies.interDisplay,
-                                fontSize: 11,
-                                color: AppColors.instance.teal400,
-                              ),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.instance.grey200),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.03),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
                             ),
                           ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: AppColors.instance.teal300.withOpacity(
+                                    0.1,
+                                  ),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.inventory_2_outlined,
+                                  color: AppColors.instance.teal400,
+                                  size: 20,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            item["item_name"] ?? "Unknown Item",
+                                            style: TextStyle(
+                                              fontFamily:
+                                                  FontFamilies.interDisplay,
+                                              fontWeight: FontFamilies.bold,
+                                              fontSize: 14,
+                                              color:
+                                                  AppColors.instance.black600,
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.instance.grey200,
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            "Qty: ${item["quantity"] ?? 1}",
+                                            style: TextStyle(
+                                              fontFamily:
+                                                  FontFamilies.interDisplay,
+                                              fontSize: 11,
+                                              fontWeight: FontFamilies.bold,
+                                              color:
+                                                  AppColors.instance.black600,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 4),
+                                    if ((item["description"] ?? "")
+                                        .isNotEmpty) ...[
+                                      Text(
+                                        item["description"] ?? "",
+
+                                        style: TextStyle(
+                                          fontFamily: FontFamilies.interDisplay,
+                                          fontSize: 12,
+                                          color: AppColors.instance.black400,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     }).toList(),

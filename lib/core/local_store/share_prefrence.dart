@@ -41,10 +41,10 @@ import 'package:curnectgate/features/operations/notifications/event/model/Event/
 import 'package:curnectgate/features/operations/notifications/event/model/Event/events_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/Event/resv_model/rsvp_events_response.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/EventCodes/event_codes_response_model.dart';
+import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/household_members/reminder_household_members_response.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_count/notification_count_response_model.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/notification_response.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/remider/reminders_response_model.dart';
-import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/household_members/reminder_household_members_response.dart';
 import 'package:curnectgate/features/operations/violation/model/GetReport_history_model.dart';
 import 'package:curnectgate/features/operations/violation/model/comment_model/comment_response.dart';
 import 'package:curnectgate/features/operations/violation/model/estate_Address/estate_address_response.dart';
@@ -469,10 +469,14 @@ class SharedPrefsService {
     ReminderHouseholdMembersResponse preference,
   ) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_reminderHouseholdKey, jsonEncode(preference.toJson()));
+    await prefs.setString(
+      _reminderHouseholdKey,
+      jsonEncode(preference.toJson()),
+    );
   }
 
-  static Future<ReminderHouseholdMembersResponse?> getReminderHousehold() async {
+  static Future<ReminderHouseholdMembersResponse?>
+  getReminderHousehold() async {
     final prefs = await SharedPreferences.getInstance();
     final data = prefs.getString(_reminderHouseholdKey);
     if (data != null) {
@@ -1440,6 +1444,26 @@ class SharedPrefsService {
     await prefs.remove(_paymentMethodKey);
   }
 
+  static Future<void> clearWalletHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_walletHistoryKey);
+  }
+
+  static Future<void> clearPaymentHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_paymentHistoryKey);
+  }
+
+  static Future<void> clearDuePayment() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_duePaymentKey);
+  }
+
+  static Future<void> clearPaymentDashboard() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_paymentDashbordKey);
+  }
+
   static Future<void> clearEstateSettings() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_emergencyContact);
@@ -1576,6 +1600,10 @@ class SharedPrefsService {
     clearPoll();
     clearVotingSettings();
     clearpaymentMethod();
+    clearWalletHistory();
+    clearPaymentHistory();
+    clearDuePayment();
+    clearPaymentDashboard();
     clearEstateSettings();
     clearActiveCount();
     clearActiveExpiredCount();

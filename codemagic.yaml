@@ -11,12 +11,72 @@ workflows:
       groups:
         - app_store_credentials
     scripts:
-      - name: Flutter build simulator
+      - name: Setup Signing
         script: |
+          # Step 1: Disable Swift Package Manager
           flutter config --no-enable-swift-package-manager
+
+          # Step 2: Decode files (using printf to avoid echo corrupting long strings)
+          printf '%s' "$CM_CERTIFICATE" | base64 --decode > /tmp/certificate.p12
+          printf '%s' "$MY_IOS_PROFILE" | base64 --decode > /tmp/profile.mobileprovision
+          
+          # Verify files decoded correctly
+          echo "Certificate size: $(wc -c < /tmp/certificate.p12) bytes"
+          echo "Profile size: $(wc -c < /tmp/profile.mobileprovision) bytes"
+
+          # Step 3: Setup keychain
+          keychain initialize
+          curl -sL https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer > /tmp/WWDR.cer
+          keychain add-certificates --certificate /tmp/WWDR.cer
+          keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password $CM_CERTIFICATE_PASSWORD
+
+          # Step 4: Install profile
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp /tmp/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+
+          # Step 5: Extract UUID and Name IN THE SAME SHELL
+          security cms -D -i /tmp/profile.mobileprovision > /tmp/profile.plist
+          UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" /tmp/profile.plist)
+          PROFILE_NAME=$(/usr/libexec/PlistBuddy -c "Print Name" /tmp/profile.plist)
+          echo "Profile: $PROFILE_NAME ($UUID)"
+
+          # Step 6: Patch project IN THE SAME SHELL (variables are alive here!)
+          PROJECT=ios/Runner.xcodeproj/project.pbxproj
+          sed -i '' 's|CODE_SIGN_STYLE = .*|CODE_SIGN_STYLE = Manual;|g' $PROJECT
+          sed -i '' 's|ProvisioningStyle = .*|ProvisioningStyle = Manual;|g' $PROJECT
+          sed -i '' 's|DEVELOPMENT_TEAM = .*|DEVELOPMENT_TEAM = 5648G3VS73;|g' $PROJECT
+          sed -i '' "s|PROVISIONING_PROFILE_SPECIFIER = .*|PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\";|g" $PROJECT
+          sed -i '' "s|PROVISIONING_PROFILE = .*|PROVISIONING_PROFILE = \"$UUID\";|g" $PROJECT
+          sed -i '' 's|CODE_SIGN_IDENTITY = .*|CODE_SIGN_IDENTITY = "Apple Distribution";|g' $PROJECT
+
+          # Step 7: Write ExportOptions IN THE SAME SHELL (UUID is still alive!)
+          cat > /tmp/ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>5648G3VS73</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>com.ges.curnectgate</key>
+              <string>$UUID</string>
+            </dict>
+          </dict>
+          </plist>
+          EOF
+
+      - name: Flutter build ipa
+        script: |
           flutter pub get
-          flutter build ios --simulator --no-codesign
-          cd build/ios/iphonesimulator
-          zip -r Runner.app.zip Runner.app
+          flutter build ipa --release --build-number=10 \
+            --export-options-plist=/tmp/ExportOptions.plist
     artifacts:
-      - build/ios/iphonesimulator/*.zip
+      - build/ios/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        auth: integration

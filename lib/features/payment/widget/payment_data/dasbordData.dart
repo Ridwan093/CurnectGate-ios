@@ -24,19 +24,41 @@ class DashbordData<T> extends ConsumerWidget {
               .refreshPaymentDashbord(context, ref),
       child: dashbordProviderAsync.when(
         data: (profile) {
-          final userData = profile?.data;
-          if (userData != null) {
-            return builder(context, userData as T);
-          } else {
-            return EmptyBodys(message: "No dashboard data?");
+          try {
+            final userData = profile?.data;
+            if (userData != null) {
+              return builder(context, userData as T);
+            } else {
+              return EmptyBodys(message: "No dashboard data?");
+            }
+          } catch (e) {
+            return Builderroul(
+              error: e.toString().replaceAll("Exception: ", ""),
+              onTap:
+                  () => ref
+                      .read(paymentDashbordProvider.notifier)
+                      .refreshPaymentDashbord(context, ref),
+              firstMessae: "Failed to load Dashboard Balance?",
+            );
           }
         },
         loading: () {
-          final cachedProfile = ref.read(paymentDashbordProvider).value;
-          if (cachedProfile?.data != null) {
-            return builder(context, cachedProfile?.data as T);
-          } else {
-            return Loadingstates();
+          try {
+            final cachedProfile = ref.read(paymentDashbordProvider).value;
+            if (cachedProfile?.data != null) {
+              return builder(context, cachedProfile?.data as T);
+            } else {
+              return Loadingstates();
+            }
+          } catch (e) {
+            return Builderroul(
+              error: e.toString().replaceAll("Exception: ", ""),
+              onTap:
+                  () => ref
+                      .read(paymentDashbordProvider.notifier)
+                      .refreshPaymentDashbord(context, ref),
+              firstMessae: "Failed to load Dashboard Balance?",
+            );
           }
         },
         error: (error, stack) {
@@ -44,13 +66,17 @@ class DashbordData<T> extends ConsumerWidget {
             return Expiresessionbody();
           }
 
-          final cachedProfile = ref.read(paymentDashbordProvider).value;
-          if (cachedProfile?.data != null) {
-            return builder(context, cachedProfile?.data as T);
+          try {
+            final cachedProfile = ref.read(paymentDashbordProvider).value;
+            if (cachedProfile?.data != null) {
+              return builder(context, cachedProfile?.data as T);
+            }
+          } catch (e) {
+            // fallthrough to the Builderroul below
           }
 
           return Builderroul(
-            error: error.toString(),
+            error: error.toString().replaceAll("Exception: ", ""),
             onTap:
                 () => ref
                     .read(paymentDashbordProvider.notifier)
