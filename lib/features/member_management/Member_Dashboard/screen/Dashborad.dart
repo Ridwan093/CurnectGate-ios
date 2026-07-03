@@ -5,7 +5,6 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
-import 'package:curnectgate/core/local_store/getUserprofile_file_provider.dart';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
@@ -34,11 +33,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Dashborad extends ConsumerWidget {
-  Dashborad({super.key});
+class Dashborad extends ConsumerStatefulWidget {
+  const Dashborad({super.key});
+
+  @override
+  ConsumerState<Dashborad> createState() => _DashboradState();
+}
+
+class _DashboradState extends ConsumerState<Dashborad>
+    with WidgetsBindingObserver {
   int maxItems = 2;
+  bool _isNotificationPermissionGranted = true;
+
   String formatPrice(String price) {
     final number = double.tryParse(price) ?? 0.0;
     final formatter = NumberFormat('#,##0.00');
@@ -46,7 +55,133 @@ class Dashborad extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _checkAndRequestNotificationPermission();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _checkNotificationPermissionStatusOnly();
+    }
+  }
+
+  Future<void> _checkAndRequestNotificationPermission() async {
+    final status = await Permission.notification.status;
+    if (status.isDenied || status.isLimited || status.isRestricted) {
+      final requestStatus = await Permission.notification.request();
+      setState(() {
+        _isNotificationPermissionGranted = requestStatus.isGranted;
+      });
+    } else if (status.isPermanentlyDenied) {
+      setState(() {
+        _isNotificationPermissionGranted = false;
+      });
+    } else {
+      setState(() {
+        _isNotificationPermissionGranted = status.isGranted;
+      });
+    }
+  }
+
+  Future<void> _checkNotificationPermissionStatusOnly() async {
+    final status = await Permission.notification.status;
+    setState(() {
+      _isNotificationPermissionGranted = status.isGranted;
+    });
+  }
+
+  Widget _buildNotificationWarningBanner(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF9E6),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFFFD580), width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(
+            Icons.warning_amber_rounded,
+            color: Color(0xFFE65100),
+            size: 24,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Emergency Notifications Disabled",
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    color: const Color(0xFF5D4037),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "To receive critical Amber Alerts, please enable notifications in your system settings.",
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    color: const Color(0xFF795548),
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                InkWell(
+                  onTap: () async {
+                    await openAppSettings();
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.instance.teal400,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      "Open Settings",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     final role = ref.watch(userRoleProvider);
 
@@ -96,6 +231,11 @@ class Dashborad extends ConsumerWidget {
                       Headcard(),
                       const SizedBox(height: 15),
                       _buildRow(context, ref),
+                      if (!_isNotificationPermissionGranted) ...[
+                        const SizedBox(height: 15),
+                        _buildNotificationWarningBanner(context),
+                      ],
+
                       const SizedBox(height: 15),
 
                       role.when(

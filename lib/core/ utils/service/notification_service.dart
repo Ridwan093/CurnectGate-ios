@@ -272,24 +272,26 @@ class NotificationService {
 
         if (isUrgentAmber) {
           importance = Importance.max;
-          notifPriority = Priority.high;
-          bypassDnd = shouldBypass;
+          notifPriority = Priority.max;
+          bypassDnd = true;
           fullScreen = shouldBypass;
-          channelId = 'amber_urgent_channel_v2';
+          channelId = isplaySound ? 'amber_urgent_channel_sound_v5' : 'amber_urgent_channel_silent_v5';
           channelName = 'Amber Alerts (Urgent)';
         } else if (isHighAmber) {
           importance = Importance.high;
           notifPriority = Priority.high;
-          channelId = 'amber_high_channel';
+          bypassDnd = true;
+          channelId = isplaySound ? 'amber_high_channel_sound_v3' : 'amber_high_channel_silent_v3';
           channelName = 'Amber Alerts (High)';
         } else if (isNormalAmber) {
           importance = Importance.defaultImportance;
           notifPriority = Priority.defaultPriority;
-          channelId = 'amber_normal_channel';
+          channelId = isplaySound ? 'amber_normal_channel_sound_v2' : 'amber_normal_channel_silent_v2';
           channelName = 'Amber Alerts';
         } else {
           importance = Importance.defaultImportance;
           notifPriority = Priority.defaultPriority;
+          channelId = isplaySound ? 'general_channel_sound_v2' : 'general_channel_silent_v2';
         }
 
         return AndroidNotificationDetails(
@@ -299,9 +301,11 @@ class NotificationService {
           importance: importance,
           priority: notifPriority,
           playSound: isplaySound,
-          sound: RawResourceAndroidNotificationSound('amber_urgent'),
+          sound: isplaySound ? const RawResourceAndroidNotificationSound('amber_urgent') : null,
           channelBypassDnd: bypassDnd,
           fullScreenIntent: fullScreen,
+          category: isUrgentAmber ? AndroidNotificationCategory.alarm : null,
+          audioAttributesUsage: isUrgentAmber ? AudioAttributesUsage.alarm : AudioAttributesUsage.notification,
           largeIcon:
               imagePath != null ? FilePathAndroidBitmap(imagePath) : null,
           styleInformation: style,
@@ -336,7 +340,7 @@ class NotificationService {
     if (isUrgentAmber) {
       level = InterruptionLevel.timeSensitive;
     } else if (isHighAmber) {
-      level = InterruptionLevel.active;
+      level = InterruptionLevel.timeSensitive;
     }
 
     return DarwinNotificationDetails(

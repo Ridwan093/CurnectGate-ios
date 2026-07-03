@@ -18,12 +18,12 @@ class BasicpermissionSwitch extends ConsumerWidget {
     required this.onChanged,
     required this.title,
     required this.subtitle,
-   required this.permissionSlug ,
+    required this.permissionSlug,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-      final isLoading = ref.watch(permissionLoadingProvider(permissionSlug));
+    final isLoading = ref.watch(permissionLoadingProvider(permissionSlug));
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       title: Text(
@@ -48,9 +48,6 @@ class BasicpermissionSwitch extends ConsumerWidget {
         value: value,
         isLoading: isLoading,
         onChanged: onChanged,
-        // activeColor: AppColors.instance.black500,
-        // inactiveColor: AppColors.instance.grey300,
-        // animationDuration: const Duration(milliseconds: 150),
       ),
       minVerticalPadding: 0,
       visualDensity: VisualDensity.compact,

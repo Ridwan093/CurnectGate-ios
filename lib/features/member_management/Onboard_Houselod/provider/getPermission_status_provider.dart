@@ -3,6 +3,8 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_status_model.dart/member_permission_model.dart';
+import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_status_model.dart/permission_status_model.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_status_model.dart/permissions_response_model.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/provider.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
@@ -68,7 +70,6 @@ class PermissionStatusNotifier
     BuildContext context,
     WidgetRef ref,
   ) async {
-    state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       try {
         final token = await ref.watch(accessTokenProvider.future);
@@ -99,5 +100,40 @@ class PermissionStatusNotifier
         rethrow;
       }
     });
+  }
+
+  void updatePermissionLocal(String slug, bool newValue) {
+    if (state.value == null) return;
+
+    final currentData = state.value!.data;
+    if (currentData == null || currentData.permissions == null) return;
+
+    // Create a new map with the updated permission
+    final currentPermissions = currentData.permissions!;
+
+    // Only update if the permission exists
+    if (!currentPermissions.containsKey(slug)) return;
+
+    final currentPermission = currentPermissions[slug]!;
+    final currentStatus = currentPermission.status;
+
+    // Update just the isGranted field using freezed's copyWith
+    final updatedStatus =
+        currentStatus?.copyWith(isGranted: newValue) ??
+        PermissionStatus(isGranted: newValue);
+
+    final updatedPermission = currentPermission.copyWith(status: updatedStatus);
+
+    final newPermissions = Map<String, MemberPermission>.from(
+      currentPermissions,
+    );
+    newPermissions[slug] = updatedPermission;
+
+    // Create the new full response object
+    final newData = currentData.copyWith(permissions: newPermissions);
+    final newResponse = state.value!.copyWith(data: newData);
+
+    // Immediately emit the new state
+    state = AsyncValue.data(newResponse);
   }
 }

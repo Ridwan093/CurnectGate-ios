@@ -447,7 +447,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
               children: [
                 Image.asset(AssetPaths.emtymeesage, height: 80, width: 80),
                 Text(
-                  "Your conversation appears here, start a conversation with an estate commitee or estate security",
+                  "Your conversation appears here, start a conversation with an estate committee or estate security",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,

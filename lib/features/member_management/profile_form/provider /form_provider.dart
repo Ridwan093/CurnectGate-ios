@@ -4508,11 +4508,20 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (response['status'] == true) {
         notifier.resetForm();
 
+        // Unlock the switch immediately — don't wait for the refresh
         notifiers.setLoading(false);
 
+        // Update the Riverpod state locally so the switch toggles instantly
         ref
             .read(permissionStatusProvider.notifier)
-            .refreshPermissionstatus(context, ref);
+            .updatePermissionLocal(slug, value);
+
+        // Refresh permission list in the background (fire-and-forget) to sync with server
+        unawaited(
+          ref
+              .read(permissionStatusProvider.notifier)
+              .refreshPermissionstatus(context, ref),
+        );
       } else {
         notifier.resetForm();
 

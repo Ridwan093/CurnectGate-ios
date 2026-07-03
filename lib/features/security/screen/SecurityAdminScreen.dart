@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
-import 'package:curnectgate/core/local_store/getUserprofile_file_provider.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -19,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 /// 072015 visitor Otp
 class SecurityDashboard extends ConsumerStatefulWidget {
@@ -27,13 +27,15 @@ class SecurityDashboard extends ConsumerStatefulWidget {
 }
 
 class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late AnimationController _animationController;
+  bool _isNotificationPermissionGranted = true;
 
   @override
   void initState() {
     super.initState();
-
+    WidgetsBinding.instance.addObserver(this);
+    _checkAndRequestNotificationPermission();
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 1000),
@@ -43,8 +45,122 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _checkNotificationPermissionStatusOnly();
+    }
+  }
+
+  Future<void> _checkAndRequestNotificationPermission() async {
+    final status = await Permission.notification.status;
+    if (status.isDenied || status.isLimited || status.isRestricted) {
+      final requestStatus = await Permission.notification.request();
+      setState(() {
+        _isNotificationPermissionGranted = requestStatus.isGranted;
+      });
+    } else if (status.isPermanentlyDenied) {
+      setState(() {
+        _isNotificationPermissionGranted = false;
+      });
+    } else {
+      setState(() {
+        _isNotificationPermissionGranted = status.isGranted;
+      });
+    }
+  }
+
+  Future<void> _checkNotificationPermissionStatusOnly() async {
+    final status = await Permission.notification.status;
+    setState(() {
+      _isNotificationPermissionGranted = status.isGranted;
+    });
+  }
+
+  Widget _buildNotificationWarningBanner(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF9E6),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFFFD580), width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(
+            Icons.warning_amber_rounded,
+            color: Color(0xFFE65100),
+            size: 24,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Emergency Notifications Disabled",
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    color: const Color(0xFF5D4037),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "To receive critical Amber Alerts, please enable notifications in your system settings.",
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    color: const Color(0xFF795548),
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                InkWell(
+                  onTap: () async {
+                    await openAppSettings();
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.instance.teal400,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      "Open Settings",
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
   void dispose() {
     _animationController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -120,6 +236,11 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
                 child: Column(
                   children: [
                     PremiumSecurityHeader(),
+                    if (!_isNotificationPermissionGranted) ...[
+                      const SizedBox(height: 10),
+                      _buildNotificationWarningBanner(context),
+                    ],
+
                     const SizedBox(height: 15),
                     _buildCheckOutbutto(),
                     const SizedBox(height: 15),
@@ -497,7 +618,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
                       showUserBottomSheet(
                         context: context,
                         headertitle: "Violations",
-                        headersubtitle: "Track violation residents",
+                        headersubtitle: "Track resident's violation",
                         ref: ref,
                         bottom: BottomSheetView.securityViolationTrack,
                       );
@@ -518,7 +639,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
                       showUserBottomSheet(
                         context: context,
                         headertitle: "Access Logs",
-                        headersubtitle: "Track access logs residents",
+                        headersubtitle: "Track resident's access logs",
                         ref: ref,
                         bottom: BottomSheetView.mentainLog,
                       );
