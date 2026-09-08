@@ -19,9 +19,7 @@ class EstateAdminData extends ConsumerWidget {
       data: (admin) {
         try {
           final user = admin?.data;
-          return user != null
-              ? _buildEstateAdminList(user.admins)
-              : EmptyBodys(message: "Estate admin not fund?");
+          return _buildEstateAdminList(user?.admins);
         } catch (e) {
           return Builderroul(
             error: e.toString(),
@@ -87,9 +85,12 @@ class EstateAdminData extends ConsumerWidget {
   }
 
   Widget _buildEstateAdminList(List<EstateAdmin>? admins) {
+    if (admins == null || admins.isEmpty) {
+      return const Expanded(child: EmptyBodys(message: "No estate admin found."));
+    }
     return Expanded(
       child: ListView.builder(
-        itemCount: admins!.length,
+        itemCount: admins.length,
         // separatorBuilder:
         //     (context, index) => Container(
         //       height: 1,

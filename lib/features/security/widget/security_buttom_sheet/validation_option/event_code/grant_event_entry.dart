@@ -97,7 +97,7 @@ class _GrantEventEntryState extends ConsumerState<GrantEventEntry> {
               ),
               const SizedBox(height: 8),
               Text(
-                "Enter guest details to grant entry",
+                "Please enter the guest's details to grant entry.",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   fontSize: 13,

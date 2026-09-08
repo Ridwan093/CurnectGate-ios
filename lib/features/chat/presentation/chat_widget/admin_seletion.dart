@@ -13,6 +13,20 @@ class EstateAdminSelectionSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    String title = "Select Admin to Chat";
+    String subtitle =
+        "Choose an estate administrator to start a conversation about your concern";
+
+    if (type.contains("committee")) {
+      title = "Select Committee to Chat";
+      subtitle =
+          "Choose a committee member to start a conversation about your concern";
+    } else if (type.contains("security")) {
+      title = "Select Security to Chat";
+      subtitle =
+          "Choose a security personnel to start a conversation about your concern";
+    }
+
     // Demo data — replace with your real admin data
 
     return Column(
@@ -41,7 +55,7 @@ class EstateAdminSelectionSheet extends ConsumerWidget {
 
             // Title
             Text(
-              "Select Admin to Chat",
+              title,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
@@ -54,7 +68,7 @@ class EstateAdminSelectionSheet extends ConsumerWidget {
 
             // Subtitle
             Text(
-              "Choose an estate administrator to start a conversation about your concern",
+              subtitle,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,

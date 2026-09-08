@@ -79,7 +79,7 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidatedEventCode> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      "Valiate event code for gust and family",
+                      "Validate event code for guests and family.",
                       style: TextStyle(
                         fontFamily: FontFamilies.interDisplay,
                         fontSize: 13,
@@ -94,7 +94,7 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidatedEventCode> {
                   controller: _otpController,
                   fieldType: FieldType.oTpCode,
                   hintText: "(eg. EVT-MAG2023-JDXAR9)",
-                  label: "Enter codes",
+                  label: "Enter event code",
                   fieldKey: "oTpCode",
                   onChanged: (value) {
                     ref.read(oTpformProvider.notifier).updateOtpCode(value);

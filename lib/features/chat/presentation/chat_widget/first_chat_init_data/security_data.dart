@@ -20,9 +20,7 @@ class SecurityData extends ConsumerWidget {
       data: (admin) {
         try {
           final user = admin?.data;
-          return user != null
-              ? _buildEstateAdminList(user.securityPersonnel)
-              : EmptyBodys(message: "SecurityPersonnel not fund?");
+          return _buildEstateAdminList(user?.securityPersonnel);
         } catch (e) {
           return Builderroul(
             error: e.toString(),
@@ -92,9 +90,12 @@ class SecurityData extends ConsumerWidget {
   }
 
   Widget _buildEstateAdminList(List<SecurityPersonnel>? admins) {
+    if (admins == null || admins.isEmpty) {
+      return const Expanded(child: EmptyBodys(message: "No security personnel found."));
+    }
     return Expanded(
       child: ListView.builder(
-        itemCount: admins!.length,
+        itemCount: admins.length,
 
         itemBuilder: (context, index) {
           final admin = admins[index];

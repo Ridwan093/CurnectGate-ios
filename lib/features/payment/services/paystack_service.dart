@@ -26,6 +26,7 @@ class PaystackService {
     required String method,
     required WidgetRef ref,
     String? accessToken, // optional backend auth
+    String currency = "NGN",
   }) async {
     final form = ref.read(formProvider.notifier);
 
@@ -55,8 +56,8 @@ class PaystackService {
         publicKey: publiceKey,
         secretKey: privateKey,
         customerEmail: email,
-        currency: "",
-        amount: (amount * 100).toString(),
+        currency: currency,
+        amount: (amount * 100).toInt().toString(),
         reference: reference,
         plan: '',
         callBackUrl: "https://standard.paystack.co/close",

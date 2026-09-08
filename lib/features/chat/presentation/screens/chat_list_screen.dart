@@ -35,8 +35,8 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
   void _openChatOption(WidgetRef ref, BuildContext context) {
     showUserBottomSheet(
       context: context,
-      headertitle: "Star a conversation",
-      headersubtitle: "A team typicall replies in less than a minute",
+      headertitle: "Start a conversation",
+      headersubtitle: "Our team typically replies in under a minute",
       ref: ref,
       bottom: BottomSheetView.startConversation,
     );
@@ -49,11 +49,11 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref.read(conversationListProvider.notifier).refreshConversations();
       await ref.read(unreadCountsProvider.notifier).refreshCounts();
-      
+
       if (!mounted) return;
 
       final authState = ref.read(authProvider);
-      
+
       final user = authState.user;
       final userId = user?["id"] ?? "";
       log("Ok let seee if you log ot not we see :${userId}");

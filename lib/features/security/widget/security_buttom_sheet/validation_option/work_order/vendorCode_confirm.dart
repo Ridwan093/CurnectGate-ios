@@ -102,7 +102,7 @@ class WorkOrderConfirmWidget extends ConsumerWidget {
                 ),
               ),
               Text(
-                "Work Infomation",
+                "Worker Information",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   fontWeight: FontFamilies.bold,
@@ -112,7 +112,7 @@ class WorkOrderConfirmWidget extends ConsumerWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                "Verify the workers info and data befor grant access.",
+                "Please verify the worker's details before granting access.",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   fontSize: 12,

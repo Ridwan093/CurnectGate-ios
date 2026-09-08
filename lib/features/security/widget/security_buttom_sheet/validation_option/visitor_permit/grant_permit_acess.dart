@@ -51,7 +51,7 @@ class _DenyEntryState extends ConsumerState<GrantPermitEntry> {
                   ),
                   SizedBox(height: 40),
                   Text(
-                    "Grant permit",
+                    "Grant Permit",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontWeight: FontFamilies.bold,
@@ -61,7 +61,7 @@ class _DenyEntryState extends ConsumerState<GrantPermitEntry> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Specifie the reason for grant permit",
+                    "Please specify the reason for granting this permit.",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,
@@ -76,7 +76,7 @@ class _DenyEntryState extends ConsumerState<GrantPermitEntry> {
                 controller: _securityNotedController,
                 fieldType: FieldType.reason,
                 hintText: "(eg. not meet up with estate standand)",
-                label: "Checkout notes",
+                label: "Permit notes",
                 fieldKey: "Reason",
                 onChanged: (value) {
                   ref.read(oTpformProvider.notifier).updateReason(value);

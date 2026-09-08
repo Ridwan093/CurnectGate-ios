@@ -70,8 +70,8 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidateWorkOrderOtp> {
                   SizedBox(height: 40),
                   Text(
                     widget.validateType == "work"
-                        ? "Validate work order"
-                        : "Validate  OTP",
+                        ? "Validate Work Order"
+                        : "Validate OTP",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontWeight: FontFamilies.bold,
@@ -82,8 +82,8 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidateWorkOrderOtp> {
                   const SizedBox(height: 4),
                   Text(
                     widget.validateType == "work"
-                        ? "Valiate work order code to grant entry."
-                        : "Valiate otp code to grant entry.",
+                        ? "Please validate the work order code to grant entry."
+                        : "Please validate the OTP code to grant entry.",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,
@@ -98,7 +98,7 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidateWorkOrderOtp> {
                 controller: _otpController,
                 fieldType: FieldType.oTpCode,
                 hintText: "(eg. #84758)",
-                label: "Enter OTP",
+                label: widget.validateType == "work" ? "Enter work order code" : "Enter OTP",
                 fieldKey: "oTpCode",
                 onChanged: (value) {
                   ref.read(oTpformProvider.notifier).updateOtpCode(value);

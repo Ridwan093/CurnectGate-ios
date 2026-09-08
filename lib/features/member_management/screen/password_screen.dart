@@ -144,7 +144,7 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
           const SizedBox(height: 32),
           PasswordInputField(
             hintText: "e.g Gre&&^#098",
-            label: 'Creat a password ',
+            label: 'Create a password ',
             showErroindicator: true,
           ),
         ],
