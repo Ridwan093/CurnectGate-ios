@@ -58,7 +58,11 @@ class _DashboradState extends ConsumerState<Dashborad>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _checkAndRequestNotificationPermission();
+    // Delay the initial check to let the native iOS AppDelegate
+    // requestAuthorization complete before we query the status.
+    Future.delayed(const Duration(seconds: 1), () {
+      if (mounted) _checkNotificationPermissionStatusOnly();
+    });
   }
 
   @override
@@ -70,33 +74,38 @@ class _DashboradState extends ConsumerState<Dashborad>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _checkNotificationPermissionStatusOnly();
+      // iOS can return stale permission status immediately on resume,
+      // so we delay the first check and retry once more to be safe.
+      _checkNotificationPermissionWithRetry();
     }
   }
 
-  Future<void> _checkAndRequestNotificationPermission() async {
-    final status = await Permission.notification.status;
-    if (status.isDenied || status.isLimited || status.isRestricted) {
-      final requestStatus = await Permission.notification.request();
-      setState(() {
-        _isNotificationPermissionGranted = requestStatus.isGranted;
-      });
-    } else if (status.isPermanentlyDenied) {
-      setState(() {
-        _isNotificationPermissionGranted = false;
-      });
-    } else {
-      setState(() {
-        _isNotificationPermissionGranted = status.isGranted;
-      });
-    }
+  /// Checks if notifications are effectively enabled.
+  /// On iOS, isGranted, isLimited, and isProvisional all mean
+  /// the user has allowed notifications in some form.
+  bool _isEffectivelyGranted(PermissionStatus status) {
+    return status.isGranted || status.isLimited || status.isProvisional;
   }
 
   Future<void> _checkNotificationPermissionStatusOnly() async {
     final status = await Permission.notification.status;
-    setState(() {
-      _isNotificationPermissionGranted = status.isGranted;
-    });
+    if (mounted) {
+      setState(() {
+        _isNotificationPermissionGranted = _isEffectivelyGranted(status);
+      });
+    }
+  }
+
+  /// Delays before checking permission to let iOS flush its cached state,
+  /// then retries once more after a longer interval for reliability.
+  Future<void> _checkNotificationPermissionWithRetry() async {
+    // First check after a short delay (lets iOS update its permission cache)
+    await Future.delayed(const Duration(milliseconds: 500));
+    await _checkNotificationPermissionStatusOnly();
+
+    // Second check after a longer delay as a safety net
+    await Future.delayed(const Duration(milliseconds: 1000));
+    await _checkNotificationPermissionStatusOnly();
   }
 
   Widget _buildNotificationWarningBanner(BuildContext context) {
