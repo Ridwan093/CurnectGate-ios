@@ -92,7 +92,7 @@ EOF
       - name: Flutter build ipa
         script: |
           flutter pub get
-          flutter build ipa --release --build-number=15 \
+          flutter build ipa --release --build-number=16 \
             --export-options-plist=/tmp/ExportOptions.plist
     artifacts:
       - build/ios/ipa/*.ipa
