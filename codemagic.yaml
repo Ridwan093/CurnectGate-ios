@@ -49,26 +49,45 @@ workflows:
           sed -i '' "s|PROVISIONING_PROFILE = .*|PROVISIONING_PROFILE = \"$UUID\";|g" $PROJECT
           sed -i '' 's|CODE_SIGN_IDENTITY = .*|CODE_SIGN_IDENTITY = "Apple Distribution";|g' $PROJECT
 
-          # Step 7: Write ExportOptions IN THE SAME SHELL (UUID is still alive!)
+          # Step 7: CRITICAL - Guarantee aps-environment=production in entitlements
+          # This ensures Codemagic's sed patching never overwrites it to 'development'
+          cat > ios/Runner/Runner.entitlements << 'ENTEOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>aps-environment</key>
+  <string>production</string>
+</dict>
+</plist>
+ENTEOF
+          echo "Entitlements written:"
+          cat ios/Runner/Runner.entitlements
+
+          # Step 8: Write ExportOptions IN THE SAME SHELL (UUID is still alive!)
           cat > /tmp/ExportOptions.plist <<EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>app-store</string>
-            <key>teamID</key>
-            <string>5648G3VS73</string>
-            <key>signingStyle</key>
-            <string>manual</string>
-            <key>provisioningProfiles</key>
-            <dict>
-              <key>com.ges.curnectgate</key>
-              <string>$UUID</string>
-            </dict>
-          </dict>
-          </plist>
-          EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>method</key>
+  <string>app-store</string>
+  <key>teamID</key>
+  <string>5648G3VS73</string>
+  <key>signingStyle</key>
+  <string>manual</string>
+  <key>compileBitcode</key>
+  <false/>
+  <key>manageAppVersionAndBuildNumber</key>
+  <false/>
+  <key>provisioningProfiles</key>
+  <dict>
+    <key>com.ges.curnectgate</key>
+    <string>$UUID</string>
+  </dict>
+</dict>
+</plist>
+EOF
 
       - name: Flutter build ipa
         script: |
