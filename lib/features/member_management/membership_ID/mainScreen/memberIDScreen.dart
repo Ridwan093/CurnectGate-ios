@@ -127,7 +127,7 @@ class DigitalCardScreen extends ConsumerWidget {
                         children: [
                           Flexible(
                             child: Text(
-                              '5-Digit Code',
+                              '6-Digit Code',
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontFamily: FontFamilies.interDisplay,
