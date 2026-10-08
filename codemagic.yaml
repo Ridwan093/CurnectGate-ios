@@ -16,11 +16,10 @@ workflows:
           # Step 1: Disable Swift Package Manager
           flutter config --no-enable-swift-package-manager
 
-          # Step 2: Decode files (using printf to avoid echo corrupting long strings)
+          # Step 2: Decode files
           printf '%s' "$CM_CERTIFICATE" | base64 --decode > /tmp/certificate.p12
           printf '%s' "$MY_IOS_PROFILE" | base64 --decode > /tmp/profile.mobileprovision
-          
-          # Verify files decoded correctly
+
           echo "Certificate size: $(wc -c < /tmp/certificate.p12) bytes"
           echo "Profile size: $(wc -c < /tmp/profile.mobileprovision) bytes"
 
@@ -34,13 +33,13 @@ workflows:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp /tmp/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
 
-          # Step 5: Extract UUID and Name IN THE SAME SHELL
+          # Step 5: Extract UUID and Name
           security cms -D -i /tmp/profile.mobileprovision > /tmp/profile.plist
           UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" /tmp/profile.plist)
           PROFILE_NAME=$(/usr/libexec/PlistBuddy -c "Print Name" /tmp/profile.plist)
           echo "Profile: $PROFILE_NAME ($UUID)"
 
-          # Step 6: Patch project IN THE SAME SHELL (variables are alive here!)
+          # Step 6: Patch project
           PROJECT=ios/Runner.xcodeproj/project.pbxproj
           sed -i '' 's|CODE_SIGN_STYLE = .*|CODE_SIGN_STYLE = Manual;|g' $PROJECT
           sed -i '' 's|ProvisioningStyle = .*|ProvisioningStyle = Manual;|g' $PROJECT
@@ -49,45 +48,23 @@ workflows:
           sed -i '' "s|PROVISIONING_PROFILE = .*|PROVISIONING_PROFILE = \"$UUID\";|g" $PROJECT
           sed -i '' 's|CODE_SIGN_IDENTITY = .*|CODE_SIGN_IDENTITY = "Apple Distribution";|g' $PROJECT
 
-          # Step 7: CRITICAL - Guarantee aps-environment=production in entitlements
-          # This ensures Codemagic's sed patching never overwrites it to 'development'
-          cat > ios/Runner/Runner.entitlements << 'ENTEOF'
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>aps-environment</key>
-  <string>production</string>
-</dict>
-</plist>
-ENTEOF
+          # Step 7: Write entitlements using /usr/libexec/PlistBuddy (no XML escaping issues)
+          /usr/libexec/PlistBuddy -c "Clear dict" ios/Runner/Runner.entitlements 2>/dev/null || true
+          /usr/libexec/PlistBuddy -c "Add :aps-environment string production" ios/Runner/Runner.entitlements
           echo "Entitlements written:"
           cat ios/Runner/Runner.entitlements
 
-          # Step 8: Write ExportOptions IN THE SAME SHELL (UUID is still alive!)
-          cat > /tmp/ExportOptions.plist <<EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>method</key>
-  <string>app-store</string>
-  <key>teamID</key>
-  <string>5648G3VS73</string>
-  <key>signingStyle</key>
-  <string>manual</string>
-  <key>compileBitcode</key>
-  <false/>
-  <key>manageAppVersionAndBuildNumber</key>
-  <false/>
-  <key>provisioningProfiles</key>
-  <dict>
-    <key>com.ges.curnectgate</key>
-    <string>$UUID</string>
-  </dict>
-</dict>
-</plist>
-EOF
+          # Step 8: Write ExportOptions using PlistBuddy (avoids any XML/YAML conflicts)
+          /usr/libexec/PlistBuddy -c "Clear dict" /tmp/ExportOptions.plist 2>/dev/null || true
+          /usr/libexec/PlistBuddy -c "Add :method string app-store" /tmp/ExportOptions.plist
+          /usr/libexec/PlistBuddy -c "Add :teamID string 5648G3VS73" /tmp/ExportOptions.plist
+          /usr/libexec/PlistBuddy -c "Add :signingStyle string manual" /tmp/ExportOptions.plist
+          /usr/libexec/PlistBuddy -c "Add :compileBitcode bool false" /tmp/ExportOptions.plist
+          /usr/libexec/PlistBuddy -c "Add :manageAppVersionAndBuildNumber bool false" /tmp/ExportOptions.plist
+          /usr/libexec/PlistBuddy -c "Add :provisioningProfiles dict" /tmp/ExportOptions.plist
+          /usr/libexec/PlistBuddy -c "Add :provisioningProfiles:com.ges.curnectgate string $UUID" /tmp/ExportOptions.plist
+          echo "ExportOptions written:"
+          cat /tmp/ExportOptions.plist
 
       - name: Flutter build ipa
         script: |
