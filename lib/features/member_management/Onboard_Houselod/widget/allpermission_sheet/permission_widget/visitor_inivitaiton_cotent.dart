@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -131,15 +129,30 @@ class _VisitorInivitaitonCotentState
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Flexible(
-                      child: Text(
-                        "Maximum Visitors Per day",
+                    Expanded(
+                      child: RichText(
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontFamily: FontFamilies.interDisplay,
-                          fontWeight: FontFamilies.bold,
-                          color: AppColors.instance.black600,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: "",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontFamily: FontFamilies.interDisplay,
+                                fontWeight: FontFamilies.bold,
+                                color: Colors.red,
+                              ),
+                            ),
+                            TextSpan(
+                              text: "Maximum Visitors Per day",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontFamily: FontFamilies.interDisplay,
+                                fontWeight: FontFamilies.bold,
+                                color: AppColors.instance.black600,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -210,51 +223,14 @@ class _VisitorInivitaitonCotentState
                   isLoading
                       ? null
                       : () {
-                        if (isvisitorEnabled!) {
-                          if (_rasoncontoller.text.isEmpty) {
-                            log("Red------------->");
-                            showCustomSuccessToast(
-                              context: context,
-                              message: "Please add a reason",
-                              color: AppColors.instance.grey500,
-                              icon: Icons.error,
-                              iconColors: AppColors.instance.black600,
-                              positionNumber: 70,
-                            );
-                          } else if (_max1Controller.text.isEmpty) {
-                            showCustomSuccessToast(
-                              context: context,
-                              message: "Please add a Max",
-                              color: AppColors.instance.grey500,
-                              icon: Icons.error,
-                              iconColors: AppColors.instance.black600,
-                              positionNumber: 70,
-                            );
-                          } else if (_rasoncontoller.text.length < 10) {
-                            showCustomSuccessToast(
-                              context: context,
-                              message: "Reason must be at least 10 characters",
-                              color: AppColors.instance.grey500,
-                              icon: Icons.error,
-                              iconColors: AppColors.instance.black600,
-                              positionNumber: 70,
-                            );
-                          } else {
-                            providerstate.setvisitorPermission(
-                              context: context,
-                              id: widget.id,
-                              ref: ref,
-                            );
-                            restform();
-                          }
-                        } else {
+                       
                           providerstate.setvisitorPermission(
                             context: context,
                             id: widget.id,
                             ref: ref,
                           );
                           restform();
-                        }
+
                       },
               child:
                   isLoading

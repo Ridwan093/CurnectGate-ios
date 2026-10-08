@@ -13,6 +13,15 @@ class DeviceInfoHelper {
 
   static Future<String?> getDeviceToken() async {
     try {
+      if (Platform.isIOS) {
+        // In production, APNs token can sometimes take a second to generate.
+        // If we request the FCM token before APNs is ready, it might fail or return a bad token.
+        String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+        if (apnsToken == null) {
+          await Future.delayed(const Duration(seconds: 2));
+          apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+        }
+      }
       return await FirebaseMessaging.instance.getToken();
     } catch (e) {
       return null;

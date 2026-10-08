@@ -3776,6 +3776,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         ref
             .read(getCurfewSettingProvider.notifier)
             .refreshPermission(context, ref);
+        context.pop();
       } else {
         notifier.resetForm();
         updateGranFacilityPermissionLoading(false);
@@ -3893,6 +3894,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
 
         ref.read(statisticProvider.notifier).refreshPermission(context, ref);
+        context.pop();
       } else {
         notifier.resetForm();
         updateGranFacilityPermissionLoading(false);
@@ -4011,6 +4013,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
 
         ref.read(statisticProvider.notifier).refreshPermission(context, ref);
+        context.pop();
       } else {
         notifier.resetForm();
         updateGrantGatePermissionLoading(false);
@@ -4115,6 +4118,8 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
 
         ref.read(statisticProvider.notifier).refreshPermission(context, ref);
+
+        context.pop();
       } else {
         notifier.resetForm();
         updateGrantVisitorPermissionLoading(false);
@@ -4221,6 +4226,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
 
         ref.read(statisticProvider.notifier).refreshPermission(context, ref);
+        context.pop();
       } else {
         notifier.resetForm();
         updateGrantCommunityPermissionLoading(false);
@@ -4318,6 +4324,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
 
         ref.read(statisticProvider.notifier).refreshPermission(context, ref);
+        context.pop();
       } else {
         notifier.resetForm();
         updateGrantNightPermissionLoading(false);
@@ -4420,6 +4427,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
 
         ref.read(statisticProvider.notifier).refreshPermission(context, ref);
+        context.pop();
       } else {
         notifier.resetForm();
         updateGrantParkingPermissionLoading(false);
@@ -4508,10 +4516,10 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (response['status'] == true) {
         notifier.resetForm();
 
-        // Unlock the switch immediately — don't wait for the refresh
+        // Unlock the switch immediately
         notifiers.setLoading(false);
 
-        // Update the Riverpod state locally so the switch toggles instantly
+        // Pessimistic Update: Only update the state AFTER the API succeeds.
         ref
             .read(permissionStatusProvider.notifier)
             .updatePermissionLocal(slug, value);
@@ -4524,9 +4532,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         );
       } else {
         notifier.resetForm();
-
         notifiers.setLoading(false);
-
         notifier.resetForm();
 
         final message = extractValidationMessage(response);

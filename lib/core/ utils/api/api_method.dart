@@ -1342,7 +1342,7 @@ class AppApiMethod {
           },
         ],
       };
-
+    
       final response = await _dio.post(
         "estates/owner-portal/households/members/permission/$id/bulk",
         data: requestData,

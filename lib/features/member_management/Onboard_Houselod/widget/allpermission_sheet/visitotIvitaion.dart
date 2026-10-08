@@ -83,7 +83,7 @@ class VisitorSettingsScreen extends ConsumerWidget {
                     permission: cachedetting.data?.permissions,
                     id: id,
                   ),
-                  Emmergencybody(error: error.toString()),
+                 
                 ],
               );
             }

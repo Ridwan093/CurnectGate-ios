@@ -50,6 +50,7 @@ class PermissionSetupScreen extends ConsumerWidget {
                               AssetPaths.setCurfew,
                               "Set Curfew",
                               () {
+                                    context.pop();
                                 showUserBottomSheet(
                                   context: context,
                                   headertitle: "",
@@ -93,6 +94,7 @@ class PermissionSetupScreen extends ConsumerWidget {
                               AssetPaths.facility,
                               "Facility Access",
                               () {
+                                    context.pop();
                                 showUserBottomSheet(
                                   context: context,
                                   headertitle: "",
