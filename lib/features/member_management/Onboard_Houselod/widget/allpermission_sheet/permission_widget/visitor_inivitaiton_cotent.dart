@@ -103,7 +103,7 @@ class _VisitorInivitaitonCotentState
               children: [
                 // Enable Visitor Invitation switch
                 _buildSwitchContainer(
-                  title: "Enable Visitor invitation",
+                  title: (isvisitorEnabled ?? false) ? "Enable Visitor invitation" : "Disable Visitor invitation",
                   value: isvisitorEnabled ?? false,
                   onChanged: notifier.toggleVisitorInvitation,
                 ),

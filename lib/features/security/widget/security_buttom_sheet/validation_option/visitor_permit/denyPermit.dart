@@ -60,7 +60,7 @@ class _DenyEntryState extends ConsumerState<DenyPermitEntry> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Specifie the reason for  flag.",
+                    "Specify the reason for flagging.",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,

@@ -63,7 +63,7 @@ class _SpecifyumberOfGuestState extends ConsumerState<SpecifyumberOfGuest> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Manually add the number of allowes guest",
+                    "Manually add the number of allowed guests",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,
@@ -169,7 +169,7 @@ class _SpecifyumberOfGuestState extends ConsumerState<SpecifyumberOfGuest> {
                 ),
                 SizedBox(height: 8),
                 Text(
-                  "Chose whether this visitor required excort",
+                  "Choose whether this visitor requires an escort",
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     color: AppColors.instance.black300,

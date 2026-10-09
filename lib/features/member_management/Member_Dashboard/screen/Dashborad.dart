@@ -35,6 +35,8 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:io' show Platform;
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class Dashborad extends ConsumerStatefulWidget {
   const Dashborad({super.key});
@@ -88,10 +90,26 @@ class _DashboradState extends ConsumerState<Dashborad>
   }
 
   Future<void> _checkNotificationPermissionStatusOnly() async {
-    final status = await Permission.notification.status;
+    bool isGranted = false;
+
+    try {
+      if (Platform.isIOS) {
+        final settings = await FirebaseMessaging.instance.getNotificationSettings();
+        isGranted = settings.authorizationStatus == AuthorizationStatus.authorized ||
+            settings.authorizationStatus == AuthorizationStatus.provisional;
+      } else {
+        final status = await Permission.notification.status;
+        isGranted = _isEffectivelyGranted(status);
+      }
+    } catch (e) {
+      log('Error checking notification permission: $e');
+      final status = await Permission.notification.status;
+      isGranted = _isEffectivelyGranted(status);
+    }
+
     if (mounted) {
       setState(() {
-        _isNotificationPermissionGranted = _isEffectivelyGranted(status);
+        _isNotificationPermissionGranted = isGranted;
       });
     }
   }

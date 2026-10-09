@@ -102,7 +102,7 @@ class _VisitorInivitaitonCotentState
               children: [
                 // Enable Visitor Invitation switch
                 _buildSwitchContainer(
-                  title: "Enable Community Forum ",
+                  title: (communityEnable ?? false) ? "Enable Community Forum" : "Disable Community Forum",
                   value: communityEnable ?? false,
                   onChanged: notifier.togglecommunityforum,
                 ),

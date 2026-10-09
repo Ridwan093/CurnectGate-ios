@@ -48,7 +48,7 @@ class SelectpermitBottomsheet extends ConsumerWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                "Authorize guests or family to bring in listed items.",
+                "Authorize guests or family members to bring in listed items.",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   fontSize: 12,

@@ -134,7 +134,7 @@ class _CurfewContentState extends ConsumerState<CurfewContent> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Disable Curfew",
+                        (isCurfewEnabled ?? false) ? "Enable Curfew" : "Disable Curfew",
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontFamilies.bold,

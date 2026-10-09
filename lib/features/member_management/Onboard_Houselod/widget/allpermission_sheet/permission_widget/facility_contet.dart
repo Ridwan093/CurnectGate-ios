@@ -184,7 +184,7 @@ class _FacilityContetState extends ConsumerState<FacilityContet> {
                     children: [
                       Flexible(
                         child: Text(
-                          "Enable Facility Access",
+                          isFacilityEnabled! ? "Enable Facility Access" : "Disable Facility Access",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 14,

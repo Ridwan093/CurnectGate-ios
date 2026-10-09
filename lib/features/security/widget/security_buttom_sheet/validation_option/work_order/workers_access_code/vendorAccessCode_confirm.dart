@@ -55,7 +55,7 @@ class VendorAccessCodeConfirm extends ConsumerWidget {
                 ),
               ),
               Text(
-                "Work Infomation",
+                "Work Information",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   fontWeight: FontFamilies.bold,
@@ -65,7 +65,7 @@ class VendorAccessCodeConfirm extends ConsumerWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                "Verify the workers info and data befor grant access.",
+                "Verify the worker's info and data before granting access.",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   fontSize: 12,

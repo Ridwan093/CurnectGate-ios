@@ -38,7 +38,7 @@ class SetUppRofiled extends BaseVerificationScreen {
          currentStep: 4,
          totalSteps: 6,
          title: "Let's get you setup",
-         description: 'Your information are pre-filed',
+         description: 'Your information are pre-filled',
        );
 
   @override

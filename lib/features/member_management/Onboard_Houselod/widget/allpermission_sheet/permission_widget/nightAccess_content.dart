@@ -95,7 +95,7 @@ class _PackingAccessContentState extends ConsumerState<NightAccessContent> {
               children: [
                 // Enable Visitor Invitation switch
                 _buildSwitchContainer(
-                  title: "Enable night access",
+                  title: (state.isNightEnable ?? false) ? "Enable night access" : "Disable night access",
                   value: state.isNightEnable ?? false,
                   onChanged: notifier.toggleNightaccess,
                 ),

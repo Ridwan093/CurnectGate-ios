@@ -4977,6 +4977,8 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         final message = extractValidationMessage(response);
 
+        log(response.toString());
+
         showCustomSuccessToast(
           context: context,
           message: message,
