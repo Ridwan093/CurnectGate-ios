@@ -20,15 +20,20 @@ class AppDelegate: FlutterAppDelegate, MessagingDelegate, FlutterImplicitEngineD
             GeneratedPluginRegistrant.register(with: registry)
         }
   
-        let center = UNUserNotificationCenter.current()
-        center.delegate = self
-        center.requestAuthorization(options: [.alert, .badge, .sound]) { granted, _ in
-            if granted {
-                DispatchQueue.main.async {
-                    UIApplication.shared.registerForRemoteNotifications()
-                }
-            }
+        if #available(iOS 10.0, *) {
+            UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
+            let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+            UNUserNotificationCenter.current().requestAuthorization(
+                options: authOptions,
+                completionHandler: { _, _ in }
+            )
+        } else {
+            let settings: UIUserNotificationSettings =
+                UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
+            application.registerUserNotificationSettings(settings)
         }
+
+        application.registerForRemoteNotifications()
 
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
@@ -38,6 +43,7 @@ class AppDelegate: FlutterAppDelegate, MessagingDelegate, FlutterImplicitEngineD
     }
 
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        print("Firebase registration token: \(String(describing: fcmToken))")
     }
 
     override func application(

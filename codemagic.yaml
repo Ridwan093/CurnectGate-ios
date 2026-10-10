@@ -47,11 +47,11 @@ workflows:
           sed -i '' "s|PROVISIONING_PROFILE_SPECIFIER = .*|PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\";|g" $PROJECT
           sed -i '' "s|PROVISIONING_PROFILE = .*|PROVISIONING_PROFILE = \"$UUID\";|g" $PROJECT
           sed -i '' 's|CODE_SIGN_IDENTITY = .*|CODE_SIGN_IDENTITY = "Apple Distribution";|g' $PROJECT
+          sed -i '' 's|CODE_SIGN_ENTITLEMENTS = .*|CODE_SIGN_ENTITLEMENTS = "Runner/Runner.entitlements";|g' $PROJECT
 
-          # Step 7: Write entitlements using /usr/libexec/PlistBuddy (no XML escaping issues)
-          /usr/libexec/PlistBuddy -c "Clear dict" ios/Runner/Runner.entitlements 2>/dev/null || true
-          /usr/libexec/PlistBuddy -c "Add :aps-environment string production" ios/Runner/Runner.entitlements
-          echo "Entitlements written:"
+          # Step 7: Ensure production aps-environment in entitlements
+          /usr/libexec/PlistBuddy -c "Set :aps-environment production" ios/Runner/Runner.entitlements 2>/dev/null || /usr/libexec/PlistBuddy -c "Add :aps-environment string production" ios/Runner/Runner.entitlements
+          echo "Entitlements verified:"
           cat ios/Runner/Runner.entitlements
 
           # Step 8: Write ExportOptions using PlistBuddy (avoids any XML/YAML conflicts)

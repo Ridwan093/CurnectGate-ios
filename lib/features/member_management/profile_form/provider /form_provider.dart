@@ -4977,11 +4977,20 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         final message = extractValidationMessage(response);
 
+        var oldMessage = "";
+        if (response["message"].toString().toLowerCase().contains(
+          "Invalid digital member",
+        )) {
+          oldMessage =
+              response["message"].toString().split("Invalid digital member")[0];
+        } else {
+          oldMessage = message;
+        }
         log(response.toString());
 
         showCustomSuccessToast(
           context: context,
-          message: message,
+          message: oldMessage,
           color: AppColors.instance.error500,
           icon: Icons.error,
           iconColors: AppColors.instance.grey200,
