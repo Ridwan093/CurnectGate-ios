@@ -48,12 +48,12 @@ class NotificationService {
     try {
       if (Platform.isIOS) {
         final apnsToken = await _messaging.getAPNSToken();
-        log('🍏 [DEVICE APNS TOKEN]: $apnsToken');
+        log('[DEVICE APNS TOKEN]: $apnsToken');
       }
       final fcmToken = await _messaging.getToken();
-      log('🔥 [DEVICE FCM TOKEN]: $fcmToken');
+      log(' [DEVICE FCM TOKEN]: $fcmToken');
     } catch (e) {
-      log('❌ [TOKEN FETCH ERROR]: $e');
+      log(' [TOKEN FETCH ERROR]: $e');
     }
   }
 
