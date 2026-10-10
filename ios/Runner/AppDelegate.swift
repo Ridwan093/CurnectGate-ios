@@ -21,11 +21,15 @@ class AppDelegate: FlutterAppDelegate, MessagingDelegate, FlutterImplicitEngineD
         }
   
         if #available(iOS 10.0, *) {
-            UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
+            UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
             let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
             UNUserNotificationCenter.current().requestAuthorization(
                 options: authOptions,
-                completionHandler: { _, _ in }
+                completionHandler: { granted, error in
+                    if let error = error {
+                        print("Failed to request notification permission: \(error)")
+                    }
+                }
             )
         } else {
             let settings: UIUserNotificationSettings =
@@ -33,7 +37,10 @@ class AppDelegate: FlutterAppDelegate, MessagingDelegate, FlutterImplicitEngineD
             application.registerUserNotificationSettings(settings)
         }
 
-        application.registerForRemoteNotifications()
+        // Register for remote notifications on main thread
+        DispatchQueue.main.async {
+            application.registerForRemoteNotifications()
+        }
 
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
@@ -42,15 +49,35 @@ class AppDelegate: FlutterAppDelegate, MessagingDelegate, FlutterImplicitEngineD
         GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
     }
 
+    // MARK: - Firebase Messaging Delegate
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        print("Firebase registration token: \(String(describing: fcmToken))")
+        print("Firebase FCM Token: \(String(describing: fcmToken))")
+        let dataDict: [String: String] = ["token": fcmToken ?? ""]
+        NotificationCenter.default.post(
+            name: Notification.Name("FCMToken"),
+            object: nil,
+            userInfo: dataDict
+        )
     }
 
+    // MARK: - APNs Token Registration
     override func application(
         _ application: UIApplication,
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
-        Messaging.messaging().apnsToken = deviceToken
+        #if DEBUG
+        Messaging.messaging().setAPNSToken(deviceToken, type: .sandbox)
+        #else
+        Messaging.messaging().setAPNSToken(deviceToken, type: .prod)
+        #endif
+
         super.application(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
+    }
+
+    override func application(
+        _ application: UIApplication,
+        didFailToRegisterForRemoteNotificationsWithError error: Error
+    ) {
+        print("Failed to register for APNs: \(error.localizedDescription)")
     }
 }
