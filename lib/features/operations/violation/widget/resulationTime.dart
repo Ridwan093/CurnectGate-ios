@@ -135,7 +135,7 @@ class ResolutionTimeline extends ConsumerWidget {
                       () => ref
                           .read(reportHisoryProvider.notifier)
                           .refreshReports(context, ref, id),
-                  firstMessae: "Failed to load Active OTPs",
+                  firstMessage: "Failed to load Active OTPs",
                 );
               }
 
@@ -163,7 +163,7 @@ class ResolutionTimeline extends ConsumerWidget {
                     () => ref
                         .read(reportHisoryProvider.notifier)
                         .refreshReports(context, ref, id),
-                firstMessae: "Failed to load Active OTPs",
+                firstMessage: "Failed to load Active OTPs",
               );
             },
           ),

@@ -38,7 +38,7 @@ class AgreementData extends ConsumerWidget {
                 () => ref
                     .read(agreementProvider.notifier)
                     .refreshAgreement(context, ref),
-            firstMessae: "Faile to load data?",
+            firstMessage: "Faile to load data?",
           );
         }
       },
@@ -57,7 +57,7 @@ class AgreementData extends ConsumerWidget {
                 () => ref
                     .read(agreementProvider.notifier)
                     .refreshAgreement(context, ref),
-            firstMessae: "Faile to load data?",
+            firstMessage: "Faile to load data?",
           );
         }
       },
@@ -83,7 +83,7 @@ class AgreementData extends ConsumerWidget {
                 () => ref
                     .read(agreementProvider.notifier)
                     .refreshAgreement(context, ref),
-            firstMessae: "Faile to load data?",
+            firstMessage: "Faile to load data?",
           );
         } catch (e) {
           return Builderroul(
@@ -92,7 +92,7 @@ class AgreementData extends ConsumerWidget {
                 () => ref
                     .read(agreementProvider.notifier)
                     .refreshAgreement(context, ref),
-            firstMessae: "Faile to load data?",
+            firstMessage: "Faile to load data?",
           );
         }
       },

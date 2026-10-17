@@ -18,22 +18,9 @@ pluginManagement {
 
 plugins {
     id("dev.flutter.flutter-plugin-loader") version "1.0.0"
-
-    // Core Android Gradle Plugin
-    id("com.android.application") version "8.7.3" apply false
-
-    // Firebase services (Google Services plugin)
+    id("com.android.application") version "8.7.0" apply false
+    id("org.jetbrains.kotlin.android") version "2.4.21" apply false
     id("com.google.gms.google-services") version "4.4.2" apply false
-
-    // Kotlin for Android
-    id("org.jetbrains.kotlin.android") version "2.4.10" apply false
-
-    // Flutter plugin loader (ensure not applied at root)
-    id("dev.flutter.flutter-gradle-plugin") version "1.0.0" apply false
-
-
-   
 }
 
-// Include app module
 include(":app")

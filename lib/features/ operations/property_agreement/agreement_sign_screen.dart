@@ -12,6 +12,7 @@ import 'package:curnectgate/features/member_management/profile_form/provider%20/
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:signature/signature.dart';
 
@@ -96,6 +97,17 @@ class _AgreementSignScreenState extends ConsumerState<AgreementSignScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    InkWell(
+                      onTap: () {
+                        context.pop();
+                      },
+                      child: Icon(
+                        Icons.arrow_back_ios,
+                        color: AppColors.instance.black600,
+                        size: 22,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
                     Image.asset(AssetPaths.terms, height: 70, width: 70),
                     const SizedBox(height: 20),
 

@@ -38,7 +38,7 @@ class CurfewSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(getCurfewSettingProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessae: "Faile to load curfew?",
+              firstMessage: "Faile to load curfew?",
             );
           }
         },
@@ -58,7 +58,7 @@ class CurfewSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(getCurfewSettingProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessae: "Faile to load profile?",
+              firstMessage: "Faile to load profile?",
             );
           }
         },
@@ -90,7 +90,7 @@ class CurfewSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(getCurfewSettingProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessae: "Faile to load curfew settings?",
+              firstMessage: "Faile to load curfew settings?",
             );
           } catch (e) {
             return Builderroul(
@@ -99,7 +99,7 @@ class CurfewSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(getCurfewSettingProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessae: "Faile to load curfew?",
+              firstMessage: "Faile to load curfew?",
             );
           }
         },

@@ -16,6 +16,7 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/widget/
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class FacilityContet extends ConsumerStatefulWidget {
   final Map<String, Permission>? permission;
@@ -147,7 +148,20 @@ class _FacilityContetState extends ConsumerState<FacilityContet> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Title
+          // Title with close button
+          Align(
+            alignment: Alignment.topRight,
+            child: InkWell(
+              onTap: () {
+                context.pop();
+              },
+              child: Icon(
+                Icons.close,
+                color: AppColors.instance.black600,
+                size: 25,
+              ),
+            ),
+          ),
           Text(
             "Facility Access Settings",
             style: TextStyle(
@@ -158,6 +172,7 @@ class _FacilityContetState extends ConsumerState<FacilityContet> {
             ),
             textAlign: TextAlign.center,
           ),
+
           const SizedBox(height: 20),
 
           // Main container
@@ -184,7 +199,9 @@ class _FacilityContetState extends ConsumerState<FacilityContet> {
                     children: [
                       Flexible(
                         child: Text(
-                          isFacilityEnabled! ? "Enable Facility Access" : "Disable Facility Access",
+                          isFacilityEnabled!
+                              ? "Disable Facility Access"
+                              : "Enable Facility Access",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 14,
@@ -319,11 +336,11 @@ class _FacilityContetState extends ConsumerState<FacilityContet> {
                               iconColors: AppColors.instance.black600,
                               positionNumber: 70,
                             );
-                          } else if (_rasoncontoller.text.length < 10) {
+                          } else if (_rasoncontoller.text.length < 5) {
                             log("blue------------->");
                             showCustomSuccessToast(
                               context: context,
-                              message: "Reason must be at least 10 characters",
+                              message: "Reason must be at least 5 characters",
                               color: AppColors.instance.grey500,
                               icon: Icons.error,
                               iconColors: AppColors.instance.black600,

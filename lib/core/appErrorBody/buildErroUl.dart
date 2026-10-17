@@ -6,7 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class Builderroul extends ConsumerWidget {
   final String error;
   final VoidCallback onTap;
-  final String firstMessae;
+  final String firstMessage;
+
   /// Set to [true] when this widget is placed inside a bottom sheet.
   /// This bypasses the LayoutBuilder compact-mode check so the full
   /// error body (icon + message + error text + button) is always visible.
@@ -16,13 +17,12 @@ class Builderroul extends ConsumerWidget {
     super.key,
     required this.error,
     required this.onTap,
-    required this.firstMessae,
+    required this.firstMessage,
     this.isBottomSheet = false,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     // When inside a bottom sheet, skip the LayoutBuilder so the height
     // constraint does not collapse the error body into compact mode.
     if (isBottomSheet) {
@@ -54,7 +54,7 @@ class Builderroul extends ConsumerWidget {
             ),
             SizedBox(height: isCompact ? 8 : 16),
             Text(
-              firstMessae,
+              firstMessage,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,

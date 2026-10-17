@@ -100,7 +100,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                           () => ref
                               .read(userProfileProvider.notifier)
                               .refreshProfile(context, ref),
-                      firstMessae: "Faile to load profile?",
+                      firstMessage: "Faile to load profile?",
                     );
                   }
                 },
@@ -141,7 +141,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                           () => ref
                               .read(userProfileProvider.notifier)
                               .refreshProfile(context, ref),
-                      firstMessae: "Faile to load profile?",
+                      firstMessage: "Faile to load profile?",
                     );
                   }
                 },
@@ -194,7 +194,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                           () => ref
                               .read(userProfileProvider.notifier)
                               .refreshProfile(context, ref),
-                      firstMessae: "Faile to load profile?",
+                      firstMessage: "Faile to load profile?",
                     );
                   } catch (e) {
                     return Builderroul(
@@ -203,7 +203,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                           () => ref
                               .read(userProfileProvider.notifier)
                               .refreshProfile(context, ref),
-                      firstMessae: "Faile to load profile?",
+                      firstMessage: "Faile to load profile?",
                     );
                   }
                 },

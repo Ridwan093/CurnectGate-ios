@@ -40,7 +40,7 @@ class PollDeteilData extends ConsumerWidget {
                 () => ref
                     .read(pollDetailsProvider.notifier)
                     .refreshPollDeteils(context, ref),
-            firstMessae: "Faile to load Poll Deteils?",
+            firstMessage: "Faile to load Poll Deteils?",
           );
         }
       },
@@ -63,7 +63,7 @@ class PollDeteilData extends ConsumerWidget {
                 () => ref
                     .read(pollDetailsProvider.notifier)
                     .refreshPollDeteils(context, ref),
-            firstMessae: "Faile to load Poll Deteils?",
+            firstMessage: "Faile to load Poll Deteils?",
           );
         }
       },
@@ -94,7 +94,7 @@ class PollDeteilData extends ConsumerWidget {
                 () => ref
                     .read(pollDetailsProvider.notifier)
                     .refreshPollDeteils(context, ref),
-            firstMessae: "Faile to load Poll Deteils?",
+            firstMessage: "Faile to load Poll Deteils?",
           );
         } catch (e) {
           return Builderroul(
@@ -103,7 +103,7 @@ class PollDeteilData extends ConsumerWidget {
                 () => ref
                     .read(pollDetailsProvider.notifier)
                     .refreshPollDeteils(context, ref),
-            firstMessae: "Faile to load Poll deteils?",
+            firstMessage: "Faile to load Poll deteils?",
           );
         }
       },
@@ -165,23 +165,26 @@ class PollDeteilData extends ConsumerWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: pos.userHasVoted! 
-                      ? AppColors.instance.teal100.withOpacity(0.5)
-                      : AppColors.instance.grey200,
+                  color:
+                      pos.userHasVoted!
+                          ? AppColors.instance.teal100.withOpacity(0.5)
+                          : AppColors.instance.grey200,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: pos.userHasVoted! 
-                        ? AppColors.instance.teal400.withOpacity(0.5)
-                        : Colors.transparent,
-                  )
+                    color:
+                        pos.userHasVoted!
+                            ? AppColors.instance.teal400.withOpacity(0.5)
+                            : Colors.transparent,
+                  ),
                 ),
                 child: Text(
                   pos.userHasVoted! ? 'Voted' : 'Not voted',
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
-                    color: pos.userHasVoted! 
-                        ? AppColors.instance.teal500 
-                        : AppColors.instance.black400,
+                    color:
+                        pos.userHasVoted!
+                            ? AppColors.instance.teal500
+                            : AppColors.instance.black400,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
@@ -367,14 +370,16 @@ class PollDeteilData extends ConsumerWidget {
         margin: const EdgeInsets.symmetric(vertical: 6),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isSelected 
-              ? AppColors.instance.teal100.withOpacity(0.4) 
-              : AppColors.instance.grey200.withOpacity(0.3),
+          color:
+              isSelected
+                  ? AppColors.instance.teal100.withOpacity(0.4)
+                  : AppColors.instance.grey200.withOpacity(0.3),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: isSelected
-                ? AppColors.instance.teal400
-                : AppColors.instance.grey300.withOpacity(0.5),
+            color:
+                isSelected
+                    ? AppColors.instance.teal400
+                    : AppColors.instance.grey300.withOpacity(0.5),
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -385,7 +390,10 @@ class PollDeteilData extends ConsumerWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? AppColors.instance.teal400 : Colors.transparent,
+                  color:
+                      isSelected
+                          ? AppColors.instance.teal400
+                          : Colors.transparent,
                   width: 2,
                 ),
               ),
@@ -471,7 +479,10 @@ class PollDeteilData extends ConsumerWidget {
                 isSelected
                     ? Icons.check_circle_rounded
                     : Icons.radio_button_unchecked_rounded,
-                color: isSelected ? AppColors.instance.teal400 : AppColors.instance.grey400,
+                color:
+                    isSelected
+                        ? AppColors.instance.teal400
+                        : AppColors.instance.grey400,
                 size: 26,
               ),
             ] else ...[
@@ -479,12 +490,18 @@ class PollDeteilData extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.instance.teal100 : AppColors.instance.grey200,
+                  color:
+                      isSelected
+                          ? AppColors.instance.teal100
+                          : AppColors.instance.grey200,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  Icons.how_to_vote_rounded, 
-                  color: isSelected ? AppColors.instance.teal500 : AppColors.instance.black300,
+                  Icons.how_to_vote_rounded,
+                  color:
+                      isSelected
+                          ? AppColors.instance.teal500
+                          : AppColors.instance.black300,
                   size: 16,
                 ),
               ),

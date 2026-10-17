@@ -8,6 +8,7 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/widget/
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class PackingAccessContent extends ConsumerStatefulWidget {
   final Map<String, Permission>? permission;
@@ -73,6 +74,19 @@ class _PackingAccessContentState extends ConsumerState<PackingAccessContent> {
         mainAxisSize: MainAxisSize.min,
         children: [
           // Title
+          Align(
+            alignment: Alignment.topRight,
+            child: InkWell(
+              onTap: () {
+                context.pop();
+              },
+              child: Icon(
+                Icons.close,
+                color: AppColors.instance.black600,
+                size: 25,
+              ),
+            ),
+          ),
           Text(
             "Packing access",
             style: TextStyle(
@@ -95,7 +109,10 @@ class _PackingAccessContentState extends ConsumerState<PackingAccessContent> {
               children: [
                 // Enable Visitor Invitation switch
                 _buildSwitchContainer(
-                  title: (state.ispackingEnabled ?? false) ? "Enable Parking access" : "Disable Parking access",
+                  title:
+                      (state.ispackingEnabled ?? false)
+                          ? "Disable Parking access"
+                          : "Enable Parking access",
                   value: state.ispackingEnabled ?? false,
                   onChanged: notifier.togglePackingaccess,
                 ),
@@ -138,10 +155,10 @@ class _PackingAccessContentState extends ConsumerState<PackingAccessContent> {
                               iconColors: AppColors.instance.black600,
                               positionNumber: 70,
                             );
-                          } else if (_rasoncontoller.text.length < 10) {
+                          } else if (_rasoncontoller.text.length < 5) {
                             showCustomSuccessToast(
                               context: context,
-                              message: "Reason must be at least 10 characters",
+                              message: "Reason must be at least 5 characters",
                               color: AppColors.instance.grey500,
                               icon: Icons.error,
                               iconColors: AppColors.instance.black600,

@@ -10,6 +10,7 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/widget/
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class CommunityForumContent extends ConsumerStatefulWidget {
   final Map<String, Permission>? permission;
@@ -79,7 +80,20 @@ class _VisitorInivitaitonCotentState
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Title
+          // Title with close button
+          Align(
+            alignment: Alignment.topRight,
+            child: InkWell(
+              onTap: () {
+                context.pop();
+              },
+              child: Icon(
+                Icons.close,
+                color: AppColors.instance.black600,
+                size: 25,
+              ),
+            ),
+          ),
           Text(
             "Community forum",
             style: TextStyle(
@@ -89,6 +103,7 @@ class _VisitorInivitaitonCotentState
             ),
             textAlign: TextAlign.center,
           ),
+
           const SizedBox(height: 20),
 
           // Main container
@@ -102,7 +117,10 @@ class _VisitorInivitaitonCotentState
               children: [
                 // Enable Visitor Invitation switch
                 _buildSwitchContainer(
-                  title: (communityEnable ?? false) ? "Enable Community Forum" : "Disable Community Forum",
+                  title:
+                      (communityEnable ?? false)
+                          ? "Disable Community Forum"
+                          : "Enable Community Forum",
                   value: communityEnable ?? false,
                   onChanged: notifier.togglecommunityforum,
                 ),
@@ -298,10 +316,10 @@ class _VisitorInivitaitonCotentState
                               iconColors: AppColors.instance.black600,
                               positionNumber: 70,
                             );
-                          } else if (_rasoncontoller.text.length < 10) {
+                          } else if (_rasoncontoller.text.length < 5) {
                             showCustomSuccessToast(
                               context: context,
-                              message: "Reason must be at least 10 characters",
+                              message: "Reason must be at least 5 characters",
                               color: AppColors.instance.grey500,
                               icon: Icons.error,
                               iconColors: AppColors.instance.black600,

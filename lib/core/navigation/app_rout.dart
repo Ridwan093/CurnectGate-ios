@@ -35,7 +35,7 @@ import 'package:curnectgate/features/member_management/screen/otp_screen.dart';
 import 'package:curnectgate/features/member_management/screen/password_screen.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/screen/Activate_Otp_screen.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/screen/Active_history.dart';
-import 'package:curnectgate/features/operations/notifications/activites-reminders/activites_log.dart';
+import 'package:curnectgate/features/operations/notifications/activites-reminders/screen/activites_log.dart';
 import 'package:curnectgate/features/operations/violation/screens/reportViolation.dart';
 import 'package:curnectgate/features/payment/screen/PaymentHistoryScreen.dart';
 import 'package:curnectgate/features/payment/screen/ReviewPayment.dart';

@@ -177,7 +177,7 @@ class _AddReminderState extends ConsumerState<AddReminder> {
                     focusNode: _focusNode,
 
                     _deccontroller,
-                    label: "Reminder decscribtion",
+                    label: "Reminder description",
                   ),
 
                   if (widget.isUpdate == '') ...[
@@ -575,7 +575,7 @@ class _AddReminderState extends ConsumerState<AddReminder> {
                                 () => ref
                                     .read(reminderHouseholdProvider.notifier)
                                     .refreshHousehold(context, ref),
-                            firstMessae: "Faile to load housedhold",
+                            firstMessage: "Faile to load housedhold",
                           );
                         }
                         return Builderroul(
@@ -584,7 +584,7 @@ class _AddReminderState extends ConsumerState<AddReminder> {
                               () => ref
                                   .read(reminderHouseholdProvider.notifier)
                                   .refreshHousehold(context, ref),
-                          firstMessae: "Faile to load housedhold",
+                          firstMessage: "Faile to load housedhold",
                         );
                       },
                     ),

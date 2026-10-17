@@ -321,7 +321,7 @@ class UserNotificationSettings extends ConsumerWidget {
                         () => ref
                             .read(userNotificationSettinProvider.notifier)
                             .refreshSettings(context, ref),
-                    firstMessae: "Faile to load Notification Settings?",
+                    firstMessage: "Faile to load Notification Settings?",
                   );
                 }
               },
@@ -542,7 +542,7 @@ class UserNotificationSettings extends ConsumerWidget {
                         () => ref
                             .read(userNotificationSettinProvider.notifier)
                             .refreshSettings(context, ref),
-                    firstMessae: "Faile to load Notification Settings?",
+                    firstMessage: "Faile to load Notification Settings?",
                   );
                 }
               },
@@ -706,7 +706,7 @@ class UserNotificationSettings extends ConsumerWidget {
                         () => ref
                             .read(userNotificationSettinProvider.notifier)
                             .refreshSettings(context, ref),
-                    firstMessae: "Faile to load Notification Settings?",
+                    firstMessage: "Faile to load Notification Settings?",
                   );
                 } catch (e) {
                   return Builderroul(
@@ -715,7 +715,7 @@ class UserNotificationSettings extends ConsumerWidget {
                         () => ref
                             .read(userNotificationSettinProvider.notifier)
                             .refreshSettings(context, ref),
-                    firstMessae: "Faile to load Notification Settings?",
+                    firstMessage: "Faile to load Notification Settings?",
                   );
                 }
               },

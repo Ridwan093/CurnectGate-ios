@@ -167,7 +167,7 @@ class UserPrivacySettings extends ConsumerWidget {
                         () => ref
                             .read(userPrivacyprovider.notifier)
                             .refreshSettings(context, ref),
-                    firstMessae: "Faile to load Privacy Settings?",
+                    firstMessage: "Faile to load Privacy Settings?",
                   );
                 }
               },
@@ -240,7 +240,7 @@ class UserPrivacySettings extends ConsumerWidget {
                         () => ref
                             .read(userPrivacyprovider.notifier)
                             .refreshSettings(context, ref),
-                    firstMessae: "Faile to load Privacy Settings?",
+                    firstMessage: "Faile to load Privacy Settings?",
                   );
                 }
               },
@@ -331,7 +331,7 @@ class UserPrivacySettings extends ConsumerWidget {
                         () => ref
                             .read(userPrivacyprovider.notifier)
                             .refreshSettings(context, ref),
-                    firstMessae: "Faile to load Privacy Settings?",
+                    firstMessage: "Faile to load Privacy Settings?",
                   );
                 } catch (e) {
                   return Builderroul(
@@ -340,7 +340,7 @@ class UserPrivacySettings extends ConsumerWidget {
                         () => ref
                             .read(userPrivacyprovider.notifier)
                             .refreshSettings(context, ref),
-                    firstMessae: "Faile to load Privacy Settings?",
+                    firstMessage: "Faile to load Privacy Settings?",
                   );
                 }
               },

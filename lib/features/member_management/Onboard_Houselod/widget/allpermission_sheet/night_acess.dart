@@ -41,7 +41,7 @@ class NightAccessSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessae: "Faile to load night settings?",
+              firstMessage: "Faile to load night settings?",
             );
           }
         },
@@ -61,7 +61,7 @@ class NightAccessSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessae: "Faile to load night settings?",
+              firstMessage: "Faile to load night settings?",
             );
           }
         },
@@ -93,7 +93,7 @@ class NightAccessSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessae: "Faile to load night settings?",
+              firstMessage: "Faile to load night settings?",
             );
           } catch (e) {
             return Builderroul(
@@ -102,7 +102,7 @@ class NightAccessSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessae: "Faile to load night settings?",
+              firstMessage: "Faile to load night settings?",
             );
           }
         },

@@ -129,12 +129,14 @@ class PermissionContent extends ConsumerWidget {
   }
 
   // Helper method to get permissions in defined order with null checks
+  // New backend permissions not in _permissionOrder will appear at the end
   List<MemberPermission> _getOrderedPermissions(
     Map<String, MemberPermission>? permissions,
   ) {
     if (permissions == null) return [];
 
-    return _permissionOrder
+    // Known permissions in defined order
+    final ordered = _permissionOrder
         .where(
           (key) =>
               permissions.containsKey(key) &&
@@ -142,5 +144,17 @@ class PermissionContent extends ConsumerWidget {
         )
         .map((key) => permissions[key]!)
         .toList();
+
+    // Append any NEW permissions from backend not in _permissionOrder
+    final extras = permissions.entries
+        .where(
+          (e) =>
+              !_permissionOrder.contains(e.key) &&
+              e.value.permission != null,
+        )
+        .map((e) => e.value)
+        .toList();
+
+    return [...ordered, ...extras];
   }
 }

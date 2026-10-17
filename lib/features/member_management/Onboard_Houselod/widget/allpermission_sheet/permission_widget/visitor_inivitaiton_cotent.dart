@@ -4,10 +4,10 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_slug_model/permission_model.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/provider.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/permission_widget/reusable_reason_widget.dart';
-import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class VisitorInivitaitonCotent extends ConsumerStatefulWidget {
   final Map<String, Permission>? permission;
@@ -79,10 +79,22 @@ class _VisitorInivitaitonCotentState
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Title
+          // Title with close button
+          Align(
+            alignment: Alignment.topRight,
+            child: InkWell(
+              onTap: () {
+                context.pop();
+              },
+              child: Icon(
+                Icons.close,
+                color: AppColors.instance.black600,
+                size: 25,
+              ),
+            ),
+          ),
           Text(
             "Visitor invitation",
-
             style: TextStyle(
               fontSize: 18,
               color: AppColors.instance.black600,
@@ -90,6 +102,7 @@ class _VisitorInivitaitonCotentState
             ),
             textAlign: TextAlign.center,
           ),
+
           const SizedBox(height: 20),
 
           // Main container
@@ -103,19 +116,22 @@ class _VisitorInivitaitonCotentState
               children: [
                 // Enable Visitor Invitation switch
                 _buildSwitchContainer(
-                  title: (isvisitorEnabled ?? false) ? "Enable Visitor invitation" : "Disable Visitor invitation",
+                  title:
+                      (isvisitorEnabled ?? false)
+                          ? "Disable Visitor invitation"
+                          : "Enable Visitor invitation",
                   value: isvisitorEnabled ?? false,
                   onChanged: notifier.toggleVisitorInvitation,
                 ),
                 const SizedBox(height: 12),
 
-                // Requires Approval switch
-                _buildSwitchContainer(
-                  title: "Requires Approval",
-                  value: requires_approval ?? false,
-                  onChanged: notifier.toggleRequiresApproval,
-                ),
-                const SizedBox(height: 12),
+                // // Requires Approval switch
+                // _buildSwitchContainer(
+                //   title: "Requires Approval",
+                //   value: requires_approval ?? false,
+                //   onChanged: notifier.toggleRequiresApproval,
+                // ),
+                // const SizedBox(height: 12),
                 ReusableReasonWidget(
                   controller: _rasoncontoller,
                   onChanged: (value) {
@@ -223,14 +239,12 @@ class _VisitorInivitaitonCotentState
                   isLoading
                       ? null
                       : () {
-                       
-                          providerstate.setvisitorPermission(
-                            context: context,
-                            id: widget.id,
-                            ref: ref,
-                          );
-                          restform();
-
+                        providerstate.setvisitorPermission(
+                          context: context,
+                          id: widget.id,
+                          ref: ref,
+                        );
+                        restform();
                       },
               child:
                   isLoading

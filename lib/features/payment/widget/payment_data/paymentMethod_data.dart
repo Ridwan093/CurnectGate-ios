@@ -1,4 +1,4 @@
-import 'dart:developer';
+
 
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -11,6 +11,17 @@ import 'package:curnectgate/features/payment/widget/payment_data/payment_not_ava
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/validation_option/widget/featureNotavailableDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+/// Returns true if the key looks like a real Paystack key (pk_test_/pk_live_).
+bool _isValidPaystackKey(String? key) {
+  if (key == null || key.trim().isEmpty) return false;
+  final k = key.trim();
+  if (k.length < 20) return false;
+  return k.startsWith('pk_test_') ||
+      k.startsWith('pk_live_') ||
+      k.startsWith('sk_test_') ||
+      k.startsWith('sk_live_');
+}
 
 class PaymentMethodData extends ConsumerWidget {
   final bool isMethodSelected;
@@ -116,7 +127,7 @@ class PaymentMethodData extends ConsumerWidget {
                           final method = ref!.read(paymentMethodProvider);
 
                           if (method == PaymentMethod.bankTransfer) {
-                            log('Selected method: $method');
+
 
                             showFuturNotAvailableDialog(context, method.name);
                             // showUserBottomSheet(
@@ -127,29 +138,31 @@ class PaymentMethodData extends ConsumerWidget {
                             //   bottom: BottomSheetView.fundingWithbankTransfer,
                             // );
                           } else {
-                            // final ref =
-                            //     'TEST_REF_${DateTime.now().millisecondsSinceEpoch}';
-                            // await PaystackService().checkout(
-                            //   context: context,
-                            //   email: 'testuser@example.com',
-                            //   amount: 500, // ₦500
-                            //   reference: ref,
-                            // );
-                            if (e.publicKey!.contains(
-                                  "pk_test_sample_public_key_here",
-                                ) &&
-                                e.secretKey!.contains(
-                                  "sk_test_sample_secret_key_here",
-                                )) {
+                            final hasPublicKey = _isValidPaystackKey(
+                              e.publicKey,
+                            );
+                            final hasSecretKey = _isValidPaystackKey(
+                              e.secretKey,
+                            );
+
+                            if (!hasPublicKey && !hasSecretKey) {
+                              // ── Both keys empty → estate hasn't set up payment at all
                               showDialog(
                                 context: context,
                                 barrierDismissible: true,
                                 builder:
-                                    (_) => const PaymentNotConfiguredDialog(),
+                                    (_) => const PaymentNotAvailableDialog(),
+                              );
+                            } else if (!hasPublicKey || !hasSecretKey) {
+                              // ── One key present but the other is missing/broken
+                              showDialog(
+                                context: context,
+                                barrierDismissible: true,
+                                builder:
+                                    (_) => const PaymentMisconfiguredDialog(),
                               );
                             } else {
-                              // Navigate to the premium Fund Wallet page
-                              // Reset amount state so the page starts fresh
+                              // ── Both keys valid → navigate to fund wallet
                               ref.read(amountTextProvider.notifier).state = '';
                               Navigator.push(
                                 context,
@@ -159,6 +172,7 @@ class PaymentMethodData extends ConsumerWidget {
                               );
                             }
                           }
+
                           // Navigator.push(...);
                         }
                         : null,

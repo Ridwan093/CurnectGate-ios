@@ -5,6 +5,7 @@ import 'package:curnectgate/features/member_management/Onboard_Houselod/model/se
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class RestrictionContent extends ConsumerStatefulWidget {
   final String title;
@@ -46,39 +47,49 @@ class _RestrictionContentState extends ConsumerState<RestrictionContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            child: Text(
-              widget.title,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 12,
-                fontFamily: FontFamilies.interDisplay,
-                fontWeight: FontFamilies.bold,
-                color: AppColors.instance.black600,
-              ),
-            ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
           ),
-          if (widget.isLoading) ...[
-            Loadingstates(),
-          ] else
-            Switch(
-              inactiveThumbColor: Colors.white,
-              activeTrackColor: AppColors.instance.teal200,
-
-              value: resEnable ?? false,
-              onChanged: widget.onChanged,
-            ),
-        ],
-      ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: Text(
+                  (resEnable ?? false)
+                      ? 'Disable Restriction'
+                      : 'Enable Restriction',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontFamily: FontFamilies.interDisplay,
+                    fontWeight: FontFamilies.bold,
+                    color: AppColors.instance.black600,
+                  ),
+                ),
+              ),
+              if (widget.isLoading) ...[
+                Loadingstates(),
+              ] else
+                Row(
+                  children: [
+                    Switch(
+                      inactiveThumbColor: Colors.white,
+                      activeTrackColor: AppColors.instance.teal200,
+                      value: resEnable ?? false,
+                      onChanged: widget.onChanged,
+                    ),
+                  ],
+                ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

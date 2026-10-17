@@ -1,7 +1,6 @@
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/appErrorBody/buildEmptyBody.dart';
 import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
-import 'package:curnectgate/core/appErrorBody/emmergencyBody.dart';
 import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/getpermissionStatic_provider.dart';
@@ -43,7 +42,7 @@ class VisitorSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessae: "Faile to load visitor setting?",
+              firstMessage: "Faile to load visitor setting?",
             );
           }
         },
@@ -63,7 +62,7 @@ class VisitorSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessae: "Faile to load visitor setting?",
+              firstMessage: "Faile to load visitor setting?",
             );
           }
         },
@@ -83,7 +82,6 @@ class VisitorSettingsScreen extends ConsumerWidget {
                     permission: cachedetting.data?.permissions,
                     id: id,
                   ),
-                 
                 ],
               );
             }
@@ -95,7 +93,7 @@ class VisitorSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessae: "Faile to load visitor settings?",
+              firstMessage: "Faile to load visitor settings?",
             );
           } catch (e) {
             return Builderroul(
@@ -104,7 +102,7 @@ class VisitorSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessae: "Faile to load visitor setting?",
+              firstMessage: "Faile to load visitor setting?",
             );
           }
         },

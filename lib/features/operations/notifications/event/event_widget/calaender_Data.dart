@@ -50,7 +50,7 @@ class CalenderData extends ConsumerWidget {
                   () => ref
                       .read(getCalenderProvider.notifier)
                       .refreshEvent(context, ref),
-              firstMessae: "Failed to load Calendar?",
+              firstMessage: "Failed to load Calendar?",
             );
           }
         },
@@ -95,8 +95,7 @@ class CalenderData extends ConsumerWidget {
                 (day) =>
                     events
                         .where(
-                          (e) =>
-                              isSameDay(DateTime.parse(e.start ?? ""), day),
+                          (e) => isSameDay(DateTime.parse(e.start ?? ""), day),
                         )
                         .toList(),
             headerStyle: HeaderStyle(
@@ -124,14 +123,13 @@ class CalenderData extends ConsumerWidget {
               markerSize: 0, // ← Makes default dots invisible
               canMarkersOverflow: false,
             ),
-        
+
             calendarBuilders: CalendarBuilders(
               todayBuilder: (context, date, focusedDay) {
                 final dayEvents =
                     events
                         .where(
-                          (e) =>
-                              isSameDay(DateTime.parse(e.start ?? ""), date),
+                          (e) => isSameDay(DateTime.parse(e.start ?? ""), date),
                         )
                         .toList();
                 final hasAdded = dayEvents.any(
@@ -143,7 +141,7 @@ class CalenderData extends ConsumerWidget {
                             ? AppColors.instance.yellow400
                             : AppColors.instance.teal400)
                         : AppColors.instance.black600;
-        
+
                 return Container(
                   margin: EdgeInsets.all(isSmallScreen ? 3 : 6),
                   decoration: BoxDecoration(
@@ -166,12 +164,11 @@ class CalenderData extends ConsumerWidget {
                 final dayEvents =
                     events
                         .where(
-                          (e) =>
-                              isSameDay(DateTime.parse(e.start ?? ""), date),
+                          (e) => isSameDay(DateTime.parse(e.start ?? ""), date),
                         )
                         .toList();
                 if (dayEvents.isEmpty) return null;
-        
+
                 final hasAdded = dayEvents.any(
                   (e) => e.addedToCalendar ?? false,
                 );
@@ -179,7 +176,7 @@ class CalenderData extends ConsumerWidget {
                     hasAdded
                         ? AppColors.instance.yellow400
                         : AppColors.instance.yellow400;
-        
+
                 return Container(
                   margin: EdgeInsets.all(isSmallScreen ? 3 : 6),
                   decoration: BoxDecoration(
@@ -198,17 +195,17 @@ class CalenderData extends ConsumerWidget {
                   ),
                 );
               },
-        
+
               // ONLY your custom yellow dot when addedToCalendar == true
               markerBuilder: (context, date, events) {
                 final dayEvents = events.whereType<Event>().toList();
                 if (dayEvents.isEmpty) return null;
-        
+
                 final hasUserAdded = dayEvents.any(
                   (e) => e.addedToCalendar ?? false,
                 );
                 if (!hasUserAdded) return null;
-        
+
                 // Your custom dot (no black default)
                 return Container(
                   margin: const EdgeInsets.only(bottom: 4),

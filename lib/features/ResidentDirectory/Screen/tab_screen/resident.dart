@@ -81,10 +81,12 @@ class Residentss extends ConsumerWidget {
                         children: [
                           ...searchState.filteredResidents.map(
                             (resident) => ResidentCard(
+                              profile: resident.profilePhoto ?? "",
                               email: resident.email ?? "",
                               userName: resident.fullName,
                               block: resident.memberCode,
                               adrress: resident.address,
+                              phoneNumber: resident.phone ?? "",
                               onChangePressed:
                                   resident.phone == null
                                       ? null
@@ -118,10 +120,12 @@ class Residentss extends ConsumerWidget {
                         children: [
                           ...searchState.filteredResidents.map(
                             (resident) => ResidentCard(
+                              profile: resident.profilePhoto ?? "",
                               email: resident.email ?? "",
                               userName: resident.fullName,
                               block: resident.memberCode,
                               adrress: resident.address,
+                              phoneNumber: resident.phone ?? "",
                               onChangePressed:
                                   resident.phone == null
                                       ? null

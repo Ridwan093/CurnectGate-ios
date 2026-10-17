@@ -9,6 +9,7 @@ import 'package:curnectgate/features/operations/OTP_Activation/provider/getPermi
 import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/permit_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 class PermitData extends ConsumerWidget {
   const PermitData({super.key});
 
@@ -18,8 +19,8 @@ class PermitData extends ConsumerWidget {
 
     return RefreshIndicator(
       color: AppColors.instance.yellow500,
-      onRefresh: () =>
-          ref.read(getActivePermit.notifier).refreshActive(context, ref),
+      onRefresh:
+          () => ref.read(getActivePermit.notifier).refreshActive(context, ref),
 
       child: activeOtasync.when(
         data: (activeOtp) {
@@ -52,42 +53,49 @@ class PermitData extends ConsumerWidget {
 
         error: (error, stack) {
           try {
-          if (error.toString().contains("Unauthorized")) {
-            return const Expiresessionbody();
-          }
+            if (error.toString().contains("Unauthorized")) {
+              return const Expiresessionbody();
+            }
 
-          final cachedOtp = ref.read(getActivePermit).value;
-          final cachedData = cachedOtp?.data;
-          final cachedOtps = cachedData?.otps;
+            final cachedOtp = ref.read(getActivePermit).value;
+            final cachedData = cachedOtp?.data;
+            final cachedOtps = cachedData?.otps;
 
-          if (cachedOtps != null && cachedOtps.isNotEmpty && cachedData != null) {
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  BuildPermitlist(otp: cachedData),
-                  Emmergencybody(error: error.toString()),
-                ],
-              ),
+            if (cachedOtps != null &&
+                cachedOtps.isNotEmpty &&
+                cachedData != null) {
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    BuildPermitlist(otp: cachedData),
+                    Emmergencybody(error: error.toString()),
+                  ],
+                ),
+              );
+            }
+
+            return Builderroul(
+              error: error.toString(),
+              onTap:
+                  () => ref
+                      .read(getActivePermit.notifier)
+                      .refreshActive(context, ref),
+              firstMessage: "Failed to load permit?",
+            );
+          } catch (e) {
+            return Builderroul(
+              error: e.toString(),
+              onTap:
+                  () => ref
+                      .read(getActivePermit.notifier)
+                      .refreshActive(context, ref),
+              firstMessage: "Failed to load permit?",
             );
           }
-
-          return Builderroul(
-            error: error.toString(),
-            onTap: () =>
-                ref.read(getActivePermit.notifier).refreshActive(context, ref),
-            firstMessae: "Failed to load permit?",
-          );
-      
-    } catch (e) {
-       return Builderroul(
-            error: e.toString(),
-            onTap: () =>
-                ref.read(getActivePermit.notifier).refreshActive(context, ref),
-            firstMessae: "Failed to load permit?",
-          );
-      
-    
-  }} ));}
+        },
+      ),
+    );
+  }
 
   Widget _buildEmtyBody() {
     return Center(

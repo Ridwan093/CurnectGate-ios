@@ -72,7 +72,7 @@ class _DenyEntryState extends ConsumerState<DenyDigitalEntry> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Specifie the reason for Deny entry",
+                    "Specify the reason for entry denial",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,

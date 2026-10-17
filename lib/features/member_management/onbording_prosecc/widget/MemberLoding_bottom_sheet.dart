@@ -29,7 +29,7 @@ Widget showValidationBottomSheet(BuildContext context) {
 
         // Title and subtitle
         Text(
-          'Validating your member ID',
+          'Validating your member code',
           style: TextStyle(
             fontSize: 20,
             fontFamily: FontFamilies.interDisplay,
@@ -39,7 +39,7 @@ Widget showValidationBottomSheet(BuildContext context) {
         ),
         SizedBox(height: 8),
         Text(
-          'Hold tight, We are checking if your member ID is associated to your selected estate.',
+          'Hold tight, We are checking if your member code is associated to your selected estate.',
           textAlign: TextAlign.start,
           style: TextStyle(
             fontSize: 13,

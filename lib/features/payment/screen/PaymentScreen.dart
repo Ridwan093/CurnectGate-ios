@@ -91,12 +91,12 @@ class PaymentScreen extends ConsumerWidget {
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       backgroundColor: Colors.grey.shade100,
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 20),
-          child: Icon(Icons.settings),
-        ),
-      ],
+      // actions: [
+      //   Padding(
+      //     padding: const EdgeInsets.only(right: 20),
+      //     child: Icon(Icons.settings),
+      //   ),
+      // ],
     );
   }
 }

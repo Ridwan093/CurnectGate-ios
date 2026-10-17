@@ -42,7 +42,7 @@ Widget buildSuccessContent({
 
         // Title and subtitle
         Text(
-          'Member ID confirmed',
+          'Member code confirmed',
           style: TextStyle(
             fontSize: 20,
             fontFamily: FontFamilies.interDisplay,
@@ -62,7 +62,7 @@ Widget buildSuccessContent({
                   fontWeight: FontFamilies.medium,
                   color: AppColors.instance.black400,
                 ),
-                text: "This ID is associated with ",
+                text: "This code is associated with ",
               ),
               TextSpan(
                 style: TextStyle(

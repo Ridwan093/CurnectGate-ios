@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
@@ -19,6 +21,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'dart:io' show Platform;
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 /// 072015 visitor Otp
 class SecurityDashboard extends ConsumerStatefulWidget {
@@ -65,10 +69,26 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
   }
 
   Future<void> _checkNotificationPermissionStatusOnly() async {
-    final status = await Permission.notification.status;
+    bool isGranted = false;
+
+    try {
+      if (Platform.isIOS) {
+        final settings = await FirebaseMessaging.instance.getNotificationSettings();
+        isGranted = settings.authorizationStatus == AuthorizationStatus.authorized ||
+            settings.authorizationStatus == AuthorizationStatus.provisional;
+      } else {
+        final status = await Permission.notification.status;
+        isGranted = _isEffectivelyGranted(status);
+      }
+    } catch (e) {
+      log('Error checking notification permission: $e');
+      final status = await Permission.notification.status;
+      isGranted = _isEffectivelyGranted(status);
+    }
+
     if (mounted) {
       setState(() {
-        _isNotificationPermissionGranted = _isEffectivelyGranted(status);
+        _isNotificationPermissionGranted = isGranted;
       });
     }
   }

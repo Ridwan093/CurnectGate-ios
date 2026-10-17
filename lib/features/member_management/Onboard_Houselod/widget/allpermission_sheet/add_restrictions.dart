@@ -7,6 +7,7 @@ import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/r
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class AddRestrictions extends ConsumerStatefulWidget {
   final int id;
@@ -58,6 +59,13 @@ class _AddRestrictionsState extends ConsumerState<AddRestrictions> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: InkWell(
+                onTap: () => context.pop(),
+                child: Icon(Icons.close, color: AppColors.instance.black600),
+              ),
+            ),
             // Title
             Text(
               "Restrictions",
@@ -80,7 +88,7 @@ class _AddRestrictionsState extends ConsumerState<AddRestrictions> {
               child: Column(
                 children: [
                   // Enable Visitor Invitation switch
-                  RestrictIonStatus(id: widget.id,),
+                  RestrictIonStatus(id: widget.id),
                   const SizedBox(height: 12),
 
                   // Requires Approval switch

@@ -41,7 +41,7 @@ class PackingAccessSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessae: "Faile to load packing setting?",
+              firstMessage: "Faile to load packing setting?",
             );
           }
         },
@@ -61,7 +61,7 @@ class PackingAccessSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessae: "Faile to load packing setting?",
+              firstMessage: "Faile to load packing setting?",
             );
           }
         },
@@ -93,7 +93,7 @@ class PackingAccessSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessae: "Faile to load packing settings?",
+              firstMessage: "Faile to load packing settings?",
             );
           } catch (e) {
             return Builderroul(
@@ -102,7 +102,7 @@ class PackingAccessSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessae: "Faile to load pcaking setting?",
+              firstMessage: "Faile to load pcaking setting?",
             );
           }
         },

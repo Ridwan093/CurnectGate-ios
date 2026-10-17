@@ -1,8 +1,6 @@
 import 'package:curnectgate/core/appErrorBody/buildEmptyBody.dart';
 import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
-
 import 'package:curnectgate/core/style/colors.dart';
-
 import 'package:curnectgate/features/security/model/checkIn_ceckOut_model/visitor_model.dart';
 import 'package:curnectgate/features/security/provider/check_in_provider.dart';
 import 'package:curnectgate/features/security/widget/checkIn_checkOut/widget/logCard.dart';
@@ -41,7 +39,7 @@ class CheckInData extends ConsumerWidget {
                     () => ref
                         .read(getCheckInProvider.notifier)
                         .refreshCheckIn(context, ref),
-                firstMessae: "Faile to load logs",
+                firstMessage: "Faile to load logs",
               );
             }
           },
@@ -82,7 +80,7 @@ class CheckInData extends ConsumerWidget {
                     () => ref
                         .read(getCheckInProvider.notifier)
                         .refreshCheckIn(context, ref),
-                firstMessae: "Faile to load logs",
+                firstMessage: "Faile to load logs",
               );
             } catch (e) {
               return Builderroul(
@@ -91,7 +89,7 @@ class CheckInData extends ConsumerWidget {
                     () => ref
                         .read(getCheckInProvider.notifier)
                         .refreshCheckIn(context, ref),
-                firstMessae: "Faile to load logs",
+                firstMessage: "Faile to load logs",
               );
             }
           },

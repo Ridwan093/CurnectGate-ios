@@ -67,7 +67,7 @@ class WorkOderData extends ConsumerWidget {
                   () => ref
                       .read(workOrderProvider.notifier)
                       .refreshWorkOrders(context, ref),
-              firstMessae: "Faile to load workoder?",
+              firstMessage: "Faile to load work order?",
             );
           } catch (e) {
             return Builderroul(
@@ -76,7 +76,7 @@ class WorkOderData extends ConsumerWidget {
                   () => ref
                       .read(workOrderProvider.notifier)
                       .refreshWorkOrders(context, ref),
-              firstMessae: "Faile to load workoder?",
+              firstMessage: "Faile to load work order?",
             );
           }
         },

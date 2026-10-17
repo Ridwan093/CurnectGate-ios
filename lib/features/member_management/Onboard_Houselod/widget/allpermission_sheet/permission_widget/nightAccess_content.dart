@@ -8,6 +8,7 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/widget/
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class NightAccessContent extends ConsumerStatefulWidget {
   final Map<String, Permission>? permission;
@@ -72,6 +73,19 @@ class _PackingAccessContentState extends ConsumerState<NightAccessContent> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          Align(
+            alignment: Alignment.topRight,
+            child: InkWell(
+              onTap: () {
+                context.pop();
+              },
+              child: Icon(
+                Icons.close,
+                color: AppColors.instance.black600,
+                size: 25,
+              ),
+            ),
+          ),
           // Title
           Text(
             "Night access",
@@ -95,7 +109,7 @@ class _PackingAccessContentState extends ConsumerState<NightAccessContent> {
               children: [
                 // Enable Visitor Invitation switch
                 _buildSwitchContainer(
-                  title: (state.isNightEnable ?? false) ? "Enable night access" : "Disable night access",
+                  title: (state.isNightEnable ?? false) ? "Disable night access" :  "Enable night access",
                   value: state.isNightEnable ?? false,
                   onChanged: notifier.toggleNightaccess,
                 ),
@@ -138,10 +152,10 @@ class _PackingAccessContentState extends ConsumerState<NightAccessContent> {
                               iconColors: AppColors.instance.black600,
                               positionNumber: 70,
                             );
-                          } else if (_rasoncontoller.text.length < 10) {
+                          } else if (_rasoncontoller.text.length < 5) {
                             showCustomSuccessToast(
                               context: context,
-                              message: "Reason must be at least 10 characters",
+                              message: "Reason must be at least 5 characters",
                               color: AppColors.instance.grey500,
                               icon: Icons.error,
                               iconColors: AppColors.instance.black600,

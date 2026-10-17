@@ -590,10 +590,14 @@ class FormNotifier extends StateNotifier<FormStates> {
   }
 
   String extractValidationMessage(Map<String, dynamic> response) {
+    String _clean(String msg) => msg.replaceAll('-', ' ');
+
     if (response["message"] != null &&
         (response["message"].toString().contains("on duty") ||
-            response["message"].toString().contains("clearance permit"))) {
-      return response["message"];
+            response["message"].toString().contains("clearance permit") ||
+            response["message"].toString().contains("Invalid digital member") ||
+            response["message"].toString().toLowerCase().contains("access"))) {
+      return _clean(response["message"]);
     }
     final List<String> messages = [];
 
@@ -634,10 +638,10 @@ class FormNotifier extends StateNotifier<FormStates> {
     extract(response["errors"]);
 
     if (messages.isNotEmpty) {
-      return messages.join(" ");
+      return _clean(messages.join(" "));
     }
 
-    return response["message"] ?? "Validation error occurred.";
+    return _clean(response["message"] ?? "Validation error occurred.");
   }
 
   Future<void> completeRegristration({
@@ -1615,10 +1619,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         context.pop();
       } else {
         updateChangProfileInfoLoading(false);
-        if (response["message"] ==
-            "Unauthenticated. Please login to continue.") {
-          ref.read(authProvider.notifier).sessionExpire(context, ref);
-        } else {
+       
           showCustomSuccessToast(
             context: context,
             message: response["message"],
@@ -1627,7 +1628,7 @@ class FormNotifier extends StateNotifier<FormStates> {
             iconColors: AppColors.instance.grey200,
             positionNumber: 70,
           );
-        }
+        
       }
     } on DioException catch (e) {
       if (!context.mounted) return;
@@ -2270,7 +2271,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (response['status'] == true) {
         ref.read(getNotificationCount.notifier).refreshCount(context, ref);
       } else {
-        log(response.toString());
+
         context.pop();
         showCustomSuccessToast(
           context: context,
@@ -2360,7 +2361,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         reportStatess.resetState();
         final message = extractValidationMessage(response);
-        log(response.toString());
+   
 
         showCustomSuccessToast(
           context: context,
@@ -2934,6 +2935,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateGenrateMemberIdLoading(false);
 
         final message = extractValidationMessage(response);
+        
 
         showCustomSuccessToast(
           context: context,
@@ -4719,7 +4721,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       if (response['status'] == true) {
         notifier.resetForm();
         updateBasicPermissionLoading(false);
-
+        context.pop();
         showCustomSuccessToast(
           context: context,
           message: response["message"],
@@ -4845,7 +4847,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         final String jsonString = json.encode(userData);
 
         notifier.resetForm();
-        log(jsonString);
+      
         showUserBottomSheet(
           context: context,
           headertitle: jsonString,
@@ -4939,6 +4941,7 @@ class FormNotifier extends StateNotifier<FormStates> {
           .validateDigitaIDCode(
             token: token ?? "",
             additionalNote: "",
+
             device_id: "",
             qrCodeData: qrCodeData,
             accessType: accessType(accessTypes),
@@ -4958,7 +4961,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         notifier.resetForm();
         context.pop();
-        log(jsonString);
+      
         showUserBottomSheet(
           context: context,
           headertitle: jsonString,
@@ -4977,20 +4980,9 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         final message = extractValidationMessage(response);
 
-        var oldMessage = "";
-        if (response["message"].toString().toLowerCase().contains(
-          "Invalid digital member",
-        )) {
-          oldMessage =
-              response["message"].toString().split("Invalid digital member")[0];
-        } else {
-          oldMessage = message;
-        }
-        log(response.toString());
-
         showCustomSuccessToast(
           context: context,
-          message: oldMessage,
+          message: message,
           color: AppColors.instance.error500,
           icon: Icons.error,
           iconColors: AppColors.instance.grey200,
@@ -5215,7 +5207,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         notifier.resetForm();
 
         final message = extractValidationMessage(response);
-        log(response.toString());
+       
         showCustomSuccessToast(
           context: context,
           message: message.replaceAll("_", " "),
@@ -5862,6 +5854,8 @@ class FormNotifier extends StateNotifier<FormStates> {
       } else {
         notifiers.updateLoading(false);
         final message = extractValidationMessage(response);
+
+    
         showCustomSuccessToast(
           context: context,
           message: message,
@@ -5873,6 +5867,7 @@ class FormNotifier extends StateNotifier<FormStates> {
       }
     } catch (e) {
       ref.read(oTpformProvider.notifier).updateLoading(false);
+      log(e.toString());
       showCustomSuccessToast(
         context: context,
         message: e.toString(),
@@ -8804,7 +8799,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         ref
             .read(paymentDashbordProvider.notifier)
             .refreshPaymentDashbord(context, ref);
-        log(response.toString());
+
         closeAllBottomSheets(context);
         ref
             .read(paymentHistoryProvider.notifier)
@@ -8818,7 +8813,6 @@ class FormNotifier extends StateNotifier<FormStates> {
           bottom: BottomSheetView.paymentSuccess,
         );
       } else {
-        log(response.toString());
         updateGenrateMemberIdLoading(false);
 
         context.pop();
@@ -9021,7 +9015,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         ref.read(conversationListProvider.notifier).refreshConversations();
         await ref.read(unreadCountsProvider.notifier).refreshCounts();
       } else {
-        log(response.toString());
+    
       }
     } on DioException catch (e) {
       if (e.error is SocketException) {}

@@ -30,7 +30,7 @@ class SummaryResuiltData extends ConsumerWidget {
                   () => ref
                       .read(reultSummaryProvider.notifier)
                       .refreshCandidateResult(context, ref),
-              firstMessae: "Faile to load Result?",
+              firstMessage: "Faile to load Result?",
             );
           }
         },
@@ -47,7 +47,7 @@ class SummaryResuiltData extends ConsumerWidget {
                   () => ref
                       .read(reultSummaryProvider.notifier)
                       .refreshCandidateResult(context, ref),
-              firstMessae: "Faile to load Result?",
+              firstMessage: "Faile to load Result?",
             );
           }
         },
@@ -71,7 +71,7 @@ class SummaryResuiltData extends ConsumerWidget {
                   () => ref
                       .read(reultSummaryProvider.notifier)
                       .refreshCandidateResult(context, ref),
-              firstMessae: "Faile to load Result?",
+              firstMessage: "Faile to load Result?",
             );
           } catch (e) {
             return Builderroul(
@@ -80,7 +80,7 @@ class SummaryResuiltData extends ConsumerWidget {
                   () => ref
                       .read(reultSummaryProvider.notifier)
                       .refreshCandidateResult(context, ref),
-              firstMessae: "Faile to load Result?",
+              firstMessage: "Faile to load Result?",
             );
           }
         },

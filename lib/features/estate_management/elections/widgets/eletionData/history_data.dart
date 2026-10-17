@@ -30,7 +30,7 @@ class HistoryData extends ConsumerWidget {
                   () => ref
                       .read(pollHistoryProvider.notifier)
                       .refreshHistory(context, ref),
-              firstMessae: "Faile to load Candidate?",
+              firstMessage: "Faile to load Candidate?",
             );
           }
         },
@@ -47,7 +47,7 @@ class HistoryData extends ConsumerWidget {
                   () => ref
                       .read(pollHistoryProvider.notifier)
                       .refreshHistory(context, ref),
-              firstMessae: "Faile to load Candidate?",
+              firstMessage: "Faile to load Candidate?",
             );
           }
         },
@@ -71,7 +71,7 @@ class HistoryData extends ConsumerWidget {
                   () => ref
                       .read(pollHistoryProvider.notifier)
                       .refreshHistory(context, ref),
-              firstMessae: "Faile to load Candidate?",
+              firstMessage: "Faile to load Candidate?",
             );
           } catch (e) {
             return Builderroul(
@@ -80,7 +80,7 @@ class HistoryData extends ConsumerWidget {
                   () => ref
                       .read(pollHistoryProvider.notifier)
                       .refreshHistory(context, ref),
-              firstMessae: "Faile to load Candidate?",
+              firstMessage: "Faile to load Candidate?",
             );
           }
         },

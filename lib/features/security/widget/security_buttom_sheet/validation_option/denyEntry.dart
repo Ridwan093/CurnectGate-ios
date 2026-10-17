@@ -57,7 +57,7 @@ class _DenyEntryState extends ConsumerState<DenyEntry> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Specify the reason for entry denial",
+                    "Specify the reason for denial entry",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,
@@ -71,7 +71,7 @@ class _DenyEntryState extends ConsumerState<DenyEntry> {
               ReusabelProfileForm(
                 controller: _reasonEditinControler,
                 fieldType: FieldType.reason,
-                hintText: "(eg. not meet up with estate standand)",
+                hintText: "(eg. not meet up with estate standard)",
                 label: "Enter reason",
                 fieldKey: "oTpCode",
                 onChanged: (value) {
@@ -92,7 +92,7 @@ class _DenyEntryState extends ConsumerState<DenyEntry> {
               ReusabelProfileForm(
                 controller: _securityNotedController,
                 fieldType: FieldType.reason,
-                hintText: "(eg. Invalide Otp)",
+                hintText: "(eg. Invalid OTP)",
                 label: "Enter security note",
                 fieldKey: "Security note",
                 onChanged: (value) {

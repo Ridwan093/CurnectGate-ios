@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
@@ -30,31 +28,40 @@ class PaystackService {
   }) async {
     final form = ref.read(formProvider.notifier);
 
-    // 1. PRO VALIDATION: Detect 'Wrong', 'Masked', or 'Default' keys
-    bool _isKeyBroken(String key) {
-      if (key.isEmpty) return true;
-      if (key.contains("sample") || key.contains("placeholder")) return true;
-      if (key.contains("****") || key.contains("***"))
-        return true; // Detect masked keys
-      if (key.length < 20)
-        return true; // Real keys are significantly longer (~40 chars)
-      if (!key.startsWith("pk_") && !key.startsWith("sk_")) return true;
-      return false;
+    // 1. SANITIZE: Strip surrounding quotes, whitespace, and copy-paste artifacts
+    String _sanitizeKey(String key) {
+      return key
+          .trim()
+          .replaceAll(String.fromCharCode(34), '') // remove double quotes
+          .replaceAll(String.fromCharCode(39), '') // remove single quotes
+          .replaceAll(RegExp(r'\s+'), ''); // remove whitespace
     }
 
-    if (_isKeyBroken(publiceKey) || _isKeyBroken(privateKey)) {
+    // 2. Quick validation – only checks that the key has a valid Paystack shape
+    bool _isKeyValid(String key) {
+      if (key.isEmpty || key.length < 20) return false;
+      if (key.contains('sample') || key.contains('placeholder')) return false;
+      if (key.contains('****') || key.contains('***')) return false;
+      final validPrefixes = ['pk_test_', 'pk_live_', 'sk_test_', 'sk_live_'];
+      return validPrefixes.any((prefix) => key.startsWith(prefix));
+    }
+
+    final cleanPublicKey = _sanitizeKey(publiceKey);
+    final cleanPrivateKey = _sanitizeKey(privateKey);
+
+    if (!_isKeyValid(cleanPublicKey) || !_isKeyValid(cleanPrivateKey)) {
       showDialog(
         context: context,
         barrierDismissible: true,
-        builder: (_) => const PaymentNotConfiguredDialog(),
+        builder: (_) => const PaymentMisconfiguredDialog(),
       );
       return;
     }
 
     try {
       await FlutterPaystackPlus.openPaystackPopup(
-        publicKey: publiceKey,
-        secretKey: privateKey,
+        publicKey: cleanPublicKey,
+        secretKey: cleanPrivateKey,
         customerEmail: email,
         currency: currency,
         amount: (amount * 100).toInt().toString(),
@@ -66,8 +73,6 @@ class PaystackService {
           debugPrint('Payment closed before completion');
         },
         onSuccess: () async {
-          log(' Payment successful: $reference');
-
           await form.initialisWalletFunding(
             context: context,
             paymentMethod: method,
@@ -78,7 +83,7 @@ class PaystackService {
         },
       );
     } catch (e) {
-      debugPrint('💥 Paystack error: $e');
+      debugPrint('Paystack error: $e');
 
       // 2. CUSTOM ERROR HANDLING: Handle specific key errors differently
       String userMessage = "Unable to initialize payment.";
@@ -88,7 +93,7 @@ class PaystackService {
         // If the key was "correct format" but "wrong account"
         showDialog(
           context: context,
-          builder: (_) => const PaymentNotConfiguredDialog(),
+          builder: (_) => const PaymentMisconfiguredDialog(),
         );
         return;
       }

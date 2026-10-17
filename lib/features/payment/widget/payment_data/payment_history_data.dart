@@ -50,7 +50,7 @@ class PaymentHistory extends ConsumerWidget {
                   () => ref
                       .read(paymentHistoryProvider.notifier)
                       .refreshPaymentHistory(context),
-              firstMessae: "Faile to load history data",
+              firstMessage: "Faile to load history data",
             );
           }
         },
@@ -81,7 +81,7 @@ class PaymentHistory extends ConsumerWidget {
                   () => ref
                       .read(paymentHistoryProvider.notifier)
                       .refreshPaymentHistory(context),
-              firstMessae: "Faile to load history data?",
+              firstMessage: "Faile to load history data?",
             );
           }
         },
@@ -122,7 +122,7 @@ class PaymentHistory extends ConsumerWidget {
                   () => ref
                       .read(paymentHistoryProvider.notifier)
                       .refreshPaymentHistory(context),
-              firstMessae: "Faile to load history?",
+              firstMessage: "Faile to load history?",
             );
           } catch (e) {
             return Builderroul(
@@ -131,7 +131,7 @@ class PaymentHistory extends ConsumerWidget {
                   () => ref
                       .read(paymentHistoryProvider.notifier)
                       .refreshPaymentHistory(context),
-              firstMessae: "Faile to load history data",
+              firstMessage: "Faile to load history data",
             );
           }
         },

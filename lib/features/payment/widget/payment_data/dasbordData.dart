@@ -38,7 +38,7 @@ class DashbordData<T> extends ConsumerWidget {
                   () => ref
                       .read(paymentDashbordProvider.notifier)
                       .refreshPaymentDashbord(context, ref),
-              firstMessae: "Failed to load Dashboard Balance?",
+              firstMessage: "Failed to load Dashboard Balance?",
             );
           }
         },
@@ -57,7 +57,7 @@ class DashbordData<T> extends ConsumerWidget {
                   () => ref
                       .read(paymentDashbordProvider.notifier)
                       .refreshPaymentDashbord(context, ref),
-              firstMessae: "Failed to load Dashboard Balance?",
+              firstMessage: "Failed to load Dashboard Balance?",
             );
           }
         },
@@ -81,7 +81,7 @@ class DashbordData<T> extends ConsumerWidget {
                 () => ref
                     .read(paymentDashbordProvider.notifier)
                     .refreshPaymentDashbord(context, ref),
-            firstMessae: "Failed to load Dashboard Balance?",
+            firstMessage: "Failed to load Dashboard Balance?",
           );
         },
       ),

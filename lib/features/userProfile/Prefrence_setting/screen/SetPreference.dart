@@ -140,7 +140,7 @@ class PreferencesScreen extends ConsumerWidget {
                           () => ref
                               .read(userPrefrenceprovider.notifier)
                               .refreshSettings(context, ref),
-                      firstMessae: "Faile to load Preference Settings?",
+                      firstMessage: "Faile to load Preference Settings?",
                     );
                   }
                 },
@@ -217,7 +217,7 @@ class PreferencesScreen extends ConsumerWidget {
                           () => ref
                               .read(userPrefrenceprovider.notifier)
                               .refreshSettings(context, ref),
-                      firstMessae: "Faile to load Preference Settings?",
+                      firstMessage: "Faile to load Preference Settings?",
                     );
                   }
                 },
@@ -307,7 +307,7 @@ class PreferencesScreen extends ConsumerWidget {
                           () => ref
                               .read(userPrefrenceprovider.notifier)
                               .refreshSettings(context, ref),
-                      firstMessae: "Faile to load Preference Settings?",
+                      firstMessage: "Faile to load Preference Settings?",
                     );
                   } catch (e) {
                     return Builderroul(
@@ -316,7 +316,7 @@ class PreferencesScreen extends ConsumerWidget {
                           () => ref
                               .read(userPrefrenceprovider.notifier)
                               .refreshSettings(context, ref),
-                      firstMessae: "Faile to load Preference Settings?",
+                      firstMessage: "Faile to load Preference Settings?",
                     );
                   }
                 },

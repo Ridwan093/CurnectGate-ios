@@ -41,7 +41,7 @@ class FacilitySettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessae: "Faile to load facility?",
+              firstMessage: "Faile to load facility?",
             );
           }
         },
@@ -61,7 +61,7 @@ class FacilitySettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(userProfileProvider.notifier)
                       .refreshProfile(context, ref),
-              firstMessae: "Faile to load profile?",
+              firstMessage: "Faile to load profile?",
             );
           }
         },
@@ -92,7 +92,7 @@ class FacilitySettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessae: "Faile to load facility settings?",
+              firstMessage: "Faile to load facility settings?",
             );
           } catch (e) {
             return Builderroul(
@@ -101,7 +101,7 @@ class FacilitySettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessae: "Faile to load facility?",
+              firstMessage: "Faile to load facility?",
             );
           }
         },

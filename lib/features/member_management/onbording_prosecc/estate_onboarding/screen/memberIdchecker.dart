@@ -18,9 +18,9 @@ class MemberIdchecker extends BaseVerificationScreen {
     : super(
         currentStep: 3,
         totalSteps: 6,
-        title: 'Confirm Your Member ID',
+        title: 'Confirm Your Member code',
         description:
-            'Let’s confirm your member ID matches the record of the estate ',
+            'Let’s confirm your member code matches the record of the estate ',
       );
 
   @override
@@ -96,14 +96,14 @@ class _EstateCodeVerificationScreenState
           const SizedBox(height: 32),
           ReUsableForm(
             controller: _controller,
-            label: "Member ID",
+            label: "Member code",
             hintText: "eg 045679",
             length: 6,
           ),
           const SizedBox(height: 24),
           const InfoMessage(
             icon: AssetPaths.location,
-            message: 'Find this ID in your estate welcome letter/',
+            message: 'Find this code in your estate welcome letter/email',
           ),
         ],
       ),

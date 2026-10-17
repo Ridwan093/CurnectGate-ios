@@ -80,7 +80,7 @@ class _ActiveOtpBody extends ConsumerWidget {
                 () => ref
                     .read(getActiveOtpProvider.notifier)
                     .refreshActive(context, ref),
-            firstMessae: "Failed to load active OTPs?",
+            firstMessage: "Failed to load active OTPs?",
           );
         } catch (e) {
           return Builderroul(
@@ -89,7 +89,7 @@ class _ActiveOtpBody extends ConsumerWidget {
                 () => ref
                     .read(getActiveOtpProvider.notifier)
                     .refreshActive(context, ref),
-            firstMessae: "Failed to load active OTPs?",
+            firstMessage: "Failed to load active OTPs?",
           );
         }
       },

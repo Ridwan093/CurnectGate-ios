@@ -78,7 +78,7 @@ class AgreementPopupData extends ConsumerWidget {
                 () => ref
                     .read(complianceprovider.notifier)
                     .refreshCompliance(context, ref),
-            firstMessae: "Faile to load data",
+            firstMessage: "Faile to load data",
           );
         } catch (e) {
           return Builderroul(
@@ -87,7 +87,7 @@ class AgreementPopupData extends ConsumerWidget {
                 () => ref
                     .read(complianceprovider.notifier)
                     .refreshCompliance(context, ref),
-            firstMessae: "Faile to load data",
+            firstMessage: "Faile to load data",
           );
         }
         // Session expiration still handled

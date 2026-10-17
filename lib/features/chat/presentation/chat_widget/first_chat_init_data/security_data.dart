@@ -28,7 +28,7 @@ class SecurityData extends ConsumerWidget {
                 () => ref
                     .read(getAvailableSecurity.notifier)
                     .refreshSecurity(context, ref),
-            firstMessae: "Faile to load securityPersonnel?",
+            firstMessage: "Faile to load securityPersonnel?",
           );
         }
       },
@@ -47,7 +47,7 @@ class SecurityData extends ConsumerWidget {
                 () => ref
                     .read(getAdminProvider.notifier)
                     .refreshAdmin(context, ref),
-            firstMessae: "Faile to load securityPersonnel?",
+            firstMessage: "Faile to load securityPersonnel?",
           );
         }
       },
@@ -73,7 +73,7 @@ class SecurityData extends ConsumerWidget {
                 () => ref
                     .read(getAvailableSecurity.notifier)
                     .refreshSecurity(context, ref),
-            firstMessae: "Faile to load securityPersonnel?",
+            firstMessage: "Faile to load securityPersonnel?",
           );
         } catch (e) {
           return Builderroul(
@@ -82,7 +82,7 @@ class SecurityData extends ConsumerWidget {
                 () => ref
                     .read(getAvailableSecurity.notifier)
                     .refreshSecurity(context, ref),
-            firstMessae: "Faile to load securityPersonnel?",
+            firstMessage: "Faile to load securityPersonnel?",
           );
         }
       },
@@ -91,7 +91,9 @@ class SecurityData extends ConsumerWidget {
 
   Widget _buildEstateAdminList(List<SecurityPersonnel>? admins) {
     if (admins == null || admins.isEmpty) {
-      return const Expanded(child: EmptyBodys(message: "No security personnel found."));
+      return const Expanded(
+        child: EmptyBodys(message: "No security personnel found."),
+      );
     }
     return Expanded(
       child: ListView.builder(

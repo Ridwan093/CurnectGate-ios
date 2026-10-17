@@ -14,9 +14,10 @@ import 'package:url_launcher/url_launcher.dart';
 class ResidentCard extends StatelessWidget {
   final String userName;
   final String block;
+  final String profile;
   final String? adrress;
   final String email;
-
+  final String phoneNumber;
   final VoidCallback? onChangePressed;
   final bool colortype;
 
@@ -26,7 +27,9 @@ class ResidentCard extends StatelessWidget {
     required this.block,
     this.adrress,
     required this.email,
+    required this.phoneNumber,
     this.onChangePressed,
+    required this.profile,
     this.colortype = true,
   });
 
@@ -142,15 +145,19 @@ class ResidentCard extends StatelessWidget {
         CircleAvatar(
           radius: 20,
           backgroundColor: AppColors.instance.teal100,
-          child: Text(
-            _getInitials(userName),
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              color: AppColors.instance.black600,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
+          backgroundImage: profile.isNotEmpty ? NetworkImage(profile) : null,
+          child:
+              profile.isNotEmpty
+                  ? null
+                  : Text(
+                    _getInitials(userName),
+                    style: TextStyle(
+                      fontFamily: FontFamilies.interDisplay,
+                      color: AppColors.instance.black600,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
         ),
 
         const SizedBox(width: 12),
@@ -174,7 +181,7 @@ class ResidentCard extends StatelessWidget {
         // ✅ Actions
         Row(
           children: [
-            if (onChangePressed != null) ...[
+            if (phoneNumber.isNotEmpty) ...[
               InkWell(
                 onTap: onChangePressed,
                 borderRadius: BorderRadius.circular(40),

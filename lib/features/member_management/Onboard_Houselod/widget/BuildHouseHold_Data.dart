@@ -73,7 +73,7 @@ class HouseholdDatas extends ConsumerWidget {
                   () => ref
                       .read(houseProvider.notifier)
                       .refreshHuseHold(context, ref),
-              firstMessae: "Faile to load Member?",
+              firstMessage: "Faile to load Member?",
             );
           } catch (e) {
             return Builderroul(
@@ -82,7 +82,7 @@ class HouseholdDatas extends ConsumerWidget {
                   () => ref
                       .read(houseProvider.notifier)
                       .refreshHuseHold(context, ref),
-              firstMessae: "Faile to load Member?",
+              firstMessage: "Faile to load Member?",
             );
           }
         },

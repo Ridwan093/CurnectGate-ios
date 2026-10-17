@@ -46,7 +46,10 @@ class CommentBody extends ConsumerWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: isInternal ? AppColors.instance.yellow500 : AppColors.instance.teal500.withOpacity(0.3),
+                      color:
+                          isInternal
+                              ? AppColors.instance.yellow500
+                              : AppColors.instance.teal500.withOpacity(0.3),
                       width: 2,
                     ),
                   ),
@@ -59,7 +62,7 @@ class CommentBody extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                
+
                 // Name and Time
                 Expanded(
                   child: Column(
@@ -82,9 +85,14 @@ class CommentBody extends ConsumerWidget {
                           if (isInternal) ...[
                             const SizedBox(width: 6),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
                               decoration: BoxDecoration(
-                                color: AppColors.instance.yellow500.withOpacity(0.1),
+                                color: AppColors.instance.yellow500.withOpacity(
+                                  0.1,
+                                ),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
@@ -116,14 +124,20 @@ class CommentBody extends ConsumerWidget {
                         ],
                       ),
                       const SizedBox(height: 4),
-                      
+
                       // Comment Bubble-style container
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
                         decoration: BoxDecoration(
-                          color: isInternal 
-                              ? AppColors.instance.yellow500.withOpacity(0.05) 
-                              : AppColors.instance.grey200.withOpacity(0.5),
+                          color:
+                              isInternal
+                                  ? AppColors.instance.yellow500.withOpacity(
+                                    0.05,
+                                  )
+                                  : AppColors.instance.grey200.withOpacity(0.5),
                           borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(16),
                             bottomLeft: Radius.circular(16),
@@ -143,11 +157,11 @@ class CommentBody extends ConsumerWidget {
                     ],
                   ),
                 ),
-                
-                IconButton(
-                  icon: Icon(Icons.more_horiz, color: AppColors.instance.black300, size: 20),
-                  onPressed: () {},
-                ),
+
+                // IconButton(
+                //   icon: Icon(Icons.more_horiz, color: AppColors.instance.black300, size: 20),
+                //   onPressed: () {},
+                // ),
               ],
             ),
           ],

@@ -50,7 +50,7 @@ class _DenyEntryState extends ConsumerState<DenyVendorEntry> {
                   ),
                   SizedBox(height: 40),
                   Text(
-                    "Deny Entry",
+                    "Deny",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontWeight: FontFamilies.bold,
@@ -60,7 +60,7 @@ class _DenyEntryState extends ConsumerState<DenyVendorEntry> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Specifie the reason for deny entry.",
+                    "Specify the reason for denial entry ",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,
@@ -74,7 +74,7 @@ class _DenyEntryState extends ConsumerState<DenyVendorEntry> {
               ReusabelProfileForm(
                 controller: _reasonEditinControler,
                 fieldType: FieldType.reason,
-                hintText: "(eg. not meet up with estate standand)",
+                hintText: "(eg. not meet up with estate standard)",
                 label: "Security note",
                 fieldKey: "Reason",
                 onChanged: (value) {

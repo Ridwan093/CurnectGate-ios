@@ -83,7 +83,7 @@ class EventCodeData extends ConsumerWidget {
                   () => ref
                       .read(getEventCodeProvider.notifier)
                       .refreshEventCode(context, ref),
-              firstMessae: "Faile to load Event",
+              firstMessage: "Faile to load Event",
             );
           } catch (e) {
             return Builderroul(
@@ -93,7 +93,7 @@ class EventCodeData extends ConsumerWidget {
                   () => ref
                       .read(getEventCodeProvider.notifier)
                       .refreshEventCode(context, ref),
-              firstMessae: "Faile to load Event?",
+              firstMessage: "Faile to load Event?",
             );
           }
         },

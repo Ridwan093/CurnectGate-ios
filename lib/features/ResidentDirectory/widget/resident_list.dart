@@ -31,10 +31,12 @@ class ResidentLists extends ConsumerWidget {
       itemBuilder: (context, index) {
         var res = data[index];
         return ResidentCard(
+          profile:res.profilePhoto??"",
           email: res.email ?? "",
           userName: res.fullName,
           block: res.memberCode,
           adrress: res.address,
+          phoneNumber: res.phone ?? "",
           onChangePressed:
               res.phone == null
                   ? null

@@ -72,7 +72,7 @@ class EventDataSliver {
                       () => ref
                           .read(getEventProvider.notifier)
                           .refreshEvent(context, ref, ""),
-                  firstMessae: "Failed to load event",
+                  firstMessage: "Failed to load event",
                 ),
               ),
             ],

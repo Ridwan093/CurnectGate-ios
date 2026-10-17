@@ -32,7 +32,7 @@ class CandidateResultData extends ConsumerWidget {
                   () => ref
                       .read(candidateResultProvider.notifier)
                       .refreshCandidateResult(context, ref),
-              firstMessae: "Faile to load Candidate?",
+              firstMessage: "Faile to load Candidate?",
             );
           }
         },
@@ -49,7 +49,7 @@ class CandidateResultData extends ConsumerWidget {
                   () => ref
                       .read(candidateResultProvider.notifier)
                       .refreshCandidateResult(context, ref),
-              firstMessae: "Faile to load Candidate?",
+              firstMessage: "Faile to load Candidate?",
             );
           }
         },
@@ -73,7 +73,7 @@ class CandidateResultData extends ConsumerWidget {
                   () => ref
                       .read(candidateResultProvider.notifier)
                       .refreshCandidateResult(context, ref),
-              firstMessae: "Faile to load Candidate?",
+              firstMessage: "Faile to load Candidate?",
             );
           } catch (e) {
             return Builderroul(
@@ -82,7 +82,7 @@ class CandidateResultData extends ConsumerWidget {
                   () => ref
                       .read(candidateResultProvider.notifier)
                       .refreshCandidateResult(context, ref),
-              firstMessae: "Faile to load Candidate?",
+              firstMessage: "Faile to load Candidate?",
             );
           }
         },

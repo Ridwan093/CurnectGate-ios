@@ -7,8 +7,12 @@ class InfoMessage extends StatelessWidget {
   final String message;
   final double size;
 
-
-  const InfoMessage({super.key, required this.icon, required this.message, this.size = 12});
+  const InfoMessage({
+    super.key,
+    required this.icon,
+    required this.message,
+    this.size = 12,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -71,21 +75,21 @@ class InfoMessage extends StatelessWidget {
                   fontWeight: FontFamilies.bold,
                 ),
               ),
-              SizedBox(width: 5),
-              InkWell(
-                onTap: () {},
-                child: Text(
-                  "see sample",
-                  style: TextStyle(
-                    fontFamily: FontFamilies.interDisplay,
-                    fontSize: 11,
-                    color: AppColors.instance.black600,
-                    fontWeight: FontFamilies.bold,
+              // SizedBox(width: 5),
+              // InkWell(
+              //   onTap: () {},
+              //   child: Text(
+              //     "see sample",
+              //     style: TextStyle(
+              //       fontFamily: FontFamilies.interDisplay,
+              //       fontSize: 11,
+              //       color: AppColors.instance.black600,
+              //       fontWeight: FontFamilies.bold,
 
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              ),
+              //       decoration: TextDecoration.underline,
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ],

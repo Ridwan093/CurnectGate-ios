@@ -13,7 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:open_filex/open_filex.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ChatBubble extends ConsumerStatefulWidget {
@@ -281,7 +281,7 @@ class _ChatBubbleState extends ConsumerState<ChatBubble> {
                         ),
                       );
                     } else {
-                      OpenFilex.open(local);
+                      await launchUrl(Uri.file(local));
                     }
                   } else {
                     await _download(url);

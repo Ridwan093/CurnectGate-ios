@@ -166,9 +166,7 @@ class _FundWalletPageState extends ConsumerState<FundWalletPage>
     final estateName = authState.user?['estate_name'] ?? '';
     final refs = _generateRef(estateName);
 
-    log(
-      '💳 Fund wallet: Subtotal: ₦$enteredAmount, Fee: ₦${charge.fee}, Total: ₦$totalAmount  ref: $refs',
-    );
+   
 
     await PaystackService().checkout(
       ref: ref,

@@ -76,7 +76,7 @@ class DigitCodeTab extends ConsumerWidget {
                   () => ref
                       .read(digitMemberIDprovider.notifier)
                       .refreshDigitalID(context, ref),
-              firstMessae: "Faile to load Digital code?",
+              firstMessage: "Faile to load Digital code?",
             );
           } catch (e) {
             return Builderroul(
@@ -85,7 +85,7 @@ class DigitCodeTab extends ConsumerWidget {
                   () => ref
                       .read(digitMemberIDprovider.notifier)
                       .refreshDigitalID(context, ref),
-              firstMessae: "Faile to load Digital code??",
+              firstMessage: "Faile to load Digital code??",
             );
           }
         },

@@ -27,7 +27,7 @@ class EstateAdminData extends ConsumerWidget {
                 () => ref
                     .read(getAdminProvider.notifier)
                     .refreshAdmin(context, ref),
-            firstMessae: "Faile to load estate admin?",
+            firstMessage: "Faile to load estate admin?",
           );
         }
       },
@@ -44,7 +44,7 @@ class EstateAdminData extends ConsumerWidget {
                 () => ref
                     .read(getAdminProvider.notifier)
                     .refreshAdmin(context, ref),
-            firstMessae: "Faile to load estate admin?",
+            firstMessage: "Faile to load estate admin?",
           );
         }
       },
@@ -68,7 +68,7 @@ class EstateAdminData extends ConsumerWidget {
                 () => ref
                     .read(getAdminProvider.notifier)
                     .refreshAdmin(context, ref),
-            firstMessae: "Faile to load estate admin?",
+            firstMessage: "Faile to load estate admin?",
           );
         } catch (e) {
           return Builderroul(
@@ -77,7 +77,7 @@ class EstateAdminData extends ConsumerWidget {
                 () => ref
                     .read(getAdminProvider.notifier)
                     .refreshAdmin(context, ref),
-            firstMessae: "Faile to load estate admin?",
+            firstMessage: "Faile to load estate admin?",
           );
         }
       },
@@ -86,7 +86,9 @@ class EstateAdminData extends ConsumerWidget {
 
   Widget _buildEstateAdminList(List<EstateAdmin>? admins) {
     if (admins == null || admins.isEmpty) {
-      return const Expanded(child: EmptyBodys(message: "No estate admin found."));
+      return const Expanded(
+        child: EmptyBodys(message: "No estate admin found."),
+      );
     }
     return Expanded(
       child: ListView.builder(

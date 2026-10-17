@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
 import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -5,7 +6,6 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/widget/
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/reminder_card.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/notification_reminder_model/remider/reminder_model.dart';
 import 'package:curnectgate/features/operations/notifications/provider/reminder_provider.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -61,13 +61,13 @@ class _ActivitiesTabState extends ConsumerState<ReminderTab> {
               );
             }
           } catch (e) {
-            return _buildErrorState(
+            return Builderroul(
               error: e.toString(),
-              onRefresh:
+              onTap:
                   () => ref
                       .read(getReminderProvider.notifier)
                       .refreshReminder(context, ref),
-              message: "Failed to load reminders",
+              firstMessage: "Failed to load reminders",
             );
           }
         },
@@ -79,13 +79,13 @@ class _ActivitiesTabState extends ConsumerState<ReminderTab> {
                 ? _buildReminderList(cachedNotification.data!.reminders!)
                 : _buildLoadingState();
           } catch (e) {
-            return _buildErrorState(
+            return Builderroul(
               error: e.toString(),
-              onRefresh:
+              onTap:
                   () => ref
                       .read(getReminderProvider.notifier)
                       .refreshReminder(context, ref),
-              message: "Failed to load reminders",
+              firstMessage: "Failed to load reminders",
             );
           }
         },
@@ -123,22 +123,22 @@ class _ActivitiesTabState extends ConsumerState<ReminderTab> {
             }
 
             // No cached data available
-            return _buildErrorState(
+            return Builderroul(
               error: error.toString(),
-              onRefresh:
+              onTap:
                   () => ref
                       .read(getReminderProvider.notifier)
                       .refreshReminder(context, ref),
-              message: "Connection failed. Please check your network",
+              firstMessage: "Connection failed. Please check your network",
             );
           } catch (e) {
-            return _buildErrorState(
+            return Builderroul(
               error: e.toString(),
-              onRefresh:
+              onTap:
                   () => ref
                       .read(getReminderProvider.notifier)
                       .refreshReminder(context, ref),
-              message: "Failed to load reminders",
+              firstMessage: "Failed to load reminders",
             );
           }
         },

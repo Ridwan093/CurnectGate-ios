@@ -59,7 +59,7 @@ class EstateSettingsDatas<T> extends ConsumerWidget {
                   () => ref
                       .read(emergencyProvider.notifier)
                       .refreshEstateSettings(context, ref),
-              firstMessae: "Failed to load Emergency data?",
+              firstMessage: "Failed to load Emergency data?",
             );
           } catch (e) {
             return Builderroul(
@@ -68,7 +68,7 @@ class EstateSettingsDatas<T> extends ConsumerWidget {
                   () => ref
                       .read(emergencyProvider.notifier)
                       .refreshEstateSettings(context, ref),
-              firstMessae: "Failed to load Emergency data?",
+              firstMessage: "Failed to load Emergency data?",
             );
           }
         },

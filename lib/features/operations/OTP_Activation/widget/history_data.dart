@@ -63,7 +63,7 @@ class ActiveHistoryDataWidget extends ConsumerWidget {
                   () => ref
                       .read(getActiveOtpHistoryProvider.notifier)
                       .refreshActive(context, ref),
-              firstMessae: "Faile to load OTPs?",
+              firstMessage: "Faile to load OTPs?",
             );
           } catch (e) {
             return Builderroul(
@@ -72,7 +72,7 @@ class ActiveHistoryDataWidget extends ConsumerWidget {
                   () => ref
                       .read(getActiveOtpHistoryProvider.notifier)
                       .refreshActive(context, ref),
-              firstMessae: "Faile to load OTPs?",
+              firstMessage: "Faile to load OTPs?",
             );
           }
         },

@@ -27,7 +27,7 @@ class PollDatas extends ConsumerWidget {
             error: e.toString(),
             onTap:
                 () => ref.read(pollProvider.notifier).refreshPoll(context, ref),
-            firstMessae: "Faile to load Poll?",
+            firstMessage: "Faile to load Poll?",
           );
         }
       },
@@ -43,7 +43,7 @@ class PollDatas extends ConsumerWidget {
             error: e.toString(),
             onTap:
                 () => ref.read(pollProvider.notifier).refreshPoll(context, ref),
-            firstMessae: "Faile to load Poll?",
+            firstMessage: "Faile to load Poll?",
           );
         }
       },
@@ -69,14 +69,14 @@ class PollDatas extends ConsumerWidget {
             error: error.toString(),
             onTap:
                 () => ref.read(pollProvider.notifier).refreshPoll(context, ref),
-            firstMessae: "Faile to load Poll?",
+            firstMessage: "Faile to load Poll?",
           );
         } catch (e) {
           return Builderroul(
             error: e.toString(),
             onTap:
                 () => ref.read(pollProvider.notifier).refreshPoll(context, ref),
-            firstMessae: "Faile to load Poll deteils?",
+            firstMessage: "Faile to load Poll deteils?",
           );
         }
       },

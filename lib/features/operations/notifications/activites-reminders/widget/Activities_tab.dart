@@ -66,7 +66,7 @@ class _ActivitiesTabState extends ConsumerState<ActivitiesTab> {
                   () => ref
                       .read(getUserNotification.notifier)
                       .refreshSettings(context, ref),
-              firstMessae: "Failed to load notifications",
+              firstMessage: "Failed to load notifications",
             );
           }
         },
@@ -86,7 +86,7 @@ class _ActivitiesTabState extends ConsumerState<ActivitiesTab> {
                   () => ref
                       .read(getUserNotification.notifier)
                       .refreshSettings(context, ref),
-              firstMessae: "Failed to load notifications",
+              firstMessage: "Failed to load notifications",
             );
           }
         },
@@ -117,7 +117,7 @@ class _ActivitiesTabState extends ConsumerState<ActivitiesTab> {
                   () => ref
                       .read(getUserNotification.notifier)
                       .refreshSettings(context, ref),
-              firstMessae: "Failed to load notifications",
+              firstMessage: "Failed to load notifications",
             );
           } catch (e) {
             return Builderroul(
@@ -126,7 +126,7 @@ class _ActivitiesTabState extends ConsumerState<ActivitiesTab> {
                   () => ref
                       .read(getUserNotification.notifier)
                       .refreshSettings(context, ref),
-              firstMessae: "Failed to load notifications",
+              firstMessage: "Failed to load notifications",
             );
           }
         },

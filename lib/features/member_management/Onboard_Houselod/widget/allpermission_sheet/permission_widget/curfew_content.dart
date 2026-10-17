@@ -10,6 +10,7 @@ import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/a
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class CurfewContent extends ConsumerStatefulWidget {
   final CurfewSettings permission;
@@ -98,6 +99,19 @@ class _CurfewContentState extends ConsumerState<CurfewContent> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          Align(
+            alignment: Alignment.topRight,
+            child: InkWell(
+              onTap: () {
+                context.pop();
+              },
+              child: Icon(
+                Icons.close,
+                color: AppColors.instance.black600,
+                size: 25,
+              ),
+            ),
+          ),
           // Title
           Text(
             "Curfew Settings",
@@ -134,7 +148,9 @@ class _CurfewContentState extends ConsumerState<CurfewContent> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        (isCurfewEnabled ?? false) ? "Enable Curfew" : "Disable Curfew",
+                        (isCurfewEnabled ?? false)
+                            ? "Disable Curfew"
+                            : "Enable Curfew",
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontFamilies.bold,

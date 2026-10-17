@@ -46,7 +46,7 @@ class ReportBody extends ConsumerWidget {
                     () => ref
                         .read(userReportProvider.notifier)
                         .refreshReports(context, ref),
-                firstMessae: "Faile to load violation?",
+                firstMessage: "Faile to load violation?",
               );
             }
           },
@@ -74,7 +74,7 @@ class ReportBody extends ConsumerWidget {
                     () => ref
                         .read(userReportProvider.notifier)
                         .refreshReports(context, ref),
-                firstMessae: "Faile to load violation?",
+                firstMessage: "Faile to load violation?",
               );
             } catch (e) {
               log(e.toString());
@@ -84,7 +84,7 @@ class ReportBody extends ConsumerWidget {
                     () => ref
                         .read(userReportProvider.notifier)
                         .refreshReports(context, ref),
-                firstMessae: "Faile to load violation?",
+                firstMessage: "Faile to load violation?",
               );
             }
           },

@@ -40,7 +40,7 @@ class BasicPermission extends ConsumerWidget {
                   () => ref
                       .read(permissionStatusProvider.notifier)
                       .refreshPermissionstatus(context, ref),
-              firstMessae: "Faile to load permission settings?",
+              firstMessage: "Faile to load permission settings?",
             );
           }
         },
@@ -60,7 +60,7 @@ class BasicPermission extends ConsumerWidget {
                   () => ref
                       .read(permissionStatusProvider.notifier)
                       .refreshPermissionstatus(context, ref),
-              firstMessae: "Faile to load permission settings?",
+              firstMessage: "Faile to load permission settings?",
             );
           }
         },
@@ -92,7 +92,7 @@ class BasicPermission extends ConsumerWidget {
                   () => ref
                       .read(permissionStatusProvider.notifier)
                       .refreshPermissionstatus(context, ref),
-              firstMessae: "Faile to load gate permission settings?",
+              firstMessage: "Faile to load gate permission settings?",
             );
           } catch (e) {
             return Builderroul(
@@ -101,7 +101,7 @@ class BasicPermission extends ConsumerWidget {
                   () => ref
                       .read(permissionStatusProvider.notifier)
                       .refreshPermissionstatus(context, ref),
-              firstMessae: "Faile to load permission settings?",
+              firstMessage: "Faile to load permission settings?",
             );
           }
         },

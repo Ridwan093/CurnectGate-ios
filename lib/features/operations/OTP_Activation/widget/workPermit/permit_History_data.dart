@@ -69,7 +69,7 @@ class PermitData extends ConsumerWidget {
                   () => ref
                       .read(getActiveOtpProvider.notifier)
                       .refreshActive(context, ref),
-              firstMessae: "Faile to load Active OTPs?",
+              firstMessage: "Faile to load Active OTPs?",
             );
           } catch (e) {
             return Builderroul(
@@ -78,7 +78,7 @@ class PermitData extends ConsumerWidget {
                   () => ref
                       .read(getWorkpermitProvider.notifier)
                       .refreshActive(context, ref),
-              firstMessae: "Faile to load Active OTPs?",
+              firstMessage: "Faile to load Active OTPs?",
             );
           }
         },

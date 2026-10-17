@@ -1,5 +1,3 @@
-
-
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/appErrorBody/buildEmptyBody.dart';
 import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
@@ -40,7 +38,7 @@ class TermsAndConditionData extends ConsumerWidget {
                 () => ref
                     .read(agreementProvider.notifier)
                     .refreshAgreement(context, ref),
-            firstMessae: "Faile to load data?",
+            firstMessage: "Faile to load data?",
           );
         }
       },
@@ -60,7 +58,7 @@ class TermsAndConditionData extends ConsumerWidget {
                 () => ref
                     .read(agreementProvider.notifier)
                     .refreshAgreement(context, ref),
-            firstMessae: "Faile to load data?",
+            firstMessage: "Faile to load data?",
           );
         }
       },
@@ -87,7 +85,7 @@ class TermsAndConditionData extends ConsumerWidget {
                 () => ref
                     .read(agreementProvider.notifier)
                     .refreshAgreement(context, ref),
-            firstMessae: "Faile to load data?",
+            firstMessage: "Faile to load data?",
           );
         } catch (e) {
           return Builderroul(
@@ -96,7 +94,7 @@ class TermsAndConditionData extends ConsumerWidget {
                 () => ref
                     .read(agreementProvider.notifier)
                     .refreshAgreement(context, ref),
-            firstMessae: "Faile to load data?",
+            firstMessage: "Faile to load data?",
           );
         }
       },

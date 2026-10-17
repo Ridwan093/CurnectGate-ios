@@ -769,7 +769,7 @@ class AppApiMethod {
           );
         }
       }
-      log(formData.toString());
+
       final response = await _dio.post(
         creatViolation,
         data: formData,
@@ -2763,7 +2763,7 @@ class AppApiMethod {
     required Map<String, dynamic> requestData,
     required BuildContext context,
   }) async {
-    log(requestData.toString());
+    
     try {
       final response = await _dio.delete(
         removedDeviceToken,
@@ -2797,7 +2797,7 @@ class AppApiMethod {
       "biometric_signature": biometric_signature,
     };
 
-    log(" [PUSH DEBUG] Biometric Login Request: $requestData");
+   
 
     try {
       final response = await _dio.post(
@@ -2806,7 +2806,7 @@ class AppApiMethod {
         options: Options(validateStatus: (status) => status! < 500),
       );
 
-      print("📥 [PUSH DEBUG] Biometric Login Response: ${response.data}");
+  
 
       final rawCookies = response.headers['set-cookie'];
       if (rawCookies != null && rawCookies.isNotEmpty) {
@@ -2815,8 +2815,8 @@ class AppApiMethod {
       }
       return response.data;
     } on DioException catch (e) {
-      print("❌ [PUSH DEBUG] Biometric Login Error: ${e.message}");
-      print("📥 [PUSH DEBUG] Biometric Login Error Data: ${e.response?.data}");
+      print(" [PUSH DEBUG] Biometric Login Error: ${e.message}");
+      print(" [PUSH DEBUG] Biometric Login Error Data: ${e.response?.data}");
       rethrow;
     }
   }

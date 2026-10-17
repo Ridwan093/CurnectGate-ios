@@ -28,7 +28,7 @@ class VotingSettingsData extends ConsumerWidget {
                 () => ref
                     .read(votingSettingsProvider.notifier)
                     .refreshVotingSetting(context, ref),
-            firstMessae: "Faile to load Poll?",
+            firstMessage: "Faile to load Poll?",
           );
         }
       },
@@ -46,7 +46,7 @@ class VotingSettingsData extends ConsumerWidget {
                 () => ref
                     .read(votingSettingsProvider.notifier)
                     .refreshVotingSetting(context, ref),
-            firstMessae: "Faile to load Poll?",
+            firstMessage: "Faile to load Poll?",
           );
         }
       },
@@ -70,7 +70,7 @@ class VotingSettingsData extends ConsumerWidget {
                 () => ref
                     .read(votingSettingsProvider.notifier)
                     .refreshVotingSetting(context, ref),
-            firstMessae: "Faile to load Poll?",
+            firstMessage: "Faile to load Poll?",
           );
         } catch (e) {
           return Builderroul(
@@ -79,7 +79,7 @@ class VotingSettingsData extends ConsumerWidget {
                 () => ref
                     .read(votingSettingsProvider.notifier)
                     .refreshVotingSetting(context, ref),
-            firstMessae: "Faile to load Poll deteils?",
+            firstMessage: "Faile to load Poll deteils?",
           );
         }
       },
