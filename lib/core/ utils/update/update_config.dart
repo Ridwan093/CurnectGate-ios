@@ -6,7 +6,7 @@ class UpdateConfig {
     debugDisplayAlways: false,
     durationUntilAlertAgain: const Duration(days: 1),
     storeController: UpgraderStoreController(
-      oniOS: () => UpgraderAppStore(iOSAppID: '6761664988'),
+      oniOS: () => UpgraderAppStore(),
     ),
   );
 }
