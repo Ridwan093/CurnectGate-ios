@@ -126,51 +126,62 @@ class _MyAppState extends ConsumerState<MyApp> {
     }); // Get the router
 
     return SessionExpiryListener(
-      child: UpgradeAlert(
-        upgrader: UpdateConfig.upgrader,
-        dialogStyle: UpgradeDialogStyle.material,
-        showIgnore: false,
-        showLater: true,
-        barrierDismissible: true,
-        child: MaterialApp.router(
-          localizationsDelegates: [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: [
-            Locale('en'), // English
-            // Add more locales if you support them
-          ],
-          builder: (context, child) {
-            final mediaQuery = MediaQuery.of(context);
-            final scale = mediaQuery.textScaleFactor.clamp(0.9, 1.1);
+      child: MaterialApp.router(
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          Locale('en'), // English
+          // Add more locales if you support them
+        ],
+        builder: (context, child) {
+          final mediaQuery = MediaQuery.of(context);
+          final scale = mediaQuery.textScaleFactor.clamp(0.9, 1.1);
 
-            return MediaQuery(
-              data: mediaQuery.copyWith(textScaleFactor: scale),
-              child: child!,
-            );
-          },
+          return MediaQuery(
+            data: mediaQuery.copyWith(textScaleFactor: scale),
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                textButtonTheme: TextButtonThemeData(
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.instance.teal500,
+                  ),
+                ),
+              ),
+              child: UpgradeAlert(
+                navigatorKey: navigatorKey,
+                upgrader: UpdateConfig.upgrader,
+                dialogStyle: UpgradeDialogStyle.material,
+                showIgnore: false,
+                showLater: true,
+                barrierDismissible: true,
 
-          theme: ThemeData(
-            progressIndicatorTheme: ProgressIndicatorThemeData(
-              color: AppColors.instance.yellow500,
-              refreshBackgroundColor: Colors.white,
+                child: child ?? const SizedBox.shrink(),
+              ),
             ),
-            textSelectionTheme: TextSelectionThemeData(
-              selectionColor: AppColors.instance.teal400,
-              selectionHandleColor: AppColors.instance.teal400,
-              cursorColor: Colors.black,
-            ),
+          );
+        },
+
+        theme: ThemeData(
+          progressIndicatorTheme: ProgressIndicatorThemeData(
+            color: AppColors.instance.yellow500,
+            refreshBackgroundColor: Colors.white,
           ),
-
-          routerConfig: router,
-          useInheritedMediaQuery: true,
-
-          // GoRouter integration
-          debugShowCheckedModeBanner: false,
-          title: 'CurnectGate',
+          textSelectionTheme: TextSelectionThemeData(
+            selectionColor: AppColors.instance.teal400,
+            selectionHandleColor: AppColors.instance.teal400,
+            cursorColor: Colors.black,
+          ),
         ),
+
+        routerConfig: router,
+        useInheritedMediaQuery: true,
+
+        // GoRouter integration
+        debugShowCheckedModeBanner: false,
+        title: 'CurnectGate',
       ),
     );
   }
