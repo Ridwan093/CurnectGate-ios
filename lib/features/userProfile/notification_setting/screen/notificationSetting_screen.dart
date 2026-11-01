@@ -8,6 +8,8 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
+import 'package:curnectgate/features/userProfile/notification_setting/model/community.dart';
+import 'package:curnectgate/features/userProfile/notification_setting/model/notifications.dart';
 import 'package:curnectgate/features/userProfile/notification_setting/provider/NotificationSettings_provider.dart';
 import 'package:curnectgate/features/userProfile/notification_setting/widget/reusabTile.dart';
 import 'package:flutter/material.dart';
@@ -60,10 +62,10 @@ class UserNotificationSettings extends ConsumerWidget {
   PreferredSizeWidget _buildAppBar(WidgetRef ref, BuildContext context) {
     return AppBar(
       bottom: PreferredSize(
-        preferredSize: Size.fromHeight(10), // Adjust height as needed
+        preferredSize: Size.fromHeight(10),
         child: Divider(
           color: AppColors.instance.grey400,
-        ), // This can be a Container, Row, etc.
+        ),
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
@@ -88,17 +90,89 @@ class UserNotificationSettings extends ConsumerWidget {
     );
   }
 
+  /// Returns a list of [_NotificationEntry] for only the fields
+  /// that the backend actually returned (non-null). If the backend
+  /// removes a setting, it will simply not appear in the list.
+  List<_NotificationEntry> _getEntries(
+    Notifications notification,
+    FormNotifier formProviders,
+    BuildContext context,
+    WidgetRef ref,
+  ) {
+    final entries = <_NotificationEntry>[];
+
+    void addIfPresent(Community? field, String fallbackKey) {
+      if (field == null) return;
+      entries.add(
+        _NotificationEntry(
+          title: field.name ?? fallbackKey,
+          dec: field.description ?? '',
+          isEnabled: field.value ?? false,
+          onChanged: (value) async {
+            formProviders.updateAppNotification(
+              slug: field.name ?? fallbackKey,
+              context: context,
+              key: field.key ?? fallbackKey,
+              value: value,
+              ref: ref,
+            );
+          },
+        ),
+      );
+    }
+
+    addIfPresent(notification.email, 'email');
+    addIfPresent(notification.sms, 'sms');
+    addIfPresent(notification.push, 'push');
+    addIfPresent(notification.payments, 'payments');
+    addIfPresent(notification.paymentReminders, 'payment_reminders');
+    addIfPresent(notification.security, 'security');
+    addIfPresent(notification.community, 'community');
+    addIfPresent(notification.communityUpdates, 'community_updates');
+    addIfPresent(notification.maintenance, 'maintenance');
+    addIfPresent(notification.maintenanceAlerts, 'maintenance_alerts');
+
+    return entries;
+  }
+
+  /// Builds the column of tiles from a [Notifications] object.
+  Widget _buildTiles(
+    Notifications notification,
+    FormNotifier formProviders,
+    BuildContext context,
+    WidgetRef ref,
+  ) {
+    final entries = _getEntries(notification, formProviders, context, ref);
+
+    if (entries.isEmpty) {
+      return EmptyBodys(message: "No Notification Settings available.");
+    }
+
+    return Column(
+      children: entries.map((e) {
+        return BuildListTile(
+          ref: ref,
+          context: context,
+          dec: e.dec,
+          title: e.title,
+          isEnabled: e.isEnabled,
+          onChanged: e.onChanged,
+        );
+      }).toList(),
+    );
+  }
+
   Widget _buildBody(WidgetRef ref, BuildContext context) {
     final profileAsync = ref.watch(userNotificationSettinProvider);
     final formProviders = ref.read(formProvider.notifier);
-    // final isError = ref.watch(formProvider).notificationsettingerror;
 
     return RefreshIndicator(
       color: AppColors.instance.yellow500,
       onRefresh:
-          () => ref
-              .read(userNotificationSettinProvider.notifier)
-              .refreshSettings(context, ref),
+          () =>
+              ref
+                  .read(userNotificationSettinProvider.notifier)
+                  .refreshSettings(context, ref),
       child: SingleChildScrollView(
         padding: EdgeInsets.only(left: 10, right: 10),
         child: Column(
@@ -109,615 +183,67 @@ class UserNotificationSettings extends ConsumerWidget {
             _buildAppbarBottom(ref),
             SizedBox(height: 10),
 
-            //////---------------- NEW DATA APPEAR HER --------------------->
+            ///-------------- DYNAMIC: Only renders what backend returns ------------->
             profileAsync.when(
               data: (notificationSettings) {
-                try {
-                  final user = notificationSettings?.data;
-                  final notification = user!.notifications;
-                  // ignore: unnecessary_null_comparison
-                  return user != null
-                      ? Column(
-                        children: [
-                          BuildListTile(
-                            ref: ref,
-                            context: context,
-                            dec: notification?.email?.description ?? "",
-                            title: notification?.email?.name ?? "Email",
-                            isEnabled: notification?.email?.value ?? false,
-                            onChanged: (value) async {
-                              formProviders.updateAppNotification(
-                                slug: notification?.email?.name ?? "Email",
-                                context: context,
-                                key: "email",
-                                value: value,
-                                ref: ref,
-                              );
-                            },
-                          ),
-                          BuildListTile(
-                            ref: ref,
-                            context: context,
-                            dec: notification?.sms?.description ?? "",
-                            title: notification?.sms?.name ?? "SMS",
-                            isEnabled: notification?.sms?.value ?? false,
-                            onChanged: (value) async {
-                              formProviders.updateAppNotification(
-                                slug: notification?.sms?.name ?? "SMS",
-                                context: context,
-                                key: "sms",
-                                value: value,
-                                ref: ref,
-                              );
-                            },
-                          ),
-                          BuildListTile(
-                            ref: ref,
-                            context: context,
-                            dec: notification?.maintenance?.description ?? "",
-                            title:
-                                notification?.maintenance?.name ??
-                                "Maintenance",
-                            isEnabled:
-                                notification?.maintenance?.value ?? false,
-                            onChanged: (value) async {
-                              formProviders.updateAppNotification(
-                                slug:
-                                    notification?.maintenance?.name ??
-                                    "Maintenance",
-                                context: context,
-                                key: "maintenance",
-                                value: value,
-                                ref: ref,
-                              );
-                            },
-                          ),
-                          BuildListTile(
-                            ref: ref,
-                            context: context,
-                            dec:
-                                notification?.maintenanceAlerts?.description ??
-                                "",
-                            title:
-                                notification?.maintenanceAlerts?.name ??
-                                "Maintenance Alerts",
-                            isEnabled:
-                                notification?.maintenanceAlerts?.value ?? false,
-                            onChanged: (value) async {
-                              formProviders.updateAppNotification(
-                                slug:
-                                    notification?.maintenanceAlerts?.name ??
-                                    "Maintenance Alerts",
-                                context: context,
-                                key:
-                                    notification?.maintenanceAlerts?.key ??
-                                    "maintenance_alerts",
-                                value: value,
-                                ref: ref,
-                              );
-                            },
-                          ),
-                          BuildListTile(
-                            ref: ref,
-                            context: context,
-                            dec:
-                                notification?.paymentReminders?.description ??
-                                "",
-                            title:
-                                notification?.paymentReminders?.name ??
-                                "Payment Reminders",
-                            isEnabled:
-                                notification?.paymentReminders?.value ?? false,
-                            onChanged: (value) async {
-                              formProviders.updateAppNotification(
-                                slug:
-                                    notification?.paymentReminders?.name ??
-                                    "Payment Reminders",
-                                context: context,
-                                key: "payment_reminders",
-                                value: value,
-                                ref: ref,
-                              );
-                            },
-                          ),
-                          BuildListTile(
-                            ref: ref,
-                            context: context,
-                            dec: notification?.payments?.description ?? "",
-                            title: notification?.payments?.name ?? "Payments",
-                            isEnabled: notification?.payments?.value ?? false,
-                            onChanged: (value) async {
-                              formProviders.updateAppNotification(
-                                slug:
-                                    notification?.payments?.name ?? "Payments",
-                                context: context,
-                                key: "payments",
-                                value: value,
-                                ref: ref,
-                              );
-                            },
-                          ),
-                          BuildListTile(
-                            ref: ref,
-                            context: context,
-                            dec: notification?.community?.description ?? "",
-                            title: notification?.community?.name ?? "Community",
-                            isEnabled: notification?.community?.value ?? false,
-                            onChanged: (value) async {
-                              formProviders.updateAppNotification(
-                                slug:
-                                    notification?.community?.name ??
-                                    "Community",
-                                context: context,
-                                key: "community",
-                                value: value,
-                                ref: ref,
-                              );
-                            },
-                          ),
-                          BuildListTile(
-                            ref: ref,
-                            context: context,
-                            dec:
-                                notification?.communityUpdates?.description ??
-                                "",
-                            title:
-                                notification?.communityUpdates?.name ??
-                                "Community Updates",
-                            isEnabled:
-                                notification?.communityUpdates?.value ?? false,
-                            onChanged: (value) async {
-                              formProviders.updateAppNotification(
-                                slug:
-                                    notification?.communityUpdates?.name ??
-                                    "Community Updates",
-                                context: context,
-                                key: "community_updates",
-                                value: value,
-                                ref: ref,
-                              );
-                            },
-                          ),
-                          BuildListTile(
-                            ref: ref,
-                            context: context,
-                            dec: notification?.push?.description ?? "",
-                            title: notification?.push?.name ?? "Push",
-                            isEnabled: notification?.push?.value ?? false,
-                            onChanged: (value) async {
-                              formProviders.updateAppNotification(
-                                slug: notification?.push?.name ?? "Push",
-                                context: context,
-                                key: "push",
-                                value: value,
-                                ref: ref,
-                              );
-                            },
-                          ),
-                          BuildListTile(
-                            ref: ref,
-                            context: context,
-                            dec: notification?.security?.description ?? "",
-                            title: notification?.security?.name ?? "Security",
-                            isEnabled: notification?.security?.value ?? false,
-                            onChanged: (value) async {
-                              formProviders.updateAppNotification(
-                                slug:
-                                    notification?.security?.name ?? "Security",
-                                context: context,
-                                key: "security",
-                                value: value,
-                                ref: ref,
-                              );
-                            },
-                          ),
-                        ],
-                      )
-                      : EmptyBodys(message: "No Notification Settings?");
-                } catch (e) {
-                  return Builderroul(
-                    error: e.toString(),
-                    onTap:
-                        () => ref
-                            .read(userNotificationSettinProvider.notifier)
-                            .refreshSettings(context, ref),
-                    firstMessage: "Faile to load Notification Settings?",
-                  );
+                final user = notificationSettings?.data;
+                final notification = user?.notifications;
+
+                if (user == null || notification == null) {
+                  return EmptyBodys(message: "No Notification Settings.");
                 }
+
+                return _buildTiles(
+                  notification,
+                  formProviders,
+                  context,
+                  ref,
+                );
               },
               loading: () {
-                try {
-                  final notifications =
-                      ref.read(userNotificationSettinProvider).value;
-                  final user = notifications?.data;
-                  final notification = user?.notifications;
+                // Show cached data during loading if available, else spinner
+                final cached =
+                    ref.read(userNotificationSettinProvider).value;
+                final notification = cached?.data?.notifications;
 
-                  return notification != null && user != null
-                      ? SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            BuildListTile(
-                              ref: ref,
-                              context: context,
-                              dec: notification.email?.description ?? "",
-                              title: notification.email?.name ?? "Email",
-                              isEnabled: notification.email?.value ?? false,
-                              onChanged: (value) async {
-                                formProviders.updateAppNotification(
-                                  slug: notification.email?.name ?? "Email",
-                                  context: context,
-
-                                  key: "email",
-                                  value: value,
-                                  ref: ref,
-                                );
-                              },
-                            ),
-                            BuildListTile(
-                              ref: ref,
-                              context: context,
-                              dec: notification.sms?.description ?? "",
-                              title: notification.sms?.name ?? "SMS",
-                              isEnabled: notification.sms?.value ?? false,
-                              onChanged: (value) async {
-                                formProviders.updateAppNotification(
-                                  slug: notification.sms?.name ?? "SMS",
-                                  context: context,
-                                  key: "sms",
-                                  value: value,
-                                  ref: ref,
-                                );
-                              },
-                            ),
-                            BuildListTile(
-                              ref: ref,
-                              context: context,
-                              dec: notification.maintenance?.description ?? "",
-                              title:
-                                  notification.maintenance?.name ??
-                                  "Maintenance",
-                              isEnabled:
-                                  notification.maintenance?.value ?? false,
-                              onChanged: (value) async {
-                                formProviders.updateAppNotification(
-                                  slug:
-                                      notification.maintenance?.name ??
-                                      "Maintenance",
-                                  context: context,
-                                  key: "maintenance",
-                                  value: value,
-                                  ref: ref,
-                                );
-                              },
-                            ),
-                            BuildListTile(
-                              ref: ref,
-                              context: context,
-                              dec:
-                                  notification.maintenanceAlerts?.description ??
-                                  "",
-                              title:
-                                  notification.maintenanceAlerts?.name ??
-                                  "Maintenance Alerts",
-                              isEnabled:
-                                  notification.maintenanceAlerts?.value ??
-                                  false,
-                              onChanged: (value) async {
-                                formProviders.updateAppNotification(
-                                  slug:
-                                      notification.maintenanceAlerts?.name ??
-                                      "Maintenance Alerts",
-                                  context: context,
-                                  key:
-                                      notification.maintenanceAlerts?.key ??
-                                      "maintenance_alerts",
-                                  value: value,
-                                  ref: ref,
-                                );
-                              },
-                            ),
-                            BuildListTile(
-                              ref: ref,
-                              context: context,
-                              dec:
-                                  notification.paymentReminders?.description ??
-                                  "",
-                              title:
-                                  notification.paymentReminders?.name ??
-                                  "Payment Reminders",
-                              isEnabled:
-                                  notification.paymentReminders?.value ?? false,
-                              onChanged: (value) async {
-                                formProviders.updateAppNotification(
-                                  slug:
-                                      notification.paymentReminders?.name ??
-                                      "Payment Reminders",
-                                  context: context,
-                                  key: "payment_reminders",
-                                  value: value,
-                                  ref: ref,
-                                );
-                              },
-                            ),
-                            BuildListTile(
-                              ref: ref,
-                              context: context,
-                              dec: notification.payments?.description ?? "",
-                              title: notification.payments?.name ?? "Payments",
-                              isEnabled: notification.payments?.value ?? false,
-                              onChanged: (value) async {
-                                formProviders.updateAppNotification(
-                                  slug:
-                                      notification.payments?.name ?? "Payments",
-                                  context: context,
-                                  key: "payments",
-                                  value: value,
-                                  ref: ref,
-                                );
-                              },
-                            ),
-                            BuildListTile(
-                              ref: ref,
-                              context: context,
-                              dec: notification.community?.description ?? "",
-                              title:
-                                  notification.community?.name ?? "Community",
-                              isEnabled: notification.community?.value ?? false,
-                              onChanged: (value) async {
-                                formProviders.updateAppNotification(
-                                  slug:
-                                      notification.community?.name ??
-                                      "Community",
-                                  context: context,
-                                  key: "community",
-                                  value: value,
-                                  ref: ref,
-                                );
-                              },
-                            ),
-                            BuildListTile(
-                              ref: ref,
-                              context: context,
-                              dec:
-                                  notification.communityUpdates?.description ??
-                                  "",
-                              title:
-                                  notification.communityUpdates?.name ??
-                                  "Community Updates",
-                              isEnabled:
-                                  notification.communityUpdates?.value ?? false,
-                              onChanged: (value) async {
-                                formProviders.updateAppNotification(
-                                  slug:
-                                      notification.communityUpdates?.name ??
-                                      "Community Updates",
-                                  context: context,
-                                  key: "community_updates",
-                                  value: value,
-                                  ref: ref,
-                                );
-                              },
-                            ),
-                            BuildListTile(
-                              ref: ref,
-                              context: context,
-                              dec: notification.push?.description ?? "",
-                              title: notification.push?.name ?? "Push",
-                              isEnabled: notification.push?.value ?? false,
-                              onChanged: (value) async {
-                                formProviders.updateAppNotification(
-                                  slug: notification.push?.name ?? "Push",
-                                  context: context,
-                                  key: "push",
-                                  value: value,
-                                  ref: ref,
-                                );
-                              },
-                            ),
-                            BuildListTile(
-                              ref: ref,
-                              context: context,
-                              dec: notification.security?.description ?? "",
-                              title: notification.security?.name ?? "Security",
-                              isEnabled: notification.security?.value ?? false,
-                              onChanged: (value) async {
-                                formProviders.updateAppNotification(
-                                  slug:
-                                      notification.security?.name ?? "Security",
-                                  context: context,
-                                  key: "security",
-                                  value: value,
-                                  ref: ref,
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      )
-                      : Loadingstates();
-                } catch (e) {
-                  return Builderroul(
-                    error: e.toString(),
-                    onTap:
-                        () => ref
-                            .read(userNotificationSettinProvider.notifier)
-                            .refreshSettings(context, ref),
-                    firstMessage: "Faile to load Notification Settings?",
+                if (notification != null) {
+                  return _buildTiles(
+                    notification,
+                    formProviders,
+                    context,
+                    ref,
                   );
                 }
+                return Loadingstates();
               },
               error: (error, stack) {
-                try {
-                  // Handle session expiration
-                  if (error.toString().contains("Unauthorized")) {
-                    return Expiresessionbody();
-                  }
+                if (error.toString().contains("Unauthorized")) {
+                  return Expiresessionbody();
+                }
 
-                  // Try to show cached data
-                  // Show cached data while loading if available
+                // Try to show cached data on error
+                final cached =
+                    ref.read(userNotificationSettinProvider).value;
+                final notification = cached?.data?.notifications;
 
-                  final cachednotification =
-                      ref.read(userNotificationSettinProvider).value;
-                  if (cachednotification != null) {
-                    final user = cachednotification.data;
-                    final notification = user!.notifications;
-                    return SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          BuildListTile(
-                            ref: ref,
-                            context: context,
-                            dec: notification!.email!.description!,
-                            title: notification.email!.name!,
-                            isEnabled: notification.email!.value!,
-                            onChanged: (value) async {
-                              formProviders.updateAppNotification(
-                                slug: notification.email!.name!,
-                                context: context,
-                                key: "email",
-                                value: value,
-                                ref: ref,
-                              );
-                            },
-                          ),
-
-                          BuildListTile(
-                            ref: ref,
-                            context: context,
-                            dec: notification.sms!.description!,
-                            title: notification.sms!.name!,
-                            isEnabled: notification.sms!.value!,
-                            onChanged: (value) async {
-                              formProviders.updateAppNotification(
-                                slug: notification.sms!.name!,
-                                context: context,
-                                key: "sms",
-                                value: value,
-                                ref: ref,
-                              );
-                            },
-                          ),
-                          BuildListTile(
-                            ref: ref,
-                            context: context,
-                            dec: notification.maintenance!.description!,
-                            title: notification.maintenance!.name!,
-                            isEnabled: notification.maintenance!.value!,
-                            onChanged: (value) async {
-                              formProviders.updateAppNotification(
-                                slug: notification.maintenance!.name!,
-                                context: context,
-                                key: "maintenance",
-                                value: value,
-                                ref: ref,
-                              );
-                            },
-                          ),
-                          BuildListTile(
-                            context: context,
-                            dec: notification.maintenanceAlerts!.description!,
-                            title: notification.maintenanceAlerts!.name!,
-                            isEnabled: notification.maintenanceAlerts!.value!,
-                            onChanged: (value) async {
-                              formProviders.updateAppNotification(
-                                slug: notification.maintenanceAlerts!.name!,
-                                context: context,
-                                key: notification.maintenanceAlerts!.key!,
-                                value: value,
-                                ref: ref,
-                              );
-                            },
-                          ),
-
-                          BuildListTile(
-                            ref: ref,
-                            context: context,
-                            dec: notification.paymentReminders!.description!,
-                            title: notification.paymentReminders!.name!,
-                            isEnabled: notification.paymentReminders!.value!,
-                            onChanged: (value) async {
-                              formProviders.updateAppNotification(
-                                slug: notification.paymentReminders!.name!,
-                                context: context,
-                                key: "payment_reminders",
-                                value: value,
-                                ref: ref,
-                              );
-                            },
-                          ),
-                          BuildListTile(
-                            ref: ref,
-                            context: context,
-                            dec: notification.payments!.description!,
-                            title: notification.payments!.name!,
-                            isEnabled: notification.payments!.value!,
-                            onChanged: (value) async {
-                              formProviders.updateAppNotification(
-                                slug: notification.payments!.name!,
-                                context: context,
-                                key: "payments",
-                                value: value,
-                                ref: ref,
-                              );
-                            },
-                          ),
-                          BuildListTile(
-                            ref: ref,
-                            context: context,
-                            dec: notification.push!.description!,
-                            title: notification.push!.name!,
-                            isEnabled: notification.push!.value!,
-                            onChanged: (value) async {
-                              formProviders.updateAppNotification(
-                                slug: notification.push!.name!,
-                                context: context,
-                                key: "push",
-                                value: value,
-                                ref: ref,
-                              );
-                            },
-                          ),
-                          BuildListTile(
-                            ref: ref,
-                            context: context,
-                            dec: notification.security!.description!,
-                            title: notification.security!.name!,
-                            isEnabled: notification.security!.value!,
-                            onChanged: (value) async {
-                              formProviders.updateAppNotification(
-                                slug: notification.security!.name!,
-                                context: context,
-                                key: "security",
-                                value: value,
-                                ref: ref,
-                              );
-                            },
-                          ),
-                          Emmergencybody(error: error.toString()),
-                        ],
-                      ),
-                    );
-                  }
-
-                  // No cached data available
-                  return Builderroul(
-                    error: error.toString(),
-                    onTap:
-                        () => ref
-                            .read(userNotificationSettinProvider.notifier)
-                            .refreshSettings(context, ref),
-                    firstMessage: "Faile to load Notification Settings?",
-                  );
-                } catch (e) {
-                  return Builderroul(
-                    error: e.toString(),
-                    onTap:
-                        () => ref
-                            .read(userNotificationSettinProvider.notifier)
-                            .refreshSettings(context, ref),
-                    firstMessage: "Faile to load Notification Settings?",
+                if (notification != null) {
+                  return Column(
+                    children: [
+                      _buildTiles(notification, formProviders, context, ref),
+            
+                    ],
                   );
                 }
+
+                return Builderroul(
+                  error: error.toString(),
+                  onTap:
+                      () =>
+                          ref
+                              .read(userNotificationSettinProvider.notifier)
+                              .refreshSettings(context, ref),
+                  firstMessage: "Failed to load Notification Settings.",
+                );
               },
             ),
           ],
@@ -725,4 +251,19 @@ class UserNotificationSettings extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Simple data class to hold one notification entry.
+class _NotificationEntry {
+  final String title;
+  final String dec;
+  final bool isEnabled;
+  final Function(bool) onChanged;
+
+  const _NotificationEntry({
+    required this.title,
+    required this.dec,
+    required this.isEnabled,
+    required this.onChanged,
+  });
 }

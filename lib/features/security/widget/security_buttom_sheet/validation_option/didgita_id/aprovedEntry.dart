@@ -63,7 +63,7 @@ class _DenyEntryState extends ConsumerState<GrantDigitalEntry> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Specifie the reason for grant entry",
+                    "Specify the reason for entry grant",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,

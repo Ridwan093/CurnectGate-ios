@@ -73,7 +73,7 @@ class _AddLocationAndAccesTypeState
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "provide more info about the entry",
+                    "Provide more info about the entry",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,

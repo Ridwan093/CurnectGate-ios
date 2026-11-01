@@ -31,7 +31,7 @@ class _PasswordScreenState extends ConsumerState<MemberSelection> {
     'Property manager':
         'Oversees  property operations, maintenance, and resident communications.',
     'Family member':
-        'Some related by blood, marriage, and adoptionwith limited app access.',
+        'Someone related by blood, marriage, and adoption with limited app access.',
     'Staff':
         'An authorized household employee (e.g., cleaner, driver) with controlled access. ',
     'Tenant':

@@ -67,7 +67,7 @@ class Memberlist extends ConsumerWidget {
           size: 16,
         ),
         subtitle: Text(
-          userinfo.role ?? "",
+          userinfo.role?.toLowerCase().replaceAll("_", " ") ?? "",
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,
             fontSize: 12,

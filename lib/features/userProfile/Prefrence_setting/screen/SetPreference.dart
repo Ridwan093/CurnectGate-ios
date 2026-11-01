@@ -1,13 +1,14 @@
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/appErrorBody/buildEmptyBody.dart';
 import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
-import 'package:curnectgate/core/appErrorBody/emmergencyBody.dart';
 import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/model/option.dart';
+import 'package:curnectgate/features/userProfile/Prefrence_setting/model/preference.dart';
+import 'package:curnectgate/features/userProfile/Prefrence_setting/model/preferences.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/provider/prefrence_provider.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/widget/Setting_widget.dart';
 import 'package:curnectgate/features/userProfile/Prefrence_setting/widget/prferenc_bottom.dart';
@@ -42,16 +43,61 @@ class PreferencesScreen extends ConsumerWidget {
     );
   }
 
+  /// Builds preference widgets only for fields the backend actually returned (non-null).
+  /// Timezone is rendered with a dialog; all others use the options bottom sheet.
+  Widget _buildTiles(
+    Preferences prefs,
+    BuildContext context,
+    WidgetRef ref,
+  ) {
+    final tiles = <Widget>[];
+
+    void addIfPresent(Preference? field, String fallbackKey) {
+      if (field == null) return;
+
+      final isTimezone = (field.key ?? fallbackKey) == 'timezone';
+
+      tiles.add(
+        SettingWidget(
+          title: field.name ?? fallbackKey,
+          description: field.description ?? '',
+          currentValue: field.value ?? '',
+          onTap:
+              isTimezone
+                  ? () => showTimezoneDialog(context, ref, field.value ?? '')
+                  : () => showOptionsSheet(
+                    field.description ?? '',
+                    field.name ?? fallbackKey,
+                    field.options ?? [],
+                    (selected) {},
+                    context,
+                  ),
+        ),
+      );
+    }
+
+    addIfPresent(prefs.currency, 'currency');
+    addIfPresent(prefs.language, 'language');
+    addIfPresent(prefs.dateFormat, 'date_format');
+    addIfPresent(prefs.timezone, 'timezone');
+
+    if (tiles.isEmpty) {
+      return EmptyBodys(message: "No Preference Settings available.");
+    }
+
+    return Column(children: tiles);
+  }
+
   Widget _buildBody(WidgetRef ref, BuildContext context) {
     final prefrencyAsync = ref.watch(userPrefrenceprovider);
-    // final isError = ref.watch(formProvider).prvencyettingerror;
 
     return RefreshIndicator(
       color: AppColors.instance.yellow500,
       onRefresh:
-          () => ref
-              .read(userPrefrenceprovider.notifier)
-              .refreshSettings(context, ref),
+          () =>
+              ref
+                  .read(userPrefrenceprovider.notifier)
+                  .refreshSettings(context, ref),
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: ConstrainedBox(
@@ -64,261 +110,50 @@ class PreferencesScreen extends ConsumerWidget {
               SizedBox(height: 20),
               _buildAppbarBottom(ref),
               SizedBox(height: 10),
+
+              ///-------------- DYNAMIC: Only renders what backend returns ------------->
               prefrencyAsync.when(
                 data: (preference) {
-                  try {
-                    final user = preference?.data;
-                    final prefs = user?.preferences;
-                    // ignore: unnecessary_null_comparison
-                    return user != null
-                        ? SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              SettingWidget(
-                                title: prefs?.currency?.name ?? "",
-                                description: prefs?.currency?.description ?? "",
-                                currentValue: prefs?.currency?.value ?? "",
-                                onTap:
-                                    () => showOptionsSheet(
-                                      prefs?.currency?.description ?? "",
-                                      prefs?.currency?.name ?? "",
-                                      prefs?.currency?.options ?? [],
-                                      (selected) {},
-                                      context,
-                                    ),
-                              ),
-                              SettingWidget(
-                                title: prefs?.language?.name ?? "",
-                                description: prefs?.language?.description ?? "",
-                                currentValue: prefs?.language?.value ?? "",
-                                onTap:
-                                    () => showOptionsSheet(
-                                      prefs?.language?.description ?? "",
-                                      prefs?.language?.name ?? "",
+                  final prefs = preference?.data.preferences;
 
-                                      prefs?.language?.options ?? [],
-                                      (selected) {},
-                                      context,
-                                    ),
-                              ),
-                              SettingWidget(
-                                title: prefs?.dateFormat?.name ?? "",
-                                description:
-                                    prefs?.dateFormat?.description ?? "",
-                                currentValue: prefs?.dateFormat?.value ?? "",
-
-                                onTap:
-                                    () => showOptionsSheet(
-                                      prefs?.dateFormat?.description ?? "",
-                                      prefs?.dateFormat?.name ?? "",
-
-                                      prefs?.dateFormat?.options ?? [],
-                                      (selected) {},
-                                      context,
-                                    ),
-                              ),
-                              SettingWidget(
-                                title: prefs?.timezone?.name ?? "",
-                                description: prefs?.timezone?.description ?? "",
-                                currentValue: prefs?.timezone?.value ?? "",
-
-                                onTap:
-                                    () => showTimezoneDialog(
-                                      context,
-                                      ref,
-                                      prefs?.timezone?.value ?? "",
-                                    ),
-                              ),
-                            ],
-                          ),
-                        )
-                        : EmptyBodys(message: "No Preference Settings?");
-                  } catch (e) {
-                    return Builderroul(
-                      error: e.toString(),
-                      onTap:
-                          () => ref
-                              .read(userPrefrenceprovider.notifier)
-                              .refreshSettings(context, ref),
-                      firstMessage: "Faile to load Preference Settings?",
-                    );
+                  if (prefs == null) {
+                    return EmptyBodys(message: "No Preference Settings.");
                   }
+
+                  return _buildTiles(prefs, context, ref);
                 },
                 loading: () {
-                  try {
-                    final prefrency = ref.read(userPrefrenceprovider).value;
-                    final user = prefrency?.data;
-                    final prefs = user?.preferences;
+                  // Show cached data during loading if available, else spinner
+                  final cached = ref.read(userPrefrenceprovider).value;
+                  final prefs = cached?.data.preferences;
 
-                    return prefrency != null && user != null
-                        ? Column(
-                          children: [
-                            SettingWidget(
-                              title: prefs?.currency?.name ?? "",
-                              description: prefs?.currency?.description ?? "",
-                              currentValue: prefs?.currency?.value ?? "",
-                              onTap:
-                                  () => showOptionsSheet(
-                                    prefs?.currency?.description ?? "",
-                                    prefs?.currency?.name ?? "",
-                                    prefs?.currency?.options ?? [],
-                                    (selected) {},
-                                    context,
-                                  ),
-                            ),
-                            SettingWidget(
-                              title: prefs?.language?.name ?? "",
-                              description: prefs?.language?.description ?? "",
-                              currentValue: prefs?.language?.value ?? "",
-                              onTap:
-                                  () => showOptionsSheet(
-                                    prefs?.language?.description ?? "",
-                                    prefs?.language?.name ?? "",
-
-                                    prefs?.language?.options ?? [],
-                                    (selected) {},
-                                    context,
-                                  ),
-                            ),
-                            SettingWidget(
-                              title: prefs?.dateFormat?.name ?? "",
-                              description: prefs?.dateFormat?.description ?? "",
-                              currentValue: prefs?.dateFormat?.value ?? "",
-
-                              onTap:
-                                  () => showOptionsSheet(
-                                    prefs?.dateFormat?.description ?? "",
-                                    prefs?.dateFormat?.name ?? "",
-
-                                    prefs?.dateFormat?.options ?? [],
-                                    (selected) {},
-                                    context,
-                                  ),
-                            ),
-                            SettingWidget(
-                              title: prefs?.timezone?.name ?? "",
-                              description: prefs?.timezone?.description ?? "",
-                              currentValue: prefs?.timezone?.value ?? "",
-
-                              onTap:
-                                  () => showTimezoneDialog(
-                                    context,
-                                    ref,
-                                    prefs?.timezone?.value ?? "",
-                                  ),
-                            ),
-                          ],
-                        )
-                        : Loadingstates();
-                  } catch (e) {
-                    return Builderroul(
-                      error: e.toString(),
-                      onTap:
-                          () => ref
-                              .read(userPrefrenceprovider.notifier)
-                              .refreshSettings(context, ref),
-                      firstMessage: "Faile to load Preference Settings?",
-                    );
+                  if (prefs != null) {
+                    return _buildTiles(prefs, context, ref);
                   }
+                  return Loadingstates();
                 },
                 error: (error, stack) {
-                  try {
-                    // Handle session expiration
-                    // if (error.toString().contains("Unauthenticated")) {
-                    //   WidgetsBinding.instance.addPostFrameCallback((_) {
-                    //     ref
-                    //         .read(authProvider.notifier)
-                    //         .seassionExpire(context, ref);
-                    //   });
-                    //   return Expiresessionbody();
-                    // }
-                    if (error.toString().contains("Unauthorized")) {
-                      return Expiresessionbody();
-                    }
-
-                    // Try to show cached data
-                    // Show cached data while loading if available
-                    final prefrency = ref.read(userPrefrenceprovider).value;
-                    final user = prefrency?.data;
-                    final prefs = user?.preferences;
-                    if (prefrency != null && user != null) {
-                      return Column(
-                        children: [
-                          SettingWidget(
-                            title: prefs?.currency?.name ?? "",
-                            description: prefs?.currency?.description ?? "",
-                            currentValue: prefs?.currency?.value ?? "",
-                            onTap:
-                                () => showOptionsSheet(
-                                  prefs?.currency?.description ?? "",
-                                  prefs?.currency?.name ?? "",
-                                  prefs?.currency?.options ?? [],
-                                  (selected) {},
-                                  context,
-                                ),
-                          ),
-                          SettingWidget(
-                            title: prefs?.language?.name ?? "",
-                            description: prefs?.language?.description ?? "",
-                            currentValue: prefs?.language?.value ?? "",
-                            onTap:
-                                () => showOptionsSheet(
-                                  prefs?.language?.description ?? "",
-                                  prefs?.language?.name ?? "",
-                                  prefs?.language?.options ?? [],
-                                  (selected) {},
-                                  context,
-                                ),
-                          ),
-                          SettingWidget(
-                            title: prefs?.dateFormat?.name ?? "",
-                            description: prefs?.dateFormat?.description ?? "",
-                            currentValue: prefs?.dateFormat?.value ?? "",
-                            onTap:
-                                () => showOptionsSheet(
-                                  prefs?.dateFormat?.description ?? "",
-                                  prefs?.dateFormat?.name ?? "",
-                                  prefs?.dateFormat?.options ?? [],
-                                  (selected) {},
-                                  context,
-                                ),
-                          ),
-                          SettingWidget(
-                            title: prefs?.timezone?.name ?? "",
-                            description: prefs?.timezone?.description ?? "",
-                            currentValue: prefs?.timezone?.value ?? "",
-
-                            onTap:
-                                () => showTimezoneDialog(
-                                  context,
-                                  ref,
-                                  prefs?.timezone?.value ?? "",
-                                ),
-                          ),
-                          Emmergencybody(error: error.toString()),
-                        ],
-                      );
-                    }
-
-                    // No cached data available
-                    return Builderroul(
-                      error: error.toString(),
-                      onTap:
-                          () => ref
-                              .read(userPrefrenceprovider.notifier)
-                              .refreshSettings(context, ref),
-                      firstMessage: "Faile to load Preference Settings?",
-                    );
-                  } catch (e) {
-                    return Builderroul(
-                      error: e.toString(),
-                      onTap:
-                          () => ref
-                              .read(userPrefrenceprovider.notifier)
-                              .refreshSettings(context, ref),
-                      firstMessage: "Faile to load Preference Settings?",
-                    );
+                  if (error.toString().contains("Unauthorized")) {
+                    return Expiresessionbody();
                   }
+
+                  // Try to show cached data on error
+                  final cached = ref.read(userPrefrenceprovider).value;
+                  final prefs = cached?.data.preferences;
+
+                  if (prefs != null) {
+                    return _buildTiles(prefs, context, ref);
+                  }
+
+                  return Builderroul(
+                    error: error.toString(),
+                    onTap:
+                        () =>
+                            ref
+                                .read(userPrefrenceprovider.notifier)
+                                .refreshSettings(context, ref),
+                    firstMessage: "Failed to load Preference Settings.",
+                  );
                 },
               ),
             ],
@@ -331,10 +166,10 @@ class PreferencesScreen extends ConsumerWidget {
   PreferredSizeWidget _buildAppBar(WidgetRef ref, BuildContext context) {
     return AppBar(
       bottom: PreferredSize(
-        preferredSize: Size.fromHeight(10), // Adjust height as needed
+        preferredSize: Size.fromHeight(10),
         child: Divider(
           color: AppColors.instance.grey400,
-        ), // This can be a Container, Row, etc.
+        ),
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 

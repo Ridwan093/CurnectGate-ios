@@ -39,7 +39,7 @@ class DeactiveAccount extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Deactive your Account',
+                'Deactivate your Account',
                 style: TextStyle(
                   fontSize: 18,
                   fontFamily: FontFamilies.interDisplay,
@@ -47,7 +47,7 @@ class DeactiveAccount extends ConsumerWidget {
                 ),
               ),
               Text(
-                'Where are sorry to hear you want to Deactive your Account, please tell ours the reason Below?',
+                'We are sorry to hear you want to deactivate your Account, please tell us the reason below?',
                 style: TextStyle(
                   fontSize: 12,
                   fontFamily: FontFamilies.interDisplay,
@@ -107,7 +107,7 @@ class DeactiveAccount extends ConsumerWidget {
                       color: AppColors.instance.yellow500,
                     )
                     : Text(
-                      "Deactive",
+                      "Deactivate",
                       style: TextStyle(
                         fontFamily: FontFamilies.interDisplay,
                         fontSize: 15,

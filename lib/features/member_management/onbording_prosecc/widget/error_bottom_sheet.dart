@@ -25,7 +25,7 @@ Widget buildErrorContent(String erro, BuildContext context) {
 
         // Title and subtitle
         Text(
-          'Menber ID not confirmed',
+          'Member ID not confirmed',
           style: TextStyle(
             fontSize: 20,
             fontFamily: FontFamilies.interDisplay,

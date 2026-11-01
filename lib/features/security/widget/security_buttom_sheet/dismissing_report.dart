@@ -27,7 +27,7 @@ class DismissingReport extends ConsumerStatefulWidget {
 class _DismissingReportState extends ConsumerState<DismissingReport> {
   final _noteController = TextEditingController();
   List<String> reason = [
-    "Insuficient Evidenc",
+    "Insufficient Evidence",
     "False Report",
     "Reported in Error",
     "Security Not Responsible",

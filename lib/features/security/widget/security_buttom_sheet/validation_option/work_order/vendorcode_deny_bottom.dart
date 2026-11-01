@@ -60,7 +60,7 @@ class _DenyEntryState extends ConsumerState<DenyVendorEntry> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Specify the reason for denial entry ",
+                    "Specify the reason for entry denial ",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,

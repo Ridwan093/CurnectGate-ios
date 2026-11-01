@@ -57,7 +57,7 @@ class _DenyEntryState extends ConsumerState<DenyEntry> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Specify the reason for denial entry",
+                    "Specify the reason for entry denial",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,
@@ -73,7 +73,7 @@ class _DenyEntryState extends ConsumerState<DenyEntry> {
                 fieldType: FieldType.reason,
                 hintText: "(eg. not meet up with estate standard)",
                 label: "Enter reason",
-                fieldKey: "oTpCode",
+                fieldKey: "reason",
                 onChanged: (value) {
                   ref.read(oTpformProvider.notifier).updateReason(value);
                 },

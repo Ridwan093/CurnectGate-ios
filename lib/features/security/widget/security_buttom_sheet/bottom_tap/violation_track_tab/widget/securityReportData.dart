@@ -165,7 +165,7 @@ class SecurityReportBody extends ConsumerWidget {
                 context: context,
                 headertitle: "Resolve this violation?",
                 headersubtitle:
-                    "please provide the resolution notes for this report",
+                    "Please provide the resolution notes for this report",
                 ref: ref,
                 bottom: BottomSheetView.securitydismissViolation,
               );

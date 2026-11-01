@@ -88,7 +88,7 @@ class _PackingAccessContentState extends ConsumerState<PackingAccessContent> {
             ),
           ),
           Text(
-            "Packing access",
+            "Parking access",
             style: TextStyle(
               fontSize: 18,
               color: AppColors.instance.black600,

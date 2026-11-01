@@ -68,7 +68,7 @@ class _DenyEntryState extends ConsumerState<VendorAccessDeny> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Specify the reason for denial access ",
+                    "Specify the reason for access denial ",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,
