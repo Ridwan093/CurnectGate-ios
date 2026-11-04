@@ -1,0 +1,88 @@
+// import '../models/election_models.dart';
+
+// class ElectionSampleData {
+//   static ElectionData get sampleData {
+//     return ElectionData(
+//       election: const Election(
+//         estateName: 'Greenville Estate',
+//         memberName: 'Benjamin Afolabi',
+//         memberId: 'GVE-2451',
+//         status: 'Active',
+//         yourVotes: 3,
+//         totalVoters: 847,
+//         daysLeft: 1,
+//         votedCount: 234,
+//         turnoutPercentage: 28.0,
+//       ),
+//       totalVotes: 1000,
+//       candidates: [
+//         Candidate(
+//           id: '1',
+//           name: 'Chinedu Okafor',
+//           party: 'Progress Party',
+//           position: 'President',
+//           description: 'Business strategist with 15 years experience in estate...',
+//           votes: 360,
+//           percentage: 36.0,
+//           isLeading: true,
+//           isWinner: true,
+//         ),
+//         Candidate(
+//           id: '2',
+//           name: 'Aisha Bello',
+//           party: 'Unity Alliance',
+//           position: 'President',
+//           description: 'Community organizer and social welfare advocate',
+//           votes: 280,
+//           percentage: 28.0,
+//           isLeading: false,
+//           isWinner: false,
+//         ),
+//         Candidate(
+//           id: '3',
+//           name: 'Tunde Adeyemi',
+//           party: 'New Dawn',
+//           position: 'President',
+//           description: 'Engineer and urban planning specialist',
+//           votes: 220,
+//           percentage: 22.0,
+//           isLeading: false,
+//           isWinner: false,
+//         ),
+//         Candidate(
+//           id: '4',
+//           name: 'Ngozi Okeke',
+//           party: 'Independent',
+//           position: 'President',
+//           description: 'Retired civil servant with extensive community experience',
+//           votes: 140,
+//           percentage: 14.0,
+//           isLeading: false,
+//           isWinner: false,
+//         ),
+//         Candidate(
+//           id: '5',
+//           name: 'Kunle Adebayo',
+//           party: 'Progress Party',
+//           position: 'General Secretary',
+//           description: '',
+//           votes: 280,
+//           percentage: 46.6,
+//           isLeading: false,
+//           isWinner: true,
+//         ),
+//         Candidate(
+//           id: '6',
+//           name: 'Ifeoma Eze',
+//           party: 'Progress Party',
+//           position: 'Financial Secretary',
+//           description: '',
+//           votes: 340,
+//           percentage: 56.7,
+//           isLeading: false,
+//           isWinner: true,
+//         ),
+//       ],
+//     );
+//   }
+// }
