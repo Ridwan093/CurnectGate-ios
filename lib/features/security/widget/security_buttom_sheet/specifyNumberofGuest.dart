@@ -1,7 +1,7 @@
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/securitybutton.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +53,7 @@ class _SpecifyumberOfGuestState extends ConsumerState<SpecifyumberOfGuest> {
                   ),
                   SizedBox(height: 40),
                   Text(
-                    "Specify number of guest",
+                    "Specify Number of Guests",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontWeight: FontFamilies.bold,
@@ -108,8 +108,8 @@ class _SpecifyumberOfGuestState extends ConsumerState<SpecifyumberOfGuest> {
                       color: AppColors.instance.black300,
                       fontSize: 13,
                     ),
-                    hintText: "(eg. 10,1,2,3,4)",
-                    labelText: "Number of Allowed Guest",
+                    hintText: "(e.g. 1, 2, 3, 10)",
+                    labelText: "Number of Allowed Guests",
                   ),
                   onChanged: (value) {
                     ref
@@ -159,7 +159,7 @@ class _SpecifyumberOfGuestState extends ConsumerState<SpecifyumberOfGuest> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Required Escort",
+                  "Requires Escort",
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     color: AppColors.instance.black600,

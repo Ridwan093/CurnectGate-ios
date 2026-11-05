@@ -38,7 +38,7 @@ class EventSelected extends ConsumerWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                "Create and attend to event from community!",
+                "Create and attend community events.",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   fontSize: 12,
@@ -54,7 +54,7 @@ class EventSelected extends ConsumerWidget {
               showUserBottomSheet(
                 context: context,
                 headertitle: "",
-                headersubtitle: "Revoked  OTP",
+                headersubtitle: "Revoked OTP",
                 ref: ref,
                 bottom: BottomSheetView.events,
                 id: 0,
@@ -70,7 +70,7 @@ class EventSelected extends ConsumerWidget {
               showUserBottomSheet(
                 context: context,
                 headertitle: "",
-                headersubtitle: "Revoked  OTP",
+                headersubtitle: "Revoked OTP",
                 ref: ref,
                 bottom: BottomSheetView.myeventCode,
                 id: 0,

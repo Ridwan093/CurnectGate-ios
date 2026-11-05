@@ -17,10 +17,10 @@ class PaymentMethodItem with _$PaymentMethodItem {
     String? secretKey,
     String? currency,
     String? environment,
-    /// Percentage charge e.g. "1.5" → 1.5% of the entered amount.
+    /// Percentage charge e.g. "1.5" -> 1.5% of the entered amount.
     /// If this is "0" or null, fall back to [chargeFlat].
     String? chargePercentage,
-    /// Flat charge e.g. "100" → ₦100 fixed fee.
+    /// Flat charge e.g. "100" -> ₦100 fixed fee.
     /// If this is "0" or null, use [chargePercentage] instead.
     String? chargeFlat,
   }) = _PaymentMethodItem;

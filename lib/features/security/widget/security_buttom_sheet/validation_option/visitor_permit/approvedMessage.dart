@@ -44,7 +44,7 @@ class AccessGrantedPermit extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          "You granted Permit to $visitorName",
+          "You granted a permit to $visitorName",
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,
             fontSize: 14,

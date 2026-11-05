@@ -33,7 +33,7 @@
 //                           estateName: user.estateName,
 //                           memberId: user.memberCode,
 //                         )
-//                         : EmptyBodys(message: "No profile data?");
+//                         : EmptyBodys(message: "No profile data available.");
 //                   } catch (e) {
 //                     return Builderroul(
 //                       error: e.toString(),
@@ -41,7 +41,7 @@
 //                           () => ref
 //                               .read(userProfileProvider.notifier)
 //                               .refreshProfile(context, ref),
-//                       firstMessae: "Faile to load profile?",
+//                       firstMessae: "Failed to load profile.",
 //                     );
 //                   }
 //                 },
@@ -64,7 +64,7 @@
 //                           () => ref
 //                               .read(userProfileProvider.notifier)
 //                               .refreshProfile(context, ref),
-//                       firstMessae: "Faile to load profile?",
+//                       firstMessae: "Failed to load profile.",
 //                     );
 //                   }
 //                 },
@@ -104,7 +104,7 @@
 //                           () => ref
 //                               .read(userProfileProvider.notifier)
 //                               .refreshProfile(context, ref),
-//                       firstMessae: "Faile to load profile?",
+//                       firstMessae: "Failed to load profile.",
 //                     );
 //                   } catch (e) {
 //                     return Builderroul(
@@ -113,7 +113,7 @@
 //                           () => ref
 //                               .read(userProfileProvider.notifier)
 //                               .refreshProfile(context, ref),
-//                       firstMessae: "Faile to load profile?",
+//                       firstMessae: "Failed to load profile.",
 //                     );
 //                   }
 //                 },

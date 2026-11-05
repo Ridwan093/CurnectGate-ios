@@ -19,7 +19,7 @@ class ChatSettingsNotifier
   @override
   Future<ConversationSettingsResponse?> build(int id) async {
     final localChatSetting =
-        await SharedPrefsService.getChatSettings(); // ✅ FIXED
+        await SharedPrefsService.getChatSettings(); // FIXED
 
     try {
       final freshChatSettings = await ref
@@ -27,13 +27,13 @@ class ChatSettingsNotifier
           .getChatSettings(id.toString());
 
       if (localChatSetting?.toJson() != freshChatSettings.toJson()) {
-        await SharedPrefsService.saveChatSettings(freshChatSettings); // ✅ FIXED
+        await SharedPrefsService.saveChatSettings(freshChatSettings); // FIXED
       }
 
       return freshChatSettings;
     } catch (e) {
       if (localChatSetting != null) {
-        log("$e → USING LOCAL CACHE");
+        log("$e, using local cache");
         return localChatSetting;
       }
       rethrow;

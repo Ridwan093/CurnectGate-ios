@@ -9,7 +9,7 @@ class CommunityScreen extends BaseVerificationScreen {
     : super(
         currentStep: 4,
         totalSteps: 5,
-        title: "Hi Sam!👋🏻",
+        title: "Hi there",
         description: 'Start a Conversation',
       );
 

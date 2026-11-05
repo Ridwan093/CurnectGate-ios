@@ -1,7 +1,7 @@
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/securitybutton.dart';
@@ -57,7 +57,7 @@ class _ValidateWorkOrderOtpState
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Confirm check-in worker",
+                    "Confirm worker check-in",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,
@@ -71,7 +71,7 @@ class _ValidateWorkOrderOtpState
               ReusabelProfileForm(
                 controller: _noteController,
                 fieldType: FieldType.none,
-                hintText: "(eg. arrived in time )",
+                hintText: "(e.g. Arrived on time)",
                 label: "Security note",
                 fieldKey: "Security note",
                 onChanged: (value) {

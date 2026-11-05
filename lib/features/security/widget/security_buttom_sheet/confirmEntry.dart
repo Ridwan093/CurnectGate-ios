@@ -135,7 +135,7 @@ class Confirmentry extends ConsumerWidget {
           _buildText(
             title: "Name",
             subtitle:
-                "${extractedData['firstname'].toString().toUpperCase()}  ${extractedData['lastname'].toString().toUpperCase()}",
+                "${extractedData['firstname'].toString().toUpperCase()} ${extractedData['lastname'].toString().toUpperCase()}",
           ),
           SizedBox(height: 20),
           _buildText(

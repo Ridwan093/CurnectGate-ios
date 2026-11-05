@@ -8,7 +8,7 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/%20operations/property_agreement/widget/agreement_data.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -123,7 +123,7 @@ class _AgreementSignScreenState extends ConsumerState<AgreementSignScreen> {
                     ),
                     const SizedBox(height: 30),
 
-                    // 📄 Sub Header
+                    // Sub Header
                     Text(
                       "Property agreement",
                       style: TextStyle(
@@ -135,7 +135,7 @@ class _AgreementSignScreenState extends ConsumerState<AgreementSignScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // 📜 Agreement Body
+                    // Agreement Body
                     AgreementData(),
 
                     const SizedBox(height: 30),
@@ -154,7 +154,7 @@ class _AgreementSignScreenState extends ConsumerState<AgreementSignScreen> {
                         ],
                       ),
                     ),
-                    // 💡 Guidance Card
+                    // Guidance Card
                     SizedBox(height: 20),
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 500),

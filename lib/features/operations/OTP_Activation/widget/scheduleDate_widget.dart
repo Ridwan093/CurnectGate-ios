@@ -22,7 +22,7 @@ class DatePickerTile extends ConsumerWidget {
         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // Label — fixed part
+          // Label - fixed part
           Text(
             'Schedule date',
             style: TextStyle(
@@ -34,7 +34,7 @@ class DatePickerTile extends ConsumerWidget {
           ),
 
           const Spacer(), // Pushes date + icon to right
-          // Selected date — safe from overflow
+          // Selected date - safe from overflow
           Text(
             selectedDate != null
                 ? DateFormat('dd/MM/yyyy').format(selectedDate)

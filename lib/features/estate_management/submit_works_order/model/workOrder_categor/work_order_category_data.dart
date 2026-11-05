@@ -27,7 +27,7 @@ class WorkOrderCategoryData with _$WorkOrderCategoryData {
                   WorkOrderCategory.empty(),
                 ),
               )
-              .whereType<WorkOrderCategory>() // ✅ filters out nulls safely
+              .whereType<WorkOrderCategory>() // filters out nulls safely
               .toList(),
     );
   }

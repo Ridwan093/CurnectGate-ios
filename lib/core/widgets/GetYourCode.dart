@@ -172,7 +172,7 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
   Widget _buildSuccessContainerEvendor({
     required String title,
     required String mainCode,
-    List<String>? subCodes, // 👈 Multiple sub worker codes
+    List<String>? subCodes, // Multiple sub worker codes
   }) {
     final hasSubCodes = subCodes != null && subCodes.isNotEmpty;
 
@@ -182,7 +182,7 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
         children: [
           const SizedBox(height: 100),
 
-          // ✅ Success Circle
+          // Success Circle
           Container(
             height: 75,
             width: 75,
@@ -205,7 +205,7 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
 
           const SizedBox(height: 25),
 
-          // ✅ Title
+          // Title
           const SizedBox(height: 25),
           Text(
             title,
@@ -276,7 +276,7 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
             ),
             const SizedBox(height: 10),
 
-            // ✅ Display all sub-codes
+            // Display all sub-codes
             Container(
               padding: EdgeInsets.all(12),
               width: MediaQuery.sizeOf(context).width,
@@ -417,7 +417,7 @@ class _WorkRequestVendorCodeState extends ConsumerState<GetYourCodeScreen> {
   void _shareAllCodes(List<String> codes) {
     if (codes.isEmpty) return;
 
-    final message = 'Here is your work codes:\n${codes.join('\n')}';
+    final message = 'Here are your work codes:\n${codes.join('\n')}';
     // ignore: deprecated_member_use
     Share.share(message);
   }

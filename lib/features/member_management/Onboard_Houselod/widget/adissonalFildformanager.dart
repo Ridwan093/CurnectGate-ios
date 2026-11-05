@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/%20overlay_multi_select.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/startDate_widget.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/yearofExperecnandeducationWidget.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -100,7 +100,7 @@ class Adissonalfildformanager extends ConsumerWidget {
           controller: emergencyContactname,
           fieldKey: 'emergency_contact_name',
           fieldType: FieldType.name,
-          hintText: 'eg. same jone',
+          hintText: 'e.g. Sam Jones',
           label: 'Emergency contact name',
           onChanged: (value) {},
           onValidationChanged: (validation) {
@@ -118,7 +118,7 @@ class Adissonalfildformanager extends ConsumerWidget {
           controller: emergencyContactphnoe,
           fieldKey: 'emergency_contact_phone',
           fieldType: FieldType.phone,
-          hintText: 'eg +234-748748',
+          hintText: 'e.g. +234 800 000 0000',
           label: 'Emergency contact number',
           onChanged: (value) {},
           onValidationChanged: (validation) {
@@ -136,7 +136,7 @@ class Adissonalfildformanager extends ConsumerWidget {
           controller: desgination,
           fieldKey: 'desgination',
           fieldType: FieldType.name,
-          hintText: 'eg. Senior Project Manager',
+          hintText: 'e.g. Senior Project Manager',
           label: 'desgination',
           onChanged: (value) {},
           onValidationChanged: (validation) {

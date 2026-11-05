@@ -93,7 +93,7 @@ class PaymentSuccessSheet extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                 isError?"Re-try" : "Done",
+                 isError?"Retry" : "Done",
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     fontWeight: FontWeight.w600,

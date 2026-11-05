@@ -5,7 +5,7 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/estate_
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/progresscontainer.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/stepcount.dart';
 import 'package:curnectgate/features/member_management/profile_form/passwordform.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -143,7 +143,7 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
           ),
           const SizedBox(height: 32),
           PasswordInputField(
-            hintText: "e.g Gre&&^#098",
+            hintText: "e.g. Gre&&^#098",
             label: 'Create a password ',
             showErroindicator: true,
           ),

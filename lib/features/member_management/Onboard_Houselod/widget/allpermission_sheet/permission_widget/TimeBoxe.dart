@@ -34,9 +34,9 @@ class Timeboxe extends ConsumerWidget {
                             hourMinuteColor:
                                 AppColors
                                     .instance
-                                    .grey300, // ✅ Highlighted background
+                                    .grey300, // Highlighted background
                             hourMinuteTextColor:
-                                Colors.black, // ✅ Text color in header
+                                Colors.black, // Text color in header
                             hourMinuteShape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -52,13 +52,13 @@ class Timeboxe extends ConsumerWidget {
                             primary:
                                 AppColors
                                     .instance
-                                    .black600, // ✅ Circle selection & active color
+                                    .black600, // Circle selection & active color
                             onPrimary:
-                                Colors.white, // ✅ Text in selected circle
+                                Colors.white, // Text in selected circle
                             onSurface:
                                 AppColors
                                     .instance
-                                    .black600, // ✅ Default label color
+                                    .black600, // Default label color
                           ),
                         ),
                         child: child!,

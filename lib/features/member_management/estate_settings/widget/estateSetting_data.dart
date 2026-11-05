@@ -28,7 +28,7 @@ class EstateSettingsDatas<T> extends ConsumerWidget {
           if (userData != null) {
             return builder(context, userData as T);
           } else {
-            return EmptyBodys(message: "No Estate Settings data?");
+            return EmptyBodys(message: "No estate settings available.");
           }
         },
         loading: () {
@@ -59,7 +59,7 @@ class EstateSettingsDatas<T> extends ConsumerWidget {
                   () => ref
                       .read(emergencyProvider.notifier)
                       .refreshEstateSettings(context, ref),
-              firstMessage: "Failed to load Emergency data?",
+              firstMessage: "Failed to load emergency contacts.",
             );
           } catch (e) {
             return Builderroul(
@@ -68,7 +68,7 @@ class EstateSettingsDatas<T> extends ConsumerWidget {
                   () => ref
                       .read(emergencyProvider.notifier)
                       .refreshEstateSettings(context, ref),
-              firstMessage: "Failed to load Emergency data?",
+              firstMessage: "Failed to load emergency contacts.",
             );
           }
         },

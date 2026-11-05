@@ -1,6 +1,7 @@
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/validator/password_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -30,6 +31,7 @@ class _PasswordInputFieldState extends ConsumerState<PasswordInputField> {
   bool _hasMinLength = false;
   bool _hasNumber = false;
   bool _hasSpecialChar = false;
+  bool _hasMixedCase = false;
 
   @override
   void dispose() {
@@ -58,10 +60,12 @@ class _PasswordInputFieldState extends ConsumerState<PasswordInputField> {
   }
 
   void _validatePassword(String value) {
+    final result = PasswordValidator.validate(value);
     setState(() {
-      _hasMinLength = value.length >= 9;
-      _hasNumber = value.contains(RegExp(r'[0-9]'));
-      _hasSpecialChar = value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+      _hasMinLength = result.hasMinLength;
+      _hasNumber = result.hasNumber;
+      _hasSpecialChar = result.hasSpecialChar;
+      _hasMixedCase = result.hasMixedCase;
     });
   }
 
@@ -72,11 +76,15 @@ class _PasswordInputFieldState extends ConsumerState<PasswordInputField> {
             const SizedBox(height: 10),
             _buildValidationRow("At least one number", _hasNumber),
             _buildValidationRow(
-              "At least 9 or more characters ",
+              "Upper and lower case letters (e.g. Aa)",
+              _hasMixedCase,
+            ),
+            _buildValidationRow(
+              "At least 9 characters",
               _hasMinLength,
             ),
             _buildValidationRow(
-              "At least 1 special character (e.g.!., @, #,\$,%,^)",
+              "At least 1 special character (e.g. !, @, #, \$, %, ^)",
               _hasSpecialChar,
             ),
           ],

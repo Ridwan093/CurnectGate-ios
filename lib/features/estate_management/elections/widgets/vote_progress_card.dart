@@ -6,7 +6,7 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/poll/poll_item_summary.dart';
 import 'package:curnectgate/features/estate_management/elections/models/eletion_get_models/poll/polls_data.dart';
 import 'package:curnectgate/features/estate_management/elections/provider/eletion_provider.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

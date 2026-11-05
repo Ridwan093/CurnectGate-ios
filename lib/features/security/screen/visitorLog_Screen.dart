@@ -27,7 +27,7 @@ class _SegmentedTabScreenState extends State<SegmentedTabScreen>
         controller: _tabController,
         tabs: [
           Tab(child: Text('Pending')),
-          Tab(text: 'Approveed'),
+          Tab(text: 'Approved'),
           Tab(text: 'Dismissed'),
         ],
         // Ensure contrast with background

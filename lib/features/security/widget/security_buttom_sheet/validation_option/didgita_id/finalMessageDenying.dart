@@ -55,8 +55,8 @@ class DenyEntryDigitalMessage extends StatelessWidget {
         SizedBox(height: 30),
 
         _buildText(
-          title: "Access deny",
-          subtitle: "You deny access to ",
+          title: "Access Denied",
+          subtitle: "You denied access to ",
           userName: userName,
         ),
       ],

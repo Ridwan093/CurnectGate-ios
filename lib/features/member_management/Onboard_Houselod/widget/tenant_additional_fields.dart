@@ -2,7 +2,7 @@ import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/c
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/emergencyRelationShip_monthlyIncom.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/security_deposit_agentIncom.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/startDate_widget.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,7 +28,7 @@ class TenantAdditionalFields extends ConsumerWidget {
           controller: emergencyContactname,
           fieldKey: 'emergency_contact_name',
           fieldType: FieldType.name,
-          hintText: 'eg. same jone',
+          hintText: 'e.g. Sam Jones',
           label: 'Emergency contact name',
           onChanged: (value) {},
           onValidationChanged: (validation) {
@@ -46,7 +46,7 @@ class TenantAdditionalFields extends ConsumerWidget {
           controller: emergencyContactphnoe,
           fieldKey: 'emergency_contact_phone',
           fieldType: FieldType.phone,
-          hintText: 'eg +234-748748',
+          hintText: 'e.g. +234 800 000 0000',
           label: 'Emergency contact number',
           onChanged: (value) {},
           onValidationChanged: (validation) {
@@ -66,7 +66,7 @@ class TenantAdditionalFields extends ConsumerWidget {
           controller: desgination,
           fieldKey: 'Occupation',
           fieldType: FieldType.name,
-          hintText: 'eg.(banker, Software Engineer)',
+          hintText: 'e.g. Banker, Software Engineer',
           label: 'Occupation',
           onChanged: (value) {
             ref.read(formProvider.notifier).updateOcupation(value);
@@ -85,7 +85,7 @@ class TenantAdditionalFields extends ConsumerWidget {
         ReusabelProfileForm(
           fieldKey: 'Employer',
           fieldType: FieldType.name,
-          hintText: 'eg.(Amazon,Tech Solutions Inc.)',
+          hintText: 'e.g. Amazon, Tech Solutions Inc.',
           label: 'Employer',
           onChanged: (value) {
             ref.read(formProvider.notifier).updateEmplyer(value);

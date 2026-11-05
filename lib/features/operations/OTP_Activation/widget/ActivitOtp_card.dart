@@ -31,7 +31,7 @@ class ActivitOtpCard extends ConsumerWidget {
     }
   }
 
-  // Usage: formatRemainingTime("63628.20003") → "17h 40m 28s"
+  // Usage: formatRemainingTime("63628.20003") -> "17h 40m 28s"
   String formatToTime(DateTime dateTime) {
     try {
       // Convert to local timezone if it's not already
@@ -79,7 +79,7 @@ class ActivitOtpCard extends ConsumerWidget {
 
             const SizedBox(height: 16),
 
-            // Reusable rows — now safe from overflow
+            // Reusable rows - now safe from overflow
             _buildreUsableListTile(
               context: context,
               isEndDate: false,
@@ -208,7 +208,7 @@ class ActivitOtpCard extends ConsumerWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        /// LEFT — Title
+        /// LEFT - Title
         SizedBox(
           width: 80,
           child: Text(
@@ -246,7 +246,7 @@ class ActivitOtpCard extends ConsumerWidget {
                 )
               else if (isCode && status != null)
                 Flexible(
-                  // ✅ FIXED
+                  // FIXED
                   child: Padding(
                     padding: const EdgeInsets.only(right: 6),
                     child: Text(
@@ -315,7 +315,7 @@ class ActivitOtpCard extends ConsumerWidget {
   ) {
     return Row(
       children: [
-        // Left: Avatar + Name — takes available space safely
+        // Left: Avatar + Name - takes available space safely
         Expanded(
           child: Row(
             children: [
@@ -334,7 +334,7 @@ class ActivitOtpCard extends ConsumerWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                // ← Critical: name takes remaining space
+                // Critical: name takes remaining space
                 child: Text(
                   generated.visitorName,
                   overflow: TextOverflow.ellipsis,
@@ -351,7 +351,7 @@ class ActivitOtpCard extends ConsumerWidget {
           ),
         ),
 
-        // Right: Change button — fixed size, never pushed off
+        // Right: Change button - fixed size, never pushed off
         changeButton(
           context: context,
           ref: ref,

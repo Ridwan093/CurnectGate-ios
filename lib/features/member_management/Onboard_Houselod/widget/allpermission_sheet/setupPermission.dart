@@ -199,7 +199,7 @@ class PermissionSetupScreen extends ConsumerWidget {
                             child: _buildPermissionButton(
                               context,
                               "",
-                              "All Permission",
+                              "All Permissions",
                               () {
                                 context.pop();
                                 showUserBottomSheet(

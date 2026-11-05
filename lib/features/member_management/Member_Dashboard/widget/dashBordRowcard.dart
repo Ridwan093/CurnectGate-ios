@@ -19,7 +19,7 @@ class Dashbordrowcard extends StatelessWidget {
     return Expanded(
       child: AspectRatio(
         aspectRatio:
-            1.0, // Square card — change to 0.9 for taller, 1.2 for wider
+            1.0, // Square card - change to 0.9 for taller, 1.2 for wider
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(8),
@@ -38,7 +38,7 @@ class Dashbordrowcard extends StatelessWidget {
                   children: [
                     Image.asset(
                       icon,
-                      width: 40, // Base size — will scale down if needed
+                      width: 40, // Base size - will scale down if needed
                       height: 40,
                       fit: BoxFit.contain,
                     ),

@@ -36,7 +36,7 @@ class PaymentMethodData extends ConsumerWidget {
           final user = due?.data;
           return user != null
               ? _getList(user, ref, context, isMethodSelected)
-              : _buildErrorState(context, ref, "No payment data?");
+              : _buildErrorState(context, ref, "No payment methods available.");
         } catch (e) {
           return _buildErrorState(context, ref, e.toString());
         }
@@ -138,31 +138,23 @@ class PaymentMethodData extends ConsumerWidget {
                             //   bottom: BottomSheetView.fundingWithbankTransfer,
                             // );
                           } else {
+                            // The secret key stays on the server (it starts
+                            // and verifies every payment), so only the
+                            // estate's public key is needed to show card payment.
                             final hasPublicKey = _isValidPaystackKey(
                               e.publicKey,
                             );
-                            final hasSecretKey = _isValidPaystackKey(
-                              e.secretKey,
-                            );
 
-                            if (!hasPublicKey && !hasSecretKey) {
-                              // ── Both keys empty → estate hasn't set up payment at all
+                            if (!hasPublicKey) {
+                              // ── Estate hasn't set up card payment yet
                               showDialog(
                                 context: context,
                                 barrierDismissible: true,
                                 builder:
                                     (_) => const PaymentNotAvailableDialog(),
                               );
-                            } else if (!hasPublicKey || !hasSecretKey) {
-                              // ── One key present but the other is missing/broken
-                              showDialog(
-                                context: context,
-                                barrierDismissible: true,
-                                builder:
-                                    (_) => const PaymentMisconfiguredDialog(),
-                              );
                             } else {
-                              // ── Both keys valid → navigate to fund wallet
+                              // ── Configured -> navigate to fund wallet
                               ref.read(amountTextProvider.notifier).state = '';
                               Navigator.push(
                                 context,

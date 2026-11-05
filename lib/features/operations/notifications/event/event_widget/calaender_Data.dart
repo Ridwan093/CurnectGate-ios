@@ -50,7 +50,7 @@ class CalenderData extends ConsumerWidget {
                   () => ref
                       .read(getCalenderProvider.notifier)
                       .refreshEvent(context, ref),
-              firstMessage: "Failed to load Calendar?",
+              firstMessage: "Failed to load calendar.",
             );
           }
         },
@@ -119,8 +119,8 @@ class CalenderData extends ConsumerWidget {
               ),
               markerDecoration: BoxDecoration(
                 color: Colors.transparent,
-              ), // ← Key fix
-              markerSize: 0, // ← Makes default dots invisible
+              ), // Key fix
+              markerSize: 0, // Makes default dots invisible
               canMarkersOverflow: false,
             ),
 

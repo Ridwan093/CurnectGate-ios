@@ -35,7 +35,7 @@ class ElectionPage extends ConsumerWidget {
           onPressed: () => Navigator.of(context).maybePop(),
         ),
       ),
-      // NOTE: you requested no bottom navigation — so none included here.
+      // NOTE: you requested no bottom navigation - so none included here.
       body: ElectionBody(state: state),
     );
   }

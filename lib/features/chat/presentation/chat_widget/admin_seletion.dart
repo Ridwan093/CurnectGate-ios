@@ -24,10 +24,10 @@ class EstateAdminSelectionSheet extends ConsumerWidget {
     } else if (type.contains("security")) {
       title = "Select Security to Chat";
       subtitle =
-          "Choose a security personnel to start a conversation about your concern";
+          "Choose a security officer to start a conversation about your concern";
     }
 
-    // Demo data — replace with your real admin data
+    // Demo data - replace with your real admin data
 
     return Column(
       mainAxisSize: MainAxisSize.min,

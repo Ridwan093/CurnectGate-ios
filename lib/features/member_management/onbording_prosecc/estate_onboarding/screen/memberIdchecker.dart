@@ -18,9 +18,9 @@ class MemberIdchecker extends BaseVerificationScreen {
     : super(
         currentStep: 3,
         totalSteps: 6,
-        title: 'Confirm Your Member code',
+        title: 'Confirm Your Member Code',
         description:
-            'Let’s confirm your member code matches the record of the estate ',
+            'Let’s confirm your member code matches the estate’s records ',
       );
 
   @override
@@ -97,7 +97,7 @@ class _EstateCodeVerificationScreenState
           ReUsableForm(
             controller: _controller,
             label: "Member code",
-            hintText: "eg 045679",
+            hintText: "e.g. 045679",
             length: 6,
           ),
           const SizedBox(height: 24),

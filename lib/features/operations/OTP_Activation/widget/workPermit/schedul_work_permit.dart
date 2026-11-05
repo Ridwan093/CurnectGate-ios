@@ -4,7 +4,7 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/workformprovider.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/date_picker.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/submit_permit_provider.dart';
@@ -88,7 +88,7 @@ class _SubmitPermitBottomSheetState
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Grant access for guest and family',
+                          'Grant access for guests and family',
                           style: TextStyle(
                             fontFamily: FontFamilies.interDisplay,
                             fontSize: 13,
@@ -100,7 +100,7 @@ class _SubmitPermitBottomSheetState
                           controller: _guestNameController,
                           fieldKey: 'guest_name',
                           fieldType: FieldType.name,
-                          hintText: 'eg, James Brdget',
+                          hintText: 'e.g. James Bridget',
                           label: 'Guest Name',
                           onChanged: (_) {},
                           onValidationChanged: (_) {},
@@ -110,7 +110,7 @@ class _SubmitPermitBottomSheetState
                           controller: _guestNumberController,
                           fieldKey: 'guest_phone_number',
                           fieldType: FieldType.phone,
-                          hintText: 'Eg, +2349138747',
+                          hintText: 'e.g. +2349138747',
                           label: 'Guest Phone Number',
                           onChanged: (_) {},
                           onValidationChanged: (_) {},
@@ -131,7 +131,7 @@ class _SubmitPermitBottomSheetState
                           controller: _specialInfoController,
                           fieldKey: 'special_instructions',
                           fieldType: FieldType.reason,
-                          hintText: 'eg, call at 10 PM',
+                          hintText: 'e.g. call at 10 PM',
                           label: 'Special Instructions',
                           onChanged: (_) {},
                           onValidationChanged: (_) {},

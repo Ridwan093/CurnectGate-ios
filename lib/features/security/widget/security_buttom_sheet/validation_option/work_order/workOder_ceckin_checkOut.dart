@@ -2,7 +2,7 @@ import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/co_dropdown.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/securitybutton.dart';
@@ -51,7 +51,7 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidateWorkOrderCheckIn>
                   Text(
                     widget.validateType == "work"
                         ? "Validate work order"
-                        : "Validate  OTP",
+                        : "Validate OTP",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontWeight: FontFamilies.bold,
@@ -62,8 +62,8 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidateWorkOrderCheckIn>
                   const SizedBox(height: 4),
                   Text(
                     widget.validateType == "work"
-                        ? "Valiate work order code to grant entry."
-                        : "Valiate otp code to grant entry.",
+                        ? "Validate the work order code to grant entry."
+                        : "Validate the OTP code to grant entry.",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,
@@ -77,7 +77,7 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidateWorkOrderCheckIn>
               ReusabelProfileForm(
                 controller: _otpController,
                 fieldType: FieldType.oTpCode,
-                hintText: "(eg. #84758)",
+                hintText: "(e.g. #84758)",
                 label: "Enter OTP",
                 fieldKey: "oTpCode",
                 onChanged: (value) {
@@ -118,7 +118,7 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidateWorkOrderCheckIn>
               ReusabelProfileForm(
                 controller: _noteController,
                 fieldType: FieldType.itemName,
-                hintText: "(eg. arrived in time )",
+                hintText: "(e.g. Arrived on time)",
                 label: "Security note",
                 fieldKey: "Security note",
                 onChanged: (value) {

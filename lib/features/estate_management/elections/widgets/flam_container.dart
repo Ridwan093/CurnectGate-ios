@@ -21,7 +21,7 @@ import 'dart:math';
 //     _controller = AnimationController(
 //       vsync: this,
 //       duration: const Duration(seconds: 3),
-//     )..repeat(); // 🔥 infinite flame animation
+// )..repeat(); // infinite flame animation
 //   }
 
 //   @override
@@ -169,7 +169,7 @@ class FirePainter extends CustomPainter {
           ..maskFilter = const MaskFilter.blur(
             BlurStyle.outer,
             8,
-          ); // 🔥 Blur glow
+          ); // Blur glow
 
     final borderRect = RRect.fromRectAndRadius(
       rect.deflate(borderWidth),

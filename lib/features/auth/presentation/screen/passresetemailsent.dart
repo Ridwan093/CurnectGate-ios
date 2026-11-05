@@ -62,7 +62,7 @@ class PasswordResetSend extends StatelessWidget {
                       'If you have an account with us, you will receive a link to reset your password at ',
                 ),
                 TextSpan(
-                  text: 'Samlee.curnect@mail.com',
+                  text: 'your email address',
 
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
@@ -119,5 +119,5 @@ class PasswordResetSend extends StatelessWidget {
     );
   }
 }
-// IF you have an account with us, you will recieve a link to reset your password at  Samlee.curnect@mail.com. 
+// IF you have an account with us, you will recieve a link to reset your password at  your email address. 
 // Follow the directions in the email to reset your password.

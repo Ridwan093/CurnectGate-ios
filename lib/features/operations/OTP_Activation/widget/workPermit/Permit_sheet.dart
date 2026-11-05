@@ -41,7 +41,7 @@ class _OtpTabsPageState extends State<OtpTabsPage>
         ),
         SizedBox(height: 40),
 
-        /// 🔹 Custom Tab Switcher
+        /// Custom Tab Switcher
         Container(
           height: 40,
           decoration: BoxDecoration(
@@ -95,7 +95,7 @@ class _OtpTabsPageState extends State<OtpTabsPage>
 
         const SizedBox(height: 16),
 
-        /// 🔹 Animated Content
+        /// Animated Content
         Expanded(
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 350),
@@ -133,4 +133,4 @@ class _OtpTabsPageState extends State<OtpTabsPage>
   }
 }
 
-/// ✅ OTP History Tab
+/// OTP History Tab

@@ -1,7 +1,7 @@
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/securitybutton.dart';
@@ -75,7 +75,7 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidateWorkOrders> {
               ReusabelProfileForm(
                 controller: _otpController,
                 fieldType: FieldType.vendorOtp,
-                hintText: "(eg. #84758)",
+                hintText: "(e.g. #84758)",
                 label: "Vendor Access Code",
                 fieldKey: "oTpCode",
                 onChanged: (value) {
@@ -96,7 +96,7 @@ class _ValidateWorkOrderOtpState extends ConsumerState<ValidateWorkOrders> {
                 ReusabelProfileForm(
                   controller: _noteController,
                   fieldType: FieldType.phone,
-                  hintText: "(eg. 234908784783 )",
+                  hintText: "(e.g. 2348012345678)",
                   label: "Vendor Phone",
                   fieldKey: "Phone",
                   onChanged: (value) {

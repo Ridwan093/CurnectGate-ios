@@ -46,7 +46,7 @@ class ReportBody extends ConsumerWidget {
                     () => ref
                         .read(userReportProvider.notifier)
                         .refreshReports(context, ref),
-                firstMessage: "Faile to load violation?",
+                firstMessage: "Failed to load violation.",
               );
             }
           },
@@ -74,7 +74,7 @@ class ReportBody extends ConsumerWidget {
                     () => ref
                         .read(userReportProvider.notifier)
                         .refreshReports(context, ref),
-                firstMessage: "Faile to load violation?",
+                firstMessage: "Failed to load violation.",
               );
             } catch (e) {
               log(e.toString());
@@ -84,7 +84,7 @@ class ReportBody extends ConsumerWidget {
                     () => ref
                         .read(userReportProvider.notifier)
                         .refreshReports(context, ref),
-                firstMessage: "Faile to load violation?",
+                firstMessage: "Failed to load violation.",
               );
             }
           },
@@ -111,7 +111,7 @@ class ReportBody extends ConsumerWidget {
             Image.asset(AssetPaths.dashboardReports, height: 100, width: 100),
             const SizedBox(height: 10),
             Text(
-              "Your violation appear here",
+              "Your violation reports will appear here",
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
                 color: AppColors.instance.black300,

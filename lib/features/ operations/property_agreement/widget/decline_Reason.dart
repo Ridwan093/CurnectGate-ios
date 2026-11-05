@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/securitybutton.dart';
@@ -65,7 +65,7 @@ class _DenyEntryState extends ConsumerState<DeclineReason> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Specifie the reason for decline.",
+                    "Specify the reason for declining.",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,
@@ -80,7 +80,7 @@ class _DenyEntryState extends ConsumerState<DeclineReason> {
                 controller: _reasonEditinControler,
                 fieldType: FieldType.reason,
                 hintText:
-                    "(eg. I need more time to review the terms with my lawyer)",
+                    "(e.g. I need more time to review the terms with my lawyer)",
                 label: "Enter reason",
                 fieldKey: "oTpCode",
                 onChanged: (value) {

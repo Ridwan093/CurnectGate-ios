@@ -42,7 +42,7 @@ class voteSubmited extends ConsumerWidget {
             ),
             SizedBox(height: 20),
             Text(
-              "Thank you for your input, your response have been submitted,",
+              "Thank you for your input. Your response has been submitted.",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,

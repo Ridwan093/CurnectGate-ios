@@ -2,7 +2,7 @@ import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/co_dropdown.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/securitybutton.dart';
@@ -63,7 +63,7 @@ class _AddLocationAndAccesTypeState
                   ),
                   SizedBox(height: 40),
                   Text(
-                    "Add Validate Info",
+                    "Add Validation Info",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontWeight: FontFamilies.bold,
@@ -88,7 +88,7 @@ class _AddLocationAndAccesTypeState
               ReusabelProfileForm(
                 controller: _locationController,
                 fieldType: FieldType.name,
-                hintText: "(eg. Main Gate)",
+                hintText: "(e.g. Main Gate)",
                 label: "Location",
                 fieldKey: "Location",
                 onChanged: (value) {

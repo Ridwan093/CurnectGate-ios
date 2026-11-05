@@ -71,7 +71,7 @@ class PaymentHistoryScreen extends ConsumerWidget {
                   () => ref
                       .read(paymentHistoryProvider.notifier)
                       .refreshPaymentHistory(context),
-              firstMessage: "Failed to load transaction history",
+              firstMessage: "Failed to load transaction history.",
             );
           },
         ),

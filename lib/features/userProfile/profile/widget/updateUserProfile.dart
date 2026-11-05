@@ -3,7 +3,7 @@
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/userProfile/profile/model/fform_enum.dart';
 import 'package:curnectgate/features/userProfile/profile/provider/form_state.dart';
 import 'package:curnectgate/features/userProfile/profile/widget/profileButton.dart';
@@ -49,7 +49,7 @@ class _UpdateProfileDialogState extends ConsumerState<UpdateProfileDialog> {
                     ),
                   ),
                    Text(
-                    'Change your Username to new!',
+                    'Change your name to a new one.',
                     style: TextStyle(
                       fontSize: 12,
                       fontFamily: FontFamilies.interDisplay,

@@ -106,7 +106,7 @@ class Profilecard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Profile Image — fixed size
+              // Profile Image - fixed size
               Container(
                 height: 60,
                 width: 60,
@@ -139,7 +139,7 @@ class Profilecard extends StatelessWidget {
 
               const SizedBox(width: 12),
 
-              // Text info — takes remaining space safely
+              // Text info - takes remaining space safely
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,7 +207,7 @@ class Profilecard extends StatelessWidget {
                 ),
               ),
 
-              // QR section — fixed width, never squeezed
+              // QR section - fixed width, never squeezed
               Padding(
                 padding: EdgeInsets.only(left: isSmallScreen ? 8 : 16),
                 child: Column(

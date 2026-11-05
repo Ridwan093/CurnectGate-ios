@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/config/estate_currency.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/payment/provider/due_state_provider.dart';
@@ -76,7 +77,7 @@ class PaymentReceiptScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'Your payment of ₦ ${totalPaid.toStringAsFixed(2)} has been processed successfully.',
+                'Your payment of ${EstateCurrency.symbol} ${totalPaid.toStringAsFixed(2)} has been processed successfully.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
@@ -126,7 +127,7 @@ class PaymentReceiptScreen extends ConsumerWidget {
                       (bill) => _ReceiptItem(
                         title: bill.feeCategory?.name ?? "Fee",
                         amount:
-                            '₦ ${selectedAmounts[bill.id]!.toStringAsFixed(2)}',
+                            '${EstateCurrency.symbol} ${selectedAmounts[bill.id]!.toStringAsFixed(2)}',
                       ),
                     ),
                     const Padding(
@@ -135,13 +136,13 @@ class PaymentReceiptScreen extends ConsumerWidget {
                     ),
                     _ReceiptTotalRow(
                       label: 'Total Amount',
-                      value: '₦ ${totalPaid.toStringAsFixed(2)}',
+                      value: '${EstateCurrency.symbol} ${totalPaid.toStringAsFixed(2)}',
                       isBold: true,
                     ),
                     const SizedBox(height: 12),
                     _ReceiptTotalRow(
                       label: 'Remaining Balance',
-                      value: '₦ ${remainingBalance.toStringAsFixed(2)}',
+                      value: '${EstateCurrency.symbol} ${remainingBalance.toStringAsFixed(2)}',
                       color: Colors.orange[700],
                     ),
                   ],

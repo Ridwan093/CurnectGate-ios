@@ -33,7 +33,7 @@ class VisitorSettingsScreen extends ConsumerWidget {
                 id: id,
               );
             } else {
-              return EmptyBodys(message: "No visitor settings?");
+              return EmptyBodys(message: "No visitor settings available.");
             }
           } catch (e) {
             return Builderroul(
@@ -42,7 +42,7 @@ class VisitorSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load visitor setting?",
+              firstMessage: "Failed to load visitor settings.",
             );
           }
         },
@@ -62,7 +62,7 @@ class VisitorSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load visitor setting?",
+              firstMessage: "Failed to load visitor settings.",
             );
           }
         },
@@ -93,7 +93,7 @@ class VisitorSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load visitor settings?",
+              firstMessage: "Failed to load visitor settings.",
             );
           } catch (e) {
             return Builderroul(
@@ -102,7 +102,7 @@ class VisitorSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load visitor setting?",
+              firstMessage: "Failed to load visitor settings.",
             );
           }
         },

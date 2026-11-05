@@ -72,7 +72,7 @@ class Residentmergency extends ConsumerWidget {
                               size: size,
                               title: "Police",
                               subtitle:
-                                  "The Police department handles crime prevention, safety protection",
+                                  "The police department handles crime prevention and public safety.",
                               icon: Icons.policy,
                             ),
 
@@ -94,7 +94,7 @@ class Residentmergency extends ConsumerWidget {
                               size: size,
                               title: "Fire service",
                               subtitle:
-                                  "The Fire Service responds to fire outbreaks, hazardous material incidents",
+                                  "The fire service responds to fire outbreaks and hazardous material incidents.",
                               icon: Icons.local_fire_department,
                             ),
                           if (contact.ambulance?.isNotEmpty ?? false)

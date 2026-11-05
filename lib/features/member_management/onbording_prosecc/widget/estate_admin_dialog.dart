@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/config/app_env.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<void> openEstateAdminWebsite() async {
-  final Uri url = Uri.parse("http://www.curnectgate.com"); // <-- CHANGE LINK
+  final Uri url = Uri.parse(AppEnv.websiteUrl);
 
   if (!await launchUrl(
     url,

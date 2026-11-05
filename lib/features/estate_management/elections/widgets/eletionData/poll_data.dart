@@ -21,13 +21,13 @@ class PollDatas extends ConsumerWidget {
           final polls = poll?.data;
           return polls != null
               ? VoteProgressCard(data: polls, canRoute: canRoute)
-              : EmptyBodys(message: "No Poll?");
+              : EmptyBodys(message: "No polls available.");
         } catch (e) {
           return Builderroul(
             error: e.toString(),
             onTap:
                 () => ref.read(pollProvider.notifier).refreshPoll(context, ref),
-            firstMessage: "Faile to load Poll?",
+            firstMessage: "Failed to load poll.",
           );
         }
       },
@@ -43,7 +43,7 @@ class PollDatas extends ConsumerWidget {
             error: e.toString(),
             onTap:
                 () => ref.read(pollProvider.notifier).refreshPoll(context, ref),
-            firstMessage: "Faile to load Poll?",
+            firstMessage: "Failed to load poll.",
           );
         }
       },
@@ -69,14 +69,14 @@ class PollDatas extends ConsumerWidget {
             error: error.toString(),
             onTap:
                 () => ref.read(pollProvider.notifier).refreshPoll(context, ref),
-            firstMessage: "Faile to load Poll?",
+            firstMessage: "Failed to load poll.",
           );
         } catch (e) {
           return Builderroul(
             error: e.toString(),
             onTap:
                 () => ref.read(pollProvider.notifier).refreshPoll(context, ref),
-            firstMessage: "Faile to load Poll deteils?",
+            firstMessage: "Failed to load poll details.",
           );
         }
       },

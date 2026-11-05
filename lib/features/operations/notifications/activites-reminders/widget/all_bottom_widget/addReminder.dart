@@ -3,7 +3,7 @@ import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/co_dropdown.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/Reminder_form.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/datePicker.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/filter_submit_buttion.dart';
@@ -575,7 +575,7 @@ class _AddReminderState extends ConsumerState<AddReminder> {
                                 () => ref
                                     .read(reminderHouseholdProvider.notifier)
                                     .refreshHousehold(context, ref),
-                            firstMessage: "Faile to load housedhold",
+                            firstMessage: "Failed to load household members.",
                           );
                         }
                         return Builderroul(
@@ -584,7 +584,7 @@ class _AddReminderState extends ConsumerState<AddReminder> {
                               () => ref
                                   .read(reminderHouseholdProvider.notifier)
                                   .refreshHousehold(context, ref),
-                          firstMessage: "Faile to load housedhold",
+                          firstMessage: "Failed to load household members.",
                         );
                       },
                     ),

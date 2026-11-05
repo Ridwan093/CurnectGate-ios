@@ -4,7 +4,7 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/model/permision_slug_model/permission_model.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/provider.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/permission_widget/reusable_reason_widget.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -160,7 +160,7 @@ class _VisitorInivitaitonCotentState
                               ),
                             ),
                             TextSpan(
-                              text: "Maximum Visitors Per day",
+                              text: "Maximum Visitors Per Day",
                               style: TextStyle(
                                 fontSize: 12,
                                 fontFamily: FontFamilies.interDisplay,

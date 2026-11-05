@@ -117,7 +117,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
       body: RefreshIndicator(
         color: AppColors.instance.yellow500,
         onRefresh: () async {
-          // Pull-to-refresh → force API sync
+          // Pull-to-refresh -> force API sync
           await ref
               .read(conversationListProvider.notifier)
               .refreshConversations();
@@ -447,7 +447,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
               children: [
                 Image.asset(AssetPaths.emtymeesage, height: 80, width: 80),
                 Text(
-                  "Your conversation appears here, start a conversation with an estate committee or estate security",
+                  "Your conversations will appear here. Start a conversation with your estate admin, committee or security.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,

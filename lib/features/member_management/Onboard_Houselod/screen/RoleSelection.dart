@@ -1,10 +1,10 @@
-import 'dart:developer';
-
+import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/screen_managment.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/screen/add_Coowner_Property_management.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/progresscontainer.dart';
+import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/radios_widget/customradioTile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,9 +29,9 @@ class _PasswordScreenState extends ConsumerState<MemberSelection> {
     'Co-owner':
         'Shares legal ownership of the property with full ownership access',
     'Property manager':
-        'Oversees  property operations, maintenance, and resident communications.',
+        'Oversees property operations, maintenance, and resident communications.',
     'Family member':
-        'Someone related by blood, marriage, and adoption with limited app access.',
+        'Someone related by blood, marriage or adoption with limited app access.',
     'Staff':
         'An authorized household employee (e.g., cleaner, driver) with controlled access. ',
     'Tenant':
@@ -39,7 +39,14 @@ class _PasswordScreenState extends ConsumerState<MemberSelection> {
   };
   void _submitForm() {
     if (selectedRole == null) {
-      log("please selecte role?");
+      showCustomSuccessToast(
+        context: context,
+        message: "Please select a role to continue.",
+        color: AppColors.instance.error500,
+        icon: Icons.error_outline,
+        iconColors: AppColors.instance.grey300,
+        positionNumber: 72,
+      );
     } else if (selectedRole != null) {
       Navigator.push(
         context,

@@ -44,7 +44,7 @@ class EventsBottomSheet extends ConsumerWidget {
                   SliverToBoxAdapter(child: _buildTabBar(ref, context)),
                   const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
-                  // Tab Content — takes all remaining space without overflow
+                  // Tab Content - takes all remaining space without overflow
                   // SliverFillRemaining(
                   //   hasScrollBody: false, // Allows inner ListView to scroll
                   //   child: _buildContent(ref, context),
@@ -100,7 +100,7 @@ class EventsBottomSheet extends ConsumerWidget {
           ),
         ),
         Text(
-          "Track event and happenings in your estate",
+          "Track events and happenings in your estate",
           style: TextStyle(
             fontSize: 12,
             fontFamily: FontFamilies.interDisplay,
@@ -150,7 +150,7 @@ class EventsBottomSheet extends ConsumerWidget {
           Text(
             title,
             maxLines: 1,
-            overflow: TextOverflow.ellipsis, // ← Critical: prevents overflow
+            overflow: TextOverflow.ellipsis, // Critical: prevents overflow
             textAlign: TextAlign.center,
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
@@ -186,7 +186,7 @@ class EventsBottomSheet extends ConsumerWidget {
         if (data?.data != null) {
           return _buildTabButton(
             2,
-            "Canceled(${data?.data?.events?.length.toString() ?? ""})",
+            "Canceled (${data?.data?.events?.length.toString() ?? ""})",
             state.currentTab,
             notifier,
             ref,
@@ -235,7 +235,7 @@ class EventsBottomSheet extends ConsumerWidget {
         if (data?.data != null) {
           return _buildTabButton(
             1,
-            "Going(${data?.data?.events?.length.toString() ?? ""})",
+            "Going (${data?.data?.events?.length.toString() ?? ""})",
             state.currentTab,
             notifier,
             ref,
@@ -284,7 +284,7 @@ class EventsBottomSheet extends ConsumerWidget {
         if (data?.data != null) {
           return _buildTabButton(
             0,
-            "Events(${data?.data?.events?.length.toString() ?? ""})",
+            "Events (${data?.data?.events?.length.toString() ?? ""})",
             state.currentTab,
             notifier,
             ref,

@@ -1,9 +1,10 @@
+import 'package:curnectgate/core/config/estate_currency.dart';
 import 'dart:developer';
 
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/payment/provider/due_state_provider.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/due_model/outstanding_due.dart';
 import 'package:flutter/material.dart';
@@ -155,7 +156,7 @@ class _ReviewPaymentState extends ConsumerState<ReviewPayment>
                             final isPartial = bill.allowPartialPayment ?? true;
                             return _ItemRow(
                               label: bill.feeCategory?.name ?? "Fee",
-                              value: '₦ ${formatPrice(amount.toString())}',
+                              value: '${EstateCurrency.symbol} ${formatPrice(amount.toString())}',
                               isPartial: isPartial,
                             );
                           }),
@@ -165,12 +166,12 @@ class _ReviewPaymentState extends ConsumerState<ReviewPayment>
                           ),
                           _SummaryRow(
                             label: 'Subtotal',
-                            value: '₦ ${formatPrice(subtotal.toString())}',
+                            value: '${EstateCurrency.symbol} ${formatPrice(subtotal.toString())}',
                           ),
                           const SizedBox(height: 8),
                           _SummaryRow(
                             label: 'Processing Fee',
-                            value: '₦ ${formatPrice(processingFee.toString())}',
+                            value: '${EstateCurrency.symbol} ${formatPrice(processingFee.toString())}',
                           ),
                           const SizedBox(height: 16),
                           Container(
@@ -193,7 +194,7 @@ class _ReviewPaymentState extends ConsumerState<ReviewPayment>
                                   ),
                                 ),
                                 Text(
-                                  '₦ ${formatPrice(totalDueNow.toString())}',
+                                  '${EstateCurrency.symbol} ${formatPrice(totalDueNow.toString())}',
                                   style: TextStyle(
                                     fontFamily: FontFamilies.interDisplay,
                                     fontWeight: FontWeight.bold,
@@ -520,7 +521,7 @@ class _PaymentMethodTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "Balance: ₦$walletBalance",
+                  "Balance: ${EstateCurrency.symbol}$walletBalance",
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     color: AppColors.instance.teal400,

@@ -36,7 +36,7 @@ class Workoderlist extends ConsumerWidget {
             showUserBottomSheet(
               context: context,
               headertitle: "Manage Vendor Log",
-              headersubtitle: "Manage  ${vendorLog?.category?.name ?? ""}",
+              headersubtitle: "Manage ${vendorLog?.category?.name ?? ""}",
               ref: ref,
               bottom: BottomSheetView.vendorLog,
               id: vendorLog?.id ?? 0,
@@ -289,9 +289,9 @@ class _Header extends ConsumerWidget {
       onPressed: () {
         showUserBottomSheet(
           context: context,
-          headertitle: "Uploade After Photo",
+          headertitle: "Upload After Photo",
           headersubtitle:
-              "Upload after photo for  ${vendor?.category?.name ?? ""}",
+              "Upload after photo for ${vendor?.category?.name ?? ""}",
           ref: ref,
           bottom: BottomSheetView.afterphoto,
           id: vendor?.id ?? 0,
@@ -558,7 +558,7 @@ class _ProgressStepper extends StatelessWidget {
                     ),
                     SizedBox(width: 4 * safeScale),
 
-                    /// 🔥 FittedBox prevents overflow on tiny screens
+                    /// FittedBox prevents overflow on tiny screens
                     Expanded(
                       child: FittedBox(
                         alignment: Alignment.centerLeft,

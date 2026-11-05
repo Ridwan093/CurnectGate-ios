@@ -5,7 +5,7 @@ import 'package:curnectgate/features/estate_management/screen_managment.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/loading_screen/loading_page.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/member_management/profile_form/passwordform.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,8 +16,8 @@ class NewPassword extends BaseVerificationScreen {
     : super(
         currentStep: 4,
         totalSteps: 5,
-        title: "Hey .👋🏻",
-        description: 'You almost there ',
+        title: "Hey there",
+        description: 'You’re almost there',
       );
 
   @override
@@ -131,7 +131,7 @@ class _SignInState extends ConsumerState<NewPassword> {
           const SizedBox(height: 8),
           PasswordInputField(
             hintText: "rge738\$..",
-            label: 'cornfirm a password',
+            label: 'Confirm password',
             onChanged: (value) {
               ref.read(formProvider.notifier).updateConfirmNewPass(value);
             },

@@ -34,7 +34,7 @@ class UpdateInput extends ConsumerWidget {
       validator:
           isRequired
               ? (value) =>
-                  value == null || value.isEmpty ? 'Required $label' : ""
+                  value == null || value.isEmpty ? '$label is required' : null
               : null,
       onChanged: onChanged,
     );

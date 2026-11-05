@@ -6,7 +6,7 @@ import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/notifications/event/event_widget/EventCode/eventCode_card.dart';
 import 'package:curnectgate/features/operations/notifications/event/model/EventCodes/event_code_model.dart';
@@ -83,7 +83,7 @@ class EventCodeData extends ConsumerWidget {
                   () => ref
                       .read(getEventCodeProvider.notifier)
                       .refreshEventCode(context, ref),
-              firstMessage: "Faile to load Event",
+              firstMessage: "Failed to load event.",
             );
           } catch (e) {
             return Builderroul(
@@ -93,7 +93,7 @@ class EventCodeData extends ConsumerWidget {
                   () => ref
                       .read(getEventCodeProvider.notifier)
                       .refreshEventCode(context, ref),
-              firstMessage: "Faile to load Event?",
+              firstMessage: "Failed to load event.",
             );
           }
         },
@@ -146,7 +146,7 @@ class EventCodeData extends ConsumerWidget {
             Image.asset(AssetPaths.dashboardEvents, height: 100, width: 100),
             SizedBox(height: 10),
             Text(
-              "Your Event Code  appears here",
+              "Your event codes will appear here",
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
                 color: AppColors.instance.black300,

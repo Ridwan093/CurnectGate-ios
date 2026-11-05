@@ -21,7 +21,7 @@ class AgreementPopupData extends ConsumerWidget {
     debugPrint("ACCEPTED RAW: $accepted");
     debugPrint("VERSION: $version");
 
-    // 🚨 Detect placeholder object (your exact case)
+    // Detect placeholder object (your exact case)
     final isPlaceholder =
         accepted == false &&
         (version == null || version == 0) &&
@@ -33,7 +33,7 @@ class AgreementPopupData extends ConsumerWidget {
       return true;
     }
 
-    // ✅ Only block when explicitly false with real data
+    // Only block when explicitly false with real data
     if (accepted == false) {
       return false;
     }
@@ -78,7 +78,7 @@ class AgreementPopupData extends ConsumerWidget {
                 () => ref
                     .read(complianceprovider.notifier)
                     .refreshCompliance(context, ref),
-            firstMessage: "Faile to load data",
+            firstMessage: "Failed to load data.",
           );
         } catch (e) {
           return Builderroul(
@@ -87,7 +87,7 @@ class AgreementPopupData extends ConsumerWidget {
                 () => ref
                     .read(complianceprovider.notifier)
                     .refreshCompliance(context, ref),
-            firstMessage: "Faile to load data",
+            firstMessage: "Failed to load data.",
           );
         }
         // Session expiration still handled

@@ -70,12 +70,12 @@ class VendorCheckInMessage extends StatelessWidget {
         Icon(Icons.check_circle, size: 60, color: AppColors.instance.teal500),
         SizedBox(height: 30),
         _buildText(
-          title: "Checkin Completed",
+          title: "Check-In Completed",
           subtitle: "Worker ",
           userName: userName,
           details: [
             "Check-in: $checkInTime",
-            "Date Apoint: $checkOutTime",
+            "Last Updated: $checkOutTime",
             "Check-In Day: $duration",
           ],
         ),

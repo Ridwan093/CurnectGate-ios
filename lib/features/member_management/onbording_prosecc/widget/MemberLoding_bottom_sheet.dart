@@ -39,7 +39,7 @@ Widget showValidationBottomSheet(BuildContext context) {
         ),
         SizedBox(height: 8),
         Text(
-          'Hold tight, We are checking if your member code is associated to your selected estate.',
+          'Hold tight, we are checking if your member code is associated with your selected estate.',
           textAlign: TextAlign.start,
           style: TextStyle(
             fontSize: 13,

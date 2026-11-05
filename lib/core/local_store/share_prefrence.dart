@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:curnectgate/core/config/estate_currency.dart';
 import 'package:curnectgate/features/%20operations/property_agreement/model/agreements_response.dart';
 import 'package:curnectgate/features/%20operations/property_agreement/model/compliance/compliance_response.dart';
 import 'package:curnectgate/features/ResidentDirectory/model/comittee_model/committees_response_model.dart';
@@ -1564,6 +1565,7 @@ class SharedPrefsService {
   Future<void> clearAuthData() async {
     final prefs = await SharedPreferences.getInstance();
     log(_keyAuthData);
+    await EstateCurrency.clear();
     clearProfile();
     clearnotifcation();
     clearEstatAddrss();

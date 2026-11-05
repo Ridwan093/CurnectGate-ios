@@ -127,7 +127,7 @@ class Addcomment extends ConsumerWidget {
                 ),
                 SizedBox(height: 8),
                 Text(
-                  "Chose whether the comment is visible to Admin only or to the public.",
+                  "Choose whether the comment is visible to admins only or to the public.",
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     color: AppColors.instance.black300,

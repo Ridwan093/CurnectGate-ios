@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/config/estate_currency.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -180,7 +181,7 @@ class DuePayment extends ConsumerWidget {
             ...listoutStanding.map((e) {
               final categoryName = e.feeCategory?.name ?? "Fee";
               return _buildPaymentClick(
-                amount: '₦${formatPrice(e.amount ?? "")}',
+                amount: '${EstateCurrency.symbol}${formatPrice(e.amount ?? "")}',
                 title: categoryName,
                 subtitle: formatDueDate(e.dueDate ?? ""),
                 iconData: _getIconData(categoryName),
@@ -222,7 +223,7 @@ class DuePayment extends ConsumerWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "₦${formatPrice(wallet)}",
+                  "${EstateCurrency.symbol}${formatPrice(wallet)}",
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
@@ -259,7 +260,7 @@ class DuePayment extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  "Your Total due",
+                  "Your Total Due",
                   textAlign: TextAlign.end,
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
@@ -270,7 +271,7 @@ class DuePayment extends ConsumerWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "₦${formatPrice(due)}",
+                  "${EstateCurrency.symbol}${formatPrice(due)}",
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.end,
                   style: TextStyle(
@@ -322,7 +323,7 @@ class DuePayment extends ConsumerWidget {
 
             const SizedBox(width: 16),
 
-            // Title + Subtitle — takes available space
+            // Title + Subtitle - takes available space
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -357,7 +358,7 @@ class DuePayment extends ConsumerWidget {
 
             const SizedBox(width: 16),
 
-            // Amount — aligned right
+            // Amount - aligned right
             Text(
               amount,
               style: TextStyle(

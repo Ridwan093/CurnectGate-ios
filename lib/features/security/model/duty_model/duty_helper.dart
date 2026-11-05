@@ -7,7 +7,7 @@ import 'duty_data.dart';
 
 class DutyUiMapper {
   static DutyTextUiState mapCurrentDuty(DutyData? data) {
-    /// ⭐ no data
+    /// no data
     if (data == null || data.myDuty == null) {
       return DutyTextUiState(
         label: "Duty",
@@ -20,7 +20,7 @@ class DutyUiMapper {
 
     final myDuty = data.myDuty!;
 
-    /// ⭐ OFF DUTY
+    /// OFF DUTY
     if (myDuty.dutyStatus != "on_duty") {
       return const DutyTextUiState(
         label: "Currently: ",
@@ -31,7 +31,7 @@ class DutyUiMapper {
       );
     }
 
-    /// ⭐ SHIFT FROM BACKEND (using securityShift)
+    /// SHIFT FROM BACKEND (using securityShift)
     if (myDuty.securityShift != null) {
       final start = _formatTime(myDuty.securityShift['start_time']);
       final end = _formatTime(myDuty.securityShift['end_time']);
@@ -45,7 +45,7 @@ class DutyUiMapper {
       );
     }
 
-    /// ⭐ fallback
+    /// fallback
     final shift = data.todayShifts?.firstOrNull;
 
     if (shift != null) {

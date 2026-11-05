@@ -29,21 +29,21 @@ class BiometricSignatureHelper {
     final savedEmail = prefs.getString(_sharedPrefsEmailKey);
     final savedId = prefs.getString(_biometricIdKey);
 
-    // ✅ Check if all identifiers match
+    // Check if all identifiers match
     if (existingSignature != null &&
         savedEmail == email &&
         savedId == uniqueBiometricId) {
       return existingSignature;
     }
 
-    // ⚙️ Generate new one when not found or mismatched
+    // Generate new one when not found or mismatched
     return await _refreshForUser(
       email: email,
       uniqueBiometricId: uniqueBiometricId,
     );
   }
 
-  /// 🔄 Generate and persist a new HMAC-SHA256 signature
+  /// Generate and persist a new HMAC-SHA256 signature
   static Future<String> _refreshForUser({
     required String email,
     required String uniqueBiometricId,
@@ -65,7 +65,7 @@ class BiometricSignatureHelper {
     return signature;
   }
 
-  /// 🧠 Retrieve current stored signature (if any)
+  /// Retrieve current stored signature (if any)
   static Future<String?> getStoredSignature() async {
     final prefs = await SharedPreferences.getInstance();
     final signature = prefs.getString(_signatureKey);
@@ -78,22 +78,22 @@ class BiometricSignatureHelper {
     return prefs.getString(_sharedPrefsEmailKey);
   }
 
-  /// 🆔 Retrieve stored biometric ID
+  /// Retrieve stored biometric ID
   static Future<String?> getStoredBiometricId() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_biometricIdKey);
   }
 
-  /// 🚫 Clear biometric data (for logout or disable)
+  /// Clear biometric data (for logout or disable)
   static Future<void> clearIfUserDisables() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_signatureKey);
     await prefs.remove(_biometricIdKey);
     await prefs.remove(_sharedPrefsEmailKey);
-    log("🧹 Cleared all biometric signature data");
+    log("Cleared all biometric signature data");
   }
 
-  /// 🧩 Debug helper: inspect stored values
+  /// Debug helper: inspect stored values
   static Future<Map<String, String?>> debugData() async {
     final prefs = await SharedPreferences.getInstance();
     final data = {
@@ -101,7 +101,7 @@ class BiometricSignatureHelper {
       "email": prefs.getString(_sharedPrefsEmailKey),
       "biometric_id": prefs.getString(_biometricIdKey),
     };
-    log("🧠 Debug Data: $data");
+    log("Debug Data: $data");
     return data;
   }
 }

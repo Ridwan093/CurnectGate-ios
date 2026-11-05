@@ -33,7 +33,7 @@ class PollDeteilsNotifer
         throw Exception("Unauthenticated");
       }
       if (id.isEmpty) {
-        throw Exception("Error Unauthenticated");
+        throw Exception("Unauthenticated. Please log in again.");
       }
       final freshPollDeteils = await ref
           .read(getApiServiceProvider)

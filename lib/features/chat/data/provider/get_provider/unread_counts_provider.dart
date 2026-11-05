@@ -13,7 +13,7 @@ final unreadCountsProvider =
 class UnreadCountsNotifier extends AutoDisposeAsyncNotifier<UnreadCountsData?> {
   @override
   Future<UnreadCountsData?> build() async {
-    // ✅ Load local first
+    // Load local first
     final local = await SharedPrefsService.getChatCount();
 
     try {
@@ -22,7 +22,7 @@ class UnreadCountsNotifier extends AutoDisposeAsyncNotifier<UnreadCountsData?> {
       if (response.success == true && response.data != null) {
         final fresh = response.data!;
 
-        // ✅ Save only if changed
+        // Save only if changed
         if (local?.toJson().toString() != fresh.toJson().toString()) {
           await SharedPrefsService.saveChatCount(fresh);
         }
@@ -32,11 +32,11 @@ class UnreadCountsNotifier extends AutoDisposeAsyncNotifier<UnreadCountsData?> {
 
       return local; // fallback if API success false
     } catch (e) {
-      log("❌ UnreadCounts error: $e");
+      log("UnreadCounts error: $e");
 
-      // ✅ fallback to cache
+      // fallback to cache
       if (local != null) {
-        log("📦 Using cached unread counts");
+        log("Using cached unread counts");
         return local;
       }
 
@@ -44,7 +44,7 @@ class UnreadCountsNotifier extends AutoDisposeAsyncNotifier<UnreadCountsData?> {
     }
   }
 
-  // 🔄 Manual refresh (like your committee)
+  // Manual refresh (like your committee)
   Future<void> refreshCounts() async {
     state = const AsyncValue.loading();
 
@@ -67,7 +67,7 @@ class UnreadCountsNotifier extends AutoDisposeAsyncNotifier<UnreadCountsData?> {
 
         throw Exception("No unread data available");
       } catch (e) {
-        log("❌ Refresh failed: $e");
+        log("Refresh failed: $e");
 
         final local = await SharedPrefsService.getChatCount();
         if (local != null) return local;

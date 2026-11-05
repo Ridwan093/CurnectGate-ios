@@ -365,7 +365,7 @@ class _PaymentMisconfiguredDialogState
 
 // ─── NEW: Payment Not Available Dialog ───────────────────────────────────────
 /// Shown when BOTH publicKey and secretKey are empty.
-/// Means this user/estate has no payment setup at all — no wallet access.
+/// Means this user/estate has no payment setup at all - no wallet access.
 class PaymentNotAvailableDialog extends StatefulWidget {
   const PaymentNotAvailableDialog({super.key});
 

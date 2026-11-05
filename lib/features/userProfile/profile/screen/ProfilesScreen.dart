@@ -9,7 +9,7 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/workformprovider.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/member_management/tabState/tab_state.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
@@ -92,7 +92,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                           estateName: user.estateName,
                           memberId: user.memberCode,
                         )
-                        : EmptyBodys(message: "No profile data?");
+                        : EmptyBodys(message: "No profile data available.");
                   } catch (e) {
                     return Builderroul(
                       error: e.toString(),
@@ -100,7 +100,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                           () => ref
                               .read(userProfileProvider.notifier)
                               .refreshProfile(context, ref),
-                      firstMessage: "Faile to load profile?",
+                      firstMessage: "Failed to load profile.",
                     );
                   }
                 },
@@ -141,7 +141,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                           () => ref
                               .read(userProfileProvider.notifier)
                               .refreshProfile(context, ref),
-                      firstMessage: "Faile to load profile?",
+                      firstMessage: "Failed to load profile.",
                     );
                   }
                 },
@@ -194,7 +194,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                           () => ref
                               .read(userProfileProvider.notifier)
                               .refreshProfile(context, ref),
-                      firstMessage: "Faile to load profile?",
+                      firstMessage: "Failed to load profile.",
                     );
                   } catch (e) {
                     return Builderroul(
@@ -203,7 +203,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                           () => ref
                               .read(userProfileProvider.notifier)
                               .refreshProfile(context, ref),
-                      firstMessage: "Faile to load profile?",
+                      firstMessage: "Failed to load profile.",
                     );
                   }
                 },
@@ -257,7 +257,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
                               //   ),
                               // );
                             },
-                            title: "Manage Member",
+                            title: "Manage Members",
                             iconPath: AssetPaths.userStar,
                           ),
                         ],
@@ -434,7 +434,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with RouteAware {
               showUserBottomSheet(
                 context: context,
                 headertitle: "",
-                headersubtitle: "Revoked  OTP",
+                headersubtitle: "Revoked OTP",
                 ref: ref,
                 bottom: BottomSheetView.events,
                 id: 0,

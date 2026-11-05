@@ -32,7 +32,7 @@ class PackingAccessSettingsScreen extends ConsumerWidget {
             if (user != null && user.permissions != null) {
               return PackingAccessContent(permission: user.permissions, id: id);
             } else {
-              return EmptyBodys(message: "No packing settings?");
+              return EmptyBodys(message: "No parking settings available.");
             }
           } catch (e) {
             return Builderroul(
@@ -41,7 +41,7 @@ class PackingAccessSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load packing setting?",
+              firstMessage: "Failed to load parking settings.",
             );
           }
         },
@@ -61,7 +61,7 @@ class PackingAccessSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load packing setting?",
+              firstMessage: "Failed to load parking settings.",
             );
           }
         },
@@ -93,7 +93,7 @@ class PackingAccessSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load packing settings?",
+              firstMessage: "Failed to load parking settings.",
             );
           } catch (e) {
             return Builderroul(
@@ -102,7 +102,7 @@ class PackingAccessSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load pcaking setting?",
+              firstMessage: "Failed to load parking settings.",
             );
           }
         },

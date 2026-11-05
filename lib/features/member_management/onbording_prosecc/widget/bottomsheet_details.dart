@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
@@ -300,7 +301,7 @@ class BottomsheetDetails extends ConsumerWidget {
         return Addcomment(
           title: headertitle,
           reportBy: headersubtitle,
-          date: "Date: July 8, 2025",
+          date: "Date: ${DateFormat('MMMM d, yyyy').format(DateTime.now())}",
         );
 
       case BottomSheetView.securitydismissViolation:
@@ -605,7 +606,7 @@ class BottomsheetDetails extends ConsumerWidget {
             ),
           ),
         );
-        title = "Edit vendor Log";
+        title = "Edit Vendor Log";
         break;
 
       case BottomSheetView.permissions:
@@ -642,7 +643,7 @@ class BottomsheetDetails extends ConsumerWidget {
           backgroundColor: AppColors.instance.grey400,
           backgroundImage: AssetImage(AssetPaths.searchUser),
         );
-        title = "Reach out to an estate Admin";
+        title = "Reach out to an estate admin";
         break;
       case BottomSheetView.manageOTPforvisitor:
         onTap = () async {
@@ -743,7 +744,7 @@ class BottomsheetDetails extends ConsumerWidget {
       //       child: Icon(Icons.restore, color: AppColors.instance.error500),
       //     ),
       //   );
-      //   title = "Revoke vendor Log";
+      //   title = "Revoke Vendor Log";
       //   break;
       case BottomSheetView.revorkActiveOtp:
         onTap = () {
@@ -756,7 +757,7 @@ class BottomsheetDetails extends ConsumerWidget {
             child: Icon(Icons.restore, color: AppColors.instance.error500),
           ),
         );
-        title = "Revoke active Otp";
+        title = "Revoke active OTP";
         break;
 
       case BottomSheetView.permissions:
@@ -799,7 +800,7 @@ class BottomsheetDetails extends ConsumerWidget {
           backgroundColor: AppColors.instance.error300,
           backgroundImage: AssetImage(AssetPaths.reachout),
         );
-        title = "Reach out to an estate Committee";
+        title = "Reach out to an estate committee";
         break;
       case BottomSheetView.messageuplodefile:
         onTap = () async {
@@ -922,7 +923,7 @@ class BottomsheetDetails extends ConsumerWidget {
           backgroundColor: AppColors.instance.error300,
           backgroundImage: AssetImage(AssetPaths.reachout),
         );
-        title = "Reach out to an estate Security";
+        title = "Reach out to estate security";
         break;
 
       default:

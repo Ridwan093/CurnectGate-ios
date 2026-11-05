@@ -72,13 +72,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 //             return Builderrouls(
 //               error: error.toString(),
 //               onTap: () => refreshRsvp(ref, going),
-//               firstMessae: "Faile to load Event",
+//               firstMessae: "Failed to load event.",
 //             );
 //           } catch (e) {
 //             return Builderrouls(
 //               error: e.toString(),
 //               onTap: () => refreshRsvp(ref, going),
-//               firstMessae: "Faile to load Event?",
+//               firstMessae: "Failed to load event.",
 //             );
 //           }
 //         },
@@ -194,7 +194,7 @@ class GoingEventsSliver {
                 child: Builderrouls(
                   error: error.toString(),
                   onTap: () => refreshRsvp(ref, going),
-                  firstMessae: "Failed to load Event",
+                  firstMessae: "Failed to load event.",
                 ),
               ),
             ],

@@ -4,7 +4,7 @@ import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// ✅ Check-in OTP Tab
+/// Check-in OTP Tab
 class CheckInOtpTab extends ConsumerStatefulWidget {
   const CheckInOtpTab({super.key});
 

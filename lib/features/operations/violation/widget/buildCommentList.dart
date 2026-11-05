@@ -56,7 +56,7 @@ class Buildcommentlist extends ConsumerWidget {
           return _buildErrorUI(
             error.toString().toLowerCase().contains("connection")
                 ? "Connection failed. Please check your network"
-                : "Failed to load reports",
+                : "Failed to load reports.",
             ref,
             context,
           );
@@ -114,7 +114,7 @@ class Buildcommentlist extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            "Failed to load comment",
+            "Failed to load comment.",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               fontSize: 16,
@@ -161,7 +161,7 @@ class Buildcommentlist extends ConsumerWidget {
           Image.asset(AssetPaths.navMessages, height: 100, width: 100),
           SizedBox(height: 10),
           Text(
-            "No comment made on this report Yet!",
+            "No comments on this report yet.",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               color: AppColors.instance.black300,

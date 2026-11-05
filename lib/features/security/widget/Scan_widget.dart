@@ -84,15 +84,15 @@
 //                         final decodedString = utf8.decode(
 //                           base64.decode(barcode?.rawValue ?? ""),
 //                         );
-//                         log('🔓 DECODED STRING: $decodedString');
+// log('DECODED STRING: $decodedString');
 
 //                         // 3. Parse and log JSON
 //                         final jsonData = json.decode(decodedString);
-//                         log('📦 JSON STRUCTURE: ${jsonData.toString()}');
-//                         log('🆔 Digital ID: ${jsonData['digital_id_code']}');
-//                         log('🏠 Estate ID: ${jsonData['estate_id']}');
-//                         log('👤 User ID: ${jsonData['user_id']}');
-//                         log('⏰ Generated At: ${jsonData['generated_at']}');
+// log('JSON STRUCTURE: ${jsonData.toString()}');
+// log('Digital ID: ${jsonData['digital_id_code']}');
+// log('Estate ID: ${jsonData['estate_id']}');
+// log('User ID: ${jsonData['user_id']}');
+// log('Generated At: ${jsonData['generated_at']}');
 //                         ref.read(qrScanProvider.notifier).state = false;
 //                         // _showScanResult(context, barcode!.rawValue!);
 //                         ///hey is the place to get the scan inf

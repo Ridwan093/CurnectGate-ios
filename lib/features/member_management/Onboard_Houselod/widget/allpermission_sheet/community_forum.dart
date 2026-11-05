@@ -34,7 +34,7 @@ class Community_Forum extends ConsumerWidget {
                 id: id,
               );
             } else {
-              return EmptyBodys(message: "No commnuity forum data?");
+              return EmptyBodys(message: "No community forum settings available.");
             }
           } catch (e) {
             return Builderroul(
@@ -43,7 +43,7 @@ class Community_Forum extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load commnuity forum setting?",
+              firstMessage: "Failed to load community forum settings.",
             );
           }
         },
@@ -63,7 +63,7 @@ class Community_Forum extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load commnuity forum setting?",
+              firstMessage: "Failed to load community forum settings.",
             );
           }
         },
@@ -95,7 +95,7 @@ class Community_Forum extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load commnuity forum settings?",
+              firstMessage: "Failed to load community forum settings.",
             );
           } catch (e) {
             return Builderroul(
@@ -104,7 +104,7 @@ class Community_Forum extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load commnuity forum setting?",
+              firstMessage: "Failed to load community forum settings.",
             );
           }
         },

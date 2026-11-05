@@ -57,6 +57,7 @@ dependencies:
   screenshot: ^3.0.0
   pdf: ^3.11.3
   upgrader: ^12.5.0
+  flutter_dotenv: ^6.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -72,6 +73,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - .env
     - assets/icons/actions/
     - assets/icons/auth/
     - assets/icons/dashboard/

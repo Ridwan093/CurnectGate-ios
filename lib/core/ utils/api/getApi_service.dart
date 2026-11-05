@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/config/app_env.dart';
 import 'dart:developer';
 
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
@@ -10,13 +11,13 @@ final dioProvider = Provider<Dio>((ref) {
   return Dio()
     ..options = BaseOptions(
       extra: {'requiresAuth': true},
-      baseUrl: "https://api.curnectgate.com/api/v1/",
+      baseUrl: AppEnv.apiBaseUrl,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      connectTimeout: const Duration(seconds: 30),
-      receiveTimeout: const Duration(seconds: 30),
+      connectTimeout: AppEnv.apiTimeout,
+      receiveTimeout: AppEnv.apiTimeout,
     )
     ..interceptors.add(
       InterceptorsWrapper(

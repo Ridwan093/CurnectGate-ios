@@ -162,7 +162,7 @@ class ResidentCard extends StatelessWidget {
 
         const SizedBox(width: 12),
 
-        // Middle: Name — takes all available space safely
+        // Middle: Name - takes all available space safely
         Expanded(
           child: Text(
             userName,
@@ -177,8 +177,8 @@ class ResidentCard extends StatelessWidget {
           ),
         ),
 
-        // Right: Call button — always visible
-        // ✅ Actions
+        // Right: Call button - always visible
+        // Actions
         Row(
           children: [
             if (phoneNumber.isNotEmpty) ...[

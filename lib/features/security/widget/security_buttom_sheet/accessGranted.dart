@@ -21,12 +21,12 @@ class AccessGranted extends StatelessWidget {
 
     // Extract key details from "security_notes" (for manual validation logs)
     final String securityNotes = validation['security_notes'] ?? '';
-    final visitorName = _extractValue(securityNotes, '👤 Visitor:');
-    final purpose = _extractValue(securityNotes, '🎯 Purpose:');
-    final phone = _extractValue(securityNotes, '📞 Phone:');
-    final destination = _extractValue(securityNotes, '🏠 Destination:');
-    final address = _extractValue(securityNotes, '📍 Address:');
-    final validPeriod = _extractValue(securityNotes, '⏱️ Valid Period:');
+    final visitorName = _extractValue(securityNotes, 'Visitor:');
+    final purpose = _extractValue(securityNotes, 'Purpose:');
+    final phone = _extractValue(securityNotes, 'Phone:');
+    final destination = _extractValue(securityNotes, 'Destination:');
+    final address = _extractValue(securityNotes, 'Address:');
+    final validPeriod = _extractValue(securityNotes, 'Valid Period:');
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -79,12 +79,12 @@ class AccessGranted extends StatelessWidget {
             _buildInfoCard(
               title: "Visitor Details",
               details: {
-                "👤 Visitor": visitorName,
-                "🎯 Purpose": purpose,
-                "📞 Phone": phone,
-                "🏠 Destination": destination,
-                "📍 Address": address,
-                "⏱️ Valid Period": validPeriod,
+                "Visitor": visitorName,
+                "Purpose": purpose,
+                "Phone": phone,
+                "Destination": destination,
+                "Address": address,
+                "Valid Period": validPeriod,
               },
             ),
 
@@ -96,7 +96,7 @@ class AccessGranted extends StatelessWidget {
                 title: "Security Notes",
                 details: {
                   "Reason": validation['denial_reason'] ?? 'N/A',
-                  "Notes": validation['security_notes'] ?? 'N/A',
+                  "Notes": _withoutSymbols((validation['security_notes'] ?? 'N/A').toString()),
                 },
               ),
             ],
@@ -112,20 +112,45 @@ class AccessGranted extends StatelessWidget {
     );
   }
 
-  /// Extracts text following a specific emoji/label from multiline notes.
+  /// Extracts the text after a label (e.g. "Visitor:") from multiline notes.
+  /// Any symbol in front of the label is ignored.
   static String _extractValue(String notes, String label) {
     try {
-      final line =
-          notes
-              .split('\n')
-              .firstWhere((l) => l.contains(label), orElse: () => '')
-              .replaceAll(label, '')
-              .trim();
-      return line.isNotEmpty ? line : 'N/A';
+      final line = notes
+          .split('\n')
+          .firstWhere((l) => l.contains(label), orElse: () => '');
+      if (line.isEmpty) return 'N/A';
+      final value = line.substring(line.indexOf(label) + label.length).trim();
+      return value.isNotEmpty ? value : 'N/A';
     } catch (_) {
       return 'N/A';
     }
   }
+
+  /// Removes pictographic symbols from server notes before showing them.
+  static String _withoutSymbols(String text) {
+    return text
+        .replaceAll(
+          RegExp(
+            r'[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2300}-\u{23FF}\u{FE0F}\u{200D}]',
+            unicode: true,
+          ),
+          '',
+        )
+        .replaceAll(RegExp(r'[ \t]{2,}'), ' ')
+        .trim();
+  }
+
+  static const Map<String, IconData> _detailIcons = {
+    'Visitor': Icons.person_outline,
+    'Purpose': Icons.flag_outlined,
+    'Phone': Icons.phone_outlined,
+    'Destination': Icons.home_outlined,
+    'Address': Icons.location_on_outlined,
+    'Valid Period': Icons.timer_outlined,
+    'Reason': Icons.info_outline,
+    'Notes': Icons.notes_outlined,
+  };
 
   Widget _buildInfoCard({
     required String title,
@@ -157,6 +182,14 @@ class AccessGranted extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (_detailIcons[e.key] != null) ...[
+                    Icon(
+                      _detailIcons[e.key],
+                      size: 16,
+                      color: AppColors.instance.black500,
+                    ),
+                    const SizedBox(width: 6),
+                  ],
                   Text(
                     "${e.key}: ",
                     style: TextStyle(

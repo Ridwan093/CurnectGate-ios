@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:curnectgate/core/config/estate_currency.dart';
 import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -26,7 +27,7 @@ class FundWalletBottomSheet extends ConsumerStatefulWidget {
 
 class _FundWalletBottomSheetState extends ConsumerState<FundWalletBottomSheet> {
   late TextEditingController amountController;
-  // ── local state: drives the button — no Riverpod rebuild delay ──
+  // ── local state: drives the button - no Riverpod rebuild delay ──
   double _enteredAmount = 0;
 
   @override
@@ -42,7 +43,7 @@ class _FundWalletBottomSheetState extends ConsumerState<FundWalletBottomSheet> {
   }
 
   String generatePaymentRef(String estateName) {
-    // 1️⃣ Short form of estate name (3–4 characters)
+    // 1⃣ Short form of estate name (3–4 characters)
     final shortEstate =
         estateName
             .replaceAll(
@@ -52,7 +53,7 @@ class _FundWalletBottomSheetState extends ConsumerState<FundWalletBottomSheet> {
             .substring(0, estateName.length > 3 ? 3 : estateName.length)
             .toUpperCase();
 
-    // 2️⃣ Create a short random code using timestamp base36
+    // 2⃣ Create a short random code using timestamp base36
 
     final now = DateTime.now();
     final formatted =
@@ -66,14 +67,14 @@ class _FundWalletBottomSheetState extends ConsumerState<FundWalletBottomSheet> {
         "${now.microsecond.toString().padLeft(6, '0')}";
     // final shortStamp = timestamp.toRadixString(36).toUpperCase();
 
-    // 3️⃣ Build ref format: MAG-PAY-AB12C
+    // 3⃣ Build ref format: MAG-PAY-AB12C
     return "$shortEstate-PAY-$formatted";
   }
 
   @override
   Widget build(BuildContext context) {
     // ── derive validity from LOCAL state so the button reacts immediately ──
-    final bool isValidAmount = _enteredAmount >= 1000;
+    final bool isValidAmount = _enteredAmount >= EstateCurrency.walletMinimum;
     final authState = ref.watch(authProvider);
     final AppColors colors = AppColors.instance;
     return SafeArea(
@@ -122,8 +123,8 @@ class _FundWalletBottomSheetState extends ConsumerState<FundWalletBottomSheet> {
             ],
             decoration: InputDecoration(
               labelText: "Amount",
-              prefixText: amountController.text.isNotEmpty ? "₦ " : null,
-              hintText: "Minimum ₦1,000",
+              prefixText: amountController.text.isNotEmpty ? "${EstateCurrency.symbol} " : null,
+              hintText: "Minimum ${EstateCurrency.walletMinimumLabel}",
 
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: colors.black400),
@@ -157,7 +158,7 @@ class _FundWalletBottomSheetState extends ConsumerState<FundWalletBottomSheet> {
             onChanged: (value) {
               final cleaned = value.replaceAll(',', '');
               final parsed = double.tryParse(cleaned) ?? 0.0;
-              // Update local state → triggers immediate rebuild & button re-enable
+              // Update local state -> triggers immediate rebuild & button re-enable
               setState(() => _enteredAmount = parsed);
               // Also keep the global provider in sync for other consumers
               ref.read(amountTextProvider.notifier).state = cleaned;
@@ -180,7 +181,7 @@ class _FundWalletBottomSheetState extends ConsumerState<FundWalletBottomSheet> {
                           ',',
                           '',
                         );
-                        log("Proceed with ₦${cleaned}");
+                        log("Proceed with ${EstateCurrency.symbol}${cleaned}");
 
                         final user = authState.user;
 
@@ -192,14 +193,13 @@ class _FundWalletBottomSheetState extends ConsumerState<FundWalletBottomSheet> {
 
                         // context.pop();
 
+                        // The server starts the payment; no keys on the phone.
                         await PaystackService().checkout(
                           ref: ref,
                           method: "card",
-                          privateKey: widget.private,
-                          publiceKey: widget.puplic,
                           context: context,
                           email: authState.user?['email'] ?? '',
-                          amount: double.parse(cleaned), // ₦500
+                          amount: double.parse(cleaned),
                           reference: refs,
                         );
                         // context.pop();

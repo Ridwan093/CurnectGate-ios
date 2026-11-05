@@ -32,7 +32,7 @@ class GateSettingsScreen extends ConsumerWidget {
             if (user != null && user.permissions != null) {
               return GateContet(permission: user.permissions, id: id);
             } else {
-              return EmptyBodys(message: "No gate settings?");
+              return EmptyBodys(message: "No gate settings available.");
             }
           } catch (e) {
             return Builderroul(
@@ -41,7 +41,7 @@ class GateSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load gate?",
+              firstMessage: "Failed to load gate.",
             );
           }
         },
@@ -61,7 +61,7 @@ class GateSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load gate?",
+              firstMessage: "Failed to load gate.",
             );
           }
         },
@@ -93,7 +93,7 @@ class GateSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load gate settings?",
+              firstMessage: "Failed to load gate settings.",
             );
           } catch (e) {
             return Builderroul(
@@ -102,7 +102,7 @@ class GateSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load gate?",
+              firstMessage: "Failed to load gate.",
             );
           }
         },

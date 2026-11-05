@@ -3,7 +3,7 @@ import 'package:curnectgate/features/chat/data/provider/get_provider/get_convers
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // (The main conversationListProvider is safely imported from get_conversation_provider.dart)
 
-// 2. Search wrapper provider — keeps your existing search logic
+// 2. Search wrapper provider - keeps your existing search logic
 // This is what your ChatListScreen watches (coversationSearchProvider)
 final coversationSearchProvider =
     StateNotifierProvider<ChatSearchNotifier, List<Conversation>>((ref) {

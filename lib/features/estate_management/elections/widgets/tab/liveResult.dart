@@ -36,7 +36,7 @@ class _LiveResultTabState extends ConsumerState<LiveResultTab> {
   Widget build(BuildContext context) {
     // final positions = state.election.positions;
 
-    // 🔹 Add "summary" as main manual tab
+    // Add "summary" as main manual tab
 
     const summaryTab = "summary";
     final active = widget.state.activeResultTab ?? summaryTab;
@@ -46,13 +46,13 @@ class _LiveResultTabState extends ConsumerState<LiveResultTab> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 🔹 Scrollable Tabs
+        // Scrollable Tabs
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Row(
             children: [
-              /// ✅ Summary tab button
+              /// Summary tab button
               ...widget.data.positions!.map((p) {
                 final isActive = !isSummary && active == p.positionTitle;
                 return GestureDetector(
@@ -117,10 +117,10 @@ class _LiveResultTabState extends ConsumerState<LiveResultTab> {
 
         const SizedBox(height: 12),
 
-        // ✅ When Summary Tab is Active → show special UI
+        // When Summary Tab is Active -> show special UI
         if (isSummary)
           SummaryResuiltData()
-        // ✅ When a position tab is active → show candidate results
+        // When a position tab is active -> show candidate results
         else ...[
           _candidateResultSection(widget.state, widget.data),
         ],
@@ -133,21 +133,21 @@ class _LiveResultTabState extends ConsumerState<LiveResultTab> {
 
     if (activeTab == null) return const SizedBox();
 
-    // 🔹 Find the position user selected
+    // Find the position user selected
     final selectedPosition = data.positions?.firstWhere(
       (pos) => pos.positionTitle == activeTab,
       orElse: () => PositionData(),
     );
 
-    // 🔹 Extract candidate list safely
+    // Extract candidate list safely
     final candidates = selectedPosition?.candidates ?? [];
 
-    // 🔹 Calculate total votes
+    // Calculate total votes
     final totalVotes = selectedPosition?.totalVotesCast ?? 0;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        /// ✅ Total Votes Card
+        /// Total Votes Card
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(24),
@@ -194,7 +194,7 @@ class _LiveResultTabState extends ConsumerState<LiveResultTab> {
 
         const SizedBox(height: 16),
 
-        /// 🔥 Candidate Cards
+        /// Candidate Cards
         ...candidates.map((c) {
           final isLeader = c.isWinner ?? false;
 

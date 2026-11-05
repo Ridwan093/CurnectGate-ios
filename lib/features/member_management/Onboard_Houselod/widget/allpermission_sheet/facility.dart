@@ -32,7 +32,7 @@ class FacilitySettingsScreen extends ConsumerWidget {
             if (user != null && user.permissions != null) {
               return FacilityContet(permission: user.permissions, id: id);
             } else {
-              return EmptyBodys(message: "No facility settings?");
+              return EmptyBodys(message: "No facility settings available.");
             }
           } catch (e) {
             return Builderroul(
@@ -41,7 +41,7 @@ class FacilitySettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load facility?",
+              firstMessage: "Failed to load facility.",
             );
           }
         },
@@ -61,7 +61,7 @@ class FacilitySettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(userProfileProvider.notifier)
                       .refreshProfile(context, ref),
-              firstMessage: "Faile to load profile?",
+              firstMessage: "Failed to load profile.",
             );
           }
         },
@@ -92,7 +92,7 @@ class FacilitySettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load facility settings?",
+              firstMessage: "Failed to load facility settings.",
             );
           } catch (e) {
             return Builderroul(
@@ -101,7 +101,7 @@ class FacilitySettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(statisticProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load facility?",
+              firstMessage: "Failed to load facility.",
             );
           }
         },

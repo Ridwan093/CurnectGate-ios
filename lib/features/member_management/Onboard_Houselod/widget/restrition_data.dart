@@ -1,6 +1,6 @@
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/restrict_provider.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/restriction_content.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

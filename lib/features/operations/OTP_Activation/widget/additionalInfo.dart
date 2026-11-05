@@ -58,7 +58,7 @@ class _VisitorInfoSectionState extends ConsumerState<VisitorInfoSection>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Additional  Info',
+                'Additional Info',
 
                 style: TextStyle(
                   fontWeight: FontFamilies.medium,

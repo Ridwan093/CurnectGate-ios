@@ -202,7 +202,7 @@ class _ReusabelProfileFormState extends State<ReusabelProfileForm> {
 
         case FieldType.year:
           if (value.isEmpty) {
-            error = '${widget.label} must be at least 1 digits';
+            error = '${widget.label} must be at least 1 digit';
           }
           break;
         case FieldType.password:

@@ -19,13 +19,14 @@ void shareEvent({
 
   // Create the share message
   final shareText = '''
-📅 *${title}*
-📝 ${description}
-📅 Date: ${formattedDate}
-🕒 Time: ${formattedStartTime} - ${formattedEndTime}
-📍 Location: ${location}, ${venue}
-${eventImageUrl != null ? '🌐 Event Image: $eventImageUrl' : ''}
-Join us for this event! 🎉
+*${title}*
+${description}
+
+Date: ${formattedDate}
+Time: ${formattedStartTime} - ${formattedEndTime}
+Location: ${location}, ${venue}
+${eventImageUrl != null ? 'Event image: $eventImageUrl' : ''}
+Join us for this event!
 ''';
 
   // Share the text

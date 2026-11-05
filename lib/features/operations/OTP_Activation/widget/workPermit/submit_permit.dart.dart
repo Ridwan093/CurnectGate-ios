@@ -1,7 +1,7 @@
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/submit_permit_provider.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/widget/workPermit/add_item_bottomsheet.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
@@ -86,7 +86,7 @@ class _SubmitPermitBottomSheetState
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Grant access for guest and family',
+                          'Grant access for guests and family',
                           style: TextStyle(
                             fontFamily: FontFamilies.interDisplay,
                             fontSize: 13,

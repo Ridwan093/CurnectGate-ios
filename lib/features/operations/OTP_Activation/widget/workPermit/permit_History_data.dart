@@ -69,7 +69,7 @@ class PermitData extends ConsumerWidget {
                   () => ref
                       .read(getActiveOtpProvider.notifier)
                       .refreshActive(context, ref),
-              firstMessage: "Faile to load Active OTPs?",
+              firstMessage: "Failed to load active OTPs.",
             );
           } catch (e) {
             return Builderroul(
@@ -78,7 +78,7 @@ class PermitData extends ConsumerWidget {
                   () => ref
                       .read(getWorkpermitProvider.notifier)
                       .refreshActive(context, ref),
-              firstMessage: "Faile to load Active OTPs?",
+              firstMessage: "Failed to load active OTPs.",
             );
           }
         },
@@ -113,7 +113,7 @@ class PermitData extends ConsumerWidget {
             Image.asset(AssetPaths.setCurfew, height: 100, width: 100),
             SizedBox(height: 10),
             Text(
-              "Your permit appears here",
+              "Your permits will appear here",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,

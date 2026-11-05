@@ -152,7 +152,7 @@ class PreferencesScreen extends ConsumerWidget {
                             ref
                                 .read(userPrefrenceprovider.notifier)
                                 .refreshSettings(context, ref),
-                    firstMessage: "Failed to load Preference Settings.",
+                    firstMessage: "Failed to load preference settings.",
                   );
                 },
               ),

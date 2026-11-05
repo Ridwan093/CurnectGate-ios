@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/ActiveCard.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/Activities_tab.dart';
@@ -115,10 +115,10 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
                         child: _buildSearchAppBar(context),
                       ),
 
-                      // Consistent gap — this 12px will look the same on ALL devices
+                      // Consistent gap - this 12px will look the same on ALL devices
                       const SizedBox(height: 12),
 
-                      // Results card — takes remaining space
+                      // Results card - takes remaining space
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -143,10 +143,10 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
                         child: _buildSearchAppBar(context),
                       ),
 
-                      // Consistent gap — this 12px will look the same on ALL devices
+                      // Consistent gap - this 12px will look the same on ALL devices
                       const SizedBox(height: 12),
 
-                      // Results card — takes remaining space
+                      // Results card - takes remaining space
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),

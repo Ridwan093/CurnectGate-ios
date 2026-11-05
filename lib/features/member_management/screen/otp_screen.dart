@@ -9,7 +9,7 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/estate_
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/stepcount.dart';
 import 'package:curnectgate/features/member_management/profile_form/otp_form.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -109,7 +109,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                   firstText: widget.description,
                   email: snapshorty.data ?? "",
 
-                  lastText: ' please enter below',
+                  lastText: '. Please enter it below.',
                   visibleStartChars: 3,
                   visibleEndChars: 3,
                 );
@@ -117,8 +117,8 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                 return _buildEmailRichText(
                   firstText: widget.description,
                   email:
-                      widget.data!["email"] ?? "norma@gmaol.com",
-                  lastText: ' please enter below',
+                      widget.data!["email"] ?? "",
+                  lastText: '. Please enter it below.',
                   visibleStartChars: 3,
                   visibleEndChars: 3,
                 );
@@ -157,7 +157,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
-          "Didn't recieve a code? ",
+          "Didn't receive a code? ",
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,
             fontSize: 10,
@@ -199,7 +199,10 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   }) {
     // Split the email into parts
     final atIndex = email.indexOf('@');
-    if (atIndex == -1) return Text(email); // Not a valid email format
+    // No email yet (still loading) or not an email: show the message alone.
+    if (atIndex == -1) {
+      return Text(email.isEmpty ? '$firstText${lastText.trimLeft()}' : email);
+    }
 
     final username = email.substring(0, atIndex);
     final domain = email.substring(atIndex);

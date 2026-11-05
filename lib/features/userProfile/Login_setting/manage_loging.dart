@@ -6,7 +6,7 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/permission_loading_provider.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/userProfile/Login_setting/state/biometric_provider.dart';
 import 'package:curnectgate/features/userProfile/notification_setting/widget/oldSchoolSwcth.dart';
@@ -292,7 +292,7 @@ class _ManageLogingState extends ConsumerState<ManageLoging> {
           } else {
             showCustomSuccessToast(
               context: context,
-              message: "Device dose not support ${isFinger()}",
+              message: "Device does not support ${isFinger()}",
               color: AppColors.instance.grey200,
               icon: Icons.error,
               iconColors: AppColors.instance.black600,

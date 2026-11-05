@@ -67,7 +67,7 @@ class _ActivitiesTabState extends ConsumerState<ReminderTab> {
                   () => ref
                       .read(getReminderProvider.notifier)
                       .refreshReminder(context, ref),
-              firstMessage: "Failed to load reminders",
+              firstMessage: "Failed to load reminders.",
             );
           }
         },
@@ -85,7 +85,7 @@ class _ActivitiesTabState extends ConsumerState<ReminderTab> {
                   () => ref
                       .read(getReminderProvider.notifier)
                       .refreshReminder(context, ref),
-              firstMessage: "Failed to load reminders",
+              firstMessage: "Failed to load reminders.",
             );
           }
         },
@@ -138,7 +138,7 @@ class _ActivitiesTabState extends ConsumerState<ReminderTab> {
                   () => ref
                       .read(getReminderProvider.notifier)
                       .refreshReminder(context, ref),
-              firstMessage: "Failed to load reminders",
+              firstMessage: "Failed to load reminders.",
             );
           }
         },

@@ -56,7 +56,7 @@ class EventSettings extends ConsumerWidget {
               showUserBottomSheet(
                 context: context,
                 headertitle: "",
-                headersubtitle: "Revoked  OTP",
+                headersubtitle: "Revoked OTP",
                 ref: ref,
                 bottom: BottomSheetView.checkEventcode,
                 id: 0,
@@ -68,13 +68,13 @@ class EventSettings extends ConsumerWidget {
 
           const SizedBox(height: 5),
           _buildButton(
-            title: "Deactive event code",
+            title: "Deactivate event code",
             onTap: () {
               context.pop();
               showUserBottomSheet(
                 context: context,
                 headertitle: "",
-                headersubtitle: "Revoked  OTP",
+                headersubtitle: "Revoked OTP",
                 ref: ref,
                 bottom: BottomSheetView.eventDeactive,
                 id: 0,

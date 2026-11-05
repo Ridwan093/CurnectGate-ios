@@ -27,7 +27,7 @@ class EstateCommitteeData extends ConsumerWidget {
                 () => ref
                     .read(getCommitteeProvider.notifier)
                     .refreshCommitte(context, ref),
-            firstMessage: "Faile to load committee?",
+            firstMessage: "Failed to load committee.",
           );
         }
       },
@@ -44,7 +44,7 @@ class EstateCommitteeData extends ConsumerWidget {
                 () => ref
                     .read(getCommitteeProvider.notifier)
                     .refreshCommitte(context, ref),
-            firstMessage: "Faile to load committee?",
+            firstMessage: "Failed to load committee.",
           );
         }
       },
@@ -68,7 +68,7 @@ class EstateCommitteeData extends ConsumerWidget {
                 () => ref
                     .read(getCommitteeProvider.notifier)
                     .refreshCommitte(context, ref),
-            firstMessage: "Faile to load committee?",
+            firstMessage: "Failed to load committee.",
           );
         } catch (e) {
           return Builderroul(
@@ -77,7 +77,7 @@ class EstateCommitteeData extends ConsumerWidget {
                 () => ref
                     .read(getCommitteeProvider.notifier)
                     .refreshCommitte(context, ref),
-            firstMessage: "Faile to load committee?",
+            firstMessage: "Failed to load committee.",
           );
         }
       },

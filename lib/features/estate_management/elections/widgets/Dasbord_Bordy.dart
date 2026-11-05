@@ -157,7 +157,7 @@ class ElectionBody extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _tabButton(ref, ElectionTab.voteNow, "Vote Now"),
-                _tabButton(ref, ElectionTab.liveResult, "Live Result"),
+                _tabButton(ref, ElectionTab.liveResult, "Live Results"),
                 _tabButton(ref, ElectionTab.history, "History"),
                 _tabButton(ref, ElectionTab.candidates, "Candidate"),
               ],

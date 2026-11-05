@@ -43,7 +43,7 @@ class ResolvedData extends ConsumerWidget {
                 return _buildEmptyBody();
               }
             } catch (e) {
-              return _buildErrorUI('Failed to load reports', ref, context);
+              return _buildErrorUI('Failed to load reports.', ref, context);
             }
           },
           loading: () {
@@ -80,7 +80,7 @@ class ResolvedData extends ConsumerWidget {
               return _buildErrorUI(
                 error.toString().contains("connection")
                     ? "Connection failed. Please check your network"
-                    : "Failed to load reports",
+                    : "Failed to load reports.",
                 ref,
                 context,
               );
@@ -164,7 +164,7 @@ class ResolvedData extends ConsumerWidget {
           Image.asset(AssetPaths.dashboardWorkOrder, height: 100, width: 100),
           const SizedBox(height: 10),
           Text(
-            "Your reports appear here",
+            "Your reports will appear here",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               color: AppColors.instance.black300,
@@ -188,7 +188,7 @@ class ResolvedData extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text("Session expired. Please login again."),
+          const Text("Session expired. Please log in again."),
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed:

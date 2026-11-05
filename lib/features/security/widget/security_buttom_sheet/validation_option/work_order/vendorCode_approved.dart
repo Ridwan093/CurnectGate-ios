@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/securitybutton.dart';
@@ -61,7 +61,7 @@ class _DenyEntryState extends ConsumerState<GrantVendorEntry> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Grant vendor first time entry.",
+                    "Grant the vendor first-time entry.",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,
@@ -75,7 +75,7 @@ class _DenyEntryState extends ConsumerState<GrantVendorEntry> {
               ReusabelProfileForm(
                 controller: _securityNotedController,
                 fieldType: FieldType.reason,
-                hintText: "(eg. meet up with estate standand)",
+                hintText: "(e.g. Meets estate standards)",
                 label: "Security notes",
                 fieldKey: "Reason",
                 onChanged: (value) {

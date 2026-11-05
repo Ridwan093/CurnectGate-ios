@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/violation/model/report_model.dart';
 import 'package:curnectgate/features/operations/violation/report_provider/getCategory_provider.dart';
@@ -117,7 +117,7 @@ class _ReportFormState extends ConsumerState<ReportForm> {
                     const CustomSearchDropdown(),
                     const SizedBox(height: 25),
                     Text(
-                      "Upload image Proof",
+                      "Upload Image Proof",
                       style: TextStyle(
                         fontFamily: FontFamilies.interDisplay,
                         color: AppColors.instance.black500,
@@ -238,7 +238,7 @@ Widget _buildSubmitButton({
       if (report.category!.isEmpty) {
         showCustomSuccessToast(
           context: context,
-          message: "Please selecte category!",
+          message: "Please select a category.",
           color: AppColors.instance.grey200,
           icon: Icons.error,
           iconColors: AppColors.instance.black600,
@@ -247,7 +247,7 @@ Widget _buildSubmitButton({
       } else if (report.description.isEmpty) {
         showCustomSuccessToast(
           context: context,
-          message: "Please add description!",
+          message: "Please add a description.",
           color: AppColors.instance.grey200,
           icon: Icons.error,
           iconColors: AppColors.instance.black600,
@@ -256,7 +256,7 @@ Widget _buildSubmitButton({
       } else if (report.description.length > 100) {
         showCustomSuccessToast(
           context: context,
-          message: "Description cannot exceed 100 characters!",
+          message: "Description cannot exceed 100 characters.",
           color: AppColors.instance.grey200,
           icon: Icons.error,
           iconColors: AppColors.instance.black600,
@@ -265,7 +265,7 @@ Widget _buildSubmitButton({
       } else if (report.addressId!.isEmpty) {
         showCustomSuccessToast(
           context: context,
-          message: "please selected Addrees you wish to report!",
+          message: "Please select the address you wish to report.",
           color: AppColors.instance.grey200,
           icon: Icons.error,
           iconColors: AppColors.instance.black600,
@@ -274,7 +274,7 @@ Widget _buildSubmitButton({
       } else if ((report.categoryID ?? "").isEmpty) {
         showCustomSuccessToast(
           context: context,
-          message: "Please selecte category!",
+          message: "Please select a category.",
           color: AppColors.instance.grey200,
           icon: Icons.error,
           iconColors: AppColors.instance.black600,
@@ -440,7 +440,7 @@ Widget _buildEmptyState(VoidCallback onRetry) {
       text: TextSpan(
         style: const TextStyle(color: Colors.black87),
         children: [
-          const TextSpan(text: "No catetgory data available. "),
+          const TextSpan(text: "No category data available. "),
           WidgetSpan(
             child: TextButton(
               onPressed: onRetry,
@@ -527,7 +527,7 @@ Widget _buildErrorUI(
           color: AppColors.instance.error600,
         ),
         children: [
-          const TextSpan(text: "Failed to load data. "),
+          const TextSpan(text: "Failed to load data."),
           WidgetSpan(
             child: TextButton(
               onPressed: onRetry,

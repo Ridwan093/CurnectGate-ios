@@ -37,7 +37,7 @@ class DuePaymentData extends ConsumerWidget {
                   totalDue: totalDue,
                   walletBalance: walletBalance,
                 )
-                : EmptyBodys(message: "No due data?");
+                : EmptyBodys(message: "No dues available.");
           } catch (e) {
             return Builderroul(
               error: e.toString(),
@@ -45,7 +45,7 @@ class DuePaymentData extends ConsumerWidget {
                   () => ref
                       .read(paymentDueProvider.notifier)
                       .refreshDuePayment(context, ref),
-              firstMessage: "Faile to load due data?",
+              firstMessage: "Failed to load due data.",
             );
           }
         },
@@ -66,7 +66,7 @@ class DuePaymentData extends ConsumerWidget {
                   () => ref
                       .read(paymentDueProvider.notifier)
                       .refreshDuePayment(context, ref),
-              firstMessage: "Faile to load due data?",
+              firstMessage: "Failed to load due data.",
             );
           }
         },
@@ -97,7 +97,7 @@ class DuePaymentData extends ConsumerWidget {
                   () => ref
                       .read(paymentDueProvider.notifier)
                       .refreshDuePayment(context, ref),
-              firstMessage: "Faile to load due data?",
+              firstMessage: "Failed to load due data.",
             );
           } catch (e) {
             return Builderroul(
@@ -106,7 +106,7 @@ class DuePaymentData extends ConsumerWidget {
                   () => ref
                       .read(paymentDueProvider.notifier)
                       .refreshDuePayment(context, ref),
-              firstMessage: "Faile to load due data?",
+              firstMessage: "Failed to load due data.",
             );
           }
         },

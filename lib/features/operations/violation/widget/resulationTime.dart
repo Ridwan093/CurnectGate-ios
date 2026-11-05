@@ -135,7 +135,7 @@ class ResolutionTimeline extends ConsumerWidget {
                       () => ref
                           .read(reportHisoryProvider.notifier)
                           .refreshReports(context, ref, id),
-                  firstMessage: "Failed to load Active OTPs",
+                  firstMessage: "Failed to load resolution timeline.",
                 );
               }
 
@@ -163,7 +163,7 @@ class ResolutionTimeline extends ConsumerWidget {
                     () => ref
                         .read(reportHisoryProvider.notifier)
                         .refreshReports(context, ref, id),
-                firstMessage: "Failed to load Active OTPs",
+                firstMessage: "Failed to load resolution timeline.",
               );
             },
           ),
@@ -197,7 +197,7 @@ class ResolutionTimeline extends ConsumerWidget {
         _buildTimelineStep(
           time: formatToTime(getAssignmentTime(history)),
           title: 'Report submitted',
-          subtitle: "We are currently looking this up",
+          subtitle: "We are currently looking into this",
           isFirst: true,
           isCompleted: true,
           status: 'pending',
@@ -207,7 +207,7 @@ class ResolutionTimeline extends ConsumerWidget {
         if (['investigating'].contains(currentStatus))
           _buildTimelineStep(
             time: formatToTime(getInvestigationTime(history)!),
-            title: "Report has been assigned to authorities involved",
+            title: "Report has been assigned to the relevant authorities",
             subtitle: '',
             isCompleted: currentStatus != 'pending',
             status: 'investigating',
@@ -217,7 +217,7 @@ class ResolutionTimeline extends ConsumerWidget {
         if (['dismissed', 'resolved'].contains(currentStatus))
           _buildTimelineStep(
             time: formatToTime(getAssignmentTime(history)),
-            title: 'Report has been assigned to authorities involved',
+            title: 'Report has been assigned to the relevant authorities',
             subtitle: '',
             isCompleted: true,
             status: 'assigned',

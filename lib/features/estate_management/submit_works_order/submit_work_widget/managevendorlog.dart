@@ -71,7 +71,7 @@ class Managevendorlog extends ConsumerWidget {
                 extra: {"wokerOrder": workOder},
               );
             },
-            title: "Edit vendor Log",
+            title: "Edit Vendor Log",
           ),
 
           const SizedBox(height: 5),
@@ -84,7 +84,7 @@ class Managevendorlog extends ConsumerWidget {
               ref.read(bottomSheetStateProvider.notifier).state =
                   BottomSheetView.revokevendorconfirm;
             },
-            title: "Revoke vendor Log",
+            title: "Revoke Vendor Log",
           ),
 
           const SizedBox(height: 5),

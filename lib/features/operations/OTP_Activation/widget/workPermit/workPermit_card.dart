@@ -160,7 +160,7 @@ class WorkpermitCard extends ConsumerWidget {
                     text: "NOTE: ",
                     style: TextStyle(
                       fontSize: 12,
-                      fontWeight: FontWeight.w700, // 👈 make NOTE bold
+                      fontWeight: FontWeight.w700, // make NOTE bold
                       color: AppColors.instance.black600,
                       fontFamily: FontFamilies.interDisplay,
                     ),

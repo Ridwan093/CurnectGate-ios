@@ -71,7 +71,7 @@ class EstateCodeFormNotifier extends StateNotifier<EstateCodeFormState> {
 
   String? _validateCode(String code, int length) {
     if (code.isEmpty) return null; // No error when empty
-    if (code.length < length) return 'code must be at least $length characters';
+    if (code.length < length) return 'Code must be at least $length characters';
     // if (!RegExp(r'^[a-zA-Z0-9]+$').hasMatch(code)) {
     //   return 'Only alphanumeric characters allowed';
     // }

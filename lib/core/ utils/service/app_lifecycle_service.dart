@@ -12,7 +12,7 @@ class AppLifecycleService extends WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      print("App resumed — refreshing chat list");
+      print("App resumed, refreshing chat list");
       // ref.read(conversationListProvider.notifier).refreshConversations();
     }
   }

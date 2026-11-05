@@ -30,7 +30,7 @@ class CurfewSettingsScreen extends ConsumerWidget {
             final user = profile?.data;
             return user != null
                 ? CurfewContent(permission: user.curfewSettings!, id: id)
-                : EmptyBodys(message: "No curfew settings?");
+                : EmptyBodys(message: "No curfew settings available.");
           } catch (e) {
             return Builderroul(
               error: e.toString(),
@@ -38,7 +38,7 @@ class CurfewSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(getCurfewSettingProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load curfew?",
+              firstMessage: "Failed to load curfew.",
             );
           }
         },
@@ -58,7 +58,7 @@ class CurfewSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(getCurfewSettingProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load profile?",
+              firstMessage: "Failed to load profile.",
             );
           }
         },
@@ -90,7 +90,7 @@ class CurfewSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(getCurfewSettingProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load curfew settings?",
+              firstMessage: "Failed to load curfew settings.",
             );
           } catch (e) {
             return Builderroul(
@@ -99,7 +99,7 @@ class CurfewSettingsScreen extends ConsumerWidget {
                   () => ref
                       .read(getCurfewSettingProvider.notifier)
                       .refreshPermission(context, ref),
-              firstMessage: "Faile to load curfew?",
+              firstMessage: "Failed to load curfew.",
             );
           }
         },

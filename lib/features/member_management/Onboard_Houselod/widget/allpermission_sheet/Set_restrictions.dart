@@ -28,7 +28,7 @@ class SetRestrictions extends ConsumerWidget {
                 ),
               ),
               Text(
-                "Set digital id restriction",
+                "Set Digital ID Restriction",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   fontWeight: FontFamilies.bold,
@@ -38,7 +38,7 @@ class SetRestrictions extends ConsumerWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                "Add or remove digital id restriction from houseHold",
+                "Add or remove digital ID restrictions for your household",
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   fontSize: 12,

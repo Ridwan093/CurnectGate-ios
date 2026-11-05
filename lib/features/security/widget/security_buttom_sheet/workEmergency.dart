@@ -57,7 +57,7 @@ class WorkEmergency extends ConsumerWidget {
           ),
           _buildContainer(
             size: size,
-            title: "Estate chaiman",
+            title: "Estate Chairman",
             subtitle: "+234 81203894898",
           ),
         ],

@@ -17,7 +17,7 @@ class ElectionNotifier extends StateNotifier<ElectionState> {
     state = state.copyWith(
       selections: {
         ...state.selections,
-        positionId: candidateId, // overrides if already exists → single select
+        positionId: candidateId, // overrides if already exists -> single select
       },
     );
   }

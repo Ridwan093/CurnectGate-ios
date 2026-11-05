@@ -331,7 +331,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
               ),
               const SizedBox(width: 12),
 
-              /// ⭐ TEXT AREA MUST ALSO EXPAND
+              /// TEXT AREA MUST ALSO EXPAND
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -518,7 +518,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
   //               ),
   //             ),
   //             subtitle: Text(
-  //               "Latest Poll/Elections in your community",
+  //               "Latest polls and elections in your community",
   //               style: TextStyle(
   //                 fontFamily: FontFamilies.interDisplay,
   //                 fontWeight: FontWeight.w500,
@@ -647,7 +647,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
                       showUserBottomSheet(
                         context: context,
                         headertitle: "Violations",
-                        headersubtitle: "Track resident's violation",
+                        headersubtitle: "Track residents' violations",
                         ref: ref,
                         bottom: BottomSheetView.securityViolationTrack,
                       );
@@ -668,7 +668,7 @@ class _SecurityDashboardState extends ConsumerState<SecurityDashboard>
                       showUserBottomSheet(
                         context: context,
                         headertitle: "Access Logs",
-                        headersubtitle: "Track resident's access logs",
+                        headersubtitle: "Track residents' access logs",
                         ref: ref,
                         bottom: BottomSheetView.mentainLog,
                       );

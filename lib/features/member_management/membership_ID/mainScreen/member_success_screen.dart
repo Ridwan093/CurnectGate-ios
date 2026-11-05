@@ -47,7 +47,7 @@ class MemberSuccessScreen extends StatelessWidget {
         ),
         const SizedBox(height: 25),
         Text(
-          "We got your code!, you now have entry",
+          "Your code is ready. You now have entry access.",
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,

@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/config/estate_currency.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/payment/services/recipt_service.dart';
@@ -109,7 +110,7 @@ class TransactionCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '₦ ${formatter.format(amount)}',
+                    '${EstateCurrency.symbol} ${formatter.format(amount)}',
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontWeight: FontWeight.bold,

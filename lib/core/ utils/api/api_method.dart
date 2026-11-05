@@ -2992,6 +2992,23 @@ class AppApiMethod {
     }
   }
 
+  /// Asks the server to start a card top-up of [amount] (before fees) and
+  /// returns the Paystack checkout link, reference and totals.
+  Future<Map<String, dynamic>> startWalletFundingCheckout({
+    required double amount,
+  }) async {
+    try {
+      final response = await _dio.post(
+        startFundWalletCheckout,
+        data: {"amount": amount, "payment_gateway": "paystack"},
+        options: Options(validateStatus: (status) => status! < 500),
+      );
+      return Map<String, dynamic>.from(response.data as Map);
+    } on DioException {
+      rethrow;
+    }
+  }
+
   Future<Map<String, dynamic>> initialisWalletFunding({
     required String paymentMethod,
     required double Amout,

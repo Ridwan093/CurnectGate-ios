@@ -3,7 +3,7 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/filter_submit_buttion.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/reminderListTile.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/time_widget.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -54,7 +54,7 @@ class SetCustomAlert extends ConsumerWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              "Set alerts prefernce for your activites & reminders",
+              "Set alert preferences for your activities and reminders",
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
                 fontSize: 11,
@@ -76,7 +76,7 @@ class SetCustomAlert extends ConsumerWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              "Mute non-urgent notification during your selected time range.",
+              "Mute non-urgent notifications during your selected time range.",
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
                 fontSize: 12,
@@ -114,7 +114,7 @@ class SetCustomAlert extends ConsumerWidget {
             ),
             const SizedBox(height: 20),
             ReminderListTile(
-              title: "Maintenace Reminders",
+              title: "Maintenance Reminders",
               onChanged: (value) {},
               isEnabled: false,
               context: context,
@@ -161,7 +161,7 @@ class SetCustomAlert extends ConsumerWidget {
           ),
         ),
         subtitle: Text(
-          "Receive SMS notification if critical alerts fail to deliver via push. ",
+          "Receive an SMS if critical alerts fail to deliver via push. ",
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,
             fontSize: 11,

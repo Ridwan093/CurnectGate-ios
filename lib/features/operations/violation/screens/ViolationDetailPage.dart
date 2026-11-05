@@ -166,7 +166,7 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
                               child: ConstrainedBox(
                                 constraints: const BoxConstraints(
                                   maxWidth:
-                                      200, // ← Adjust this: 180-220 feels perfect on most devices
+                                      200, // Adjust this: 180-220 feels perfect on most devices
                                 ),
                                 child: _buildAnonymouswidget(
                                   widget.violation.isAnonymous,
@@ -199,14 +199,14 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
 
                         const SizedBox(height: 10),
                         _buildAdditionalInfo(
-                          title: "Security assignedTo:",
+                          title: "Assigned Security:",
                           icon: Icons.security_outlined,
                           color: AppColors.instance.teal400,
                           leading: widget.violation.assignedTo?.name ?? "",
                         ),
                         const SizedBox(height: 12),
                         _buildAdditionalInfo(
-                          title: "Important Level:",
+                          title: "Priority Level:",
                           icon: Icons.nature,
                           color: AppColors.instance.teal400,
                           leading: widget.violation.priority,
@@ -220,7 +220,7 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
                         ),
                         const SizedBox(height: 12),
                         _buildAdditionalInfo(
-                          title: "Case  status:",
+                          title: "Case Status:",
                           icon: Icons.cases,
                           color: AppColors.instance.teal400,
                           leading: widget.violation.isOpen ? "Open" : "Close",
@@ -384,7 +384,7 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
           borderRadius: BorderRadius.circular(6),
         ),
         child: IntrinsicWidth(
-          // ← Key: Only as wide as text needs
+          // Key: Only as wide as text needs
           child: ConstrainedBox(
             constraints: const BoxConstraints(
               minWidth: 80,
@@ -417,7 +417,7 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
           vertical: 4.0,
         ), // Slightly more comfortable
         child: Row(
-          mainAxisSize: MainAxisSize.min, // ← Key: Only as wide as needed
+          mainAxisSize: MainAxisSize.min, // Key: Only as wide as needed
           children: [
             Image.asset(
               isAnonymous ? AssetPaths.anonymous : AssetPaths.navProfileActive,
@@ -427,11 +427,11 @@ class _ViolationDetailPageState extends ConsumerState<ViolationDetailPage>
             ),
             const SizedBox(width: 6),
             Flexible(
-              // ← Allows text to shrink/clip if too long
+              // Allows text to shrink/clip if too long
               child: Text(
                 isAnonymous ? "Anonymous" : reporterName,
                 overflow:
-                    TextOverflow.ellipsis, // ← Clean clipping for long names
+                    TextOverflow.ellipsis, // Clean clipping for long names
                 maxLines: 1,
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,

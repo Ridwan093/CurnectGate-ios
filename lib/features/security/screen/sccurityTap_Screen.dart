@@ -47,7 +47,7 @@ class SecurityTapScreen extends ConsumerWidget {
                   child: _buildNavigationRail(
                     currentIndex,
                     tabController,
-                    ref, // ✅ PASS REF
+                    ref, // PASS REF
                   ),
                 ),
 
@@ -167,7 +167,7 @@ class SecurityTapScreen extends ConsumerWidget {
           AssetPaths.navMessageactive,
           AssetPaths.navMessages,
           "Chats",
-          index: 1, // ✅ chats index
+          index: 1, // chats index
           ref: ref,
         ),
         _buildRailDestination(

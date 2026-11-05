@@ -12,7 +12,7 @@ import 'package:curnectgate/features/estate_management/screen_managment.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/loading_screen/loading_page.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/onboard_code.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:curnectgate/features/userProfile/Login_setting/state/biometric_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -171,12 +171,25 @@ class _SignInState extends ConsumerState<SignIn> {
             children: [
               const SizedBox(height: 20),
 
-              Text(
-                "${widget.title} $name.👋🏻",
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontFamily: FontFamilies.interDisplay,
-                  fontWeight: FontFamilies.bold,
-                ),
+              Row(
+                children: [
+                  Flexible(
+                    child: Text(
+                      "${widget.title} $name",
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(
+                            fontFamily: FontFamilies.interDisplay,
+                            fontWeight: FontFamilies.bold,
+                          ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Icon(
+                    Icons.waving_hand_rounded,
+                    size: 26,
+                    color: AppColors.instance.yellow500,
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
               Text(

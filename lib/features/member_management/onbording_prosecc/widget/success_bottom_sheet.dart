@@ -71,7 +71,7 @@ Widget buildSuccessContent({
                   fontWeight: FontFamilies.bold,
                   color: AppColors.instance.black600,
                 ),
-                text: "$firstName  $lastName",
+                text: "$firstName $lastName",
               ),
               TextSpan(
                 style: TextStyle(

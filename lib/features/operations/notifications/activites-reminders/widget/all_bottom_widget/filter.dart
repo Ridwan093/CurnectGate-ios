@@ -40,7 +40,7 @@ class Filter extends ConsumerWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            "Filter only activites you want to see",
+            "Filter only the activities you want to see",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               fontSize: 12,

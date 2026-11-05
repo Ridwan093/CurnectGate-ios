@@ -30,7 +30,7 @@ class TermsAndConditionData extends ConsumerWidget {
               ? _contents(
                 content: user.agreements?.termsAndConditions?.content ?? "",
               )
-              : EmptyBodys(message: "No data?");
+              : EmptyBodys(message: "No data available.");
         } catch (e) {
           return Builderroul(
             error: e.toString(),
@@ -38,7 +38,7 @@ class TermsAndConditionData extends ConsumerWidget {
                 () => ref
                     .read(agreementProvider.notifier)
                     .refreshAgreement(context, ref),
-            firstMessage: "Faile to load data?",
+            firstMessage: "Failed to load data.",
           );
         }
       },
@@ -58,7 +58,7 @@ class TermsAndConditionData extends ConsumerWidget {
                 () => ref
                     .read(agreementProvider.notifier)
                     .refreshAgreement(context, ref),
-            firstMessage: "Faile to load data?",
+            firstMessage: "Failed to load data.",
           );
         }
       },
@@ -85,7 +85,7 @@ class TermsAndConditionData extends ConsumerWidget {
                 () => ref
                     .read(agreementProvider.notifier)
                     .refreshAgreement(context, ref),
-            firstMessage: "Faile to load data?",
+            firstMessage: "Failed to load data.",
           );
         } catch (e) {
           return Builderroul(
@@ -94,7 +94,7 @@ class TermsAndConditionData extends ConsumerWidget {
                 () => ref
                     .read(agreementProvider.notifier)
                     .refreshAgreement(context, ref),
-            firstMessage: "Faile to load data?",
+            firstMessage: "Failed to load data.",
           );
         }
       },

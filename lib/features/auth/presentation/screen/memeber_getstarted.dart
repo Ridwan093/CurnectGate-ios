@@ -68,7 +68,7 @@ class _AuthOnboardingScreenState extends ConsumerState<AuthOnboardingScreen> {
 
     return Stack(
       children: [
-        /// ⭐ SLIDER or Placeholder
+        /// SLIDER or Placeholder
         if (sliders.isNotEmpty)
           PageView.builder(
             controller: _pageController,
@@ -98,18 +98,18 @@ class _AuthOnboardingScreenState extends ConsumerState<AuthOnboardingScreen> {
           Container(
             width: double.infinity,
             height: double.infinity,
-            color: Colors.blue, // 👈 TEST COLOR
+            color: Colors.blue, // TEST COLOR
             child: Center(
               child: Image.asset(
                 AssetPaths.appLogo,
                 width: 200,
                 fit: BoxFit.contain,
-                color: Colors.white.withOpacity(0.5), // 👈 Higher visibility
+                color: Colors.white.withOpacity(0.5), // Higher visibility
               ),
             ),
           ),
 
-        /// ⭐ Gradient
+        /// Gradient
         Positioned(
           bottom: 0,
           left: 0,
@@ -131,7 +131,7 @@ class _AuthOnboardingScreenState extends ConsumerState<AuthOnboardingScreen> {
           ),
         ),
 
-        /// ⭐ CONTENT
+        /// CONTENT
         SafeArea(
           child: Align(
             alignment: Alignment.bottomCenter,
@@ -165,7 +165,7 @@ class _AuthOnboardingScreenState extends ConsumerState<AuthOnboardingScreen> {
 
                       const SizedBox(height: 15),
 
-                      /// ⭐ dynamic title or fallback
+                      /// dynamic title or fallback
                       Text(
                         sliders.isNotEmpty && _currentPage < sliders.length
                             ? (sliders[_currentPage].description ??
@@ -182,7 +182,7 @@ class _AuthOnboardingScreenState extends ConsumerState<AuthOnboardingScreen> {
 
                       const SizedBox(height: 40),
 
-                      /// ⭐ indicator (only if multiple sliders)
+                      /// indicator (only if multiple sliders)
                       if (sliders.length > 1)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,

@@ -4,7 +4,7 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/provider/restrict_provider.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/allpermission_sheet/permission_widget/hurs_days_widget.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/restrition_data.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -119,7 +119,7 @@ class _AddRestrictionsState extends ConsumerState<AddRestrictions> {
                       ),
                       fillColor: Colors.white,
                       filled: true,
-                      hintText: "add reason",
+                      hintText: "Add reason",
                       hintStyle: TextStyle(
                         color: AppColors.instance.black300,
                         fontFamily: FontFamilies.interDisplay,

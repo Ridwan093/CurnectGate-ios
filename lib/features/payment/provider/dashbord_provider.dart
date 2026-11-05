@@ -1,6 +1,7 @@
 // Provider for your API class
 import 'dart:developer';
 
+import 'package:curnectgate/core/config/estate_currency.dart';
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
@@ -23,6 +24,8 @@ class PaymentDashbordNotifier
   Future<PaymentDashboardResponse?> build() async {
     // First try to load from local storage
     final localdashbord = await SharedPrefsService.getPaymentDashobord();
+    // Last known estate currency, so cached amounts show the right symbol.
+    await EstateCurrency.restore();
 
     try {
       // Then try to fetch fresh data
@@ -35,6 +38,8 @@ class PaymentDashbordNotifier
       final freshDashbord = await ref
           .read(getApiServiceProvider)
           .getPaymentDashbord(bearerToken: token);
+      // Amounts are in the estate's own currency (e.g. GH₵ for Ghana).
+      await EstateCurrency.load(token);
 
       // Only update local storage if data is different
       if (localdashbord?.toJson() != freshDashbord.toJson()) {
@@ -73,6 +78,7 @@ class PaymentDashbordNotifier
         final freshProfile = await ref
             .read(getApiServiceProvider)
             .getPaymentDashbord(bearerToken: token ?? "");
+        await EstateCurrency.load(token);
         await SharedPrefsService.savePaymentDashbord(freshProfile);
         return freshProfile;
       } catch (e) {

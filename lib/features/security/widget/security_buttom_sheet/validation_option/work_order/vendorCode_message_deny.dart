@@ -18,11 +18,11 @@ class VendorCodeDenyMessage extends StatelessWidget {
     // Extract key details from "security_notes" (for manual validation logs)
     final String visitorName = validation['guest_name'] ?? '';
     // final visitorName = ;
-    // final purpose = _extractValue(securityNotes, '🎯 Purpose:');
-    // final phone = _extractValue(securityNotes, '📞 Phone:');
-    // final destination = _extractValue(securityNotes, '🏠 Destination:');
-    // final address = _extractValue(securityNotes, '📍 Address:');
-    // final validPeriod = _extractValue(securityNotes, '⏱️ Valid Period:');
+    // final purpose = _extractValue(securityNotes, ' Purpose:');
+    // final phone = _extractValue(securityNotes, ' Phone:');
+    // final destination = _extractValue(securityNotes, ' Destination:');
+    // final address = _extractValue(securityNotes, ' Address:');
+    // final validPeriod = _extractValue(securityNotes, ' Valid Period:');
     final size = MediaQuery.sizeOf(context);
     return SingleChildScrollView(
       child: Column(
@@ -59,8 +59,8 @@ class VendorCodeDenyMessage extends StatelessWidget {
         SizedBox(height: 30),
 
         _buildText(
-          title: "Permit deny",
-          subtitle: "You deny Permit to ",
+          title: "Permit Denied",
+          subtitle: "You denied a permit to ",
           userName: userName,
         ),
       ],

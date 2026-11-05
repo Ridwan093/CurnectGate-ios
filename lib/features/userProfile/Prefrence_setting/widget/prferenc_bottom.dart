@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 
 import 'package:curnectgate/features/userProfile/Prefrence_setting/model/option.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +44,7 @@ class PrferencBottom extends ConsumerWidget {
           ),
           SizedBox(height: 20),
           Text(
-            "Select $title,",
+            "Select $title",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               fontWeight: FontFamilies.bold,

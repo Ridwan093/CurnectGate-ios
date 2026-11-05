@@ -82,7 +82,7 @@ class SelectpermitBottomsheet extends ConsumerWidget {
           //     showUserBottomSheet(
           //       context: context,
           //       headertitle: otp,
-          //       headersubtitle: "Revoked  OTP",
+          //       headersubtitle: "Revoked OTP",
           //       ref: ref,
           //       bottom: BottomSheetView.shedulPermit,
           //       id: id,

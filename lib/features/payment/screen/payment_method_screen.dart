@@ -113,7 +113,7 @@ class PaymentMethodScreen extends ConsumerWidget {
           SizedBox(width: 5),
           Expanded(
             child: Text(
-              "Upon completion of your profile setup, we have created a vitual account number just for you, select either by bank transfer or debit / credit card",
+              "Once your profile setup is complete, a virtual account number is created just for you. Fund your wallet by bank transfer or debit/credit card.",
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
                 fontSize: 12,
@@ -195,7 +195,7 @@ class PaymentMethodScreen extends ConsumerWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        // Remove fixed height — let it adapt
+        // Remove fixed height - let it adapt
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         decoration: BoxDecoration(
           color: AppColors.instance.grey300,
@@ -233,7 +233,7 @@ class PaymentMethodScreen extends ConsumerWidget {
 
             const SizedBox(width: 16),
 
-            // Text content — takes remaining space safely
+            // Text content - takes remaining space safely
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

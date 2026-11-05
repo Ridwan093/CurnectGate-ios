@@ -144,7 +144,7 @@ class Residentss extends ConsumerWidget {
                 return _buildErrorUI(
                   error.toString().toLowerCase().contains("connection")
                       ? "Connection failed. Please check your network"
-                      : "Failed to load resident directory",
+                      : "Failed to load resident directory.",
                   ref,
                   context,
                   searchNotifier,
@@ -223,7 +223,7 @@ class Residentss extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            "Failed to load resident directory",
+            "Failed to load resident directory.",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               fontSize: 16,

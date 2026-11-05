@@ -74,7 +74,7 @@ class ParkingViolationCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "Report By $reportedBy",
+                    "Reported by $reportedBy",
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontFamilies.bold,
@@ -103,7 +103,7 @@ class ParkingViolationCard extends StatelessWidget {
                   if (isDismissing ?? false) ...[
                     _dismissingBanner(
                       isDismissing: true,
-                      title: "Report Dismissing",
+                      title: "Dismiss Report",
                     ),
                   ] else if (isInvestigation ?? false) ...[
                     _resolevedMarks(
@@ -229,15 +229,15 @@ class ParkingViolationCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(6),
         ),
         child: Row(
-          mainAxisSize: MainAxisSize.min, // ← Key: Only as wide as needed
+          mainAxisSize: MainAxisSize.min, // Key: Only as wide as needed
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Flexible(
-              // ← Allows text to shrink/clip if needed
+              // Allows text to shrink/clip if needed
               child: Text(
                 buttonText,
                 overflow:
-                    TextOverflow.ellipsis, // ← Graceful clipping for long text
+                    TextOverflow.ellipsis, // Graceful clipping for long text
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
                   color: AppColors.instance.black600,
@@ -246,7 +246,7 @@ class ParkingViolationCard extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 8), // ← Fixed space instead of Flexible icon
+            const SizedBox(width: 8), // Fixed space instead of Flexible icon
             Icon(Icons.done, size: 18, color: AppColors.instance.black600),
           ],
         ),

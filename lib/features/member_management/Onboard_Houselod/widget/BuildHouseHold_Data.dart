@@ -73,7 +73,7 @@ class HouseholdDatas extends ConsumerWidget {
                   () => ref
                       .read(houseProvider.notifier)
                       .refreshHuseHold(context, ref),
-              firstMessage: "Faile to load Member?",
+              firstMessage: "Failed to load members.",
             );
           } catch (e) {
             return Builderroul(
@@ -82,7 +82,7 @@ class HouseholdDatas extends ConsumerWidget {
                   () => ref
                       .read(houseProvider.notifier)
                       .refreshHuseHold(context, ref),
-              firstMessage: "Faile to load Member?",
+              firstMessage: "Failed to load members.",
             );
           }
         },
@@ -98,7 +98,7 @@ class HouseholdDatas extends ConsumerWidget {
           Image.asset(AssetPaths.addMember, height: 100, width: 100),
           SizedBox(height: 10),
           Text(
-            "Members added to your profile appears here",
+            "Members added to your profile will appear here",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               color: AppColors.instance.black300,

@@ -32,7 +32,7 @@ class PollDeteilData extends ConsumerWidget {
                       .toList(),
                 ],
               )
-              : EmptyBodys(message: "No Poll Deteils?");
+              : EmptyBodys(message: "No poll details available.");
         } catch (e) {
           return Builderroul(
             error: e.toString(),
@@ -40,7 +40,7 @@ class PollDeteilData extends ConsumerWidget {
                 () => ref
                     .read(pollDetailsProvider.notifier)
                     .refreshPollDeteils(context, ref),
-            firstMessage: "Faile to load Poll Deteils?",
+            firstMessage: "Failed to load poll details.",
           );
         }
       },
@@ -63,7 +63,7 @@ class PollDeteilData extends ConsumerWidget {
                 () => ref
                     .read(pollDetailsProvider.notifier)
                     .refreshPollDeteils(context, ref),
-            firstMessage: "Faile to load Poll Deteils?",
+            firstMessage: "Failed to load poll details.",
           );
         }
       },
@@ -94,7 +94,7 @@ class PollDeteilData extends ConsumerWidget {
                 () => ref
                     .read(pollDetailsProvider.notifier)
                     .refreshPollDeteils(context, ref),
-            firstMessage: "Faile to load Poll Deteils?",
+            firstMessage: "Failed to load poll details.",
           );
         } catch (e) {
           return Builderroul(
@@ -103,7 +103,7 @@ class PollDeteilData extends ConsumerWidget {
                 () => ref
                     .read(pollDetailsProvider.notifier)
                     .refreshPollDeteils(context, ref),
-            firstMessage: "Faile to load Poll deteils?",
+            firstMessage: "Failed to load poll details.",
           );
         }
       },

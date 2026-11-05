@@ -56,7 +56,7 @@ class ValidationNotifier extends StateNotifier<ValidationState> {
               response['message'] ==
                       "This member code is already registered and active. Please login instead."
                   ? response['message']
-                  : "We couldn't find this ID for $estateName, please check your ID or contact your estate management",
+                  : "We couldn't find this ID for $estateName. Please check your ID or contact your estate management.",
         );
       }
     } on DioException catch (e) {
@@ -76,7 +76,7 @@ class ValidationNotifier extends StateNotifier<ValidationState> {
     if (e.type == DioExceptionType.connectionError) {
       return "Network error. Please check your connection.";
     }
-    return "We couldn't find this ID for $estateName, please check your ID or contact your estate management";
+    return "We couldn't find this ID for $estateName. Please check your ID or contact your estate management.";
   }
 
   void reset() {

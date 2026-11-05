@@ -212,7 +212,7 @@ class PropertyWidget extends ConsumerWidget {
             color: AppColors.instance.error600,
           ),
           children: [
-            const TextSpan(text: "Failed to load data. "),
+            const TextSpan(text: "Failed to load data."),
             WidgetSpan(
               child: TextButton(
                 onPressed: onRetry,

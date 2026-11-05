@@ -40,7 +40,7 @@ class ReusableReasonWidget extends ConsumerWidget {
         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         fillColor: Colors.white,
         filled: true,
-        hintText: "add reason",
+        hintText: "Add reason",
         hintStyle: TextStyle(
           color: AppColors.instance.black300,
           fontFamily: FontFamilies.interDisplay,

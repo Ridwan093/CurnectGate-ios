@@ -42,7 +42,7 @@ class PaymentHistory extends ConsumerWidget {
                     DepositTabContent(data: user.transactions?.data),
                   ],
                 )
-                : EmptyBodys(message: "No history data");
+                : EmptyBodys(message: "No history available.");
           } catch (e) {
             return Builderroul(
               error: e.toString(),
@@ -50,7 +50,7 @@ class PaymentHistory extends ConsumerWidget {
                   () => ref
                       .read(paymentHistoryProvider.notifier)
                       .refreshPaymentHistory(context),
-              firstMessage: "Faile to load history data",
+              firstMessage: "Failed to load history data.",
             );
           }
         },
@@ -81,7 +81,7 @@ class PaymentHistory extends ConsumerWidget {
                   () => ref
                       .read(paymentHistoryProvider.notifier)
                       .refreshPaymentHistory(context),
-              firstMessage: "Faile to load history data?",
+              firstMessage: "Failed to load history data.",
             );
           }
         },
@@ -122,7 +122,7 @@ class PaymentHistory extends ConsumerWidget {
                   () => ref
                       .read(paymentHistoryProvider.notifier)
                       .refreshPaymentHistory(context),
-              firstMessage: "Faile to load history?",
+              firstMessage: "Failed to load history.",
             );
           } catch (e) {
             return Builderroul(
@@ -131,7 +131,7 @@ class PaymentHistory extends ConsumerWidget {
                   () => ref
                       .read(paymentHistoryProvider.notifier)
                       .refreshPaymentHistory(context),
-              firstMessage: "Faile to load history data",
+              firstMessage: "Failed to load history data.",
             );
           }
         },

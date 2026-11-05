@@ -80,7 +80,7 @@ class PermitData extends ConsumerWidget {
                   () => ref
                       .read(getActivePermit.notifier)
                       .refreshActive(context, ref),
-              firstMessage: "Failed to load permit?",
+              firstMessage: "Failed to load permit.",
             );
           } catch (e) {
             return Builderroul(
@@ -89,7 +89,7 @@ class PermitData extends ConsumerWidget {
                   () => ref
                       .read(getActivePermit.notifier)
                       .refreshActive(context, ref),
-              firstMessage: "Failed to load permit?",
+              firstMessage: "Failed to load permit.",
             );
           }
         },
@@ -106,7 +106,7 @@ class PermitData extends ConsumerWidget {
             Image.asset(AssetPaths.setCurfew, height: 100, width: 100),
             const SizedBox(height: 10),
             Text(
-              "Your active permit appear here",
+              "Your active permits will appear here",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,

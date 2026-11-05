@@ -20,7 +20,7 @@ class VotingSettingsData extends ConsumerWidget {
           final polls = poll?.data;
           return polls != null
               ? VotnowContainer(data: polls)
-              : EmptyBodys(message: "No Poll?");
+              : EmptyBodys(message: "No polls available.");
         } catch (e) {
           return Builderroul(
             error: e.toString(),
@@ -28,7 +28,7 @@ class VotingSettingsData extends ConsumerWidget {
                 () => ref
                     .read(votingSettingsProvider.notifier)
                     .refreshVotingSetting(context, ref),
-            firstMessage: "Faile to load Poll?",
+            firstMessage: "Failed to load poll.",
           );
         }
       },
@@ -46,7 +46,7 @@ class VotingSettingsData extends ConsumerWidget {
                 () => ref
                     .read(votingSettingsProvider.notifier)
                     .refreshVotingSetting(context, ref),
-            firstMessage: "Faile to load Poll?",
+            firstMessage: "Failed to load poll.",
           );
         }
       },
@@ -70,7 +70,7 @@ class VotingSettingsData extends ConsumerWidget {
                 () => ref
                     .read(votingSettingsProvider.notifier)
                     .refreshVotingSetting(context, ref),
-            firstMessage: "Faile to load Poll?",
+            firstMessage: "Failed to load poll.",
           );
         } catch (e) {
           return Builderroul(
@@ -79,7 +79,7 @@ class VotingSettingsData extends ConsumerWidget {
                 () => ref
                     .read(votingSettingsProvider.notifier)
                     .refreshVotingSetting(context, ref),
-            firstMessage: "Faile to load Poll deteils?",
+            firstMessage: "Failed to load poll details.",
           );
         }
       },

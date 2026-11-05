@@ -96,7 +96,7 @@ class Committee extends ConsumerWidget {
                 return _buildErrorUI(
                   error.toString().toLowerCase().contains("connection")
                       ? "Connection failed. Please check your network"
-                      : "Failed to load committee",
+                      : "Failed to load committee.",
                   ref,
                   context,
                   searchNotifier,
@@ -133,7 +133,7 @@ class Committee extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            "Failed to load  committee",
+            "Failed to load committee.",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               fontSize: 16,

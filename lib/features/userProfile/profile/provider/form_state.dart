@@ -40,11 +40,11 @@ class ProfileFormNotifier extends StateNotifier<ProfileFormState> {
         );
         break;
       case 'newPass':
-        final isValid = value.isNotEmpty && value.length >= 6;
+        final isValid = value.isNotEmpty && value.length >= 8;
         state = state.copyWith(
           newPass: value,
           newPassValid: isValid,
-          newwpasswordError: isValid ? "" : 'Minimum 6 characters required',
+          newwpasswordError: isValid ? "" : 'Minimum 8 characters required',
           confirmPassValid: isValid && value == state.confirmPass,
         );
         break;

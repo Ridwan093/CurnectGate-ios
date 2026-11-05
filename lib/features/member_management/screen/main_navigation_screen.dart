@@ -61,7 +61,7 @@ class MainNavigationScreen extends ConsumerWidget {
                   ),
                 ),
 
-              // Main content — full on tablet, constrained on phone for beauty
+              // Main content - full on tablet, constrained on phone for beauty
               Expanded(
                 child:
                     isTablet
@@ -195,7 +195,7 @@ class MainNavigationScreen extends ConsumerWidget {
       // ), // Bottom padding (optional, can add safe area)
       // This is the key: distribute items evenly with space between
       groupAlignment:
-          .9, //  -1 = top, 0 = center, 1 = bottom → we want centered like mobile
+          .9, // -1 = top, 0 = center, 1 = bottom -> we want centered like mobile
 
       destinations: [
         _buildRailDestination(

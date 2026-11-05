@@ -28,7 +28,7 @@ class SecurityData extends ConsumerWidget {
                 () => ref
                     .read(getAvailableSecurity.notifier)
                     .refreshSecurity(context, ref),
-            firstMessage: "Faile to load securityPersonnel?",
+            firstMessage: "Failed to load security personnel.",
           );
         }
       },
@@ -47,7 +47,7 @@ class SecurityData extends ConsumerWidget {
                 () => ref
                     .read(getAdminProvider.notifier)
                     .refreshAdmin(context, ref),
-            firstMessage: "Faile to load securityPersonnel?",
+            firstMessage: "Failed to load security personnel.",
           );
         }
       },
@@ -73,7 +73,7 @@ class SecurityData extends ConsumerWidget {
                 () => ref
                     .read(getAvailableSecurity.notifier)
                     .refreshSecurity(context, ref),
-            firstMessage: "Faile to load securityPersonnel?",
+            firstMessage: "Failed to load security personnel.",
           );
         } catch (e) {
           return Builderroul(
@@ -82,7 +82,7 @@ class SecurityData extends ConsumerWidget {
                 () => ref
                     .read(getAvailableSecurity.notifier)
                     .refreshSecurity(context, ref),
-            firstMessage: "Faile to load securityPersonnel?",
+            firstMessage: "Failed to load security personnel.",
           );
         }
       },

@@ -40,7 +40,7 @@ class WorkpermitCard extends ConsumerWidget {
     }
   }
 
-  // Usage: formatRemainingTime("63628.20003") → "17h 40m 28s"
+  // Usage: formatRemainingTime("63628.20003") -> "17h 40m 28s"
 
   String formatToTime(String dateTimeString) {
     try {
@@ -75,7 +75,7 @@ class WorkpermitCard extends ConsumerWidget {
       visitorName: generated.guestName ?? "N/A",
       phone: generated.guestPhoneNumber ?? "080XXXXXXX",
       dateLabel:
-          "Create On: ${_formatDate(generated.createdAt ?? "")}, ${formatToTime(generated.createdAt ?? "")}",
+          "Created On: ${_formatDate(generated.createdAt ?? "")}, ${formatToTime(generated.createdAt ?? "")}",
       status: statusCheck(generated.status ?? ""),
       onAction:
           () => _onPress(
@@ -224,7 +224,7 @@ class PermitCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// 🔹 Header Row
+            /// Header Row
             Row(
               children: [
                 Icon(style.icon, color: style.borderColor, size: 22),
@@ -251,7 +251,7 @@ class PermitCard extends StatelessWidget {
 
             const SizedBox(height: 6),
 
-            /// 🔹 item count
+            /// item count
             Text(
               "$itemCount Items Authorized",
               style: TextStyle(
@@ -263,7 +263,7 @@ class PermitCard extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            /// 🔹 visitor box
+            /// visitor box
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -303,7 +303,7 @@ class PermitCard extends StatelessWidget {
                     ),
                   ),
 
-                  /// 🔹 action button
+                  /// action button
                   if (onAction != null)
                     _ActionButton(status: status, onTap: onAction!),
                 ],
@@ -312,7 +312,7 @@ class PermitCard extends StatelessWidget {
 
             const SizedBox(height: 10),
 
-            /// 🔹 date row
+            /// date row
             Row(
               children: [
                 const Icon(Icons.calendar_today_outlined, size: 16),
@@ -399,7 +399,7 @@ class _ActionButton extends StatelessWidget {
       case PermitStatus.approved:
         return "View Details";
       case PermitStatus.pending:
-        return "Awating Approval";
+        return "Awaiting Approval";
       case PermitStatus.rejected:
         return "View Reason";
       case PermitStatus.used:

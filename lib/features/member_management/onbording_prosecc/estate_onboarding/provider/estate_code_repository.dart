@@ -47,7 +47,7 @@ class EstateCodeSubmissionNotifier extends AutoDisposeAsyncNotifier<void> {
           .submitEstateCode(formState.code);
 
       if (response['status'] == true) {
-        formNotifier.clearApiError(); // ✅ correct
+        formNotifier.clearApiError(); // correct
 
         if (context.mounted) {
           showCustomSuccessToast(

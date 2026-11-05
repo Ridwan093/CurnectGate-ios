@@ -39,7 +39,7 @@ class CheckOutData extends ConsumerWidget {
                     () => ref
                         .read(getCheckOutProvider.notifier)
                         .refreshCheckout(context, ref),
-                firstMessage: "Faile to load logs",
+                firstMessage: "Failed to load logs.",
               );
             }
           },
@@ -80,7 +80,7 @@ class CheckOutData extends ConsumerWidget {
                     () => ref
                         .read(getCheckOutProvider.notifier)
                         .refreshCheckout(context, ref),
-                firstMessage: "Faile to load logs",
+                firstMessage: "Failed to load logs.",
               );
             } catch (e) {
               return Builderroul(
@@ -89,7 +89,7 @@ class CheckOutData extends ConsumerWidget {
                     () => ref
                         .read(getCheckOutProvider.notifier)
                         .refreshCheckout(context, ref),
-                firstMessage: "Faile to load logs",
+                firstMessage: "Failed to load logs.",
               );
             }
           },
@@ -127,7 +127,7 @@ class CheckOutData extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text("Session expired. Please login again."),
+          const Text("Session expired. Please log in again."),
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed:

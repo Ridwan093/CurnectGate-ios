@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/config/estate_currency.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/payment/provider/due_state_provider.dart';
@@ -188,7 +189,7 @@ class _BillCardState extends ConsumerState<BillCard>
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '₦ ${totalAmount.toStringAsFixed(2)}',
+                      '${EstateCurrency.symbol} ${totalAmount.toStringAsFixed(2)}',
                       style: TextStyle(
                         fontFamily: FontFamilies.interDisplay,
                         fontWeight: FontWeight.bold,
@@ -248,7 +249,7 @@ class _BillCardState extends ConsumerState<BillCard>
                       if (!isFullPaymentOnly)
                         Text(
                           remaining > 0
-                              ? 'Remaining: ₦ ${remaining.toStringAsFixed(2)} ($percent%)'
+                              ? 'Remaining: ${EstateCurrency.symbol} ${remaining.toStringAsFixed(2)} ($percent%)'
                               : 'Fully Paid ($percent%)',
                           style: TextStyle(
                             fontFamily: FontFamilies.interDisplay,
@@ -273,7 +274,7 @@ class _BillCardState extends ConsumerState<BillCard>
                       fontWeight: FontWeight.bold,
                     ),
                     decoration: InputDecoration(
-                      prefixText: '₦ ',
+                      prefixText: '${EstateCurrency.symbol} ',
                       prefixStyle: TextStyle(
                         color: AppColors.instance.black600,
                         fontWeight: FontWeight.bold,
@@ -328,7 +329,7 @@ class _BillCardState extends ConsumerState<BillCard>
                     Padding(
                       padding: const EdgeInsets.only(top: 8, left: 4),
                       child: Text(
-                        'Amount is below minimum: ₦ ${minimumAmount.toStringAsFixed(2)}',
+                        'Amount is below minimum: ${EstateCurrency.symbol} ${minimumAmount.toStringAsFixed(2)}',
                         style: const TextStyle(
                           color: Colors.redAccent,
                           fontSize: 11,
@@ -415,7 +416,7 @@ class _BillCardState extends ConsumerState<BillCard>
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: Text(
-                        'Minimum partial payment allowed: ₦ ${minimumAmount.toStringAsFixed(2)}',
+                        'Minimum partial payment allowed: ${EstateCurrency.symbol} ${minimumAmount.toStringAsFixed(2)}',
                         style: TextStyle(
                           color: AppColors.instance.teal400,
                           fontSize: 11,

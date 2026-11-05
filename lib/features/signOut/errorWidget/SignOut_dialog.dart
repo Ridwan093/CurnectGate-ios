@@ -52,7 +52,7 @@ Future<bool?> showSignOutDialog(BuildContext context) async {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Icon — smaller on small screens
+                    // Icon - smaller on small screens
                     Icon(
                       Icons.logout_rounded,
                       size: isSmallScreen ? 48 : 64,
@@ -60,7 +60,7 @@ Future<bool?> showSignOutDialog(BuildContext context) async {
                     ),
                     SizedBox(height: isSmallScreen ? 12 : 20),
 
-                    // Title — adaptive font
+                    // Title - adaptive font
                     Text(
                       'Sign Out?',
                       style: TextStyle(
@@ -85,7 +85,7 @@ Future<bool?> showSignOutDialog(BuildContext context) async {
                     ),
                     SizedBox(height: isSmallScreen ? 20 : 32),
 
-                    // Buttons — tighter on small screens
+                    // Buttons - tighter on small screens
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

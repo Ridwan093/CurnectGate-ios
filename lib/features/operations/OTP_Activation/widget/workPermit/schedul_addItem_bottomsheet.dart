@@ -32,7 +32,7 @@ class _AddItemBottomSheetState
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        /// ✅ SCROLLABLE FORM
+        /// SCROLLABLE FORM
         SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 90),
           child: Column(
@@ -87,7 +87,7 @@ class _AddItemBottomSheetState
           ),
         ),
 
-        /// 🚀 PREMIUM FLOATING ADD BUTTON
+        /// PREMIUM FLOATING ADD BUTTON
         Positioned(
           right: 16,
           bottom: 16,

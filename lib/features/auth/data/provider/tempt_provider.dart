@@ -1,6 +1,6 @@
 
 // 1. Password Validation Provider
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final passwordValidationProvider =
@@ -25,7 +25,7 @@ class PasswordValidationNotifier
     state = PasswordValidationState(
       hasMinLength: password.length >= 9,
       hasNumber: password.contains(RegExp(r'[0-9]')),
-      hasSpecialChar: password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]')),
+      hasSpecialChar: password.contains(RegExp(r'[^A-Za-z0-9\s]')),
     );
   }
 }

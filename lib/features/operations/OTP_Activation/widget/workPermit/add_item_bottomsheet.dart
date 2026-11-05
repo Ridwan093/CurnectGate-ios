@@ -223,7 +223,7 @@ class _AddItemBottomSheetState extends ConsumerState<AddItemBottomSheet> {
         crossAxisAlignment: CrossAxisAlignment.end,
 
         children: [
-          /// LEFT CONTENT — flexible but safe
+          /// LEFT CONTENT - flexible but safe
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -289,7 +289,7 @@ class _AddItemBottomSheetState extends ConsumerState<AddItemBottomSheet> {
 
           const SizedBox(width: 12),
 
-          /// BUTTON — intrinsic safe
+          /// BUTTON - intrinsic safe
           _SubmitButton(isEnabled: isEnabled, onTap: widget.onTap),
         ],
       ),
@@ -437,7 +437,7 @@ class _AddItemBottomSheetState extends ConsumerState<AddItemBottomSheet> {
         ),
         const SizedBox(width: 10),
         Expanded(
-          // ← Critical: name takes remaining space
+          // Critical: name takes remaining space
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -482,7 +482,7 @@ class _AddItemBottomSheetState extends ConsumerState<AddItemBottomSheet> {
         ),
         const SizedBox(width: 10),
         Expanded(
-          // ← Critical: name takes remaining space
+          // Critical: name takes remaining space
           child: Text(
             "Items Authorized",
             overflow: TextOverflow.ellipsis,

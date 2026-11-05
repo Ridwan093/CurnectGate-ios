@@ -89,7 +89,7 @@ class EventLimitData extends ConsumerWidget {
                   () => ref
                       .read(getEventLimitProvider.notifier)
                       .refreshEvent(context, ref),
-              firstMessae: "Faile to load Event",
+              firstMessae: "Failed to load event.",
             );
           } catch (e) {
             return Builderrouls(
@@ -98,7 +98,7 @@ class EventLimitData extends ConsumerWidget {
                   () => ref
                       .read(getEventProvider.notifier)
                       .refreshEvent(context, ref, ""),
-              firstMessae: "Faile to load Event?",
+              firstMessae: "Failed to load event.",
             );
           }
         },
@@ -150,7 +150,7 @@ class EventLimitData extends ConsumerWidget {
           Image.asset(AssetPaths.dashboardEvents, height: 100, width: 100),
           SizedBox(height: 10),
           Text(
-            "Event detiles appears here",
+            "Event details will appear here",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               color: AppColors.instance.black300,

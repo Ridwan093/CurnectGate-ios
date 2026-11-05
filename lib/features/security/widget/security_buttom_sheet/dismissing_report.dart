@@ -2,7 +2,7 @@ import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/co_dropdown.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:flutter/material.dart';
@@ -88,7 +88,7 @@ class _DismissingReportState extends ConsumerState<DismissingReport> {
                     ReusabelProfileForm(
                       controller: _noteController,
                       fieldType: FieldType.reason,
-                      hintText: "(eg. Violation resolved.)",
+                      hintText: "(e.g. Violation resolved.)",
                       label: "Note",
                       fieldKey: "Note",
                       onChanged: (value) {

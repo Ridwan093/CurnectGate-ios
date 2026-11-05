@@ -1,6 +1,7 @@
+import 'package:curnectgate/core/config/app_env.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -97,7 +98,7 @@ class _GenderAndTermsWidgetState extends ConsumerState<GenderAndTermsWidget>
     // Launch URL
     try {
       await launchUrlString(
-        'https://curnectgate.com/privacy',
+        AppEnv.privacyPolicyUrl,
         mode: LaunchMode.externalApplication,
       );
     } catch (_) {

@@ -3,7 +3,7 @@ import 'package:curnectgate/features/auth/widget/tempt_pass_form.dart';
 import 'package:curnectgate/features/estate_management/screen_managment.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/loading_screen/loading_page.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -14,8 +14,8 @@ class ChangeTemporaryPassword extends BaseVerificationScreen {
     : super(
         currentStep: 4,
         totalSteps: 5,
-        title: "Hey .👋🏻",
-        description: 'Let get your password change',
+        title: "Hey there",
+        description: 'Let’s get your password changed',
       );
 
   @override
@@ -103,7 +103,7 @@ class _SignInState extends ConsumerState<ChangeTemporaryPassword> {
 
           PasswordInput(
             hintText: "rge738\$..",
-            label: 'New  password',
+            label: 'New password',
             onChanged: (value) {
               ref.read(formProvider.notifier).updateCreateNewPass(value);
             },
@@ -112,7 +112,7 @@ class _SignInState extends ConsumerState<ChangeTemporaryPassword> {
           const SizedBox(height: 8),
           PasswordInput(
             hintText: "rge738\$..",
-            label: 'Cornfirm  password',
+            label: 'Confirm password',
             onChanged: (value) {
               ref.read(formProvider.notifier).updateConfirmNewPass(value);
             },

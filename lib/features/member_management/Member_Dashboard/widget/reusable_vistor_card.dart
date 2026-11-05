@@ -139,7 +139,7 @@ class VisitorCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: Text(
-                    "Expired in 30 days",
+                    "Expires in 30 days",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       color: AppColors.instance.error500,

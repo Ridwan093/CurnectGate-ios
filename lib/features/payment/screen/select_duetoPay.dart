@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/config/estate_currency.dart';
 import 'dart:developer';
 
 import 'package:curnectgate/core/navigation/route_path.dart';
@@ -148,7 +149,7 @@ class DuePaymentSelection extends ConsumerWidget {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    '₦ ${totalDueAmount.toStringAsFixed(2)}',
+                    '${EstateCurrency.symbol} ${totalDueAmount.toStringAsFixed(2)}',
                     style: const TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 32,
@@ -170,7 +171,7 @@ class DuePaymentSelection extends ConsumerWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: Text(
-                        'Minimum partial payment: ₦ ${data!.minimumPayableAmount}',
+                        'Minimum partial payment: ${EstateCurrency.symbol} ${data!.minimumPayableAmount}',
                         style: TextStyle(
                           fontFamily: FontFamilies.interDisplay,
                           color: Colors.white.withOpacity(0.9),
@@ -262,7 +263,7 @@ class DuePaymentSelection extends ConsumerWidget {
                     ),
                   ),
                   Text(
-                    '₦ ${totalPayable.toStringAsFixed(2)}',
+                    '${EstateCurrency.symbol} ${totalPayable.toStringAsFixed(2)}',
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 20,

@@ -23,7 +23,7 @@ class WorkOrderOption extends ConsumerWidget {
         icon: AssetPaths.dashboardWorkOrder,
       ),
       ValidationOption(
-        label: 'Validate Workers Code',
+        label: 'Validate Worker Code',
         icon: AssetPaths.dashboardWorkOrder,
       ),
     ];
@@ -205,7 +205,7 @@ class WorkOrderOption extends ConsumerWidget {
           bottom: BottomSheetView.validateVendor,
         );
         break;
-      case 'Validate Workers Code':
+      case 'Validate Worker Code':
         notifier.updateValidationType("");
         context.pop();
         showUserBottomSheet(
@@ -216,7 +216,7 @@ class WorkOrderOption extends ConsumerWidget {
           bottom: BottomSheetView.validateWorker,
         );
         break;
-      case 'Validate Checkin/Checkout':
+      case 'Validate Check-In/Check-Out':
         notifier.updateValidationType("");
         context.pop();
         showUserBottomSheet(

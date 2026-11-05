@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/config/estate_currency.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -55,7 +56,7 @@ class PayOutstanding extends StatelessWidget {
           _buildPrimaryOptionTile(
             title: "Pay full amount",
             subtitle: "Pay the total ",
-            second: "(₦${formatPrice("${data?.totalOutstanding ?? 0}")})",
+            second: "(${EstateCurrency.symbol}${formatPrice("${data?.totalOutstanding ?? 0}")})",
             last: "  now",
             data: data,
             onTap: () {
@@ -108,7 +109,7 @@ class PayOutstanding extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        // No fixed height → adapts to content
+        // No fixed height -> adapts to content
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColors.instance.grey300,
@@ -124,7 +125,7 @@ class PayOutstanding extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Main content — takes available space
+            // Main content - takes available space
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,13 +167,13 @@ class PayOutstanding extends StatelessWidget {
                     ),
                   ),
 
-                  // Balance info — conditional
+                  // Balance info - conditional
                   if (hasBalanceInfo) ...[
                     const SizedBox(height: 10),
                     Text(
                       data.hasSufficientBalance!
-                          ? "Wallet balance: ₦${formatPrice(data.walletBalance ?? "")}"
-                          : "Low wallet balance: ₦${formatPrice(data.walletBalance ?? "")}",
+                          ? "Wallet balance: ${EstateCurrency.symbol}${formatPrice(data.walletBalance ?? "")}"
+                          : "Low wallet balance: ${EstateCurrency.symbol}${formatPrice(data.walletBalance ?? "")}",
                       style: TextStyle(
                         fontFamily: FontFamilies.interDisplay,
                         fontWeight: FontWeight.bold,

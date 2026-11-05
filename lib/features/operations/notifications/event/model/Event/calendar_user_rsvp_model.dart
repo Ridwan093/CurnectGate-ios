@@ -34,7 +34,7 @@ class CalendarUserRsvp with _$CalendarUserRsvp {
       );
 }
 
-// ✅ ADD GETTERS AS EXTENSION (outside the class)
+// ADD GETTERS AS EXTENSION (outside the class)
 extension CalendarUserRsvpExtensions on CalendarUserRsvp {
   bool get isGoing => response != null && response!.toLowerCase() == 'going';
   

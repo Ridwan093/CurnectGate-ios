@@ -10,13 +10,12 @@ class DenyEntryConfirmation extends StatelessWidget {
   const DenyEntryConfirmation({super.key, required this.jsonData});
   static String _extractValue(String notes, String label) {
     try {
-      final line =
-          notes
-              .split('\n')
-              .firstWhere((l) => l.contains(label), orElse: () => '')
-              .replaceAll(label, '')
-              .trim();
-      return line.isNotEmpty ? line : 'N/A';
+      final line = notes
+          .split('\n')
+          .firstWhere((l) => l.contains(label), orElse: () => '');
+      if (line.isEmpty) return 'N/A';
+      final value = line.substring(line.indexOf(label) + label.length).trim();
+      return value.isNotEmpty ? value : 'N/A';
     } catch (_) {
       return 'N/A';
     }
@@ -30,12 +29,12 @@ class DenyEntryConfirmation extends StatelessWidget {
 
     // Extract key details from "security_notes" (for manual validation logs)
     final String securityNotes = validation['security_notes'] ?? '';
-    final visitorName = _extractValue(securityNotes, '👤 Visitor:');
-    // final purpose = _extractValue(securityNotes, '🎯 Purpose:');
-    // final phone = _extractValue(securityNotes, '📞 Phone:');
-    // final destination = _extractValue(securityNotes, '🏠 Destination:');
-    // final address = _extractValue(securityNotes, '📍 Address:');
-    // final validPeriod = _extractValue(securityNotes, '⏱️ Valid Period:');
+    final visitorName = _extractValue(securityNotes, 'Visitor:');
+    // final purpose = _extractValue(securityNotes, 'Purpose:');
+    // final phone = _extractValue(securityNotes, 'Phone:');
+    // final destination = _extractValue(securityNotes, 'Destination:');
+    // final address = _extractValue(securityNotes, 'Address:');
+    // final validPeriod = _extractValue(securityNotes, 'Valid Period:');
     final size = MediaQuery.sizeOf(context);
     return SingleChildScrollView(
       child: Column(
@@ -72,8 +71,8 @@ class DenyEntryConfirmation extends StatelessWidget {
         SizedBox(height: 30),
 
         _buildText(
-          title: "Access deny",
-          subtitle: "You deny access to ",
+          title: "Access Denied",
+          subtitle: "You denied access to ",
           userName: userName,
         ),
       ],

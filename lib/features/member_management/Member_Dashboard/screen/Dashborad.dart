@@ -1,5 +1,6 @@
 // ignore_for_file: unused_result
 
+import 'package:curnectgate/core/config/estate_currency.dart';
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -19,7 +20,7 @@ import 'package:curnectgate/features/member_management/Member_Dashboard/widget/h
 import 'package:curnectgate/features/member_management/Member_Dashboard/widget/quikLink_card.dart';
 import 'package:curnectgate/features/member_management/membership_ID/provider/digitalD_status.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:curnectgate/features/operations/OTP_Activation/provider/expired_used_count_provider.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
@@ -289,7 +290,7 @@ class _DashboradState extends ConsumerState<Dashborad>
                       Statistics(),
 
                       const SizedBox(height: 20),
-                      _buildTopTitile("QUICK LINK"),
+                      _buildTopTitile("QUICK LINKS"),
 
                       const SizedBox(height: 10),
 
@@ -424,7 +425,7 @@ class _DashboradState extends ConsumerState<Dashborad>
             onTap: () {
               context.pushNamed(AppRoutes.paymentMethod);
             },
-            title: "Add Fund",
+            title: "Add Funds",
             icon: Icons.payments,
           ),
         QuikLinkCard(
@@ -560,12 +561,12 @@ class _DashboradState extends ConsumerState<Dashborad>
   ) {
     final isDue = (data?.totalOutstanding ?? 0) > 0;
     final rawAmount = data?.totalOutstanding ?? 0.00;
-    final displayAmount = "₦${formatPrice(rawAmount.toString())}";
+    final displayAmount = "${EstateCurrency.symbol}${formatPrice(rawAmount.toString())}";
 
     // Use MediaQuery for safe, proportional sizing
     final screenWidth = MediaQuery.sizeOf(context).width;
     final maxAmountWidth =
-        screenWidth * 0.65; // 65% of screen → safe on small devices
+        screenWidth * 0.65; // 65% of screen -> safe on small devices
 
     return Container(
       padding: const EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
@@ -618,7 +619,7 @@ class _DashboradState extends ConsumerState<Dashborad>
               onTap: () {
                 showUserBottomSheet(
                   context: context,
-                  headertitle: "Pay Outstanding Due",
+                  headertitle: "Pay Outstanding Dues",
                   headersubtitle: "",
                   ref: ref,
                   dashbordData: data,

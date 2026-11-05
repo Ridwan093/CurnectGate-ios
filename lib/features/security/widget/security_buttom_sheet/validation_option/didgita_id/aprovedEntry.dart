@@ -5,7 +5,7 @@ import 'dart:developer';
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/securitybutton.dart';
@@ -63,7 +63,7 @@ class _DenyEntryState extends ConsumerState<GrantDigitalEntry> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Specify the reason for entry grant",
+                    "Specify the reason for granting entry",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,
@@ -77,7 +77,7 @@ class _DenyEntryState extends ConsumerState<GrantDigitalEntry> {
               ReusabelProfileForm(
                 controller: _reasonEditinControler,
                 fieldType: FieldType.reason,
-                hintText: "(eg. not meet up with estate standand)",
+                hintText: "(e.g. Meets estate standards)",
                 label: "Enter flag reason",
                 fieldKey: "Reason",
                 onChanged: (value) {

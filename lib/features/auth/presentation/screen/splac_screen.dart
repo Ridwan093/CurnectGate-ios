@@ -28,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(seconds: 4),
     );
 
-    // LOGO: Drop smoothly from top (-1.2) → center (0.0) with elastic bounce
+    // LOGO: Drop smoothly from top (-1.2) -> center (0.0) with elastic bounce
     _logoDrop = Tween<double>(
       begin: -1.2,
       end: 0.0,

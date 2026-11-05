@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/config/estate_currency.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/payment/provider/due_state_provider.dart';
@@ -116,7 +117,7 @@ class _ConfirmPaymentScreenState extends ConsumerState<ConfirmPaymentScreen>
                         (bill) => _ItemRow(
                           label: bill.title,
                           value:
-                              '₦ ${selectedAmounts[bill.id]!.toStringAsFixed(2)}',
+                              '${EstateCurrency.symbol} ${selectedAmounts[bill.id]!.toStringAsFixed(2)}',
                           isPartial: !bill.isFullPaymentOnly,
                         ),
                       ),
@@ -126,12 +127,12 @@ class _ConfirmPaymentScreenState extends ConsumerState<ConfirmPaymentScreen>
                       ),
                       _SummaryRow(
                         label: 'Subtotal',
-                        value: '₦ ${subtotal.toStringAsFixed(2)}',
+                        value: '${EstateCurrency.symbol} ${subtotal.toStringAsFixed(2)}',
                       ),
                       const SizedBox(height: 8),
                       _SummaryRow(
                         label: 'Processing Fee',
-                        value: '₦ ${processingFee.toStringAsFixed(2)}',
+                        value: '${EstateCurrency.symbol} ${processingFee.toStringAsFixed(2)}',
                       ),
                       const SizedBox(height: 16),
                       Container(
@@ -152,7 +153,7 @@ class _ConfirmPaymentScreenState extends ConsumerState<ConfirmPaymentScreen>
                               ),
                             ),
                             Text(
-                              '₦ ${totalDueNow.toStringAsFixed(2)}',
+                              '${EstateCurrency.symbol} ${totalDueNow.toStringAsFixed(2)}',
                               style: TextStyle(
                                 fontFamily: FontFamilies.interDisplay,
                                 fontWeight: FontWeight.bold,
@@ -204,7 +205,7 @@ class _ConfirmPaymentScreenState extends ConsumerState<ConfirmPaymentScreen>
                       ),
                     ),
                     child: Text(
-                      'Pay ₦ ${totalDueNow.toStringAsFixed(2)}',
+                      'Pay ${EstateCurrency.symbol} ${totalDueNow.toStringAsFixed(2)}',
                       style: const TextStyle(
                         fontFamily: FontFamilies.interDisplay,
                         fontSize: 16,

@@ -27,7 +27,7 @@ class EstateAdminData extends ConsumerWidget {
                 () => ref
                     .read(getAdminProvider.notifier)
                     .refreshAdmin(context, ref),
-            firstMessage: "Faile to load estate admin?",
+            firstMessage: "Failed to load estate admin.",
           );
         }
       },
@@ -44,7 +44,7 @@ class EstateAdminData extends ConsumerWidget {
                 () => ref
                     .read(getAdminProvider.notifier)
                     .refreshAdmin(context, ref),
-            firstMessage: "Faile to load estate admin?",
+            firstMessage: "Failed to load estate admin.",
           );
         }
       },
@@ -68,7 +68,7 @@ class EstateAdminData extends ConsumerWidget {
                 () => ref
                     .read(getAdminProvider.notifier)
                     .refreshAdmin(context, ref),
-            firstMessage: "Faile to load estate admin?",
+            firstMessage: "Failed to load estate admin.",
           );
         } catch (e) {
           return Builderroul(
@@ -77,7 +77,7 @@ class EstateAdminData extends ConsumerWidget {
                 () => ref
                     .read(getAdminProvider.notifier)
                     .refreshAdmin(context, ref),
-            firstMessage: "Faile to load estate admin?",
+            firstMessage: "Failed to load estate admin.",
           );
         }
       },

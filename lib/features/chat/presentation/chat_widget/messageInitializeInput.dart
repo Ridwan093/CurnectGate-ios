@@ -1,7 +1,7 @@
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -133,7 +133,7 @@ class _ChatMessageInputState extends ConsumerState<ChatMessageInput> {
 
           const SizedBox(width: 15),
 
-          // Send Button — only visible when typing
+          // Send Button - only visible when typing
           AnimatedOpacity(
             opacity: (_isTyping || isLoading) ? 1.0 : 0.0,
             duration: const Duration(milliseconds: 200),

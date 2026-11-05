@@ -77,14 +77,14 @@ class WorkOrderConfirmWidget extends ConsumerWidget {
           ..writeln(
             'Location: ${location['property'] ?? location['address'] ?? 'N/A'}',
           )
-          ..writeln('When: $startDate — $endDate  |  $timeWindow')
+          ..writeln('When: $startDate to $endDate | $timeWindow')
           ..writeln('Workers: $numberOfWorkers')
           ..writeln('')
           ..writeln('Worker access codes:');
     for (final w in workers) {
       final name = w['name'] ?? 'N/A';
       final code = w['access_code'] ?? 'N/A';
-      shareAllText.writeln('$name — Code: $code');
+      shareAllText.writeln('$name (Code: $code)');
     }
 
     return SingleChildScrollView(
@@ -257,7 +257,7 @@ class WorkOrderConfirmWidget extends ConsumerWidget {
             children: [
               Expanded(
                 child: _infoTile(
-                  title: '$startDate — $endDate',
+                  title: '$startDate to $endDate',
                   subtitle: 'Dates',
                   size: size,
                 ),
@@ -348,7 +348,11 @@ class WorkOrderConfirmWidget extends ConsumerWidget {
                         if (isLeader)
                           Padding(
                             padding: const EdgeInsets.only(right: 8, top: 2),
-                            child: Text('⭐', style: TextStyle(fontSize: 18)),
+                            child: Icon(
+                              Icons.star_rounded,
+                              size: 18,
+                              color: AppColors.instance.yellow500,
+                            ),
                           )
                         else
                           const SizedBox(width: 8),
@@ -431,7 +435,7 @@ class WorkOrderConfirmWidget extends ConsumerWidget {
                             GestureDetector(
                               onTap:
                                   () =>
-                                      _shareText('$name — Access code: $code'),
+                                      _shareText('$name (Access code: $code)'),
                               child: Icon(
                                 Icons.share,
                                 size: 18,

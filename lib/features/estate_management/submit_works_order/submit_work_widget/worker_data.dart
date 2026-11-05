@@ -67,7 +67,7 @@ class WorkOderData extends ConsumerWidget {
                   () => ref
                       .read(workOrderProvider.notifier)
                       .refreshWorkOrders(context, ref),
-              firstMessage: "Faile to load work order?",
+              firstMessage: "Failed to load work order.",
             );
           } catch (e) {
             return Builderroul(
@@ -76,7 +76,7 @@ class WorkOderData extends ConsumerWidget {
                   () => ref
                       .read(workOrderProvider.notifier)
                       .refreshWorkOrders(context, ref),
-              firstMessage: "Faile to load work order?",
+              firstMessage: "Failed to load work order.",
             );
           }
         },
@@ -100,7 +100,7 @@ class WorkOderData extends ConsumerWidget {
             Image.asset(AssetPaths.dashboardWorkOrder, height: 100, width: 100),
             SizedBox(height: 10),
             Text(
-              "Your work detailes appears here",
+              "Your work orders will appear here",
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
                 color: AppColors.instance.black300,

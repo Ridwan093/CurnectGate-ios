@@ -6,7 +6,7 @@ import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
 import 'package:curnectgate/features/userProfile/notification_setting/model/community.dart';
 import 'package:curnectgate/features/userProfile/notification_setting/model/notifications.dart';
@@ -242,7 +242,7 @@ class UserNotificationSettings extends ConsumerWidget {
                           ref
                               .read(userNotificationSettinProvider.notifier)
                               .refreshSettings(context, ref),
-                  firstMessage: "Failed to load Notification Settings.",
+                  firstMessage: "Failed to load notification settings.",
                 );
               },
             ),

@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/config/app_env.dart';
 import 'dart:developer';
 
 import 'package:curnectgate/core/%20utils/service/app_lifecycle_service.dart';
@@ -33,6 +34,9 @@ void main() async {
   //  CRITICAL: Must be the VERY FIRST call in main() before anything else.
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Load .env before anything reads config (API URL, links, etc.).
+  await AppEnv.load();
   // 2. Initialize Firebase
   try {
     print('[DEBUG] Starting Firebase initialization...');
@@ -71,7 +75,7 @@ void main() async {
     log('Hive box init error: $e');
   }
 
-  print('🚀 [DEBUG] Reaching runApp()...');
+  print('[DEBUG] Reaching runApp()...');
   runApp(
     ProviderScope(
       child: MyApp(),

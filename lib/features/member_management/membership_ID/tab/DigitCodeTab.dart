@@ -30,10 +30,13 @@ class DigitCodeTab extends ConsumerWidget {
             return CodeWidget(data: digit!);
           } else {
             return EmptyBody(
-              onTap: () {},
+              onTap:
+                  () => ref
+                      .read(digitMemberIDprovider.notifier)
+                      .refreshDigitalID(context, ref),
               imagepath: AssetPaths.qr,
-              emptyMessag: "No Digital Id",
-              buttonTexe: "Refre",
+              emptyMessag: "No Digital ID yet",
+              buttonTexe: "Refresh",
             );
           }
         },
@@ -76,7 +79,7 @@ class DigitCodeTab extends ConsumerWidget {
                   () => ref
                       .read(digitMemberIDprovider.notifier)
                       .refreshDigitalID(context, ref),
-              firstMessage: "Faile to load Digital code?",
+              firstMessage: "Failed to load digital code.",
             );
           } catch (e) {
             return Builderroul(
@@ -85,7 +88,7 @@ class DigitCodeTab extends ConsumerWidget {
                   () => ref
                       .read(digitMemberIDprovider.notifier)
                       .refreshDigitalID(context, ref),
-              firstMessage: "Faile to load Digital code??",
+              firstMessage: "Failed to load digital code.",
             );
           }
         },

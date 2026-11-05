@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/config/estate_currency.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/history_model/transaction_item.dart';
@@ -5,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class PaymentReceiptCard extends StatelessWidget {
-  final TransactionItem tx; // 👈 your model item
+  final TransactionItem tx; // your model item
 
   const PaymentReceiptCard({super.key, required this.tx});
   double _toDouble(dynamic value) {
@@ -29,7 +30,7 @@ class PaymentReceiptCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            /// ✅ SUCCESS ICON
+            /// SUCCESS ICON
             Container(
               height: 60,
               width: 60,
@@ -59,7 +60,7 @@ class PaymentReceiptCard extends StatelessWidget {
             const SizedBox(height: 6),
 
             Text(
-              "₦${NumberFormat('#,##0.00').format(_toDouble(tx.amount))}",
+              "${EstateCurrency.symbol}${NumberFormat('#,##0.00').format(_toDouble(tx.amount))}",
               style: TextStyle(
                 fontSize: 26,
                 fontFamily: FontFamilies.interDisplay,
@@ -82,7 +83,7 @@ class PaymentReceiptCard extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-            /// ✅ ITEMS PAID
+            /// ITEMS PAID
             if (tx.metadata?.itemsPaid?.isNotEmpty ?? false) ...[
               const Align(
                 alignment: Alignment.centerLeft,
@@ -106,7 +107,7 @@ class PaymentReceiptCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "₦${NumberFormat('#,##0.00').format(_toDouble(e.amount))}",
+                        "${EstateCurrency.symbol}${NumberFormat('#,##0.00').format(_toDouble(e.amount))}",
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,

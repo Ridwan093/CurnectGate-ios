@@ -9,7 +9,7 @@ import 'package:curnectgate/features/chat/data/model/attachment.dart';
 import 'package:curnectgate/features/chat/data/model/chat_message.dart';
 import 'package:curnectgate/features/chat/data/model/conversation.dart';
 import 'package:curnectgate/features/chat/data/provider/get_provider/get_conversation_provider.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,7 +22,7 @@ final messagesProvider = NotifierProvider.family
 
 class MessagesNotifier extends AutoDisposeFamilyNotifier<List<Message>, int> {
   int get conversationId =>
-      arg; // ← This is how you get the family argument (int)
+      arg; // This is how you get the family argument (int)
 
   @override
   List<Message> build(int conversationId) {
@@ -289,7 +289,7 @@ class MessagesNotifier extends AutoDisposeFamilyNotifier<List<Message>, int> {
     );
 
     try {
-      // 1️Call API first
+      // 1Call API first
       final targetId = message.serverId ?? message.id;
       if (targetId != null) {
         final success = await ref
@@ -322,7 +322,7 @@ class MessagesNotifier extends AutoDisposeFamilyNotifier<List<Message>, int> {
         }
       }
     } catch (e) {
-      // API call failed → optional: show error
+      // API call failed -> optional: show error
       log(e.toString());
 
       // Rollback UI (if you removed it optimistically)
@@ -424,7 +424,7 @@ class MessagesNotifier extends AutoDisposeFamilyNotifier<List<Message>, int> {
           await existing.save();
         }
       } else {
-        // ➕ ADD new (it's truly new)
+        // ADD new (it's truly new)
         final key = await box.add(msg);
         msg.hiveKey = key;
         await msg.save();

@@ -20,7 +20,7 @@ class _PdfPreviewScreenState extends State<PdfPreviewScreen> {
   void initState() {
     super.initState();
 
-    // ✅ create ONCE — not in build
+    // create ONCE - not in build
     _pdfController = PdfController(
       document: PdfDocument.openFile(widget.file.path),
     );
@@ -28,7 +28,7 @@ class _PdfPreviewScreenState extends State<PdfPreviewScreen> {
 
   @override
   void dispose() {
-    // ✅ VERY IMPORTANT
+    // VERY IMPORTANT
     _pdfController.dispose();
     super.dispose();
   }

@@ -14,7 +14,7 @@ import 'package:curnectgate/features/chat/data/provider/typingindicator_provider
 import 'package:curnectgate/features/chat/presentation/chat_widget/messagesBubbles.dart';
 import 'package:curnectgate/features/chat/services/reverb_service.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/app_bottom_sheet.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/tabState/permission_tab_state.dart';
 import 'package:dart_pusher_channels/dart_pusher_channels.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +70,7 @@ class _MessageScreenState extends ConsumerState<MessageScreens>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    /// 1️⃣ Subscribe to this chat's real-time channel
+    /// 1⃣ Subscribe to this chat's real-time channel
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ReverbService.subscribeChat(chatId: widget.id, ref: ref);
@@ -93,7 +93,7 @@ class _MessageScreenState extends ConsumerState<MessageScreens>
       }
     });
 
-    /// 2️⃣ Retry pending messages on connectivity restore
+    /// 2⃣ Retry pending messages on connectivity restore
     _connectivitySub = Connectivity().onConnectivityChanged.listen((event) {
       if (event != ConnectivityResult.none) {
         ref

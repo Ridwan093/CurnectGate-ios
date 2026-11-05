@@ -98,7 +98,7 @@ class Otpactivation extends ConsumerWidget {
           const SizedBox(height: 30),
           Row(
             children: [
-              // Title — takes available space safely
+              // Title - takes available space safely
               Expanded(
                 child: Text(
                   "Active OTPs",

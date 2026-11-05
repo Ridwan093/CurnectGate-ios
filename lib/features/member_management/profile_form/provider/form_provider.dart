@@ -706,7 +706,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         updateCreatPassLoading(false);
         showCustomSuccessToast(
           context: context,
-          message: response['data']["password"][0] ?? "Invalide password",
+          message: response['data']["password"][0] ?? "Invalid password",
           color: AppColors.instance.error500,
           icon: Icons.error,
           iconColors: AppColors.instance.grey200,
@@ -1285,7 +1285,7 @@ class FormNotifier extends StateNotifier<FormStates> {
 
         showCustomSuccessToast(
           context: context,
-          message: "Invalid or password or  email!",
+          message: "Invalid email or password.",
           color: AppColors.instance.error500,
           icon: Icons.error,
           iconColors: AppColors.instance.grey200,
@@ -2546,7 +2546,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         final otpCode = response["data"]?["otp"]?["otp_code"];
         if (otpCode != null) {
           String title = "Your visitor access code:";
-          String shareContent = "Here's your vistor access: ";
+          String shareContent = "Here's your visitor access: ";
           context.pushNamed(
             AppRoutes.vendorAccessCode,
             extra: {'title': title, "code": otpCode, 'share': shareContent},
@@ -2654,7 +2654,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         final otpCode = response["data"]?["otp"]?["otp_code"];
         if (otpCode != null) {
           String title = "Your visitor access code: ";
-          String shareContent = "Here's your vistor access codes: ";
+          String shareContent = "Here's your visitor access codes: ";
           context.pushNamed(
             AppRoutes.vendorAccessCode,
             extra: {'title': title, "code": otpCode, 'share': shareContent},
@@ -8822,7 +8822,7 @@ class FormNotifier extends StateNotifier<FormStates> {
         showUserBottomSheet(
           context: context,
           headertitle: message,
-          headersubtitle: "hellleo",
+          headersubtitle: "",
           ref: ref,
           bottom: BottomSheetView.paymentSuccess,
         );

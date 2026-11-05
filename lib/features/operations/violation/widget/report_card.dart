@@ -170,7 +170,7 @@ class ReportCard extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            isResove ? "Report  Dismissed" : "Report Resolved",
+            isResove ? "Report Dismissed" : "Report Resolved",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               color: AppColors.instance.black500,

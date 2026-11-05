@@ -27,7 +27,7 @@ class QuikLinkCard extends StatelessWidget {
       width: cardWidth.clamp(
         100.0,
         160.0,
-      ), // min 100px, max ~160px → never too big/small
+      ), // min 100px, max ~160px -> never too big/small
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),

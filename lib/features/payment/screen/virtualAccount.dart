@@ -80,7 +80,7 @@ class VirtualAccount extends ConsumerWidget {
             SizedBox(height: 10),
             _buildPaymentClick(
               context: context,
-              title: "Sterlin Bank",
+              title: "Sterling Bank",
               subtitle: "000000000",
               iconPath: AssetPaths.navCreditCardFilled,
 
@@ -89,7 +89,7 @@ class VirtualAccount extends ConsumerWidget {
             SizedBox(height: 10),
             _buildPaymentClick(
               context: context,
-              title: "Moniepoint Microfinace Bank",
+              title: "Moniepoint Microfinance Bank",
               subtitle: "000000000",
               iconPath: AssetPaths.navCreditCardFilled,
 
@@ -103,7 +103,7 @@ class VirtualAccount extends ConsumerWidget {
 
   Widget _buildNotifyerBox() {
     return Text(
-      "Make a naira transfer to this account number and your Curnectgate wallet wiil be funded immedatel",
+      "Make a transfer to this account number and your CurnectGate wallet will be funded immediately",
       textAlign: TextAlign.center,
       style: TextStyle(
         fontFamily: FontFamilies.interDisplay,

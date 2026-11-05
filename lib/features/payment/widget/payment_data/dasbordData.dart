@@ -29,7 +29,7 @@ class DashbordData<T> extends ConsumerWidget {
             if (userData != null) {
               return builder(context, userData as T);
             } else {
-              return EmptyBodys(message: "No dashboard data?");
+              return EmptyBodys(message: "No dashboard data available.");
             }
           } catch (e) {
             return Builderroul(
@@ -38,7 +38,7 @@ class DashbordData<T> extends ConsumerWidget {
                   () => ref
                       .read(paymentDashbordProvider.notifier)
                       .refreshPaymentDashbord(context, ref),
-              firstMessage: "Failed to load Dashboard Balance?",
+              firstMessage: "Failed to load dashboard balance.",
             );
           }
         },
@@ -57,7 +57,7 @@ class DashbordData<T> extends ConsumerWidget {
                   () => ref
                       .read(paymentDashbordProvider.notifier)
                       .refreshPaymentDashbord(context, ref),
-              firstMessage: "Failed to load Dashboard Balance?",
+              firstMessage: "Failed to load dashboard balance.",
             );
           }
         },
@@ -81,7 +81,7 @@ class DashbordData<T> extends ConsumerWidget {
                 () => ref
                     .read(paymentDashbordProvider.notifier)
                     .refreshPaymentDashbord(context, ref),
-            firstMessage: "Failed to load Dashboard Balance?",
+            firstMessage: "Failed to load dashboard balance.",
           );
         },
       ),

@@ -63,7 +63,7 @@ class ActiveHistoryDataWidget extends ConsumerWidget {
                   () => ref
                       .read(getActiveOtpHistoryProvider.notifier)
                       .refreshActive(context, ref),
-              firstMessage: "Faile to load OTPs?",
+              firstMessage: "Failed to load OTPs.",
             );
           } catch (e) {
             return Builderroul(
@@ -72,7 +72,7 @@ class ActiveHistoryDataWidget extends ConsumerWidget {
                   () => ref
                       .read(getActiveOtpHistoryProvider.notifier)
                       .refreshActive(context, ref),
-              firstMessage: "Faile to load OTPs?",
+              firstMessage: "Failed to load OTPs.",
             );
           }
         },
@@ -93,7 +93,7 @@ class ActiveHistoryDataWidget extends ConsumerWidget {
             ),
             SizedBox(height: 10),
             Text(
-              "Otp history appears here",
+              "Your OTP history will appear here",
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
                 color: AppColors.instance.black300,

@@ -22,7 +22,7 @@ class HistoryData extends ConsumerWidget {
             final polls = candidate?.data;
             return polls != null
                 ? ElectionHistoryCard(votes: polls.history ?? [])
-                : EmptyBodys(message: "No Candidate Yet?");
+                : EmptyBodys(message: "No candidates yet.");
           } catch (e) {
             return Builderroul(
               error: e.toString(),
@@ -30,7 +30,7 @@ class HistoryData extends ConsumerWidget {
                   () => ref
                       .read(pollHistoryProvider.notifier)
                       .refreshHistory(context, ref),
-              firstMessage: "Faile to load Candidate?",
+              firstMessage: "Failed to load candidate.",
             );
           }
         },
@@ -47,7 +47,7 @@ class HistoryData extends ConsumerWidget {
                   () => ref
                       .read(pollHistoryProvider.notifier)
                       .refreshHistory(context, ref),
-              firstMessage: "Faile to load Candidate?",
+              firstMessage: "Failed to load candidate.",
             );
           }
         },
@@ -71,7 +71,7 @@ class HistoryData extends ConsumerWidget {
                   () => ref
                       .read(pollHistoryProvider.notifier)
                       .refreshHistory(context, ref),
-              firstMessage: "Faile to load Candidate?",
+              firstMessage: "Failed to load candidate.",
             );
           } catch (e) {
             return Builderroul(
@@ -80,7 +80,7 @@ class HistoryData extends ConsumerWidget {
                   () => ref
                       .read(pollHistoryProvider.notifier)
                       .refreshHistory(context, ref),
-              firstMessage: "Faile to load Candidate?",
+              firstMessage: "Failed to load candidate.",
             );
           }
         },

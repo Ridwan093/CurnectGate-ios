@@ -40,7 +40,7 @@ class Statistics extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final role = ref.watch(userRoleProvider);
     return ConstrainedBox(
-      // ← safer than fixed height
+      // safer than fixed height
       constraints: const BoxConstraints(
         minHeight: 180, // enough for ~4 items
         maxHeight: 200, // prevents growing forever
@@ -53,7 +53,7 @@ class Statistics extends ConsumerWidget {
             BoxShadow(
               color: Colors.grey.withOpacity(
                 0.18,
-              ), // ← adjust opacity 0.15–0.30
+              ), // adjust opacity 0.15–0.30
               blurRadius: 16, // bigger blur = softer/larger shadow
               spreadRadius: 4, // spreads shadow outward
               offset: const Offset(0, 6), // downward offset for natural drop
@@ -107,7 +107,7 @@ class Statistics extends ConsumerWidget {
           ),
         ),
         // child: ListView.separated(
-        //   shrinkWrap: true, // ← very important if not full screen
+        // shrinkWrap: true, // very important if not full screen
         //   physics:
         //       const ClampingScrollPhysics(), // disable scroll if inside scrollable parent
         //   itemCount: statList.length,
@@ -123,7 +123,7 @@ class Statistics extends ConsumerWidget {
         //         if (e.title.contains("Visitors")) {
         //           context.pushNamed(AppRoutes.activeOtpHistory);
         //         }
-        //       }, // ← add navigation later
+        // }, // add navigation later
         //     );
         //   },
         // ),
@@ -141,13 +141,13 @@ class Statistics extends ConsumerWidget {
             trailing: count,
 
             title: "Event",
-            subtitle: "All availabe events",
+            subtitle: "All available events",
             icon: AssetPaths.dashboardEvents,
             onTap: () {
               showUserBottomSheet(
                 context: context,
                 headertitle: "",
-                headersubtitle: "Revoked  OTP",
+                headersubtitle: "Revoked OTP",
                 ref: ref,
                 bottom: BottomSheetView.events,
                 id: 0,
@@ -159,13 +159,13 @@ class Statistics extends ConsumerWidget {
             trailing: 0,
 
             title: "Event",
-            subtitle: "All availabe events",
+            subtitle: "All available events",
             icon: AssetPaths.dashboardEvents,
             onTap: () {
               showUserBottomSheet(
                 context: context,
                 headertitle: "",
-                headersubtitle: "Revoked  OTP",
+                headersubtitle: "Revoked OTP",
                 ref: ref,
                 bottom: BottomSheetView.events,
                 id: 0,
@@ -179,13 +179,13 @@ class Statistics extends ConsumerWidget {
           trailing: 0,
 
           title: "Event",
-          subtitle: "All availabe events",
+          subtitle: "All available events",
           icon: AssetPaths.dashboardEvents,
           onTap: () {
             showUserBottomSheet(
               context: context,
               headertitle: "",
-              headersubtitle: "Revoked  OTP",
+              headersubtitle: "Revoked OTP",
               ref: ref,
               bottom: BottomSheetView.events,
               id: 0,
@@ -198,13 +198,13 @@ class Statistics extends ConsumerWidget {
           trailing: 0,
 
           title: "Event",
-          subtitle: "All availabe events",
+          subtitle: "All available events",
           icon: AssetPaths.dashboardEvents,
           onTap: () {
             showUserBottomSheet(
               context: context,
               headertitle: "",
-              headersubtitle: "Revoked  OTP",
+              headersubtitle: "Revoked OTP",
               ref: ref,
               bottom: BottomSheetView.events,
               id: 0,
@@ -242,7 +242,7 @@ class Statistics extends ConsumerWidget {
         return _buildStatContent(
           trailing: count,
           title: "Violation",
-          subtitle: "Pending/Investigating Report",
+          subtitle: "Pending/Investigating Reports",
           icon: AssetPaths.vaolationIcon,
           onTap: () => context.pushNamed(AppRoutes.violation),
         );
@@ -255,7 +255,7 @@ class Statistics extends ConsumerWidget {
         return _buildStatContent(
           trailing: count,
           title: "Violation",
-          subtitle: "Pending/Investigating Report",
+          subtitle: "Pending/Investigating Reports",
           icon: AssetPaths.vaolationIcon,
           onTap: () => context.pushNamed(AppRoutes.violation),
         );
@@ -272,7 +272,7 @@ class Statistics extends ConsumerWidget {
           return _buildStatContent(
             trailing: count,
             title: "Violation",
-            subtitle: "Pending/Investigating Report",
+            subtitle: "Pending/Investigating Reports",
             icon: AssetPaths.vaolationIcon,
             onTap: () => context.pushNamed(AppRoutes.violation),
           );
@@ -280,7 +280,7 @@ class Statistics extends ConsumerWidget {
           return _buildStatContent(
             trailing: 0,
             title: "Violation",
-            subtitle: "Pending/Investigating Report",
+            subtitle: "Pending/Investigating Reports",
             icon: AssetPaths.vaolationIcon,
             onTap: () => context.pushNamed(AppRoutes.violation),
           );
@@ -295,7 +295,7 @@ class Statistics extends ConsumerWidget {
       emptyBody: _buildStatContent(
         trailing: 0,
         title: "Visitors",
-        subtitle: "Used/Expired Otp",
+        subtitle: "Used/Expired OTPs",
         icon: AssetPaths.visitorivite,
         onTap: () {
           context.pushNamed(AppRoutes.activeOtpHistory);
@@ -305,7 +305,7 @@ class Statistics extends ConsumerWidget {
           (data) => _buildStatContent(
             trailing: data,
             title: "Visitors",
-            subtitle: "Used/Expired Otp",
+            subtitle: "Used/Expired OTPs",
             icon: AssetPaths.visitorivite,
             onTap: () {
               context.pushNamed(AppRoutes.activeOtpHistory);
@@ -335,7 +335,7 @@ class Statistics extends ConsumerWidget {
 
           return _buildStatContent(
             title: "Elections/Polls",
-            subtitle: "Latest Poll/Elections in your community",
+            subtitle: "Latest polls and elections in your community",
             icon: AssetPaths.newPoll,
             trailing: activePolls.length,
             onTap: () {
@@ -356,7 +356,7 @@ class Statistics extends ConsumerWidget {
                   activePolls: activePolls,
                 );
               }
-            }, // ← add navigation later
+            }, // add navigation later
           );
         },
         loading: () => const SizedBox.shrink(),
@@ -386,7 +386,7 @@ class Statistics extends ConsumerWidget {
         if (count > 0) {
           return _buildStatContent(
             title: "Work Order",
-            subtitle: "Start/in progress",
+            subtitle: "Started/In progress",
             icon: AssetPaths.dashboardWorkOrder,
             trailing: count,
             onTap: () => context.pushNamed(AppRoutes.workOrder),
@@ -394,7 +394,7 @@ class Statistics extends ConsumerWidget {
         } else {
           return _buildStatContent(
             title: "Work Order",
-            subtitle: "Start/in progress",
+            subtitle: "Started/In progress",
             icon: AssetPaths.dashboardWorkOrder,
             trailing: 0,
             onTap: () => context.pushNamed(AppRoutes.workOrder),
@@ -409,7 +409,7 @@ class Statistics extends ConsumerWidget {
           if (cached != null && cached.data.workorders.data.isNotEmpty) {
             return _buildStatContent(
               title: "Work Order",
-              subtitle: "Start/in progress",
+              subtitle: "Started/In progress",
               icon: AssetPaths.dashboardWorkOrder,
               trailing: count,
               onTap: () => context.pushNamed(AppRoutes.workOrder),
@@ -417,7 +417,7 @@ class Statistics extends ConsumerWidget {
           } else {
             return _buildStatContent(
               title: "Work Order",
-              subtitle: "Start/in progress",
+              subtitle: "Started/In progress",
               icon: AssetPaths.dashboardWorkOrder,
               trailing: 0,
               onTap: () => context.pushNamed(AppRoutes.workOrder),
@@ -426,7 +426,7 @@ class Statistics extends ConsumerWidget {
         } catch (e) {
           return _buildStatContent(
             title: "Work Order",
-            subtitle: "Start/in progress",
+            subtitle: "Started/In progress",
             icon: AssetPaths.dashboardWorkOrder,
             trailing: 0,
             onTap: () => context.pushNamed(AppRoutes.workOrder),
@@ -467,7 +467,7 @@ class Statistics extends ConsumerWidget {
             fontFamily: FontFamilies.interDisplay,
             fontWeight:
                 FontWeight
-                    .bold, // FontFamilies.bold → assuming it's FontWeight.bold
+                    .bold, // FontFamilies.bold -> assuming it's FontWeight.bold
             color: AppColors.instance.black600,
             fontSize: 15,
           ),
@@ -482,7 +482,7 @@ class Statistics extends ConsumerWidget {
           ),
         ),
         trailing: SizedBox(
-          width: 60, // ← fixed width prevents overflow & layout issues
+          width: 60, // fixed width prevents overflow & layout issues
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             mainAxisSize: MainAxisSize.min,

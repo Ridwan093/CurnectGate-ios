@@ -78,7 +78,7 @@ class _ViolationtrackState extends ConsumerState<MatainLog>
           const SizedBox(height: 20),
           MyCustomTabBar(
             controller: _tabController,
-            tabs: [Tab(child: Text('CheckIn')), Tab(text: 'CheckOut')],
+            tabs: [Tab(child: Text('Check In')), Tab(text: 'Check Out')],
             labelColor: Colors.grey.shade300,
             unselectedLabelColor: AppColors.instance.black300,
             labelStyle: TextStyle(

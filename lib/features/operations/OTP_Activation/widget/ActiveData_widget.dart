@@ -21,7 +21,7 @@ class ActivedataWidget extends ConsumerWidget {
               .read(getActiveOtpProvider.notifier)
               .refreshActive(context, ref),
 
-      child: const _ActiveOtpBody(), // 👈 isolate rebuilds
+      child: const _ActiveOtpBody(), // isolate rebuilds
     );
   }
 }
@@ -37,7 +37,7 @@ class _ActiveOtpBody extends ConsumerWidget {
       data: (activeOtp) {
         if ((activeOtp?.data?.otps ?? []).isNotEmpty) {
           return Consumer(
-            // ← Isolate rebuilds here
+            // Isolate rebuilds here
             builder: (context, ref, child) {
               // Only rebuild this part when getActiveOtpProvider changes
               return Buildactivelist(otp: activeOtp?.data);
@@ -80,7 +80,7 @@ class _ActiveOtpBody extends ConsumerWidget {
                 () => ref
                     .read(getActiveOtpProvider.notifier)
                     .refreshActive(context, ref),
-            firstMessage: "Failed to load active OTPs?",
+            firstMessage: "Failed to load active OTPs.",
           );
         } catch (e) {
           return Builderroul(
@@ -89,7 +89,7 @@ class _ActiveOtpBody extends ConsumerWidget {
                 () => ref
                     .read(getActiveOtpProvider.notifier)
                     .refreshActive(context, ref),
-            firstMessage: "Failed to load active OTPs?",
+            firstMessage: "Failed to load active OTPs.",
           );
         }
       },
@@ -109,7 +109,7 @@ class _ActiveOtpBody extends ConsumerWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              "Active Otp appear here",
+              "Your active OTPs will appear here",
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
                 color: AppColors.instance.black300,

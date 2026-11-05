@@ -2,7 +2,7 @@ import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/workformprovider.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -30,7 +30,7 @@ class Revokeworkoder extends ConsumerWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          'Revoke vendor Log?',
+          'Revoke Vendor Log?',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,
@@ -39,7 +39,7 @@ class Revokeworkoder extends ConsumerWidget {
           ),
         ),
         Text(
-          'Are you sure you want to revoke vendor Log?',
+          'Are you sure you want to revoke this vendor log?',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: FontFamilies.interDisplay,

@@ -4,7 +4,7 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_provider/workformprovider.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/date_picker.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/work_drop_down.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:curnectgate/features/operations/notifications/provider/notificationa_Reminder_provider.dart';
 import 'package:flutter/material.dart';
@@ -128,7 +128,7 @@ class _SubmitPermitBottomSheetState extends ConsumerState<CreatEvent> {
                           ),
                           const SizedBox(height: 30),
                           Text(
-                            "Request Event code",
+                            "Request Event Code",
                             style: TextStyle(
                               fontFamily: FontFamilies.interDisplay,
                               fontWeight: FontFamilies.bold,
@@ -138,7 +138,7 @@ class _SubmitPermitBottomSheetState extends ConsumerState<CreatEvent> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Request event code for your upcoming party',
+                            'Request an event code for your upcoming event',
                             style: TextStyle(
                               fontFamily: FontFamilies.interDisplay,
                               fontSize: 13,
@@ -150,7 +150,7 @@ class _SubmitPermitBottomSheetState extends ConsumerState<CreatEvent> {
                             controller: _eventTitleController,
                             fieldKey: 'event_title',
                             fieldType: FieldType.itemName,
-                            hintText: 'eg, Birthday Party',
+                            hintText: 'e.g. Birthday Party',
                             label: 'Event Title',
                             onChanged: (_) {},
                             onValidationChanged: (_) {},
@@ -169,7 +169,7 @@ class _SubmitPermitBottomSheetState extends ConsumerState<CreatEvent> {
                             controller: _eventLocationController,
                             fieldKey: 'event_location',
                             fieldType: FieldType.itemName,
-                            hintText: 'eg, Block A, House 12 Backyard',
+                            hintText: 'e.g. Block A, House 12 Backyard',
                             label: 'Event Location',
                             onChanged: (_) {},
                             onValidationChanged: (_) {},
@@ -179,7 +179,7 @@ class _SubmitPermitBottomSheetState extends ConsumerState<CreatEvent> {
                             controller: _guestNumberController,
                             fieldKey: 'expected_guests',
                             fieldType: FieldType.year,
-                            hintText: 'eg, 50',
+                            hintText: 'e.g. 50',
                             label: 'Expected Guests',
                             onChanged: (_) {},
                             onValidationChanged: (_) {},
@@ -235,7 +235,7 @@ class _SubmitPermitBottomSheetState extends ConsumerState<CreatEvent> {
                             fieldKey: 'special_instructions',
                             fieldType: FieldType.reason,
                             hintText:
-                                'eg, Please allow catering vans between 4pm-6pm',
+                                'e.g. Please allow catering vans between 4pm-6pm',
                             label: 'Special Instructions',
                             onChanged: (_) {},
                             onValidationChanged: (_) {},
@@ -247,7 +247,7 @@ class _SubmitPermitBottomSheetState extends ConsumerState<CreatEvent> {
                             controller: _descriptionController,
                             fieldKey: 'Event description',
                             fieldType: FieldType.reason,
-                            hintText: 'eg, Celebrating my 30th birthday?',
+                            hintText: 'e.g. Celebrating my 30th birthday',
                             label: 'Event Description',
                             maxLines: 2,
                             // maxLength: 20,

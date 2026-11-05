@@ -27,7 +27,7 @@ class Daytimewindow extends ConsumerWidget {
           16,
           12,
           16,
-        ), // ← Key: less right padding for icon
+        ), // Key: less right padding for icon
         labelText: 'Daily Time Window',
         labelStyle: TextStyle(
           fontFamily: FontFamilies.interDisplay,
@@ -35,7 +35,7 @@ class Daytimewindow extends ConsumerWidget {
           fontSize: 14,
         ),
         hintText:
-            'e.g (9:00 AM - 5:00 PM)', // ← Use hintText instead of hint widget
+            'e.g. 9:00 AM - 5:00 PM', // Use hintText instead of hint widget
         hintStyle: TextStyle(
           fontFamily: FontFamilies.interDisplay,
           color: AppColors.instance.black300,
@@ -68,7 +68,7 @@ class Daytimewindow extends ConsumerWidget {
         color: AppColors.instance.black600,
         size: 24,
       ),
-      isExpanded: true, // ← Critical: makes dropdown take full width
+      isExpanded: true, // Critical: makes dropdown take full width
       value: state.selectedTimeWindow,
       items:
           timeWindows.map((String value) {

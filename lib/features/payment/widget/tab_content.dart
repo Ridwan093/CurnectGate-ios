@@ -1,4 +1,5 @@
 // tab_contents.dart
+import 'package:curnectgate/core/config/estate_currency.dart';
 import 'dart:developer';
 
 import 'package:curnectgate/core/constants/asset_paths.dart';
@@ -68,7 +69,7 @@ class AllTabContent extends StatelessWidget {
           trailing: Text(
             _getpriceSign(
               activity?.transactionType ?? "",
-              "₦${formatPrice(activity?.amount ?? "")}",
+              "${EstateCurrency.symbol}${formatPrice(activity?.amount ?? "")}",
             ),
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,

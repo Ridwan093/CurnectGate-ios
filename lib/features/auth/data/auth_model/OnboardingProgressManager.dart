@@ -21,11 +21,11 @@ class OnboardingProgressManager {
   static Future<OnboardingStep?> getStep() async {
   final prefs = await SharedPreferences.getInstance();
   final value = prefs.getString(_key);
-  if (value == null) return null; // ✅ no saved progress
+  if (value == null) return null; // no saved progress
   try {
     return OnboardingStep.values.firstWhere((e) => e.name == value);
   } catch (_) {
-    return null; // ✅ if corrupted data
+    return null; // if corrupted data
   }
 }
 

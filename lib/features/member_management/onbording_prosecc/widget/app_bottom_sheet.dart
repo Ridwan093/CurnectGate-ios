@@ -73,7 +73,7 @@ void showUserBottomSheet({
                 ? null
                 : const EdgeInsets.all(20),
 
-        // ✅ PRO FIX — handle BOTH keyboard and nav bar
+        // PRO FIX - handle BOTH keyboard and nav bar
         margin: EdgeInsets.only(bottom: bottomInset),
 
         decoration: const BoxDecoration(
@@ -82,7 +82,7 @@ void showUserBottomSheet({
         ),
 
         child: Padding(
-          // ✅ protects against nav bar
+          // protects against nav bar
           padding: EdgeInsets.only(bottom: safeBottom),
           child: Consumer(
             builder: (context, ref, _) {
@@ -774,7 +774,7 @@ Widget _buildCurrentView(
         subtitlefontSize: 13,
         widget: ScheduleOTPinAdvance(),
         title: "OTP Usage History",
-        subtitle: "Track who accessed your property and .",
+        subtitle: "Track who accessed your property and when.",
       );
     case BottomSheetView.fundingWithbankTransfer:
       return BottomsheetDetails(
@@ -808,7 +808,7 @@ Widget _buildCurrentView(
           subtitlefontSize: 13,
           widget: GenerateOTPWithValidity(),
           title: "Validate OTP",
-          subtitle: "Valiate access code to grant entry.",
+          subtitle: "Validate the access code to grant entry.",
         ),
       );
     case BottomSheetView.valdationConfrm:
@@ -1043,7 +1043,7 @@ Widget _buildrevokActiveOtp(BuildContext context, WidgetRef ref) {
       ),
       const SizedBox(height: 16),
       Text(
-        'Revoke Active Otp?',
+        'Revoke Active OTP?',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontFamily: FontFamilies.interDisplay,
@@ -1052,7 +1052,7 @@ Widget _buildrevokActiveOtp(BuildContext context, WidgetRef ref) {
         ),
       ),
       Text(
-        'Are you sure you want to revoke Active Otp?',
+        'Are you sure you want to revoke this active OTP?',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontFamily: FontFamilies.interDisplay,

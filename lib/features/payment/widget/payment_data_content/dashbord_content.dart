@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/config/estate_currency.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -66,7 +67,7 @@ class DashbordContent extends ConsumerWidget {
               ? Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "No upcoming due",
+                  "No upcoming dues",
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     color: AppColors.instance.black400,
@@ -80,7 +81,7 @@ class DashbordContent extends ConsumerWidget {
                 children: [
                   Flexible(
                     child: Text(
-                      "Total due amount is ₦${formatPrice(amount)}",
+                      "Total due amount is ${EstateCurrency.symbol}${formatPrice(amount)}",
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontFamily: FontFamilies.interDisplay,
@@ -96,7 +97,7 @@ class DashbordContent extends ConsumerWidget {
                         onTap: () {
                           showUserBottomSheet(
                             context: context,
-                            headertitle: "Pay Outstanding Due",
+                            headertitle: "Pay Outstanding Dues",
                             headersubtitle: "",
                             ref: ref,
                             dashbordData: data,
@@ -112,7 +113,7 @@ class DashbordContent extends ConsumerWidget {
                           ),
                           child: Center(
                             child: Text(
-                              "Pay due",
+                              "Pay Due",
                               style: TextStyle(
                                 fontFamily: FontFamilies.interDisplay,
                                 color: AppColors.instance.grey200,
@@ -162,7 +163,7 @@ class DashbordContent extends ConsumerWidget {
             ),
 
             Text(
-              "₦${formatPrice(data?.walletBalance ?? "")}",
+              "${EstateCurrency.symbol}${formatPrice(data?.walletBalance ?? "")}",
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontFamily: FontFamilies.interDisplay,
@@ -206,9 +207,9 @@ class DashbordContent extends ConsumerWidget {
                 ),
                 SizedBox(width: 10),
                 _buildWalletbutton(
-                  data: "Setup Autopay",
+                  data: "Set Up Autopay",
                   onTap: () {
-                    showFuturNotAvailableDialog(context, "Setup Autopay");
+                    showFuturNotAvailableDialog(context, "Set Up Autopay");
                   },
                 ),
               ],
@@ -224,7 +225,7 @@ class DashbordContent extends ConsumerWidget {
     required VoidCallback onTap,
   }) {
     return Expanded(
-      // ← Now correctly placed
+      // Now correctly placed
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(8),

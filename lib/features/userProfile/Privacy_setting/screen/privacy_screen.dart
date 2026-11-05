@@ -5,7 +5,7 @@ import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/operations/notifications/activites-reminders/widget/general_notification_count_widget.dart';
 import 'package:curnectgate/features/userProfile/Privacy_setting/model/privacy.dart';
 import 'package:curnectgate/features/userProfile/Privacy_setting/model/profile_visibility.dart';
@@ -184,7 +184,7 @@ class UserPrivacySettings extends ConsumerWidget {
                           ref
                               .read(userPrivacyprovider.notifier)
                               .refreshSettings(context, ref),
-                  firstMessage: "Failed to load Privacy Settings.",
+                  firstMessage: "Failed to load privacy settings.",
                 );
               },
             ),

@@ -57,7 +57,7 @@ class DasboardEventcard extends StatelessWidget {
                       Image.asset(event.imagepath, width: 20),
                       SizedBox(width: 5),
                       Text(
-                        "Estate commite",
+                        "Estate committee",
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontFamilies.medium,
@@ -143,26 +143,6 @@ class DasboardEventcard extends StatelessWidget {
           ),
         ),
 
-        if (isTime) ...[
-          Text(
-            " -",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontSize: 12,
-              fontWeight: FontFamilies.medium,
-              color: AppColors.instance.black600,
-            ),
-          ),
-          Text(
-            " 400 PM GMT",
-            style: TextStyle(
-              fontFamily: FontFamilies.interDisplay,
-              fontSize: 12,
-              fontWeight: FontFamilies.medium,
-              color: AppColors.instance.teal300,
-            ),
-          ),
-        ],
       ],
     );
   }

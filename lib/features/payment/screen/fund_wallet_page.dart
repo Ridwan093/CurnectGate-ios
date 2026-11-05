@@ -1,5 +1,4 @@
-import 'dart:developer';
-
+import 'package:curnectgate/core/config/estate_currency.dart';
 import 'package:curnectgate/core/local_store/User_localdata_provider.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -22,7 +21,7 @@ ChargeResult calcCharge(PaymentMethodItem method, double enteredAmount) {
   if (flatVal != 0) {
     return ChargeResult(
       fee: flatVal,
-      label: '₦${_fmt(flatVal)} flat fee',
+      label: '${EstateCurrency.symbol}${_fmt(flatVal)} flat fee',
       isPercentage: false,
       percentage: 0,
     );
@@ -47,7 +46,10 @@ ChargeResult calcCharge(PaymentMethodItem method, double enteredAmount) {
 String _fmt(double v) => NumberFormat('#,##0.##').format(v);
 
 // ─── Quick-amount presets ───────────────────────────────────────────────────
-const _quickAmounts = [1000, 2000, 5000, 10000, 20000, 50000];
+// Multiples of the estate's minimum top-up (1,000 / 2,000 / ... for Naira).
+List<int> get _quickAmounts => [1, 2, 5, 10, 20, 50]
+    .map((m) => (EstateCurrency.walletMinimum * m).ceil())
+    .toList();
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -129,54 +131,26 @@ class _FundWalletPageState extends ConsumerState<FundWalletPage>
     ref.read(amountTextProvider.notifier).state = cleaned;
     final parsed = double.tryParse(cleaned) ?? 0.0;
     setState(() => _enteredAmount = parsed);
-    if (parsed >= 1000) {
+    if (parsed >= EstateCurrency.walletMinimum) {
       _breakdownCtrl.forward(from: 0);
     } else {
       _breakdownCtrl.reverse();
     }
   }
 
-  String _generateRef(String estateName) {
-    final short =
-        estateName
-            .replaceAll(RegExp(r'[^A-Za-z0-9]'), '')
-            .substring(0, estateName.length > 3 ? 3 : estateName.length)
-            .toUpperCase();
-    final now = DateTime.now();
-    final ts =
-        '${now.year}'
-        '${now.month.toString().padLeft(2, '0')}'
-        '${now.day.toString().padLeft(2, '0')}'
-        '${now.hour.toString().padLeft(2, '0')}'
-        '${now.minute.toString().padLeft(2, '0')}'
-        '${now.second.toString().padLeft(2, '0')}'
-        '${now.millisecond.toString().padLeft(3, '0')}';
-    return '$short-PAY-$ts';
-  }
-
   Future<void> _proceed() async {
     final cleaned = _ctrl.text.replaceAll(',', '');
     final enteredAmount = double.parse(cleaned);
-
-    // Calculate the fee and total
-    final charge = calcCharge(widget.method, enteredAmount);
-    final totalAmount = enteredAmount + charge.fee;
-
     final authState = ref.read(authProvider);
-    final estateName = authState.user?['estate_name'] ?? '';
-    final refs = _generateRef(estateName);
 
-   
-
+    // The server adds the estate's fee, creates the reference and starts the
+    // payment in the estate's currency; no keys are needed on the phone.
     await PaystackService().checkout(
       ref: ref,
       method: 'card',
-      privateKey: widget.method.secretKey ?? '',
-      publiceKey: widget.method.publicKey ?? '',
       context: context,
       email: authState.user?['email'] ?? '',
-      amount: totalAmount, // Pass the true total (amount + fees)
-      reference: refs,
+      amount: enteredAmount,
     );
   }
 
@@ -184,7 +158,7 @@ class _FundWalletPageState extends ConsumerState<FundWalletPage>
   @override
   Widget build(BuildContext context) {
     // ── use local state for immediate button re-enable (no provider rebuild lag) ──
-    final bool isValid = _enteredAmount >= 1000;
+    final bool isValid = _enteredAmount >= EstateCurrency.walletMinimum;
     final colors = AppColors.instance;
     final charge = calcCharge(widget.method, _enteredAmount);
     final total = _enteredAmount + charge.fee;
@@ -257,7 +231,7 @@ class _FundWalletPageState extends ConsumerState<FundWalletPage>
                     enteredAmount: _enteredAmount,
                     charge: charge,
                     total: total,
-                    currency: widget.method.currency ?? 'NGN',
+                    currency: EstateCurrency.code,
                   ),
                 ),
               ),
@@ -265,7 +239,7 @@ class _FundWalletPageState extends ConsumerState<FundWalletPage>
               const SizedBox(height: 8),
 
               // ── minimum hint ──
-              if (_enteredAmount > 0 && _enteredAmount < 1000)
+              if (_enteredAmount > 0 && _enteredAmount < EstateCurrency.walletMinimum)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Row(
@@ -277,7 +251,7 @@ class _FundWalletPageState extends ConsumerState<FundWalletPage>
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        'Minimum amount is ₦1,000',
+                        'Minimum amount is ${EstateCurrency.walletMinimumLabel}',
                         style: TextStyle(
                           fontFamily: FontFamilies.interDisplay,
                           fontSize: 12,
@@ -429,21 +403,21 @@ class _AmountField extends StatelessWidget {
         letterSpacing: 0.5,
       ),
       decoration: InputDecoration(
-        prefixText: ctrl.text.isNotEmpty ? '₦ ' : null,
+        prefixText: ctrl.text.isNotEmpty ? '${EstateCurrency.symbol} ' : null,
         prefixStyle: TextStyle(
           fontFamily: FontFamilies.interDisplay,
           fontSize: 24,
           fontWeight: FontFamilies.bold,
           color: colors.black600,
         ),
-        hintText: '₦ 0',
+        hintText: '${EstateCurrency.symbol} 0',
         hintStyle: TextStyle(
           fontFamily: FontFamilies.interDisplay,
           fontSize: 24,
           fontWeight: FontFamilies.bold,
           color: colors.black200,
         ),
-        helperText: 'Minimum ₦1,000',
+        helperText: 'Minimum ${EstateCurrency.walletMinimumLabel}',
         helperStyle: TextStyle(
           fontFamily: FontFamilies.interDisplay,
           fontSize: 12,
@@ -487,7 +461,7 @@ class _QuickAmountRow extends StatelessWidget {
       children:
           _quickAmounts.map((amt) {
             return _QuickChip(
-              label: '₦${NumberFormat('#,##0').format(amt)}',
+              label: '${EstateCurrency.symbol}${NumberFormat('#,##0').format(amt)}',
               onTap: () => onTap(amt),
             );
           }).toList(),
@@ -600,11 +574,11 @@ class _BreakdownCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Rows(label: 'You enter', value: '₦${_fmt(enteredAmount)}'),
+          Rows(label: 'You enter', value: '${EstateCurrency.symbol}${_fmt(enteredAmount)}'),
           const SizedBox(height: 8),
           Rows(
             label: 'Estate fee (${charge.label})',
-            value: charge.fee > 0 ? '+ ₦${_fmt(charge.fee)}' : 'Free',
+            value: charge.fee > 0 ? '+ ${EstateCurrency.symbol}${_fmt(charge.fee)}' : 'Free',
             valueColor: charge.fee > 0 ? colors.error700 : colors.teal500,
           ),
           Padding(
@@ -613,7 +587,7 @@ class _BreakdownCard extends StatelessWidget {
           ),
           Rows(
             label: 'Total charged',
-            value: '₦${_fmt(total)}',
+            value: '${EstateCurrency.symbol}${_fmt(total)}',
             bold: true,
             valueColor: colors.black600,
           ),

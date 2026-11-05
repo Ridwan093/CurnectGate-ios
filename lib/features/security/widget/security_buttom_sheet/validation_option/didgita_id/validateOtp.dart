@@ -2,7 +2,7 @@ import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/Onboard_Houselod/widget/co_dropdown.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/securitybutton.dart';
@@ -65,7 +65,7 @@ class _ValidateotpState extends ConsumerState<Validateotp> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Valiate access code to grant entry.",
+                    "Validate the access code to grant entry.",
                     style: TextStyle(
                       fontFamily: FontFamilies.interDisplay,
                       fontSize: 13,
@@ -79,7 +79,7 @@ class _ValidateotpState extends ConsumerState<Validateotp> {
               ReusabelProfileForm(
                 controller: otpConttoller,
                 fieldType: FieldType.oTpCode,
-                hintText: "(eg. #84758)",
+                hintText: "(e.g. #84758)",
                 label: "Enter OTP",
                 fieldKey: "oTpCode",
                 onChanged: (value) {
@@ -121,7 +121,7 @@ class _ValidateotpState extends ConsumerState<Validateotp> {
               ReusabelProfileForm(
                 controller: locationController,
                 fieldType: FieldType.name,
-                hintText: "(eg. Main Gate)",
+                hintText: "(e.g. Main Gate)",
                 label: "Location",
                 fieldKey: "Location",
                 onChanged: (value) {

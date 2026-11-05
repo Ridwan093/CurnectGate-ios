@@ -1,3 +1,5 @@
+import 'package:curnectgate/core/config/estate_currency.dart';
+import 'package:curnectgate/core/config/app_env.dart';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -16,13 +18,13 @@ class _PaystackCardPaymentState extends State<PaystackCardPayment> {
 
   // Backend base URL
 
-  final String backendBaseUrl = 'http://192.168.43.148:3000';
+  final String backendBaseUrl = AppEnv.paystackBackendUrl;
 
   Future<void> _startPayment() async {
     setState(() => _loading = true);
 
     try {
-      // 1️⃣ Initialize payment
+      // 1⃣ Initialize payment
       final initUri = Uri.parse('$backendBaseUrl/api/paystack/initialize');
 
       final res = await http.post(
@@ -46,7 +48,7 @@ class _PaystackCardPaymentState extends State<PaystackCardPayment> {
         throw Exception('Missing authorization URL or reference');
       }
 
-      // 2️⃣ Open Paystack in-app WebView
+      // 2⃣ Open Paystack in-app WebView
       final uriAuth = Uri.parse(authUrl);
 
       if (!await launchUrl(
@@ -59,7 +61,7 @@ class _PaystackCardPaymentState extends State<PaystackCardPayment> {
         throw Exception('Could not launch $authUrl');
       }
 
-      // 3️⃣ Poll backend to verify payment
+      // 3⃣ Poll backend to verify payment
       await _pollForPaymentCompletion(reference);
     } catch (e) {
       debugPrint('Payment start failed: $e');
@@ -93,7 +95,7 @@ class _PaystackCardPaymentState extends State<PaystackCardPayment> {
             completed = true;
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('✅ Payment successful!')),
+                const SnackBar(content: Text('Payment successful!')),
               );
             }
             debugPrint('Payment verified: $body');
@@ -102,7 +104,7 @@ class _PaystackCardPaymentState extends State<PaystackCardPayment> {
             if (mounted) {
               ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(const SnackBar(content: Text('❌ Payment failed')));
+              ).showSnackBar(const SnackBar(content: Text('Payment failed')));
             }
             debugPrint('Payment failed: $body');
           }
@@ -118,7 +120,7 @@ class _PaystackCardPaymentState extends State<PaystackCardPayment> {
     return Center(
       child: ElevatedButton(
         onPressed: _loading ? null : _startPayment,
-        child: Text(_loading ? 'Processing...' : 'Pay ₦5,000'),
+        child: Text(_loading ? 'Processing...' : 'Pay ${EstateCurrency.symbol}5,000'),
       ),
     );
   }

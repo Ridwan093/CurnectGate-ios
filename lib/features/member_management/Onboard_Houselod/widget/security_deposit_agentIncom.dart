@@ -1,4 +1,4 @@
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,7 +25,7 @@ class _ExperienceEducationRowState
           child: ReusabelProfileForm(
             fieldKey: 'Agent fee',
             fieldType: FieldType.year,
-            hintText: 'eg:75000',
+            hintText: 'e.g. 75000',
             label: 'Agent fee',
             onChanged: (value) {
               provider.updateAgentFees(value);
@@ -49,7 +49,7 @@ class _ExperienceEducationRowState
           child: ReusabelProfileForm(
             fieldKey: 'Security deposit',
             fieldType: FieldType.year,
-            hintText: 'eg: 300000',
+            hintText: 'e.g. 300000',
             label: 'Security deposit',
             onChanged: (value) {
               provider.updateSecurityFees(value);

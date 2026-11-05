@@ -236,7 +236,7 @@ class _PremiumSecurityHeaderState extends ConsumerState<PremiumSecurityHeader>
                     ),
                   ),
 
-                  /// 🔥 PREMIUM GLASS PILL
+                  /// PREMIUM GLASS PILL
                   Positioned(
                     top: -16,
                     left: 10,

@@ -63,12 +63,12 @@ class AccessGrantedDigital extends StatelessWidget {
             // _buildInfoCard(
             //   title: "Visitor Details",
             //   details: {
-            //     "👤 Visitor": visitorName,
-            //     "🎯 Purpose": purpose,
-            //     "📞 Phone": phone,
-            //     "🏠 Destination": destination,
-            //     "📍 Address": address,
-            //     "⏱️ Valid Period": validPeriod,
+            // " Visitor": visitorName,
+            // " Purpose": purpose,
+            // " Phone": phone,
+            // " Destination": destination,
+            // " Address": address,
+            // " Valid Period": validPeriod,
             //   },
             // ),
 

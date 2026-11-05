@@ -779,7 +779,7 @@ class GetApiService {
 
       if (response.data['success'] != true) {
         throw Exception(
-          response.data['message'] ?? 'Failed to load conversations',
+          response.data['message'] ?? 'Failed to load conversations.',
         );
       }
 
@@ -799,7 +799,7 @@ class GetApiService {
       );
 
       if (response.data['success'] != true) {
-        throw Exception(response.data['message'] ?? 'Failed to load messages');
+        throw Exception(response.data['message'] ?? 'Failed to load messages.');
       }
 
       final List<dynamic> msgList = response.data['data']['messages'] ?? [];
@@ -821,7 +821,7 @@ class GetApiService {
   dynamic _handleError(DioException e) {
     if (e.response != null) {
       if (e.response!.statusCode == 401) {
-        return 'Unauthorized - Please login again';
+        return 'Unauthorized. Please log in again.';
       } else if (e.response!.statusCode == 404) {
         return 'Resource not found';
       }

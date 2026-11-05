@@ -31,7 +31,7 @@ class BasicPermission extends ConsumerWidget {
             if (user != null && user.permissions != null) {
               return PermissionContent(permission: user.permissions, id: id);
             } else {
-              return EmptyBodys(message: "No permission settings?");
+              return EmptyBodys(message: "No permission settings available.");
             }
           } catch (e) {
             return Builderroul(
@@ -40,7 +40,7 @@ class BasicPermission extends ConsumerWidget {
                   () => ref
                       .read(permissionStatusProvider.notifier)
                       .refreshPermissionstatus(context, ref),
-              firstMessage: "Faile to load permission settings?",
+              firstMessage: "Failed to load permission settings.",
             );
           }
         },
@@ -60,7 +60,7 @@ class BasicPermission extends ConsumerWidget {
                   () => ref
                       .read(permissionStatusProvider.notifier)
                       .refreshPermissionstatus(context, ref),
-              firstMessage: "Faile to load permission settings?",
+              firstMessage: "Failed to load permission settings.",
             );
           }
         },
@@ -92,7 +92,7 @@ class BasicPermission extends ConsumerWidget {
                   () => ref
                       .read(permissionStatusProvider.notifier)
                       .refreshPermissionstatus(context, ref),
-              firstMessage: "Faile to load gate permission settings?",
+              firstMessage: "Failed to load gate permission settings.",
             );
           } catch (e) {
             return Builderroul(
@@ -101,7 +101,7 @@ class BasicPermission extends ConsumerWidget {
                   () => ref
                       .read(permissionStatusProvider.notifier)
                       .refreshPermissionstatus(context, ref),
-              firstMessage: "Faile to load permission settings?",
+              firstMessage: "Failed to load permission settings.",
             );
           }
         },

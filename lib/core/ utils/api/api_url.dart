@@ -71,6 +71,9 @@ const String payduePayment = "estates/general/payments/pay-custom";
 const String payFullPayment = "estates/general/payments/pay-full";
 const String initialFundWallet = "estates/general/wallet/fund/initialize";
 
+/// Server-started card top-up: returns the Paystack checkout link.
+const String startFundWalletCheckout = "estates/general/wallet/fund/checkout";
+
 const String addviolationComment = "estates/general/violations/2/comments";
 const String dismissedViolation = "estates/security/violations/1/dismiss";
 const String validateOtpByManual =

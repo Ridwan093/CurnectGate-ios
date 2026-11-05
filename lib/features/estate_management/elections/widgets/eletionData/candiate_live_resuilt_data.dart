@@ -24,7 +24,7 @@ class CandidateResultData extends ConsumerWidget {
             final polls = candidate?.data;
             return polls != null
                 ? LiveResultTab(state: state, data: polls)
-                : EmptyBodys(message: "No Candidate Yet?");
+                : EmptyBodys(message: "No candidates yet.");
           } catch (e) {
             return Builderroul(
               error: e.toString(),
@@ -32,7 +32,7 @@ class CandidateResultData extends ConsumerWidget {
                   () => ref
                       .read(candidateResultProvider.notifier)
                       .refreshCandidateResult(context, ref),
-              firstMessage: "Faile to load Candidate?",
+              firstMessage: "Failed to load candidate.",
             );
           }
         },
@@ -49,7 +49,7 @@ class CandidateResultData extends ConsumerWidget {
                   () => ref
                       .read(candidateResultProvider.notifier)
                       .refreshCandidateResult(context, ref),
-              firstMessage: "Faile to load Candidate?",
+              firstMessage: "Failed to load candidate.",
             );
           }
         },
@@ -73,7 +73,7 @@ class CandidateResultData extends ConsumerWidget {
                   () => ref
                       .read(candidateResultProvider.notifier)
                       .refreshCandidateResult(context, ref),
-              firstMessage: "Faile to load Candidate?",
+              firstMessage: "Failed to load candidate.",
             );
           } catch (e) {
             return Builderroul(
@@ -82,7 +82,7 @@ class CandidateResultData extends ConsumerWidget {
                   () => ref
                       .read(candidateResultProvider.notifier)
                       .refreshCandidateResult(context, ref),
-              firstMessage: "Faile to load Candidate?",
+              firstMessage: "Failed to load candidate.",
             );
           }
         },

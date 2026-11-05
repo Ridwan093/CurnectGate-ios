@@ -10,7 +10,7 @@ import 'package:curnectgate/features/estate_management/submit_works_order/submit
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/workcategory_data.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/screen/loading_screen/loading_page.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -376,7 +376,7 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
                     positionNumber: 50,
                     context: context,
                     message:
-                        "The number of workers  must not be greater than 20.",
+                        "The number of workers must not be greater than 20.",
                     color: AppColors.instance.grey200,
                     icon: Icons.error,
                     iconColors: AppColors.instance.black600,

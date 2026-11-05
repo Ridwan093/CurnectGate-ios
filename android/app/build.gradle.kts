@@ -1,8 +1,12 @@
 import java.util.Properties
 import java.io.FileInputStream
 
+// key.properties holds the release signing key and is not in git.
+// If it's missing, builds fall back to the default debug key.
+val keystorePropertiesFile = rootProject.file("key.properties")
+val hasReleaseKey = keystorePropertiesFile.exists()
 val keystoreProperties = Properties().apply {
-    load(FileInputStream(rootProject.file("key.properties")))
+    if (hasReleaseKey) load(FileInputStream(keystorePropertiesFile))
 }
 
 
@@ -28,7 +32,7 @@ android {
     }
     
 signingConfigs {
-    create("release") {
+    if (hasReleaseKey) create("release") {
         keyAlias = keystoreProperties["keyAlias"] as String
         keyPassword = keystoreProperties["keyPassword"] as String
      storeFile = rootProject.file(keystoreProperties["storeFile"] as String)
@@ -44,7 +48,7 @@ buildTypes {
     getByName("release") {
         isMinifyEnabled = true
         isShrinkResources = true
-        signingConfig = signingConfigs.getByName("release")
+        signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
         proguardFiles(
             getDefaultProguardFile("proguard-android-optimize.txt"),
             "proguard-rules.pro"
@@ -52,7 +56,7 @@ buildTypes {
     }
 
     getByName("debug") {
-        signingConfig = signingConfigs.getByName("release")
+        signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
     }
 }
 

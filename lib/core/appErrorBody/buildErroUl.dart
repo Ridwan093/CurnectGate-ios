@@ -133,7 +133,7 @@ class Builderroul extends ConsumerWidget {
       return short.isNotEmpty ? short : trimmed;
     }
 
-    // No ":" → return full (but you can limit length if you want)
+    // No ":" -> return full (but you can limit length if you want)
     return trimmed.length > 120 ? '${trimmed.substring(0, 117)}...' : trimmed;
   }
 }

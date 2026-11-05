@@ -99,7 +99,7 @@ class _CustomStatusDropdownState extends State<CustomStatusDropdown> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Selected text — safe from overflow
+            // Selected text - safe from overflow
             Flexible(
               child: Text(
                 _selectedStatus,

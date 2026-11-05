@@ -7,7 +7,7 @@ import 'package:curnectgate/features/member_management/onbording_prosecc/estate_
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/button/estate_button.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/progresscontainer.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/widget/stepcount.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:curnectgate/features/member_management/profile_form/termsTogender_widget.dart';
 import 'package:flutter/material.dart';
@@ -37,8 +37,8 @@ class SetUppRofiled extends BaseVerificationScreen {
   }) : super(
          currentStep: 4,
          totalSteps: 6,
-         title: "Let's get you setup",
-         description: 'Your information are pre-filled',
+         title: "Let's get you set up",
+         description: 'Your information has been pre-filled',
        );
 
   @override

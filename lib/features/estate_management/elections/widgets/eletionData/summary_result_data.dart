@@ -22,7 +22,7 @@ class SummaryResuiltData extends ConsumerWidget {
             final polls = candidate?.data;
             return polls != null
                 ? SummaryResultTab(data: polls)
-                : EmptyBodys(message: "No Result Yet?");
+                : EmptyBodys(message: "No results yet.");
           } catch (e) {
             return Builderroul(
               error: e.toString(),
@@ -30,7 +30,7 @@ class SummaryResuiltData extends ConsumerWidget {
                   () => ref
                       .read(reultSummaryProvider.notifier)
                       .refreshCandidateResult(context, ref),
-              firstMessage: "Faile to load Result?",
+              firstMessage: "Failed to load result.",
             );
           }
         },
@@ -47,7 +47,7 @@ class SummaryResuiltData extends ConsumerWidget {
                   () => ref
                       .read(reultSummaryProvider.notifier)
                       .refreshCandidateResult(context, ref),
-              firstMessage: "Faile to load Result?",
+              firstMessage: "Failed to load result.",
             );
           }
         },
@@ -71,7 +71,7 @@ class SummaryResuiltData extends ConsumerWidget {
                   () => ref
                       .read(reultSummaryProvider.notifier)
                       .refreshCandidateResult(context, ref),
-              firstMessage: "Faile to load Result?",
+              firstMessage: "Failed to load result.",
             );
           } catch (e) {
             return Builderroul(
@@ -80,7 +80,7 @@ class SummaryResuiltData extends ConsumerWidget {
                   () => ref
                       .read(reultSummaryProvider.notifier)
                       .refreshCandidateResult(context, ref),
-              firstMessage: "Faile to load Result?",
+              firstMessage: "Failed to load result.",
             );
           }
         },

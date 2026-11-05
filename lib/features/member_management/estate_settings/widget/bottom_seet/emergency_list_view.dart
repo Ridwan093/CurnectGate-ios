@@ -107,7 +107,7 @@ void _confirmCall(BuildContext context, String phone) {
             ),
           ),
           content: Text(
-            "Do you want to call: $phone",
+            "Do you want to call $phone?",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               fontSize: 14,
@@ -160,7 +160,7 @@ void _confirmEmail(BuildContext context, String email) {
             ),
           ),
           content: Text(
-            "Do you want to send an email to: $email",
+            "Do you want to send an email to $email?",
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               fontSize: 14,

@@ -37,7 +37,7 @@ class PermitDetailsDialog extends StatelessWidget {
     }
   }
 
-  // Usage: formatRemainingTime("63628.20003") → "17h 40m 28s"
+  // Usage: formatRemainingTime("63628.20003") -> "17h 40m 28s"
 
   String _formatToTime(String dateTimeString) {
     try {

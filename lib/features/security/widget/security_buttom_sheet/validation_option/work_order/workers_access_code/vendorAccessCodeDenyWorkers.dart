@@ -2,7 +2,7 @@ import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/submit_work_widget/work_drop_down.dart';
-import 'package:curnectgate/features/member_management/profile_form/provider%20/form_provider.dart';
+import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:curnectgate/features/member_management/profile_form/reusableform.dart';
 import 'package:curnectgate/features/security/provider/formState.dart';
 import 'package:curnectgate/features/security/widget/security_buttom_sheet/securitybutton.dart';
@@ -28,7 +28,7 @@ class _DenyEntryState extends ConsumerState<VendorAccessDeny> {
     "Rude",
     "Aggressive",
     "Intoxicated",
-    "No id",
+    "No ID",
     "Suspicious",
     "Other",
   ];
@@ -86,7 +86,7 @@ class _DenyEntryState extends ConsumerState<VendorAccessDeny> {
                   ref
                       .read(oTpformProvider.notifier)
                       .updateReason(
-                        value.toString().contains("no id")
+                        value.toString().toLowerCase().contains("no id")
                             ? "no_id"
                             : value?.toLowerCase() ?? "",
                       );
@@ -96,7 +96,7 @@ class _DenyEntryState extends ConsumerState<VendorAccessDeny> {
               ReusabelProfileForm(
                 controller: _dec,
                 fieldType: FieldType.reason,
-                hintText: "(eg. Invalide Otp)",
+                hintText: "(e.g. Invalid OTP)",
                 label: "Enter description",
                 fieldKey: "notes",
                 onChanged: (value) {

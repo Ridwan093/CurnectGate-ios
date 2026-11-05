@@ -78,10 +78,10 @@ class EventcodeCard extends ConsumerWidget {
                       offset: const Offset(
                         0,
                         6,
-                      ), // 👈 pushes the shadow down only
-                      blurRadius: 10, // 👈 controls softness
+                      ), // pushes the shadow down only
+                      blurRadius: 10, // controls softness
                       spreadRadius:
-                          0, // 👈 set to 0 to prevent spreading on all sides
+                          0, // set to 0 to prevent spreading on all sides
                     ),
                   ],
                 ),
@@ -139,7 +139,7 @@ class EventcodeCard extends ConsumerWidget {
 
           const SizedBox(width: 12),
 
-          // Main content — takes remaining space
+          // Main content - takes remaining space
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,7 +158,7 @@ class EventcodeCard extends ConsumerWidget {
                 ),
                 const SizedBox(height: 6),
 
-                // Description — takes available space
+                // Description - takes available space
                 Text(
                   dec,
                   maxLines: 3,
@@ -173,13 +173,13 @@ class EventcodeCard extends ConsumerWidget {
 
                 const SizedBox(height: 10),
 
-                // Bottom Row: Code + Status — min size, no wrapping issues
+                // Bottom Row: Code + Status - min size, no wrapping issues
                 Wrap(
                   direction: Axis.vertical,
                   children: [
                     _codeRow(code, context),
                     // const SizedBox(width: 10),
-                    // Direct badge — no Flexible, no IntrinsicWidth
+                    // Direct badge - no Flexible, no IntrinsicWidth
                     _buildStatusBadge(isExpired),
                   ],
                 ),
