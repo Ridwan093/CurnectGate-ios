@@ -8,6 +8,7 @@ import 'package:curnectgate/features/operations/notifications/provider/notificat
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class WorkpermitCard extends ConsumerWidget {
   final Permit generated;
@@ -15,7 +16,7 @@ class WorkpermitCard extends ConsumerWidget {
 
   String _formatDate(String dateString) {
     try {
-      final parsedDate = DateTime.tryParse(dateString);
+      final parsedDate = EstateTime.tryParse(dateString);
       if (parsedDate == null) {
         throw FormatException('Invalid date string');
       }
@@ -45,7 +46,7 @@ class WorkpermitCard extends ConsumerWidget {
   String formatToTime(String dateTimeString) {
     try {
       // Try to parse the string into a DateTime
-      final parsedDate = DateTime.tryParse(dateTimeString);
+      final parsedDate = EstateTime.tryParse(dateTimeString);
       if (parsedDate == null) {
         throw FormatException('Invalid date string');
       }

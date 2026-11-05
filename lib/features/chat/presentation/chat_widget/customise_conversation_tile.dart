@@ -8,6 +8,7 @@ import 'package:curnectgate/features/chat/data/model/conversation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class CustomiseConversationTile extends ConsumerWidget {
   final VoidCallback onTap;
@@ -22,7 +23,7 @@ class CustomiseConversationTile extends ConsumerWidget {
     if (dateString == null || dateString.isEmpty) return '';
 
     try {
-      final dateTime = DateTime.parse(
+      final dateTime = EstateTime.parse(
         dateString,
       ); // parse the string into DateTime
       return DateFormat('hh:mm a').format(dateTime); // format it

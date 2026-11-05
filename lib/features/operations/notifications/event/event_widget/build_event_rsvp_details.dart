@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class EventRsvpDetaile extends ConsumerWidget {
   RsvpEventHistory data;
@@ -125,8 +126,8 @@ class EventRsvpDetaile extends ConsumerWidget {
                   icon: Icons.calendar_month,
                   child: const SizedBox(),
                   text:
-                      "${DateFormat('hh:mm a').format(DateTime.parse(data.event?.startDatetime ?? ""))}, "
-                      "${DateFormat('MMM dd, yyyy').format(DateTime.parse(data.event?.startDatetime ?? ""))}",
+                      "${DateFormat('hh:mm a').format(EstateTime.parse(data.event?.startDatetime ?? ""))}, "
+                      "${DateFormat('MMM dd, yyyy').format(EstateTime.parse(data.event?.startDatetime ?? ""))}",
                   isRichText: false,
                 ),
                 const SizedBox(height: 16),

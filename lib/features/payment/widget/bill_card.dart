@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../state_model/payment_model/due_model/outstanding_due.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class BillCard extends ConsumerStatefulWidget {
   final OutstandingDue bill;
@@ -87,7 +88,7 @@ class _BillCardState extends ConsumerState<BillCard>
   String _formatDueDate(String? isoDate) {
     if (isoDate == null || isoDate.isEmpty) return "N/A";
     try {
-      DateTime date = DateTime.parse(isoDate);
+      DateTime date = EstateTime.parse(isoDate);
       return DateFormat('MMM dd, yyyy').format(date);
     } catch (e) {
       return isoDate;

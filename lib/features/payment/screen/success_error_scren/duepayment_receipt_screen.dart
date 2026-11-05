@@ -1,4 +1,5 @@
 import 'package:curnectgate/core/config/estate_currency.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/payment/provider/due_state_provider.dart';
@@ -115,7 +116,7 @@ class PaymentReceiptScreen extends ConsumerWidget {
                           label: 'Date',
                           value: DateFormat(
                             'MMM dd, yyyy',
-                          ).format(DateTime.now()),
+                          ).format(EstateTime.now()),
                         ),
                       ],
                     ),

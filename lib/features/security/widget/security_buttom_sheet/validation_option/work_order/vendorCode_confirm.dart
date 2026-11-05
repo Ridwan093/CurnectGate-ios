@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../../member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 /// WorkOrderConfirmWidget
 /// Expects `response` that matches the JSON under "data" in your API response.
@@ -24,7 +25,7 @@ class WorkOrderConfirmWidget extends ConsumerWidget {
   String _formatDate(String? dt) {
     if (dt == null) return 'N/A';
     try {
-      final d = DateTime.parse(dt).toLocal();
+      final d = EstateTime.parse(dt);
       return '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
     } catch (_) {
       return dt;

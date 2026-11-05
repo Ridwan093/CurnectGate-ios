@@ -9,6 +9,7 @@ import 'package:curnectgate/features/payment/services/recipt_service.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/history_model/transaction_item.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class AllTabContent extends StatelessWidget {
   final List<TransactionItem>? data;
@@ -21,7 +22,7 @@ class AllTabContent extends StatelessWidget {
   }
 
   String formatDueDate(String isoDate) {
-    DateTime date = DateTime.parse(isoDate);
+    DateTime date = EstateTime.parse(isoDate);
     return DateFormat('dd MMM yyyy').format(date);
   }
 

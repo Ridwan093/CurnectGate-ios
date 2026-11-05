@@ -15,6 +15,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class ChatBubble extends ConsumerStatefulWidget {
   final Message message;
@@ -111,7 +112,7 @@ class _ChatBubbleState extends ConsumerState<ChatBubble> {
   String _formatTime(String? dateStr) {
     if (dateStr == null || dateStr.isEmpty) return "";
     try {
-      final date = DateTime.parse(dateStr).toLocal();
+      final date = EstateTime.parse(dateStr);
       return DateFormat('h:mm a').format(date);
     } catch (_) {
       return dateStr.length > 5 ? dateStr.substring(11, 16) : dateStr;

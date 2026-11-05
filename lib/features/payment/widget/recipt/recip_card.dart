@@ -4,6 +4,7 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/history_model/transaction_item.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class PaymentReceiptCard extends StatelessWidget {
   final TransactionItem tx; // your model item
@@ -161,7 +162,7 @@ class PaymentReceiptCard extends StatelessWidget {
       if (iso is int) {
         date = DateTime.fromMillisecondsSinceEpoch(iso);
       } else if (iso is String && iso.trim().isNotEmpty) {
-        date = DateTime.tryParse(iso);
+        date = EstateTime.tryParse(iso);
       }
 
       if (date == null) return "-";

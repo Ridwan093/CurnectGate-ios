@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/config/estate_time.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/submit_works_order/model/get_workOder/work_order.dart';
@@ -155,7 +156,9 @@ class _SubmitWorkOrderPageState extends ConsumerState<SubmitWorkOrderPage> {
   DateTime? parseDate(String? dateStr) {
     if (dateStr == null || dateStr.isEmpty) return null;
 
-    final dt = DateTime.tryParse(dateStr);
+    // API dates are exact instants; show them on the estate clock so the
+    // picker opens on the day the resident chose.
+    final dt = EstateTime.tryParse(dateStr);
     if (dt != null) return dt;
 
     final formats = [

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:curnectgate/core/config/app_env.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,6 +30,7 @@ class EstateCurrency {
 
   /// Restores the last known currency from the device (no network).
   static Future<void> restore() async {
+    await EstateTime.restore();
     if (_restored) return;
     _restored = true;
     try {
@@ -64,6 +66,9 @@ class EstateCurrency {
       final data = (response.data is Map) ? response.data['data'] : null;
       if (data is! Map) return;
 
+      // The estate's timezone comes with its currency.
+      await EstateTime.apply(data['timezone']?.toString());
+
       final estate = data['estate_currency'];
       if (estate is Map) {
         symbol = (estate['symbol'] ?? symbol).toString();
@@ -84,6 +89,7 @@ class EstateCurrency {
   /// Forgets the estate currency on sign out, so the next account on this
   /// device never sees the previous estate's symbol or minimum.
   static Future<void> clear() async {
+    await EstateTime.clear();
     symbol = '₦';
     code = 'NGN';
     walletMinimum = 1000;

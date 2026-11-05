@@ -7,6 +7,7 @@ import 'package:curnectgate/features/operations/notifications/provider/notificat
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class WorkpermitCard extends ConsumerWidget {
   final ActiveOtpItem generated;
@@ -15,7 +16,7 @@ class WorkpermitCard extends ConsumerWidget {
   String _formatDate(String? dateString) {
     if (dateString == null || dateString.isEmpty) return 'N/A';
     try {
-      final parsed = DateTime.tryParse(dateString);
+      final parsed = EstateTime.tryParse(dateString);
       if (parsed == null) return 'Invalid date';
       return DateFormat('MMM d, yyyy').format(parsed.toLocal());
     } catch (e) {

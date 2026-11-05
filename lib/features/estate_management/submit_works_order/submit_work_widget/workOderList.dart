@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class Workoderlist extends ConsumerWidget {
   final WorkOrderData? data;
@@ -17,7 +18,7 @@ class Workoderlist extends ConsumerWidget {
   String _formatDate(String? dateString) {
     if (dateString == null || dateString.isEmpty) return '';
     try {
-      final date = DateTime.parse(dateString);
+      final date = EstateTime.parse(dateString);
       return DateFormat('MMM d, yyyy').format(date);
     } catch (e) {
       return '';

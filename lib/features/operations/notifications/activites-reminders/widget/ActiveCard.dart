@@ -4,18 +4,19 @@ import 'package:curnectgate/features/operations/notifications/event/model/notifi
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class ActivityCard extends ConsumerWidget {
   final NotificationItem activity;
 
   const ActivityCard({super.key, required this.activity});
   String formatToTime(String isoDate) {
-    final date = DateTime.parse(isoDate).toLocal();
+    final date = EstateTime.parse(isoDate);
     return DateFormat.jm().format(date); // e.g., 4:21 AM
   }
 
   String formatToShortMonthDay(String isoDate) {
-    final date = DateTime.parse(isoDate).toLocal();
+    final date = EstateTime.parse(isoDate);
     return DateFormat.MMMd().format(date); // e.g., Mar 24
   }
 

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class DuePayment extends ConsumerWidget {
   final OutstandingDuesData? data;
@@ -28,7 +29,7 @@ class DuePayment extends ConsumerWidget {
   }
 
   String formatDueDate(String isoDate) {
-    DateTime date = DateTime.parse(isoDate);
+    DateTime date = EstateTime.parse(isoDate);
     return DateFormat('dd MMM yyyy').format(date);
   }
 

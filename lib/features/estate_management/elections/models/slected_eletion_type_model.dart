@@ -6,6 +6,7 @@ import 'package:curnectgate/features/estate_management/elections/provider/eletio
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 /// Reusable bottom sheet to select an active election
 void showSelectElectionBottomSheet({
@@ -145,7 +146,7 @@ void showSelectElectionBottomSheet({
 
 // Keep your getTimeLeft function here or import it
 String getTimeLeft(String closesAt) {
-  final closeDate = DateTime.parse(closesAt).toLocal();
+  final closeDate = EstateTime.parse(closesAt);
   final now = DateTime.now();
   final diff = closeDate.difference(now);
 

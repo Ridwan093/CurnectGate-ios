@@ -1,4 +1,5 @@
 import 'package:confetti/confetti.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -172,7 +173,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                                     const Divider(height: 24),
                                     _buildInfoRow(
                                       "Date",
-                                      DateTime.now().toString().split(' ')[0],
+                                      EstateTime.now().toString().split(' ')[0],
                                     ),
                                   ],
                                 ),

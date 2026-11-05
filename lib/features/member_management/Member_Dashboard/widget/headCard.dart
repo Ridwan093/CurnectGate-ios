@@ -7,13 +7,14 @@ import 'package:curnectgate/features/estate_management/elections/provider/poll_p
 import 'package:curnectgate/features/estate_management/elections/widgets/votingSettingCheck.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 
 class Headcard extends ConsumerWidget {
   Headcard({super.key});
 
   String getTimeLeft(String closesAt) {
-    final closeDate = DateTime.parse(closesAt).toLocal();
+    final closeDate = EstateTime.parse(closesAt);
     final now = DateTime.now();
 
     final diff = closeDate.difference(now);

@@ -4,6 +4,7 @@ import 'package:curnectgate/features/operations/violation/model/comment_model/co
 import 'package:curnectgate/features/operations/violation/model/timeAgo_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class CommentBody extends ConsumerWidget {
   final CommentData data;
@@ -22,7 +23,7 @@ class CommentBody extends ConsumerWidget {
         final isInternal = comment.isInternal == 1;
 
         final parsedDate =
-            createdAt == null ? null : DateTime.tryParse(createdAt);
+            createdAt == null ? null : EstateTime.tryParse(createdAt);
 
         if (parsedDate == null) {
           return const SizedBox.shrink();

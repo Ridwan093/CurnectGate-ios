@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
@@ -301,7 +302,7 @@ class BottomsheetDetails extends ConsumerWidget {
         return Addcomment(
           title: headertitle,
           reportBy: headersubtitle,
-          date: "Date: ${DateFormat('MMMM d, yyyy').format(DateTime.now())}",
+          date: "Date: ${DateFormat('MMMM d, yyyy').format(EstateTime.now())}",
         );
 
       case BottomSheetView.securitydismissViolation:

@@ -9,6 +9,7 @@ import 'package:curnectgate/features/operations/notifications/provider/getevent_
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class CalenderData extends ConsumerWidget {
   const CalenderData({super.key});
@@ -95,7 +96,7 @@ class CalenderData extends ConsumerWidget {
                 (day) =>
                     events
                         .where(
-                          (e) => isSameDay(DateTime.parse(e.start ?? ""), day),
+                          (e) => isSameDay(EstateTime.parse(e.start ?? ""), day),
                         )
                         .toList(),
             headerStyle: HeaderStyle(
@@ -129,7 +130,7 @@ class CalenderData extends ConsumerWidget {
                 final dayEvents =
                     events
                         .where(
-                          (e) => isSameDay(DateTime.parse(e.start ?? ""), date),
+                          (e) => isSameDay(EstateTime.parse(e.start ?? ""), date),
                         )
                         .toList();
                 final hasAdded = dayEvents.any(
@@ -164,7 +165,7 @@ class CalenderData extends ConsumerWidget {
                 final dayEvents =
                     events
                         .where(
-                          (e) => isSameDay(DateTime.parse(e.start ?? ""), date),
+                          (e) => isSameDay(EstateTime.parse(e.start ?? ""), date),
                         )
                         .toList();
                 if (dayEvents.isEmpty) return null;

@@ -6,6 +6,7 @@ import 'package:curnectgate/features/operations/notifications/event/model/Event/
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class RsvpDataEventCard extends ConsumerWidget {
   final RsvpEventHistory event;
@@ -23,7 +24,7 @@ class RsvpDataEventCard extends ConsumerWidget {
 
   String? formatDateFromString(String? dateTimeString) {
     if (dateTimeString == null) return null;
-    final dateTime = DateTime.tryParse(dateTimeString);
+    final dateTime = EstateTime.tryParse(dateTimeString);
     if (dateTime == null) return null;
     return DateFormat('MMM d, yyyy').format(dateTime);
   }

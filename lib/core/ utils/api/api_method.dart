@@ -647,7 +647,8 @@ class AppApiMethod {
         "visitor_name": visitorName,
         "purpose": visitorPurpos,
         "valid_from": validatTime,
-        "validity_hours": validatorHour,
+        // Sent only when a duration was chosen (the server allows 1 to 24).
+        if (validatorHour > 0) "validity_hours": validatorHour,
         "requires_security_validation": true,
         "security_clearance_level": "standard",
         "metadata": {

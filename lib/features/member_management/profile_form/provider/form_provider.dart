@@ -2624,13 +2624,25 @@ class FormNotifier extends StateNotifier<FormStates> {
 
       final token = await ref.watch(accessTokenProvider.future);
 
+      // Start = the chosen date at the chosen time, as estate wall-clock
+      // time (no offset, so the server reads it on the estate's clock).
+      final day = visitor.selectedDate;
+      final time = visitor.selectedTime;
+      String two(int v) => v.toString().padLeft(2, '0');
+      final validFrom = day == null
+          ? ''
+          : '${day.year}-${two(day.month)}-${two(day.day)} '
+              '${two(time?.hour ?? day.hour)}:${two(time?.minute ?? day.minute)}:00';
+
       final response = await ref
           .read(profileRepositoryProvider)
           .scheduleOtpWithValidation(
             visitorName: visitor.vistorName,
             visitorPurpos: visitor.purposeofVisit,
-            validatorHour: visitor.selectedTime?.hourOfPeriod ?? 0,
-            validatTime: visitor.selectedDate.toString(),
+            // No duration picker on this screen: 0 lets the server apply
+            // its standard validity (12 hours).
+            validatorHour: 0,
+            validatTime: validFrom,
             vehicleNumber: visitor.vehiclenumber,
             phoneNumber: visitor.phoneNumber,
             token: token!,

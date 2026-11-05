@@ -5,6 +5,7 @@ import 'package:curnectgate/features/operations/notifications/provider/notificat
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class AddReminderDate extends ConsumerStatefulWidget {
   const AddReminderDate({super.key});
@@ -22,7 +23,7 @@ class _AddReminderDateState extends ConsumerState<AddReminderDate> {
     String dateString = ref.watch(reminderProvider).time;
 
     if (dateString.isNotEmpty) {
-      DateTime dateTime = DateTime.parse(dateString);
+      DateTime dateTime = EstateTime.parse(dateString);
       final DateFormat formatter = DateFormat('MMM d, yyyy HH:mm');
       formattedDate = formatter.format(dateTime);
     }

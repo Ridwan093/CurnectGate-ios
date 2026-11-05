@@ -4,6 +4,7 @@ import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class VendorCheckOutMessage extends StatelessWidget {
   final String jsonData;
@@ -11,7 +12,7 @@ class VendorCheckOutMessage extends StatelessWidget {
 
   String formatDateTime(String dateTimeString) {
     try {
-      final dateTime = DateTime.parse(dateTimeString).toLocal();
+      final dateTime = EstateTime.parse(dateTimeString);
       return DateFormat("MMM d, yyyy 'at' hh:mm a").format(dateTime);
     } catch (e) {
       return 'Invalid date';

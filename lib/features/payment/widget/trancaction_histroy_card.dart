@@ -5,6 +5,7 @@ import 'package:curnectgate/features/payment/services/recipt_service.dart';
 import 'package:curnectgate/features/payment/state_model/payment_model/history_model/transaction_item.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class TransactionCard extends StatelessWidget {
   final TransactionItem transaction;
@@ -42,7 +43,7 @@ class TransactionCard extends StatelessWidget {
     // Parse date
     DateTime? date;
     try {
-      date = DateTime.parse(transaction.createdAt ?? '');
+      date = EstateTime.parse(transaction.createdAt ?? '');
     } catch (_) {}
     final dateString =
         date != null

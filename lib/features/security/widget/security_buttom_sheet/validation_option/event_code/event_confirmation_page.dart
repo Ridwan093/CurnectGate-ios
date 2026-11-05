@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../member_management/tabState/permission_tab_state.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class EventCodeConfirmationCode extends ConsumerWidget {
   final String rawMap;
@@ -27,7 +28,7 @@ class EventCodeConfirmationCode extends ConsumerWidget {
       try {
         DateTime dt;
         try {
-          dt = DateTime.parse(timeStr);
+          dt = EstateTime.parse(timeStr);
         } catch (e) {
           dt = DateFormat("MMM dd, yyyy HH:mm").parse(timeStr);
         }

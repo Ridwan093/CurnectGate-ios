@@ -1,4 +1,5 @@
 import 'package:curnectgate/core/config/app_env.dart';
+import 'package:curnectgate/core/config/estate_currency.dart';
 import 'dart:developer';
 
 import 'package:curnectgate/core/%20utils/service/app_lifecycle_service.dart';
@@ -63,6 +64,9 @@ void main() async {
   // Register Hive adapters first (no user required)
   await initChatHive();
 
+  // Estate timezone and currency saved on the device (no network).
+  await EstateCurrency.restore();
+
   // If a user is already logged in, open their personal Hive boxes immediately.
   try {
     final authData = await SharedPrefsService().getAuthData();
@@ -70,6 +74,8 @@ void main() async {
     if (userId != null && userId.isNotEmpty) {
       await openMessagesBox(userId);
       await getConversationsBox(userId);
+      // Refresh the estate timezone and currency in the background.
+      EstateCurrency.load(authData?['access_token']?.toString());
     }
   } catch (e) {
     log('Hive box init error: $e');

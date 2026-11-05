@@ -10,6 +10,7 @@ import 'package:curnectgate/features/operations/notifications/provider/activity_
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class ActivitiesTab extends ConsumerStatefulWidget {
   const ActivitiesTab({super.key});
@@ -20,8 +21,8 @@ class ActivitiesTab extends ConsumerStatefulWidget {
 
 class _ActivitiesTabState extends ConsumerState<ActivitiesTab> {
   String formatToFriendlyDate(String isoDate) {
-    final date = DateTime.parse(isoDate).toLocal();
-    final now = DateTime.now();
+    final date = EstateTime.parse(isoDate);
+    final now = EstateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final target = DateTime(date.year, date.month, date.day);
 
@@ -142,10 +143,10 @@ class _ActivitiesTabState extends ConsumerState<ActivitiesTab> {
       final rawDateStr = activity.updatedAt;
       if (rawDateStr == null) continue;
 
-      final parsedDate = DateTime.tryParse(rawDateStr);
+      final parsedDate = EstateTime.tryParse(rawDateStr);
       if (parsedDate == null) continue;
 
-      final now = DateTime.now();
+      final now = EstateTime.now();
       final today = DateTime(now.year, now.month, now.day);
       final activityDate = DateTime(
         parsedDate.year,

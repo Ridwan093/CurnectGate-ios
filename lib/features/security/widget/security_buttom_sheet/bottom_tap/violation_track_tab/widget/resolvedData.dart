@@ -11,13 +11,14 @@ import 'package:curnectgate/features/signOut/provider/logOut_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class ResolvedData extends ConsumerWidget {
   const ResolvedData({super.key});
 
   String formatDate(String dateString) {
     // Parse the ISO 8601 string to DateTime
-    DateTime dateTime = DateTime.parse(dateString);
+    DateTime dateTime = EstateTime.parse(dateString);
 
     // Format the DateTime to "Month Day, Year" (e.g., "July 8, 2025")
     return DateFormat('MMMM d, yyyy').format(dateTime);

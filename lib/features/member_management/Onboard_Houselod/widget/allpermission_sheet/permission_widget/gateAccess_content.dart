@@ -17,6 +17,7 @@ import 'package:curnectgate/features/member_management/profile_form/provider/for
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class GateContet extends ConsumerStatefulWidget {
   final Map<String, Permission>? permission;
@@ -56,8 +57,8 @@ class _FacilityContetState extends ConsumerState<GateContet> {
     }
 
     try {
-      final now = DateTime.now();
-      final date = DateTime.parse(inputDate);
+      final now = EstateTime.now();
+      final date = EstateTime.parse(inputDate);
 
       // Strip time to compare only dates
       final today = DateTime(now.year, now.month, now.day);

@@ -1518,6 +1518,9 @@ class SharedPrefsService {
   Future<void> saveAuthData(Map<String, dynamic> data) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_keyAuthData, jsonEncode(data));
+    // A new sign-in loads its estate's timezone and currency straight away
+    // (in the background), not only when the payment screen opens.
+    EstateCurrency.load(data['access_token']?.toString());
   }
 
   Future<void> saveSingleUserName(String usserName) async {

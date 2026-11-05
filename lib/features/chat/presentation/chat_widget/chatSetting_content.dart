@@ -6,6 +6,7 @@ import 'package:curnectgate/features/estate_management/submit_works_order/submit
 import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class ChatsettingContent extends ConsumerStatefulWidget {
   final int id;
@@ -41,7 +42,7 @@ class _ChatsettingContentState extends ConsumerState<ChatsettingContent> {
       /// Parse duration safely
       final dndUntil = settings.dndUntil;
       if (dndUntil != null && dndUntil.isNotEmpty) {
-        final dndDate = DateTime.tryParse(dndUntil)?.toLocal();
+        final dndDate = EstateTime.tryParse(dndUntil);
         final now = DateTime.now();
 
         if (dndDate != null && dndDate.isAfter(now)) {

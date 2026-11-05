@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 void shareEvent({
   required String title,
@@ -11,8 +12,8 @@ void shareEvent({
   String? eventImageUrl,
 }) {
   // Format the date and time nicely
-  final startDate = DateTime.parse(startDateTime).toLocal();
-  final endDate = DateTime.parse(endDateTime).toLocal();
+  final startDate = EstateTime.parse(startDateTime);
+  final endDate = EstateTime.parse(endDateTime);
   final formattedDate = DateFormat('MMM dd, yyyy').format(startDate);
   final formattedStartTime = DateFormat('h:mm a').format(startDate);
   final formattedEndTime = DateFormat('h:mm a').format(endDate);

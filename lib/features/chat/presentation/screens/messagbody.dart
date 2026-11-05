@@ -20,6 +20,7 @@ import 'package:dart_pusher_channels/dart_pusher_channels.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class MessageScreens extends ConsumerStatefulWidget {
   final String profileUrl;
@@ -260,7 +261,7 @@ class _MessageScreenState extends ConsumerState<MessageScreens>
     for (final m in messages) {
       DateTime created;
       try {
-        created = DateTime.parse(m.createdAt ?? "");
+        created = EstateTime.parse(m.createdAt ?? "");
       } catch (_) {
         created = DateTime.now();
       }
@@ -532,7 +533,7 @@ class _MessageScreenState extends ConsumerState<MessageScreens>
   }
 
   String _formatMessageDate(DateTime date) {
-    final now = DateTime.now();
+    final now = EstateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final messageDate = DateTime(date.year, date.month, date.day);
 

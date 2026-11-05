@@ -3,6 +3,7 @@ import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class Logcard extends ConsumerWidget {
   final String userName;
@@ -22,13 +23,9 @@ class Logcard extends ConsumerWidget {
     required this.isAllow,
   });
   String formatDateTime(String dateString, {String? timeZone}) {
-    // Parse the ISO 8601 date string (UTC)
-    DateTime dateTime = DateTime.parse(dateString);
-
-    // Adjust for WAT (UTC+1) if specified
-    if (timeZone == 'WAT') {
-      dateTime = dateTime.add(const Duration(hours: 1));
-    }
+    // Shown on the estate clock (the estate's own timezone), so no fixed
+    // offset is needed for any country.
+    final DateTime dateTime = EstateTime.parse(dateString);
 
     // Create a DateFormat instance for date and time (e.g., Aug 19, 2025, 5:04 AM)
     final DateFormat formatter = DateFormat('MMM d, yyyy, h:mm a');

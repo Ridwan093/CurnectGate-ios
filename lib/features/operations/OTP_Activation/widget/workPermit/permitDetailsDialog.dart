@@ -5,6 +5,7 @@ import 'package:curnectgate/features/operations/OTP_Activation/model/Work_permit
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:curnectgate/core/config/estate_time.dart';
 
 class PermitDetailsDialog extends StatelessWidget {
   final Permit permit;
@@ -12,7 +13,7 @@ class PermitDetailsDialog extends StatelessWidget {
 
   String _formatDate(String dateString) {
     try {
-      final parsedDate = DateTime.tryParse(dateString);
+      final parsedDate = EstateTime.tryParse(dateString);
       if (parsedDate == null) {
         throw FormatException('Invalid date string');
       }
@@ -42,7 +43,7 @@ class PermitDetailsDialog extends StatelessWidget {
   String _formatToTime(String dateTimeString) {
     try {
       // Try to parse the string into a DateTime
-      final parsedDate = DateTime.tryParse(dateTimeString);
+      final parsedDate = EstateTime.tryParse(dateTimeString);
       if (parsedDate == null) {
         throw FormatException('Invalid date string');
       }
