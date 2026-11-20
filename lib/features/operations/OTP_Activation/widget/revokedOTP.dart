@@ -89,7 +89,7 @@ class Revokedotp extends ConsumerWidget {
                 loading
                     ? Loadingstates()
                     : Text(
-                      "Revoked",
+                      "Revoke",
                       style: TextStyle(
                         fontFamily: FontFamilies.interDisplay,
                         color: AppColors.instance.grey200,

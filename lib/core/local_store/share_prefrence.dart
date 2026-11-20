@@ -2,6 +2,8 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
+
 import 'package:curnectgate/core/config/estate_currency.dart';
 import 'package:curnectgate/features/%20operations/property_agreement/model/agreements_response.dart';
 import 'package:curnectgate/features/%20operations/property_agreement/model/compliance/compliance_response.dart';
@@ -1297,12 +1299,36 @@ class SharedPrefsService {
     return prefs.getString('session_cookie');
   }
 
+  /// Deletes the saved copy of a feature's data once the server reports that the
+  /// member's access to it has been restricted, so it cannot be shown offline.
+  static Future<void> clearRestrictedCache(String feature) async {
+    const keys = {
+      'payment_history': _paymentHistoryKey,
+      'payment_dashboard': _paymentDashbordKey,
+      'wallet_history': _walletHistoryKey,
+      'notifications': _userMainNotification,
+      'notification_count': _notificationCountKey,
+      'violation_categories': _estateCategory,
+      'violation_locations': _estateAddressKey,
+      'resident_directory': _resident,
+      'committees': _committee,
+    };
+    final key = keys[feature];
+    if (key == null) return;
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(key);
+  }
+
   static Future<void> clearUserToken() async {
+    RestrictedFeatures.clear();
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove("session_token");
   }
 
   Future<void> saveUserToken(String cookie) async {
+    // A new session may be a different member: drop the previous restrictions
+    RestrictedFeatures.clear();
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('session_token', cookie);
   }
@@ -1510,6 +1536,11 @@ class SharedPrefsService {
     await prefs.remove(_activePermit);
   }
 
+  static Future<void> clearClearancePermit() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_work_permitKey);
+  }
+
   static Future<void> clearsecurity() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_security_Key);
@@ -1568,6 +1599,7 @@ class SharedPrefsService {
   Future<void> clearAuthData() async {
     final prefs = await SharedPreferences.getInstance();
     log(_keyAuthData);
+    RestrictedFeatures.clear();
     await EstateCurrency.clear();
     clearProfile();
     clearnotifcation();
@@ -1621,6 +1653,7 @@ class SharedPrefsService {
     clearAdminList();
     clearAgreement();
     clearActivePermit();
+    clearClearancePermit();
     clearComplaince();
     clearSlider();
     clearRestricted();

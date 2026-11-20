@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
 import 'package:curnectgate/core/config/estate_currency.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
@@ -103,7 +104,10 @@ class PayOutstanding extends StatelessWidget {
     String? second,
     String? last,
   }) {
-    final bool hasBalanceInfo = second != null && data != null;
+    final bool hasBalanceInfo =
+        second != null &&
+        data != null &&
+        !RestrictedFeatures.isRestricted('view_wallet');
 
     return InkWell(
       onTap: onTap,

@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/appErrorBody/expireSessionBody.dart';
 import 'package:curnectgate/core/style/colors.dart';
@@ -72,6 +73,14 @@ class Committee extends ConsumerWidget {
                 // Handle session expiration
                 if (error.toString().contains("Unauthorized")) {
                   return Expiresessionbody();
+                }
+
+                // Switched off for this member by their landlord or the estate
+                if (PermissionDeniedException.isRestriction(error)) {
+                  return RestrictedAccessView(
+                    message: error.toString(),
+                    onRetry: () => searchNotifier.refresh(context, ref),
+                  );
                 }
                 // Try to show cached data
                 final resident = ref.read(getCommitteeProvider).value;

@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
 import 'dart:developer';
 import 'dart:io';
 
@@ -45,6 +46,31 @@ class _ReportFormState extends ConsumerState<ReportForm> {
     final repor = ref.read(formProvider.notifier);
 
     final size = MediaQuery.sizeOf(context);
+
+    // Reporting switched off for this member by their landlord or the estate:
+    // say so clearly instead of showing a form that cannot be submitted.
+    final categoryAsync = ref.watch(estatCategoryProvider);
+    final restriction =
+        RestrictedFeatures.message('report_violation') ??
+        (categoryAsync.hasError &&
+                PermissionDeniedException.isRestriction(categoryAsync.error)
+            ? categoryAsync.error.toString()
+            : null);
+
+    if (restriction != null) {
+      return SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 40),
+          child: RestrictedAccessView(
+            message: restriction,
+            onRetry:
+                () => ref
+                    .read(estatCategoryProvider.notifier)
+                    .refreshCategory(context, ref),
+          ),
+        ),
+      );
+    }
 
     return PopScope(
       canPop: true, // allow system back
@@ -386,9 +412,10 @@ Widget _buildCategoryDropdown(
           );
         }
 
-        // Try to show cached data
+        // Try to show cached data (never for a restricted feature)
         final cachedCategory = ref.read(estatCategoryProvider).value;
-        if (cachedCategory != null) {
+        if (cachedCategory != null &&
+            !PermissionDeniedException.isRestriction(error)) {
           return Column(
             children: [
               CategoryDropdown(
@@ -517,6 +544,10 @@ Widget _buildErrorUI(
   BuildContext context,
   VoidCallback onRetry,
 ) {
+  if (PermissionDeniedException.isRestriction(error)) {
+    return RestrictedAccessView(message: error, onRetry: onRetry, compact: true);
+  }
+
   return Center(
     child: RichText(
       textAlign: TextAlign.center,

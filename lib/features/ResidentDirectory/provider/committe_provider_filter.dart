@@ -3,8 +3,12 @@ import 'package:curnectgate/features/ResidentDirectory/provider/getCommitte_prov
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final committeeSearchProvider =
-    StateNotifierProvider<CommitteeSearchNotifier, ResidentSearchState>((ref) {
+// autoDispose: leaving the screen releases the committee data, so it is fetched
+// fresh next time (e.g. after the landlord switches access back on).
+final committeeSearchProvider = StateNotifierProvider.autoDispose<
+  CommitteeSearchNotifier,
+  ResidentSearchState
+>((ref) {
       return CommitteeSearchNotifier(ref);
     });
 
@@ -141,6 +145,7 @@ class CommitteeSearchNotifier extends StateNotifier<ResidentSearchState> {
 
   Future<void> refresh(BuildContext context, WidgetRef ref) async {
     await ref.read(getCommitteeProvider.notifier).refreshCommitte(context, ref);
-    await _init();
+    // The refresh rebuilds this provider with a new notifier; only re-sync if still alive
+    if (mounted) await _init();
   }
 }

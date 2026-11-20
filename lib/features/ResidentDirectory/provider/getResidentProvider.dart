@@ -1,4 +1,5 @@
 // Provider for your API class
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
 import 'dart:developer';
 
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
@@ -43,6 +44,11 @@ class getResidentNotifier
 
       return freshResident;
     } catch (e) {
+      // A restricted feature must not fall back to cached data
+      if (PermissionDeniedException.isRestriction(e)) {
+        await SharedPrefsService.clearRestrictedCache('resident_directory');
+        rethrow;
+      }
       // If error occurs, return local data if available
       log("${e}");
       if (localResident != null) {
@@ -67,6 +73,11 @@ class getResidentNotifier
 
         return freshResindent;
       } catch (e) {
+        // A restricted feature must not fall back to cached data
+        if (PermissionDeniedException.isRestriction(e)) {
+          await SharedPrefsService.clearRestrictedCache('resident_directory');
+          rethrow;
+        }
         if (e is DioException && e.response?.statusCode == 401) {
           log(e.toString());
           ref.read(authProvider.notifier).sessionExpire(context, ref);

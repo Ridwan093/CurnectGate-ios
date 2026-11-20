@@ -27,12 +27,8 @@ mixin _$OutstandingDuesResponse {
   OutstandingDuesData? get data => throw _privateConstructorUsedError;
   String? get minimumPayableAmount => throw _privateConstructorUsedError;
 
-  /// Serializes this OutstandingDuesResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of OutstandingDuesResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $OutstandingDuesResponseCopyWith<OutstandingDuesResponse> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -64,8 +60,6 @@ class _$OutstandingDuesResponseCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of OutstandingDuesResponse
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -99,8 +93,6 @@ class _$OutstandingDuesResponseCopyWithImpl<$Res,
     ) as $Val);
   }
 
-  /// Create a copy of OutstandingDuesResponse
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $OutstandingDuesDataCopyWith<$Res>? get data {
@@ -144,8 +136,6 @@ class __$$OutstandingDuesResponseImplCopyWithImpl<$Res>
       $Res Function(_$OutstandingDuesResponseImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of OutstandingDuesResponse
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -223,14 +213,12 @@ class _$OutstandingDuesResponseImpl implements _OutstandingDuesResponse {
                 other.minimumPayableAmount == minimumPayableAmount));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, status, message, code, data, minimumPayableAmount);
+  int get hashCode => Object.hash(
+      runtimeType, status, message, code, data, minimumPayableAmount);
 
-  /// Create a copy of OutstandingDuesResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$OutstandingDuesResponseImplCopyWith<_$OutstandingDuesResponseImpl>
@@ -266,11 +254,8 @@ abstract class _OutstandingDuesResponse implements OutstandingDuesResponse {
   OutstandingDuesData? get data;
   @override
   String? get minimumPayableAmount;
-
-  /// Create a copy of OutstandingDuesResponse
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$OutstandingDuesResponseImplCopyWith<_$OutstandingDuesResponseImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

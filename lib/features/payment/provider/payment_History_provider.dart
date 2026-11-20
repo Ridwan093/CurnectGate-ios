@@ -1,4 +1,5 @@
 // Provider for your API class
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
 import 'dart:developer';
 
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
@@ -43,6 +44,11 @@ class PaymentHistoryNotifier
 
       return freshPaymentHistory;
     } catch (e) {
+      // A restricted feature must not fall back to cached data
+      if (PermissionDeniedException.isRestriction(e)) {
+        await SharedPrefsService.clearRestrictedCache('payment_history');
+        rethrow;
+      }
       // If error occurs, return local data if available
       log("${e}payment History");
       if (localPaymentHistory != null) {
@@ -73,6 +79,11 @@ class PaymentHistoryNotifier
         await SharedPrefsService.savePaymentHistory(freshProfile);
         return freshProfile;
       } catch (e) {
+        // A restricted feature must not fall back to cached data
+        if (PermissionDeniedException.isRestriction(e)) {
+          await SharedPrefsService.clearRestrictedCache('payment_history');
+          rethrow;
+        }
         if (e is DioException && e.response?.statusCode == 401) {
           log(e.toString());
         } else if (e.toString().contains("The connection errored")) {

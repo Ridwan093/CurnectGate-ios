@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
 import 'package:curnectgate/core/appErrorBody/emmergencyBody.dart';
@@ -96,6 +97,17 @@ class _ActivitiesTabState extends ConsumerState<ActivitiesTab> {
             // Handle session expiration
             if (error.toString().contains("Unauthorized")) {
               return const Expiresessionbody();
+            }
+            // Notifications switched off for this member: no cached list
+            if (PermissionDeniedException.isRestriction(error)) {
+              return Builderroul(
+                error: error.toString(),
+                onTap:
+                    () => ref
+                        .read(getUserNotification.notifier)
+                        .refreshSettings(context, ref),
+                firstMessage: "Notifications are not available.",
+              );
             }
             // Try to show cached data
             final cachedNotification = ref.read(getUserNotification).value;

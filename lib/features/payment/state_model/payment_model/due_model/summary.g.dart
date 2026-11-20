@@ -12,7 +12,7 @@ _$SummaryImpl _$$SummaryImplFromJson(Map<String, dynamic> json) =>
       totalOverdue: (json['total_overdue'] as num?)?.toInt(),
       count: (json['count'] as num?)?.toInt(),
       overdueCount: (json['overdue_count'] as num?)?.toInt(),
-      minimumPayableAmount: json['total_minimum_payable'] as String?,
+      minimumPayableAmount: json['minimum_payable_amount'] as String?,
     );
 
 Map<String, dynamic> _$$SummaryImplToJson(_$SummaryImpl instance) =>
@@ -21,5 +21,5 @@ Map<String, dynamic> _$$SummaryImplToJson(_$SummaryImpl instance) =>
       'total_overdue': instance.totalOverdue,
       'count': instance.count,
       'overdue_count': instance.overdueCount,
-      'total_minimum_payable': instance.minimumPayableAmount,
+      'minimum_payable_amount': instance.minimumPayableAmount,
     };

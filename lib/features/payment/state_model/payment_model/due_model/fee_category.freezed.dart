@@ -38,12 +38,8 @@ mixin _$FeeCategory {
   String? get updatedAt => throw _privateConstructorUsedError;
   dynamic get deletedAt => throw _privateConstructorUsedError;
 
-  /// Serializes this FeeCategory to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of FeeCategory
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $FeeCategoryCopyWith<FeeCategory> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -84,8 +80,6 @@ class _$FeeCategoryCopyWithImpl<$Res, $Val extends FeeCategory>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of FeeCategory
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -216,8 +210,6 @@ class __$$FeeCategoryImplCopyWithImpl<$Res>
       _$FeeCategoryImpl _value, $Res Function(_$FeeCategoryImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of FeeCategory
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -414,7 +406,7 @@ class _$FeeCategoryImpl implements _FeeCategory {
             const DeepCollectionEquality().equals(other.deletedAt, deletedAt));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -436,9 +428,7 @@ class _$FeeCategoryImpl implements _FeeCategory {
       updatedAt,
       const DeepCollectionEquality().hash(deletedAt));
 
-  /// Create a copy of FeeCategory
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$FeeCategoryImplCopyWith<_$FeeCategoryImpl> get copyWith =>
@@ -509,11 +499,8 @@ abstract class _FeeCategory implements FeeCategory {
   String? get updatedAt;
   @override
   dynamic get deletedAt;
-
-  /// Create a copy of FeeCategory
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$FeeCategoryImplCopyWith<_$FeeCategoryImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

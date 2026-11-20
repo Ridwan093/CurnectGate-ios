@@ -1,4 +1,5 @@
 // Provider for your API class
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
 import 'dart:developer';
 
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
@@ -43,6 +44,11 @@ class ReminderNotifier
 
       return freshcount;
     } catch (e) {
+      // A restricted feature must not fall back to cached data
+      if (PermissionDeniedException.isRestriction(e)) {
+        await SharedPrefsService.clearRestrictedCache('notification_count');
+        rethrow;
+      }
       // If error occurs, return local data if available
       log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");
       if (localcount != null) {
@@ -74,6 +80,11 @@ class ReminderNotifier
         await SharedPrefsService.saveNotificationCount(freshReminder);
         return freshReminder;
       } catch (e) {
+        // A restricted feature must not fall back to cached data
+        if (PermissionDeniedException.isRestriction(e)) {
+          await SharedPrefsService.clearRestrictedCache('notification_count');
+          rethrow;
+        }
         if (e is DioException && e.response?.statusCode == 401) {
           log(e.toString());
           ref.read(authProvider.notifier).sessionExpire(context, ref);

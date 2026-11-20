@@ -1,4 +1,5 @@
 // Provider for your API class
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
 import 'dart:developer';
 
 import 'package:curnectgate/core/config/estate_currency.dart';
@@ -48,6 +49,11 @@ class PaymentDashbordNotifier
 
       return freshDashbord;
     } catch (e) {
+      // A restricted feature must not fall back to cached data
+      if (PermissionDeniedException.isRestriction(e)) {
+        await SharedPrefsService.clearRestrictedCache('payment_dashboard');
+        rethrow;
+      }
       // If error occurs, return local data if available
       log("${e}jhhjhhjdhjjdshjshdjshsjhdsjhdjshd");
       if (localdashbord != null) {
@@ -82,6 +88,11 @@ class PaymentDashbordNotifier
         await SharedPrefsService.savePaymentDashbord(freshProfile);
         return freshProfile;
       } catch (e) {
+        // A restricted feature must not fall back to cached data
+        if (PermissionDeniedException.isRestriction(e)) {
+          await SharedPrefsService.clearRestrictedCache('payment_dashboard');
+          rethrow;
+        }
         if (e is DioException && e.response?.statusCode == 401) {
           log(e.toString());
           ref.read(authProvider.notifier).sessionExpire(context, ref);

@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
 import 'dart:developer';
 
 import 'package:curnectgate/core/style/colors.dart';
@@ -293,7 +294,9 @@ class _CustomSearchDropdownState extends ConsumerState<CustomSearchDropdown>
           ),
       error:
           (e, _) => Text(
-            'Error loading addresses',
+            PermissionDeniedException.isRestriction(e)
+                ? e.toString()
+                : 'Error loading addresses',
             style: TextStyle(
               fontFamily: FontFamilies.interDisplay,
               color: AppColors.instance.error500,

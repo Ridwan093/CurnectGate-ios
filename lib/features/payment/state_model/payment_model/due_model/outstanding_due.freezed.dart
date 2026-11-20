@@ -12,8 +12,7 @@ part of 'outstanding_due.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 OutstandingDue _$OutstandingDueFromJson(Map<String, dynamic> json) {
   return _OutstandingDue.fromJson(json);
@@ -49,12 +48,8 @@ mixin _$OutstandingDue {
   Property? get property => throw _privateConstructorUsedError;
   String? get minimumPayableAmount => throw _privateConstructorUsedError;
 
-  /// Serializes this OutstandingDue to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of OutstandingDue
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $OutstandingDueCopyWith<OutstandingDue> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -62,39 +57,37 @@ mixin _$OutstandingDue {
 /// @nodoc
 abstract class $OutstandingDueCopyWith<$Res> {
   factory $OutstandingDueCopyWith(
-    OutstandingDue value,
-    $Res Function(OutstandingDue) then,
-  ) = _$OutstandingDueCopyWithImpl<$Res, OutstandingDue>;
+          OutstandingDue value, $Res Function(OutstandingDue) then) =
+      _$OutstandingDueCopyWithImpl<$Res, OutstandingDue>;
   @useResult
-  $Res call({
-    int? id,
-    int? estateId,
-    int? feeCategoryId,
-    int? userId,
-    int? propertyId,
-    int? createdBy,
-    String? referenceNumber,
-    String? amount,
-    String? amountPaid,
-    String? balance,
-    String? dueDate,
-    String? issueDate,
-    String? description,
-    String? status,
-    String? type,
-    bool? isMandatory,
-    bool? allowPartialPayment,
-    bool? lateFeeApplied,
-    dynamic attachments,
-    dynamic internalNotes,
-    String? createdAt,
-    String? updatedAt,
-    dynamic deletedAt,
-    FeeCategory? feeCategory,
-    List<dynamic>? lateFees,
-    Property? property,
-    String? minimumPayableAmount,
-  });
+  $Res call(
+      {int? id,
+      int? estateId,
+      int? feeCategoryId,
+      int? userId,
+      int? propertyId,
+      int? createdBy,
+      String? referenceNumber,
+      String? amount,
+      String? amountPaid,
+      String? balance,
+      String? dueDate,
+      String? issueDate,
+      String? description,
+      String? status,
+      String? type,
+      bool? isMandatory,
+      bool? allowPartialPayment,
+      bool? lateFeeApplied,
+      dynamic attachments,
+      dynamic internalNotes,
+      String? createdAt,
+      String? updatedAt,
+      dynamic deletedAt,
+      FeeCategory? feeCategory,
+      List<dynamic>? lateFees,
+      Property? property,
+      String? minimumPayableAmount});
 
   $FeeCategoryCopyWith<$Res>? get feeCategory;
   $PropertyCopyWith<$Res>? get property;
@@ -110,8 +103,6 @@ class _$OutstandingDueCopyWithImpl<$Res, $Val extends OutstandingDue>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of OutstandingDue
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -143,150 +134,118 @@ class _$OutstandingDueCopyWithImpl<$Res, $Val extends OutstandingDue>
     Object? property = freezed,
     Object? minimumPayableAmount = freezed,
   }) {
-    return _then(
-      _value.copyWith(
-            id:
-                freezed == id
-                    ? _value.id
-                    : id // ignore: cast_nullable_to_non_nullable
-                        as int?,
-            estateId:
-                freezed == estateId
-                    ? _value.estateId
-                    : estateId // ignore: cast_nullable_to_non_nullable
-                        as int?,
-            feeCategoryId:
-                freezed == feeCategoryId
-                    ? _value.feeCategoryId
-                    : feeCategoryId // ignore: cast_nullable_to_non_nullable
-                        as int?,
-            userId:
-                freezed == userId
-                    ? _value.userId
-                    : userId // ignore: cast_nullable_to_non_nullable
-                        as int?,
-            propertyId:
-                freezed == propertyId
-                    ? _value.propertyId
-                    : propertyId // ignore: cast_nullable_to_non_nullable
-                        as int?,
-            createdBy:
-                freezed == createdBy
-                    ? _value.createdBy
-                    : createdBy // ignore: cast_nullable_to_non_nullable
-                        as int?,
-            referenceNumber:
-                freezed == referenceNumber
-                    ? _value.referenceNumber
-                    : referenceNumber // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            amount:
-                freezed == amount
-                    ? _value.amount
-                    : amount // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            amountPaid:
-                freezed == amountPaid
-                    ? _value.amountPaid
-                    : amountPaid // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            balance:
-                freezed == balance
-                    ? _value.balance
-                    : balance // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            dueDate:
-                freezed == dueDate
-                    ? _value.dueDate
-                    : dueDate // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            issueDate:
-                freezed == issueDate
-                    ? _value.issueDate
-                    : issueDate // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            description:
-                freezed == description
-                    ? _value.description
-                    : description // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            status:
-                freezed == status
-                    ? _value.status
-                    : status // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            type:
-                freezed == type
-                    ? _value.type
-                    : type // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            isMandatory:
-                freezed == isMandatory
-                    ? _value.isMandatory
-                    : isMandatory // ignore: cast_nullable_to_non_nullable
-                        as bool?,
-            allowPartialPayment:
-                freezed == allowPartialPayment
-                    ? _value.allowPartialPayment
-                    : allowPartialPayment // ignore: cast_nullable_to_non_nullable
-                        as bool?,
-            lateFeeApplied:
-                freezed == lateFeeApplied
-                    ? _value.lateFeeApplied
-                    : lateFeeApplied // ignore: cast_nullable_to_non_nullable
-                        as bool?,
-            attachments:
-                freezed == attachments
-                    ? _value.attachments
-                    : attachments // ignore: cast_nullable_to_non_nullable
-                        as dynamic,
-            internalNotes:
-                freezed == internalNotes
-                    ? _value.internalNotes
-                    : internalNotes // ignore: cast_nullable_to_non_nullable
-                        as dynamic,
-            createdAt:
-                freezed == createdAt
-                    ? _value.createdAt
-                    : createdAt // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            updatedAt:
-                freezed == updatedAt
-                    ? _value.updatedAt
-                    : updatedAt // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            deletedAt:
-                freezed == deletedAt
-                    ? _value.deletedAt
-                    : deletedAt // ignore: cast_nullable_to_non_nullable
-                        as dynamic,
-            feeCategory:
-                freezed == feeCategory
-                    ? _value.feeCategory
-                    : feeCategory // ignore: cast_nullable_to_non_nullable
-                        as FeeCategory?,
-            lateFees:
-                freezed == lateFees
-                    ? _value.lateFees
-                    : lateFees // ignore: cast_nullable_to_non_nullable
-                        as List<dynamic>?,
-            property:
-                freezed == property
-                    ? _value.property
-                    : property // ignore: cast_nullable_to_non_nullable
-                        as Property?,
-            minimumPayableAmount:
-                freezed == minimumPayableAmount
-                    ? _value.minimumPayableAmount
-                    : minimumPayableAmount // ignore: cast_nullable_to_non_nullable
-                        as String?,
-          )
-          as $Val,
-    );
+    return _then(_value.copyWith(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int?,
+      estateId: freezed == estateId
+          ? _value.estateId
+          : estateId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      feeCategoryId: freezed == feeCategoryId
+          ? _value.feeCategoryId
+          : feeCategoryId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      userId: freezed == userId
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      propertyId: freezed == propertyId
+          ? _value.propertyId
+          : propertyId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      createdBy: freezed == createdBy
+          ? _value.createdBy
+          : createdBy // ignore: cast_nullable_to_non_nullable
+              as int?,
+      referenceNumber: freezed == referenceNumber
+          ? _value.referenceNumber
+          : referenceNumber // ignore: cast_nullable_to_non_nullable
+              as String?,
+      amount: freezed == amount
+          ? _value.amount
+          : amount // ignore: cast_nullable_to_non_nullable
+              as String?,
+      amountPaid: freezed == amountPaid
+          ? _value.amountPaid
+          : amountPaid // ignore: cast_nullable_to_non_nullable
+              as String?,
+      balance: freezed == balance
+          ? _value.balance
+          : balance // ignore: cast_nullable_to_non_nullable
+              as String?,
+      dueDate: freezed == dueDate
+          ? _value.dueDate
+          : dueDate // ignore: cast_nullable_to_non_nullable
+              as String?,
+      issueDate: freezed == issueDate
+          ? _value.issueDate
+          : issueDate // ignore: cast_nullable_to_non_nullable
+              as String?,
+      description: freezed == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      status: freezed == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as String?,
+      type: freezed == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String?,
+      isMandatory: freezed == isMandatory
+          ? _value.isMandatory
+          : isMandatory // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      allowPartialPayment: freezed == allowPartialPayment
+          ? _value.allowPartialPayment
+          : allowPartialPayment // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      lateFeeApplied: freezed == lateFeeApplied
+          ? _value.lateFeeApplied
+          : lateFeeApplied // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      attachments: freezed == attachments
+          ? _value.attachments
+          : attachments // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      internalNotes: freezed == internalNotes
+          ? _value.internalNotes
+          : internalNotes // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      deletedAt: freezed == deletedAt
+          ? _value.deletedAt
+          : deletedAt // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      feeCategory: freezed == feeCategory
+          ? _value.feeCategory
+          : feeCategory // ignore: cast_nullable_to_non_nullable
+              as FeeCategory?,
+      lateFees: freezed == lateFees
+          ? _value.lateFees
+          : lateFees // ignore: cast_nullable_to_non_nullable
+              as List<dynamic>?,
+      property: freezed == property
+          ? _value.property
+          : property // ignore: cast_nullable_to_non_nullable
+              as Property?,
+      minimumPayableAmount: freezed == minimumPayableAmount
+          ? _value.minimumPayableAmount
+          : minimumPayableAmount // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ) as $Val);
   }
 
-  /// Create a copy of OutstandingDue
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $FeeCategoryCopyWith<$Res>? get feeCategory {
@@ -299,8 +258,6 @@ class _$OutstandingDueCopyWithImpl<$Res, $Val extends OutstandingDue>
     });
   }
 
-  /// Create a copy of OutstandingDue
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $PropertyCopyWith<$Res>? get property {
@@ -317,41 +274,39 @@ class _$OutstandingDueCopyWithImpl<$Res, $Val extends OutstandingDue>
 /// @nodoc
 abstract class _$$OutstandingDueImplCopyWith<$Res>
     implements $OutstandingDueCopyWith<$Res> {
-  factory _$$OutstandingDueImplCopyWith(
-    _$OutstandingDueImpl value,
-    $Res Function(_$OutstandingDueImpl) then,
-  ) = __$$OutstandingDueImplCopyWithImpl<$Res>;
+  factory _$$OutstandingDueImplCopyWith(_$OutstandingDueImpl value,
+          $Res Function(_$OutstandingDueImpl) then) =
+      __$$OutstandingDueImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({
-    int? id,
-    int? estateId,
-    int? feeCategoryId,
-    int? userId,
-    int? propertyId,
-    int? createdBy,
-    String? referenceNumber,
-    String? amount,
-    String? amountPaid,
-    String? balance,
-    String? dueDate,
-    String? issueDate,
-    String? description,
-    String? status,
-    String? type,
-    bool? isMandatory,
-    bool? allowPartialPayment,
-    bool? lateFeeApplied,
-    dynamic attachments,
-    dynamic internalNotes,
-    String? createdAt,
-    String? updatedAt,
-    dynamic deletedAt,
-    FeeCategory? feeCategory,
-    List<dynamic>? lateFees,
-    Property? property,
-    String? minimumPayableAmount,
-  });
+  $Res call(
+      {int? id,
+      int? estateId,
+      int? feeCategoryId,
+      int? userId,
+      int? propertyId,
+      int? createdBy,
+      String? referenceNumber,
+      String? amount,
+      String? amountPaid,
+      String? balance,
+      String? dueDate,
+      String? issueDate,
+      String? description,
+      String? status,
+      String? type,
+      bool? isMandatory,
+      bool? allowPartialPayment,
+      bool? lateFeeApplied,
+      dynamic attachments,
+      dynamic internalNotes,
+      String? createdAt,
+      String? updatedAt,
+      dynamic deletedAt,
+      FeeCategory? feeCategory,
+      List<dynamic>? lateFees,
+      Property? property,
+      String? minimumPayableAmount});
 
   @override
   $FeeCategoryCopyWith<$Res>? get feeCategory;
@@ -364,12 +319,9 @@ class __$$OutstandingDueImplCopyWithImpl<$Res>
     extends _$OutstandingDueCopyWithImpl<$Res, _$OutstandingDueImpl>
     implements _$$OutstandingDueImplCopyWith<$Res> {
   __$$OutstandingDueImplCopyWithImpl(
-    _$OutstandingDueImpl _value,
-    $Res Function(_$OutstandingDueImpl) _then,
-  ) : super(_value, _then);
+      _$OutstandingDueImpl _value, $Res Function(_$OutstandingDueImpl) _then)
+      : super(_value, _then);
 
-  /// Create a copy of OutstandingDue
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -401,181 +353,153 @@ class __$$OutstandingDueImplCopyWithImpl<$Res>
     Object? property = freezed,
     Object? minimumPayableAmount = freezed,
   }) {
-    return _then(
-      _$OutstandingDueImpl(
-        id:
-            freezed == id
-                ? _value.id
-                : id // ignore: cast_nullable_to_non_nullable
-                    as int?,
-        estateId:
-            freezed == estateId
-                ? _value.estateId
-                : estateId // ignore: cast_nullable_to_non_nullable
-                    as int?,
-        feeCategoryId:
-            freezed == feeCategoryId
-                ? _value.feeCategoryId
-                    : feeCategoryId // ignore: cast_nullable_to_non_nullable
-                        as int?,
-        userId:
-            freezed == userId
-                ? _value.userId
-                : userId // ignore: cast_nullable_to_non_nullable
-                    as int?,
-        propertyId:
-            freezed == propertyId
-                ? _value.propertyId
-                : propertyId // ignore: cast_nullable_to_non_nullable
-                    as int?,
-        createdBy:
-            freezed == createdBy
-                ? _value.createdBy
-                : createdBy // ignore: cast_nullable_to_non_nullable
-                    as int?,
-        referenceNumber:
-            freezed == referenceNumber
-                ? _value.referenceNumber
-                : referenceNumber // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        amount:
-            freezed == amount
-                ? _value.amount
-                : amount // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        amountPaid:
-            freezed == amountPaid
-                ? _value.amountPaid
-                : amountPaid // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        balance:
-            freezed == balance
-                ? _value.balance
-                : balance // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        dueDate:
-            freezed == dueDate
-                ? _value.dueDate
-                : dueDate // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        issueDate:
-            freezed == issueDate
-                ? _value.issueDate
-                : issueDate // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        description:
-            freezed == description
-                ? _value.description
-                : description // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        status:
-            freezed == status
-                ? _value.status
-                : status // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        type:
-            freezed == type
-                ? _value.type
-                : type // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        isMandatory:
-            freezed == isMandatory
-                ? _value.isMandatory
-                : isMandatory // ignore: cast_nullable_to_non_nullable
-                    as bool?,
-        allowPartialPayment:
-            freezed == allowPartialPayment
-                ? _value.allowPartialPayment
-                : allowPartialPayment // ignore: cast_nullable_to_non_nullable
-                    as bool?,
-        lateFeeApplied:
-            freezed == lateFeeApplied
-                ? _value.lateFeeApplied
-                : lateFeeApplied // ignore: cast_nullable_to_non_nullable
-                    as bool?,
-        attachments:
-            freezed == attachments
-                ? _value.attachments
-                : attachments // ignore: cast_nullable_to_non_nullable
-                    as dynamic,
-        internalNotes:
-            freezed == internalNotes
-                ? _value.internalNotes
-                : internalNotes // ignore: cast_nullable_to_non_nullable
-                    as dynamic,
-        createdAt:
-            freezed == createdAt
-                ? _value.createdAt
-                : createdAt // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        updatedAt:
-            freezed == updatedAt
-                ? _value.updatedAt
-                : updatedAt // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        deletedAt:
-            freezed == deletedAt
-                ? _value.deletedAt
-                : deletedAt // ignore: cast_nullable_to_non_nullable
-                    as dynamic,
-        feeCategory:
-            freezed == feeCategory
-                ? _value.feeCategory
-                : feeCategory // ignore: cast_nullable_to_non_nullable
-                    as FeeCategory?,
-        lateFees:
-            freezed == lateFees
-                ? _value._lateFees
-                : lateFees // ignore: cast_nullable_to_non_nullable
-                    as List<dynamic>?,
-        property:
-            freezed == property
-                ? _value.property
-                : property // ignore: cast_nullable_to_non_nullable
-                    as Property?,
-        minimumPayableAmount:
-            freezed == minimumPayableAmount
-                ? _value.minimumPayableAmount
-                : minimumPayableAmount // ignore: cast_nullable_to_non_nullable
-                    as String?,
-      ),
-    );
+    return _then(_$OutstandingDueImpl(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int?,
+      estateId: freezed == estateId
+          ? _value.estateId
+          : estateId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      feeCategoryId: freezed == feeCategoryId
+          ? _value.feeCategoryId
+          : feeCategoryId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      userId: freezed == userId
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      propertyId: freezed == propertyId
+          ? _value.propertyId
+          : propertyId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      createdBy: freezed == createdBy
+          ? _value.createdBy
+          : createdBy // ignore: cast_nullable_to_non_nullable
+              as int?,
+      referenceNumber: freezed == referenceNumber
+          ? _value.referenceNumber
+          : referenceNumber // ignore: cast_nullable_to_non_nullable
+              as String?,
+      amount: freezed == amount
+          ? _value.amount
+          : amount // ignore: cast_nullable_to_non_nullable
+              as String?,
+      amountPaid: freezed == amountPaid
+          ? _value.amountPaid
+          : amountPaid // ignore: cast_nullable_to_non_nullable
+              as String?,
+      balance: freezed == balance
+          ? _value.balance
+          : balance // ignore: cast_nullable_to_non_nullable
+              as String?,
+      dueDate: freezed == dueDate
+          ? _value.dueDate
+          : dueDate // ignore: cast_nullable_to_non_nullable
+              as String?,
+      issueDate: freezed == issueDate
+          ? _value.issueDate
+          : issueDate // ignore: cast_nullable_to_non_nullable
+              as String?,
+      description: freezed == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      status: freezed == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as String?,
+      type: freezed == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String?,
+      isMandatory: freezed == isMandatory
+          ? _value.isMandatory
+          : isMandatory // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      allowPartialPayment: freezed == allowPartialPayment
+          ? _value.allowPartialPayment
+          : allowPartialPayment // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      lateFeeApplied: freezed == lateFeeApplied
+          ? _value.lateFeeApplied
+          : lateFeeApplied // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      attachments: freezed == attachments
+          ? _value.attachments
+          : attachments // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      internalNotes: freezed == internalNotes
+          ? _value.internalNotes
+          : internalNotes // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      deletedAt: freezed == deletedAt
+          ? _value.deletedAt
+          : deletedAt // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      feeCategory: freezed == feeCategory
+          ? _value.feeCategory
+          : feeCategory // ignore: cast_nullable_to_non_nullable
+              as FeeCategory?,
+      lateFees: freezed == lateFees
+          ? _value._lateFees
+          : lateFees // ignore: cast_nullable_to_non_nullable
+              as List<dynamic>?,
+      property: freezed == property
+          ? _value.property
+          : property // ignore: cast_nullable_to_non_nullable
+              as Property?,
+      minimumPayableAmount: freezed == minimumPayableAmount
+          ? _value.minimumPayableAmount
+          : minimumPayableAmount // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
   }
 }
 
 /// @nodoc
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-class _$OutstandingDueImpl implements _OutstandingDue {
-  const _$OutstandingDueImpl({
-    this.id,
-    this.estateId,
-    this.feeCategoryId,
-    this.userId,
-    this.propertyId,
-    this.createdBy,
-    this.referenceNumber,
-    this.amount,
-    this.amountPaid,
-    this.balance,
-    this.dueDate,
-    this.issueDate,
-    this.description,
-    this.status,
-    this.type,
-    this.isMandatory,
-    this.allowPartialPayment,
-    this.lateFeeApplied,
-    this.attachments,
-    this.internalNotes,
-    this.createdAt,
-    this.updatedAt,
-    this.deletedAt,
-    this.feeCategory,
-    final List<dynamic>? lateFees,
-    this.property,
-    this.minimumPayableAmount,
-  }) : _lateFees = lateFees;
+class _$OutstandingDueImpl extends _OutstandingDue {
+  const _$OutstandingDueImpl(
+      {this.id,
+      this.estateId,
+      this.feeCategoryId,
+      this.userId,
+      this.propertyId,
+      this.createdBy,
+      this.referenceNumber,
+      this.amount,
+      this.amountPaid,
+      this.balance,
+      this.dueDate,
+      this.issueDate,
+      this.description,
+      this.status,
+      this.type,
+      this.isMandatory,
+      this.allowPartialPayment,
+      this.lateFeeApplied,
+      this.attachments,
+      this.internalNotes,
+      this.createdAt,
+      this.updatedAt,
+      this.deletedAt,
+      this.feeCategory,
+      final List<dynamic>? lateFees,
+      this.property,
+      this.minimumPayableAmount})
+      : _lateFees = lateFees,
+        super._();
 
   factory _$OutstandingDueImpl.fromJson(Map<String, dynamic> json) =>
       _$$OutstandingDueImplFromJson(json);
@@ -682,14 +606,10 @@ class _$OutstandingDueImpl implements _OutstandingDue {
                 other.allowPartialPayment == allowPartialPayment) &&
             (identical(other.lateFeeApplied, lateFeeApplied) ||
                 other.lateFeeApplied == lateFeeApplied) &&
-            const DeepCollectionEquality().equals(
-              other.attachments,
-              attachments,
-            ) &&
-            const DeepCollectionEquality().equals(
-              other.internalNotes,
-              internalNotes,
-            ) &&
+            const DeepCollectionEquality()
+                .equals(other.attachments, attachments) &&
+            const DeepCollectionEquality()
+                .equals(other.internalNotes, internalNotes) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -704,94 +624,84 @@ class _$OutstandingDueImpl implements _OutstandingDue {
                 other.minimumPayableAmount == minimumPayableAmount));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hashAll([
-    runtimeType,
-    id,
-    estateId,
-    feeCategoryId,
-    userId,
-    propertyId,
-    createdBy,
-    referenceNumber,
-    amount,
-    amountPaid,
-    balance,
-    dueDate,
-    issueDate,
-    description,
-    status,
-    type,
-    isMandatory,
-    allowPartialPayment,
-    lateFeeApplied,
-    const DeepCollectionEquality().hash(attachments),
-    const DeepCollectionEquality().hash(internalNotes),
-    createdAt,
-    updatedAt,
-    const DeepCollectionEquality().hash(deletedAt),
-    feeCategory,
-    const DeepCollectionEquality().hash(_lateFees),
-    property,
-    minimumPayableAmount,
-  ]);
+        runtimeType,
+        id,
+        estateId,
+        feeCategoryId,
+        userId,
+        propertyId,
+        createdBy,
+        referenceNumber,
+        amount,
+        amountPaid,
+        balance,
+        dueDate,
+        issueDate,
+        description,
+        status,
+        type,
+        isMandatory,
+        allowPartialPayment,
+        lateFeeApplied,
+        const DeepCollectionEquality().hash(attachments),
+        const DeepCollectionEquality().hash(internalNotes),
+        createdAt,
+        updatedAt,
+        const DeepCollectionEquality().hash(deletedAt),
+        feeCategory,
+        const DeepCollectionEquality().hash(_lateFees),
+        property,
+        minimumPayableAmount
+      ]);
 
-  /// Create a copy of OutstandingDue
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$OutstandingDueImplCopyWith<_$OutstandingDueImpl> get copyWith =>
       __$$OutstandingDueImplCopyWithImpl<_$OutstandingDueImpl>(
-        this,
-        _$identity,
-      );
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$OutstandingDueImplToJson(this);
+    return _$$OutstandingDueImplToJson(
+      this,
+    );
   }
-
-  @override
-  // TODO: implement isFullPaymentOnly
-  bool get isFullPaymentOnly => throw UnimplementedError();
-
-  @override
-  // TODO: implement title
-  String get title => throw UnimplementedError();
 }
 
-abstract class _OutstandingDue implements OutstandingDue {
-  const factory _OutstandingDue({
-    final int? id,
-    final int? estateId,
-    final int? feeCategoryId,
-    final int? userId,
-    final int? propertyId,
-    final int? createdBy,
-    final String? referenceNumber,
-    final String? amount,
-    final String? amountPaid,
-    final String? balance,
-    final String? dueDate,
-    final String? issueDate,
-    final String? description,
-    final String? status,
-    final String? type,
-    final bool? isMandatory,
-    final bool? allowPartialPayment,
-    final bool? lateFeeApplied,
-    final dynamic attachments,
-    final dynamic internalNotes,
-    final String? createdAt,
-    final String? updatedAt,
-    final dynamic deletedAt,
-    final FeeCategory? feeCategory,
-    final List<dynamic>? lateFees,
-    final Property? property,
-    final String? minimumPayableAmount,
-  }) = _$OutstandingDueImpl;
+abstract class _OutstandingDue extends OutstandingDue {
+  const factory _OutstandingDue(
+      {final int? id,
+      final int? estateId,
+      final int? feeCategoryId,
+      final int? userId,
+      final int? propertyId,
+      final int? createdBy,
+      final String? referenceNumber,
+      final String? amount,
+      final String? amountPaid,
+      final String? balance,
+      final String? dueDate,
+      final String? issueDate,
+      final String? description,
+      final String? status,
+      final String? type,
+      final bool? isMandatory,
+      final bool? allowPartialPayment,
+      final bool? lateFeeApplied,
+      final dynamic attachments,
+      final dynamic internalNotes,
+      final String? createdAt,
+      final String? updatedAt,
+      final dynamic deletedAt,
+      final FeeCategory? feeCategory,
+      final List<dynamic>? lateFees,
+      final Property? property,
+      final String? minimumPayableAmount}) = _$OutstandingDueImpl;
+  const _OutstandingDue._() : super._();
 
   factory _OutstandingDue.fromJson(Map<String, dynamic> json) =
       _$OutstandingDueImpl.fromJson;
@@ -846,14 +756,12 @@ abstract class _OutstandingDue implements OutstandingDue {
   FeeCategory? get feeCategory;
   @override
   List<dynamic>? get lateFees;
+  @override
   Property? get property;
   @override
   String? get minimumPayableAmount;
-
-  /// Create a copy of OutstandingDue
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$OutstandingDueImplCopyWith<_$OutstandingDueImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

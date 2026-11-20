@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/appErrorBody/buildEmptyBody.dart';
 import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
@@ -68,7 +69,8 @@ class DashbordData<T> extends ConsumerWidget {
 
           try {
             final cachedProfile = ref.read(paymentDashbordProvider).value;
-            if (cachedProfile?.data != null) {
+            if (cachedProfile?.data != null &&
+                !PermissionDeniedException.isRestriction(error)) {
               return builder(context, cachedProfile?.data as T);
             }
           } catch (e) {

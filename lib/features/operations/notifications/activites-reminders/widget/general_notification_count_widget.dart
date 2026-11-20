@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart' show AssetPaths;
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -55,6 +56,11 @@ class NotificationCount extends ConsumerWidget {
       },
       error: (error, stack) {
         try {
+          // Notifications switched off for this member: no cached count
+          if (PermissionDeniedException.isRestriction(error)) {
+            return _buildNotificationBell(0, context, onTap, width, color);
+          }
+
           // Handle session expiration
 
           // Try to show cached data

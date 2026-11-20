@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
 import 'package:curnectgate/core/config/estate_currency.dart';
 import 'dart:developer';
 
@@ -521,7 +522,9 @@ class _PaymentMethodTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "Balance: ${EstateCurrency.symbol}$walletBalance",
+                  RestrictedFeatures.isRestricted('view_wallet')
+                      ? "Balance: hidden"
+                      : "Balance: ${EstateCurrency.symbol}$walletBalance",
                   style: TextStyle(
                     fontFamily: FontFamilies.interDisplay,
                     color: AppColors.instance.teal400,

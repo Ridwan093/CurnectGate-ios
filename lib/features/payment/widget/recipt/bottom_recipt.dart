@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
 import 'package:confetti/confetti.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
@@ -95,6 +96,18 @@ class _PaymentReceiptSheetState extends State<PaymentReceiptSheet> {
 
                   const SizedBox(height: 24),
 
+                  // Downloading/sharing receipts switched off for this member
+                  if (RestrictedFeatures.isRestricted('download_receipts'))
+                    Text(
+                      RestrictedFeatures.message('download_receipts') ?? '',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: FontFamilies.interDisplay,
+                        fontSize: 13,
+                        color: AppColors.instance.black400,
+                      ),
+                    )
+                  else
                   Row(
                     children: [
                       Expanded(

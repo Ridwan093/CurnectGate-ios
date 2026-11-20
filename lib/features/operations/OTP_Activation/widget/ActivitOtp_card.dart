@@ -162,8 +162,8 @@ class ActivitOtpCard extends ConsumerWidget {
 
             showUserBottomSheet(
               context: context,
-              headertitle: "Revoked Active OTP",
-              headersubtitle: "Revoked ${generated.visitorName} OTP",
+              headertitle: "Revoke Active OTP",
+              headersubtitle: "Revoke ${generated.visitorName} OTP",
               ref: ref,
               bottom: BottomSheetView.revorkActiveOtp,
               id: activeOtpID,

@@ -3,8 +3,12 @@ import 'package:curnectgate/features/ResidentDirectory/provider/getResidentProvi
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final residentSearchProvider =
-    StateNotifierProvider<ResidentSearchNotifier, ResidentSearchState>((ref) {
+// autoDispose: leaving the screen releases the directory data, so it is fetched
+// fresh next time (e.g. after the landlord switches access back on).
+final residentSearchProvider = StateNotifierProvider.autoDispose<
+  ResidentSearchNotifier,
+  ResidentSearchState
+>((ref) {
       return ResidentSearchNotifier(ref);
     });
 
@@ -135,6 +139,7 @@ class ResidentSearchNotifier extends StateNotifier<ResidentSearchState> {
 
   Future<void> refresh(BuildContext context, WidgetRef ref) async {
     await ref.read(getResidentProvider.notifier).refreshResident(context, ref);
-    await _init();
+    // The refresh rebuilds this provider with a new notifier; only re-sync if still alive
+    if (mounted) await _init();
   }
 }

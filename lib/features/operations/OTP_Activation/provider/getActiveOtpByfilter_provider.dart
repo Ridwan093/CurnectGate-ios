@@ -46,12 +46,15 @@ class ActiveOtpNotifier extends AsyncNotifier<OtpResponseModel?> {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       try {
-        final token = await ref.watch(accessTokenProvider.future);
-        final statusFilter = ref.watch(generateNotifierProvider).filter;
-        final freshOtp = await ref
+        final token = await this.ref.read(accessTokenProvider.future);
+        if (token == null || token.isEmpty) {
+          throw 'Unauthorized. Please log in again.';
+        }
+        final statusFilter = this.ref.read(generateNotifierProvider).filter;
+        final freshOtp = await this.ref
             .read(getApiServiceProvider)
             .getVisitorByFilters(
-              bearerToken: token!,
+              bearerToken: token,
               status: statusFilter ?? "",
             );
         await SharedPrefsService.saveActiveOtp(freshOtp);

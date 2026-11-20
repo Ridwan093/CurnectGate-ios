@@ -67,15 +67,19 @@ class WorkPermitNotifier
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       try {
-        final token = await ref.watch(accessTokenProvider.future);
+        final token = await this.ref.read(accessTokenProvider.future);
+        if (token == null || token.isEmpty) {
+          throw 'Unauthorized. Please log in again.';
+        }
 
-        final freshVendor = await ref
+        final freshVendor = await this.ref
             .read(getApiServiceProvider)
-            .getworkPermit(bearerToken: token!, status: "");
+            .getworkPermit(bearerToken: token, status: "");
         await SharedPrefsService.saveClearancePermit(freshVendor);
         return freshVendor;
       } catch (e) {
-        if (e is DioException && e.response?.statusCode == 401) {
+        if ((e is DioException && e.response?.statusCode == 401) ||
+            e.toString().contains('Unauthorized')) {
           log(e.toString());
           ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else if (e.toString().contains("The connection errored")) {

@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/appErrorBody/buildEmptyBody.dart';
 import 'package:curnectgate/core/appErrorBody/buildErroUl.dart';
@@ -93,6 +94,18 @@ class PaymentHistory extends ConsumerWidget {
                 ref.read(authProvider.notifier).sessionExpire(context, ref);
               });
               return Expiresessionbody();
+            }
+
+            // Payment history switched off for this member: no cached list
+            if (PermissionDeniedException.isRestriction(error)) {
+              return Builderroul(
+                error: error.toString(),
+                onTap:
+                    () => ref
+                        .read(paymentHistoryProvider.notifier)
+                        .refreshPaymentHistory(context),
+                firstMessage: "Payment history is not available.",
+              );
             }
 
             // Try to show cached data

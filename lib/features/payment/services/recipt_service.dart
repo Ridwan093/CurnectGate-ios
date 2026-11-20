@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -38,6 +39,24 @@ class PaymentReceiptService {
 }
 
 Future<void> showPaymentReceipt(BuildContext context, TransactionItem tx) {
+  // Receipts switched off for this member by their landlord or the estate
+  final restriction = RestrictedFeatures.message('view_receipts');
+  if (restriction != null) {
+    return showModalBottomSheet(
+      context: context,
+      useSafeArea: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder:
+          (_) => Padding(
+            padding: const EdgeInsets.fromLTRB(20, 28, 20, 36),
+            child: RestrictedAccessView(message: restriction),
+          ),
+    );
+  }
+
   return showModalBottomSheet(
     context: context,
     isScrollControlled: true,

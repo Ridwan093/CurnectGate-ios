@@ -1,4 +1,5 @@
 // Riverpod Providers
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
 import 'dart:developer';
 
 import 'package:curnectgate/core/local_store/share_prefrence.dart';
@@ -52,6 +53,11 @@ class GetUserNotification
 
       return freshUserNotication;
     } catch (e) {
+      // A restricted feature must not fall back to cached data
+      if (PermissionDeniedException.isRestriction(e)) {
+        await SharedPrefsService.clearRestrictedCache('notifications');
+        rethrow;
+      }
       // If error occurs, return local data if available
       log("$e");
       if (localNotification != null) {
@@ -82,6 +88,11 @@ class GetUserNotification
         await SharedPrefsService.saveUserNotification(localNotification);
         return localNotification;
       } catch (e) {
+        // A restricted feature must not fall back to cached data
+        if (PermissionDeniedException.isRestriction(e)) {
+          await SharedPrefsService.clearRestrictedCache('notifications');
+          rethrow;
+        }
         if (e is DioException && e.response?.statusCode == 401) {
           log(e.toString());
           ref.read(authProvider.notifier).sessionExpire(context, ref);

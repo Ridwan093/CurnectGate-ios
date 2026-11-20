@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
 import 'package:curnectgate/core/config/estate_currency.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
@@ -162,16 +163,43 @@ class DashbordContent extends ConsumerWidget {
               ),
             ),
 
-            Text(
-              "${EstateCurrency.symbol}${formatPrice(data?.walletBalance ?? "")}",
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontFamily: FontFamilies.interDisplay,
-                color: AppColors.instance.black600,
-                fontWeight: FontFamilies.bold,
-                fontSize: 27,
-              ),
-            ),
+            // Wallet switched off for this member by their landlord or the estate
+            RestrictedFeatures.isRestricted('view_wallet')
+                ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.lock_outline,
+                        size: 18,
+                        color: AppColors.instance.black400,
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          RestrictedFeatures.message('view_wallet') ?? '',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontFamily: FontFamilies.interDisplay,
+                            color: AppColors.instance.black400,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+                : Text(
+                  "${EstateCurrency.symbol}${formatPrice(data?.walletBalance ?? "")}",
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    color: AppColors.instance.black600,
+                    fontWeight: FontFamilies.bold,
+                    fontSize: 27,
+                  ),
+                ),
             SizedBox(height: 10),
             Row(
               children: [

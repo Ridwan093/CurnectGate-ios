@@ -3043,7 +3043,7 @@ class AppApiMethod {
   }) async {
     try {
       final response = await _dio.post(
-        "estates/security/messaging/conversations/$conversationId/typing",
+        "estates/general/messaging/conversations/$conversationId/typing",
         data: {'is_typing': isTyping},
         options: Options(
           validateStatus: (status) => status != null && status < 500,
@@ -3111,7 +3111,7 @@ class AppApiMethod {
   Future<Map<String, dynamic>> markMessageRead({required int id}) async {
     try {
       final response = await _dio.post(
-        "estates/security/messaging/conversations/$id/mark-read",
+        "estates/general/messaging/conversations/$id/mark-read",
         options: Options(
           validateStatus: (status) => status != null && status < 500,
           headers: {"Accept": "application/json"},

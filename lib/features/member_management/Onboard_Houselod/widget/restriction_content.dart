@@ -5,7 +5,6 @@ import 'package:curnectgate/features/member_management/Onboard_Houselod/model/se
 import 'package:curnectgate/features/member_management/profile_form/provider/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class RestrictionContent extends ConsumerStatefulWidget {
   final String title;

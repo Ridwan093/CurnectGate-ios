@@ -267,34 +267,6 @@ class _ActivitiesTabState extends ConsumerState<ReminderTab> {
     );
   }
 
-  Widget _buildErrorState({
-    required String error,
-    required VoidCallback onRefresh,
-    required String message,
-  }) {
-    return SizedBox.expand(
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(message),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: onRefresh,
-              child: Text(
-                "Refresh",
-                style: TextStyle(
-                  fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black600,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildEmergencyState({required String error}) {
     return Padding(
       padding: const EdgeInsets.all(16.0),

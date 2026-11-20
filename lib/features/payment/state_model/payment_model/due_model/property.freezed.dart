@@ -51,12 +51,8 @@ mixin _$Property {
   String? get createdAt => throw _privateConstructorUsedError;
   String? get updatedAt => throw _privateConstructorUsedError;
 
-  /// Serializes this Property to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of Property
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $PropertyCopyWith<Property> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -109,8 +105,6 @@ class _$PropertyCopyWithImpl<$Res, $Val extends Property>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of Property
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -319,8 +313,6 @@ class __$$PropertyImplCopyWithImpl<$Res>
       _$PropertyImpl _value, $Res Function(_$PropertyImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of Property
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -657,7 +649,7 @@ class _$PropertyImpl implements _Property {
                 other.updatedAt == updatedAt));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hashAll([
         runtimeType,
@@ -693,9 +685,7 @@ class _$PropertyImpl implements _Property {
         updatedAt
       ]);
 
-  /// Create a copy of Property
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$PropertyImplCopyWith<_$PropertyImpl> get copyWith =>
@@ -805,11 +795,8 @@ abstract class _Property implements Property {
   String? get createdAt;
   @override
   String? get updatedAt;
-
-  /// Create a copy of Property
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$PropertyImplCopyWith<_$PropertyImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

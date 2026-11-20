@@ -1,3 +1,4 @@
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,14 @@ class Builderroul extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Feature switched off for this member: explain it instead of "failed to load"
+    if (PermissionDeniedException.isRestriction(error)) {
+      return RestrictedAccessView(
+        message: error.replaceAll('Exception: ', '').trim(),
+        onRetry: onTap,
+      );
+    }
+
     // When inside a bottom sheet, skip the LayoutBuilder so the height
     // constraint does not collapse the error body into compact mode.
     if (isBottomSheet) {

@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
+
 import 'package:curnectgate/core/%20utils/api/api_url.dart';
 import 'package:curnectgate/features/%20operations/property_agreement/model/agreements_response.dart';
 import 'package:curnectgate/features/%20operations/property_agreement/model/compliance/compliance_response.dart';
@@ -165,6 +167,7 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(getViolationLocation);
+      RestrictedFeatures.syncFromBody(response.data, const ['report_violation']);
       return EstateAddressResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       throw _handleError(e);
@@ -176,6 +179,7 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(getViolationCategorys);
+      RestrictedFeatures.syncFromBody(response.data, const ['report_violation']);
       return ViolationCategoryResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       throw _handleError(e);
@@ -237,9 +241,19 @@ class GetApiService {
     required String status,
   }) async {
     try {
-      final Map<String, dynamic> requestData = {"status": status};
-      final response = await _dio.get(getVisitorByfirter, data: requestData);
-      return OtpResponseModel.fromSafeJson(response.data);
+      // GET bodies are dropped by many proxies/clients; send the filter in the URL.
+      final response = await _dio.get(
+        getVisitorByfirter,
+        queryParameters: {"status": status},
+      );
+      final body = response.data;
+      // A non-JSON reply (e.g. a PHP error page) arrives as a String;
+      // fail with a readable message instead of a type-cast error.
+      if (body is! Map) {
+        log('getVisitorByFilters: expected JSON, got ${body.runtimeType}');
+        throw 'Unexpected response from server. Please try again.';
+      }
+      return OtpResponseModel.fromSafeJson(Map<String, dynamic>.from(body));
     } on DioException catch (e) {
       throw _handleError(e);
     }
@@ -609,6 +623,12 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(getPaymentDashbords);
+      RestrictedFeatures.syncFromBody(response.data, const [
+        'view_wallet',
+        'view_payment_history',
+        'view_receipts',
+        'download_receipts',
+      ]);
       return PaymentDashboardResponse.safeFromJson(response.data);
     } on DioException catch (e) {
       throw _handleError(e);
@@ -644,6 +664,10 @@ class GetApiService {
   }) async {
     try {
       final response = await _dio.get(getPaymentHistorys);
+      RestrictedFeatures.syncFromBody(response.data, const [
+        'view_receipts',
+        'download_receipts',
+      ]);
 
  
       return PaymentHistoryResponse.safeFromJson(response.data);
@@ -819,6 +843,13 @@ class GetApiService {
   }
 
   dynamic _handleError(DioException e) {
+    // Feature switched off for this member (by their landlord or the estate)
+    final restriction = PermissionDeniedException.fromResponse(
+      e.response?.statusCode,
+      e.response?.data,
+    );
+    if (restriction != null) return restriction;
+
     if (e.response != null) {
       if (e.response!.statusCode == 401) {
         return 'Unauthorized. Please log in again.';

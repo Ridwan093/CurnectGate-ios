@@ -68,18 +68,26 @@ class ActiveOtpnotifier extends AutoDisposeAsyncNotifier<OtpResponseModel?> {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       try {
-        final token = await ref.watch(accessTokenProvider.future);
-        final statue = ref.watch(generateNotifierProvider).historyfilter;
-        final freshVendor = await ref
+        // Use the notifier's own ref: watching through a WidgetRef inside an
+        // async callback subscribes the widget from outside its build.
+        final token = await this.ref.read(accessTokenProvider.future);
+        if (token == null || token.isEmpty) {
+          throw 'Unauthorized. Please log in again.';
+        }
+        final statue = this.ref.read(generateNotifierProvider).historyfilter;
+        final freshVendor = await this.ref
             .read(getApiServiceProvider)
             .getVisitorByFilters(
-              bearerToken: token!,
+              bearerToken: token,
               status: statue == "" ? "expired" : statue ?? "",
             );
         await SharedPrefsService.saveActiveHistory(freshVendor);
         return freshVendor;
       } catch (e) {
-        if (e is DioException && e.response?.statusCode == 401) {
+        // The API layer turns a 401 into the string "Unauthorized...",
+        // so a DioException check alone never fires.
+        if ((e is DioException && e.response?.statusCode == 401) ||
+            e.toString().contains('Unauthorized')) {
           log(e.toString());
           ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else if (e.toString().contains("The connection errored")) {
@@ -94,7 +102,7 @@ class ActiveOtpnotifier extends AutoDisposeAsyncNotifier<OtpResponseModel?> {
           );
         }
 
-        final localVendor = await SharedPrefsService.getActiveOtp();
+        final localVendor = await SharedPrefsService.getActiveHistory();
         if (localVendor != null) return localVendor;
         rethrow;
       }

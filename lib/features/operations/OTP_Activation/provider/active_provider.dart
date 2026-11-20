@@ -53,15 +53,15 @@ class ReportNotifier extends StateNotifier<GenerateState> {
   }
 
   void setSecuriteLevel(String? level) {
-    log(level!);
+    log('$level');
     state = state.copyWith(securitylevel: level);
   }
 void setFilter(String? filter) {
-    log(filter!);
+    log('$filter');
     state = state.copyWith(filter: filter);
   }
   void setHistoryFilter(String? filter) {
-    log(filter!);
+    log('$filter');
     state = state.copyWith(historyfilter: filter);
   }
   void setVehicleNume(String vehiclenumber) {

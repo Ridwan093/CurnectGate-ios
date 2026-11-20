@@ -21,7 +21,9 @@ class ActivityCard extends ConsumerWidget {
   }
 
   Map<String, String> splitByFirstPeriod(String input) {
-    final firstPeriodIndex = input.indexOf('.');
+    // Split at the end of the first sentence: a full stop followed by a space.
+    // A bare '.' would also match amounts (GH₵12.00) and break them in two.
+    final firstPeriodIndex = input.indexOf(RegExp(r'\.\s'));
 
     if (firstPeriodIndex != -1 && firstPeriodIndex < input.length - 1) {
       final part1 = input.substring(0, firstPeriodIndex + 1).trim();

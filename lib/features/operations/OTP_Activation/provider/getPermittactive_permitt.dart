@@ -70,7 +70,8 @@ class WorkPermitNotifier extends AutoDisposeAsyncNotifier<ActiveOtpResponse?> {
         await SharedPrefsService.saveActivePermit(freshVendor);
         return freshVendor;
       } catch (e) {
-        if (e is DioException && e.response?.statusCode == 401) {
+        if ((e is DioException && e.response?.statusCode == 401) ||
+            e.toString().contains('Unauthorized')) {
           log(e.toString());
           ref.read(authProvider.notifier).sessionExpire(context, ref);
         } else if (e.toString().contains("The connection errored")) {
