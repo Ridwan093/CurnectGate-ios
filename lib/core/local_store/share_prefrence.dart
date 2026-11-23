@@ -119,6 +119,7 @@ final userRoleProvider = FutureProvider.autoDispose<String>((ref) async {
 
 class SharedPrefsService {
   static const String _keyAuthData = 'auth_data';
+  static const String _hasSeenGetStarted = 'has_seen_get_started';
   static const String _userName = 'User_name';
   static const String _fullname = 'full_name';
   static const String _medialUrl = 'Url';
@@ -1588,6 +1589,16 @@ class SharedPrefsService {
 
     final data = prefs.getString(_fullname);
     return data;
+  }
+
+  Future<void> setHasSeenGetStarted(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_hasSeenGetStarted, value);
+  }
+
+  Future<bool> getHasSeenGetStarted() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_hasSeenGetStarted) ?? false;
   }
 
   Future<Map<String, dynamic>?> getAuthData() async {

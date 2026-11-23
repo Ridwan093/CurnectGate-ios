@@ -1,5 +1,7 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
-import 'package:curnectgate/core/navigation/back_manageent/back_provider/provider.dart';
+import 'package:curnectgate/core/navigation/back_manageent/back_widget/back_navigator.dart';
+import 'package:curnectgate/core/navigation/route_path.dart';
+import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/estate_management/screen_managment.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/estate_onboarding/model/estate_code_validator_state.dart';
@@ -36,16 +38,18 @@ class _EstateCodeVerificationScreenState
     final formState = ref.watch(estateCodeFormProvider);
     // final asyncState = ref.watch(estateCodeSubmissionProvider);
 
-    return Scaffold(
-      appBar: !formState.isLoading ? _buildAppBar() : null,
-      bottomNavigationBar:
-          !formState.isLoading
-              ? SafeArea(top: false, child: _buildBottomAction())
-              : null,
-      body:
-          formState.isLoading
-              ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)
-              : _buildBody(MediaQuery.sizeOf(context)),
+    return BackButtonHandler(
+      child: Scaffold(
+        appBar: !formState.isLoading ? _buildAppBar() : null,
+        bottomNavigationBar:
+            !formState.isLoading
+                ? SafeArea(top: false, child: _buildBottomAction())
+                : null,
+        body:
+            formState.isLoading
+                ? AppLoader(size: LoaderSize.large, type: LoaderType.circular)
+                : _buildBody(MediaQuery.sizeOf(context)),
+      ),
     );
   }
 
@@ -58,15 +62,26 @@ class _EstateCodeVerificationScreenState
   }
 
   PreferredSizeWidget _buildAppBar() {
-    final backPressNotifier = ref.read(backPressProvider.notifier);
-    final router = GoRouter.of(context);
     return AppBar(
-      leading: InkWell(
-        onTap: () {
-          backPressNotifier.reset();
-          router.pop();
-        },
-        child: const Icon(Icons.arrow_back_ios_new),
+      automaticallyImplyLeading: false,
+      leadingWidth: 80,
+      leading: Align(
+        alignment: Alignment.centerLeft,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16),
+          child: GestureDetector(
+            onTap: () => context.goNamed(AppRoutes.signIN),
+            child: Text(
+              "Sign In",
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                fontSize: 13,
+                color: AppColors.instance.black500,
+                fontWeight: FontFamilies.bold,
+              ),
+            ),
+          ),
+        ),
       ),
       actions: [
         StepIndicator(current: widget.currentStep, total: widget.totalSteps),
@@ -110,6 +125,33 @@ class _EstateCodeVerificationScreenState
             icon: AssetPaths.location,
             message:
                 'You would have received your estate code from the management office',
+          ),
+          const SizedBox(height: 32),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Already have an account? ",
+                style: TextStyle(
+                  fontFamily: FontFamilies.interDisplay,
+                  color: AppColors.instance.grey500,
+                  fontSize: 13,
+                  fontWeight: FontFamilies.regular,
+                ),
+              ),
+              GestureDetector(
+                onTap: () => context.goNamed(AppRoutes.signIN),
+                child: Text(
+                  "Sign In",
+                  style: TextStyle(
+                    fontFamily: FontFamilies.interDisplay,
+                    color: AppColors.instance.teal500,
+                    fontWeight: FontFamilies.bold,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

@@ -653,7 +653,12 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       if (!isAuthenticated) {
         // If not authenticated and trying to access protected path
-        return !publicPaths.contains(currentPath) ? '/' : null;
+        if (!publicPaths.contains(currentPath)) {
+          final hasSeenGetStarted =
+              await SharedPrefsService().getHasSeenGetStarted();
+          return hasSeenGetStarted ? '/sign_In' : '/';
+        }
+        return null;
       }
 
       // Parse user role from saved auth data

@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:curnectgate/core/appErrorBody/LoadingState.dart';
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/back_manageent/back_widget/back_navigator.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
@@ -211,10 +212,14 @@ class _AuthOnboardingScreenState extends ConsumerState<AuthOnboardingScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: _containerButton(
-                          onPressed: () {
-                            context.pushNamed(
-                              AppRoutes.estateCodeVerificationScreen,
-                            );
+                          onPressed: () async {
+                            await SharedPrefsService()
+                                .setHasSeenGetStarted(true);
+                            if (context.mounted) {
+                              context.goNamed(
+                                AppRoutes.estateCodeVerificationScreen,
+                              );
+                            }
                           },
                           buttontitle: 'Create a new account',
                           iscreate: false,
@@ -226,8 +231,12 @@ class _AuthOnboardingScreenState extends ConsumerState<AuthOnboardingScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: _containerButton(
-                          onPressed: () {
-                            context.pushNamed(AppRoutes.signIN);
+                          onPressed: () async {
+                            await SharedPrefsService()
+                                .setHasSeenGetStarted(true);
+                            if (context.mounted) {
+                              context.goNamed(AppRoutes.signIN);
+                            }
                           },
                           buttontitle: "Sign in to continue",
                           iscreate: true,

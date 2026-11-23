@@ -113,16 +113,8 @@ class _SignInState extends ConsumerState<SignIn> {
   }
 
   PreferredSizeWidget _buildAppBar() {
-    // final backPressNotifier = ref.read(backPressProvider.notifier);
-    // final router = GoRouter.of(context);
     return AppBar(
-      // leading: InkWell(
-      //   onTap: () {
-      //     backPressNotifier.reset();
-      //     router.pop();
-      //   },
-      //   child: const Icon(Icons.arrow_back_ios_new),
-      // ),
+      automaticallyImplyLeading: false,
       actions: [_buildTextButton()],
     );
   }
@@ -130,13 +122,7 @@ class _SignInState extends ConsumerState<SignIn> {
   Widget _buildTextButton() {
     return InkWell(
       onTap: () {
-        // domin rought change later
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => EstateCodeVerificationScreen(),
-          ),
-        );
+        context.goNamed(AppRoutes.estateCodeVerificationScreen);
       },
       child: Padding(
         padding: const EdgeInsets.only(right: 20),

@@ -1,5 +1,7 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
+import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
+import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -51,13 +53,40 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
 
-    _controller.forward();
+    // Wait for the full 4-second animation to complete before navigating
+    _controller.forward().then((_) async {
+      if (!mounted) return;
 
-    // Redirect (use your goRouter)
-    Future.delayed(const Duration(seconds: 3), () {
-      // context.go('/Gets_starts');
-     context.goNamed(AppRoutes.estatateOnbording);
+      final authData = await SharedPrefsService().getAuthData();
+      final isAuthenticated = authData != null && authData.isNotEmpty;
 
+      if (!mounted) return;
+
+      if (isAuthenticated) {
+        final role =
+            authData['user']?['role']?.toString().toLowerCase() ?? '';
+        switch (role) {
+          case 'landlord':
+          case 'resident':
+            context.goNamed(AppRoutes.dashbord);
+            break;
+          case 'security_personnel':
+            context.goNamed(AppRoutes.securityguide);
+            break;
+          default:
+            context.goNamed(AppRoutes.dashbord);
+            break;
+        }
+      } else {
+        final hasSeenGetStarted =
+            await SharedPrefsService().getHasSeenGetStarted();
+        if (!mounted) return;
+        if (hasSeenGetStarted) {
+          context.goNamed(AppRoutes.signIN);
+        } else {
+          context.goNamed(AppRoutes.estatateOnbording);
+        }
+      }
     });
   }
 
@@ -92,15 +121,47 @@ class _SplashScreenState extends State<SplashScreen>
               opacity: _textFade,
               child: SlideTransition(
                 position: _textSlide,
-                child: const Text(
-                  "CurnectGate",
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.w700,
-                    fontFamily: FontFamilies.interDisplay,
-                    letterSpacing: 1.2,
-                    color: Colors.black,
-                  ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Curnect",
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w800,
+                              fontFamily: FontFamilies.interDisplay,
+                              letterSpacing: -0.5,
+                              color: AppColors.instance.black600,
+                            ),
+                          ),
+                          TextSpan(
+                            text: "Gate",
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w800,
+                              fontFamily: FontFamilies.interDisplay,
+                              letterSpacing: -0.5,
+                              color: AppColors.instance.yellow500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Estate Management Simplified",
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: FontFamilies.interDisplay,
+                        letterSpacing: 0.8,
+                        color: AppColors.instance.black400,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

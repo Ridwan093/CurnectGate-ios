@@ -2,6 +2,7 @@ import 'package:curnectgate/core/appErrorBody/restricted_access.dart';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:curnectgate/core/appErrorBody/error_formmat.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
 import 'package:curnectgate/features/member_management/onbording_prosecc/widget/customtoast.dart';
@@ -388,7 +389,7 @@ Widget _buildCategoryDropdown(
             : _buildLoadingState();
       } catch (e) {
         return _buildErrorUI(
-          e.toString(),
+          e,
           ref,
           context,
           () => ref
@@ -423,7 +424,7 @@ Widget _buildCategoryDropdown(
                 data: cachedCategory.data!,
               ),
               _buildNetworkWarningBanner(
-                error.toString(),
+                formatErrorMessage(error),
                 () => ref
                     .read(estatCategoryProvider.notifier)
                     .refreshCategory(context, ref),
@@ -434,7 +435,7 @@ Widget _buildCategoryDropdown(
 
         // No cached data available
         return _buildErrorUI(
-          error.toString(),
+          error,
           ref,
           context,
           () => ref
@@ -443,7 +444,7 @@ Widget _buildCategoryDropdown(
         );
       } catch (e) {
         return _buildErrorUI(
-          e.toString(),
+          e,
           ref,
           context,
           () => ref
@@ -539,7 +540,7 @@ Widget _buildNetworkWarningBanner(String error, VoidCallback onRetry) {
 }
 
 Widget _buildErrorUI(
-  String error,
+  Object error,
   WidgetRef ref,
   BuildContext context,
   VoidCallback onRetry,
@@ -548,32 +549,71 @@ Widget _buildErrorUI(
     return RestrictedAccessView(message: error, onRetry: onRetry, compact: true);
   }
 
-  return Center(
-    child: RichText(
-      textAlign: TextAlign.center,
-      text: TextSpan(
-        style: TextStyle(
-          fontFamily: FontFamilies.interDisplay,
-          fontSize: 16,
-          color: AppColors.instance.error600,
+  final message = formatErrorMessage(error);
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      // Disabled dropdown shell that looks like the real field
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.red.shade300),
+          borderRadius: BorderRadius.circular(4),
+          color: Colors.red.shade50,
         ),
-        children: [
-          const TextSpan(text: "Failed to load data."),
-          WidgetSpan(
-            child: TextButton(
-              onPressed: onRetry,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
               child: Text(
-                "Try Again",
+                'Select category',
                 style: TextStyle(
                   fontFamily: FontFamilies.interDisplay,
-                  color: AppColors.instance.black600,
+                  fontSize: 14,
+                  color: Colors.grey.shade500,
                 ),
+              ),
+            ),
+            const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+          ],
+        ),
+      ),
+      const SizedBox(height: 6),
+      // Inline error row with message + retry tap
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(Icons.error_outline, size: 14, color: AppColors.instance.error600),
+          const SizedBox(width: 4),
+          Expanded(
+            child: Text(
+              message,
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                fontSize: 12,
+                color: AppColors.instance.error600,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: 4),
+          GestureDetector(
+            onTap: onRetry,
+            child: Text(
+              'Retry',
+              style: TextStyle(
+                fontFamily: FontFamilies.interDisplay,
+                fontSize: 12,
+                color: AppColors.instance.black600,
+                fontWeight: FontWeight.w600,
+                decoration: TextDecoration.underline,
               ),
             ),
           ),
         ],
       ),
-    ),
+    ],
   );
 }
 

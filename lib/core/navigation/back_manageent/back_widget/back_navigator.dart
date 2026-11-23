@@ -47,7 +47,9 @@ class BackButtonHandler extends ConsumerWidget {
             'Route stack: ${routeMatch.matches.map((m) => m.matchedLocation)}',
           );
 
-          if (fullPath == '/') {
+          if (fullPath == '/' ||
+              fullPath == '/sign_In' ||
+              fullPath == '/code-verify') {
             final shouldExit = await backPressNotifier.handleBackPress(context);
             if (shouldExit && context.mounted) SystemNavigator.pop();
           } else if (fullPath == '/dash_board' ||
