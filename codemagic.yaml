@@ -68,6 +68,12 @@ workflows:
 
       - name: Flutter build ipa
         script: |
+          # Ensure .env exists for Flutter asset bundling
+          if [ -n "$ENV_FILE" ]; then
+            echo "$ENV_FILE" > .env
+          elif [ ! -f .env ] && [ -f .env.example ]; then
+            cp .env.example .env
+          fi
           flutter pub get
           cd ios
           rm -f Podfile.lock
