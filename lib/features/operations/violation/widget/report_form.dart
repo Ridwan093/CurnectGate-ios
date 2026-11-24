@@ -546,7 +546,7 @@ Widget _buildErrorUI(
   VoidCallback onRetry,
 ) {
   if (PermissionDeniedException.isRestriction(error)) {
-    return RestrictedAccessView(message: error, onRetry: onRetry, compact: true);
+    return RestrictedAccessView(message: error.toString(), onRetry: onRetry, compact: true);
   }
 
   final message = formatErrorMessage(error);
