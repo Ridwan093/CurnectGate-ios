@@ -1,5 +1,4 @@
 import 'package:curnectgate/core/constants/asset_paths.dart';
-import 'package:curnectgate/core/local_store/share_prefrence.dart';
 import 'package:curnectgate/core/navigation/route_path.dart';
 import 'package:curnectgate/core/style/colors.dart';
 import 'package:curnectgate/core/style/fontStyle.dart';
@@ -54,39 +53,9 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     // Wait for the full 4-second animation to complete before navigating
-    _controller.forward().then((_) async {
+    _controller.forward().then((_) {
       if (!mounted) return;
-
-      final authData = await SharedPrefsService().getAuthData();
-      final isAuthenticated = authData != null && authData.isNotEmpty;
-
-      if (!mounted) return;
-
-      if (isAuthenticated) {
-        final role =
-            authData['user']?['role']?.toString().toLowerCase() ?? '';
-        switch (role) {
-          case 'landlord':
-          case 'resident':
-            context.goNamed(AppRoutes.dashbord);
-            break;
-          case 'security_personnel':
-            context.goNamed(AppRoutes.securityguide);
-            break;
-          default:
-            context.goNamed(AppRoutes.dashbord);
-            break;
-        }
-      } else {
-        final hasSeenGetStarted =
-            await SharedPrefsService().getHasSeenGetStarted();
-        if (!mounted) return;
-        if (hasSeenGetStarted) {
-          context.goNamed(AppRoutes.signIN);
-        } else {
-          context.goNamed(AppRoutes.estatateOnbording);
-        }
-      }
+      context.goNamed(AppRoutes.estatateOnbording);
     });
   }
 

@@ -652,11 +652,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       debugPrint('User authenticated: $isAuthenticated');
 
       if (!isAuthenticated) {
-        // If not authenticated and trying to access protected path
-        if (!publicPaths.contains(currentPath)) {
+        // If returning user visits get started ('/'), redirect to login
+        if (currentPath == '/') {
           final hasSeenGetStarted =
               await SharedPrefsService().getHasSeenGetStarted();
-          return hasSeenGetStarted ? '/sign_In' : '/';
+          if (hasSeenGetStarted) return '/sign_In';
+        }
+
+        // If not authenticated and trying to access protected path
+        if (!publicPaths.contains(currentPath)) {
+          return '/sign_In';
         }
         return null;
       }
