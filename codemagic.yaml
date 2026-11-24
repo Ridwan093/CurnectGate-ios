@@ -69,6 +69,11 @@ workflows:
       - name: Flutter build ipa
         script: |
           flutter pub get
+          cd ios
+          rm -f Podfile.lock
+          pod repo update
+          pod install
+          cd ..
           flutter build ipa --release --build-number=21 \
             --export-options-plist=/tmp/ExportOptions.plist
     artifacts:
